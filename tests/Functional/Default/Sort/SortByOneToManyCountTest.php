@@ -4,9 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SortTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SortTestEntityFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SortTestRelatedEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\UserSortCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -17,18 +17,18 @@ class SortByOneToManyCountTest extends AbstractCrudTestCase
     /**
      * @var array<string, int>
      */
-    private const RELATION_COUNT_BY_TEXT_FIELD = [
-        'Zebra Entity' => 2,
-        'Apple Entity' => 0,
-        'Mango Entity' => 3,
-        'Banana Entity' => 1,
-        // same count as 'Zebra Entity' to check that ties are sorted by id in the same direction
-        'Cherry Entity' => 2,
+    private const BLOG_POST_COUNT_BY_USER_NAME = [
+        'User Zebra' => 2,
+        'User Apple' => 0,
+        'User Mango' => 3,
+        'User Banana' => 1,
+        // same count as 'User Zebra' to check that ties are sorted by id in the same direction
+        'User Cherry' => 2,
     ];
 
     protected function getControllerFqcn(): string
     {
-        return SortTestEntityCrudController::class;
+        return UserSortCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -41,20 +41,22 @@ class SortByOneToManyCountTest extends AbstractCrudTestCase
         parent::setUp();
         $this->client->followRedirects();
 
-        foreach (self::RELATION_COUNT_BY_TEXT_FIELD as $textField => $relationCount) {
-            SortTestEntityFactory::createOne([
-                'textField' => $textField,
-                'oneToManyRelations' => SortTestRelatedEntityFactory::new()->many($relationCount),
+        foreach (self::BLOG_POST_COUNT_BY_USER_NAME as $name => $blogPostCount) {
+            // created from the user side because, with ['author' => $user], Foundry < 2.11.1
+            // leaves only the last blog post in the in-memory collection of the user
+            UserFactory::createOne([
+                'name' => $name,
+                'blogPosts' => BlogPostFactory::new()->many($blogPostCount),
             ]);
         }
     }
 
     /**
      * @param array<string, mixed> $query
-     * @param list<string>         $expectedTextFields
+     * @param list<string>         $expectedNames
      */
     #[DataProvider('sorting')]
-    public function testSorting(array $query, array $expectedTextFields): void
+    public function testSorting(array $query, array $expectedNames): void
     {
         $url = $this->generateIndexUrl();
         if ([] !== $query) {
@@ -63,15 +65,15 @@ class SortByOneToManyCountTest extends AbstractCrudTestCase
         $this->client->request('GET', $url);
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextSame('th.header-for-field-association[data-column="oneToManyRelations"] > a', 'One To Many Relations');
-        $this->assertSelectorExists('th.header-for-field-association[data-column="oneToManyRelations"] span.icon svg');
-        $this->assertSelectorCount(\count(self::RELATION_COUNT_BY_TEXT_FIELD), 'tbody tr');
+        $this->assertSelectorTextSame('th.header-for-field-association[data-column="blogPosts"] > a', 'Blog Posts');
+        $this->assertSelectorExists('th.header-for-field-association[data-column="blogPosts"] span.icon svg');
+        $this->assertSelectorCount(\count(self::BLOG_POST_COUNT_BY_USER_NAME), 'tbody tr');
 
-        foreach ($expectedTextFields as $index => $textField) {
+        foreach ($expectedNames as $index => $name) {
             $row = $index + 1;
-            $relationCount = (string) self::RELATION_COUNT_BY_TEXT_FIELD[$textField];
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="textField"]', $textField, sprintf('Expected "%s" in row %d', $textField, $row));
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="oneToManyRelations"]', $relationCount, sprintf('Expected "%s" in row %d', $relationCount, $row));
+            $blogPostCount = (string) self::BLOG_POST_COUNT_BY_USER_NAME[$name];
+            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="name"]', $name, sprintf('Expected "%s" in row %d', $name, $row));
+            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="blogPosts"]', $blogPostCount, sprintf('Expected "%s" in row %d', $blogPostCount, $row));
         }
     }
 
@@ -79,17 +81,17 @@ class SortByOneToManyCountTest extends AbstractCrudTestCase
     {
         yield 'default sorting (no sort applied)' => [
             [],
-            ['Zebra Entity', 'Apple Entity', 'Mango Entity', 'Banana Entity', 'Cherry Entity'],
+            ['User Zebra', 'User Apple', 'User Mango', 'User Banana', 'User Cherry'],
         ];
 
-        yield 'ascending by oneToManyRelations count' => [
-            ['sort' => ['oneToManyRelations' => 'ASC']],
-            ['Apple Entity', 'Banana Entity', 'Zebra Entity', 'Cherry Entity', 'Mango Entity'],
+        yield 'ascending by blogPosts count' => [
+            ['sort' => ['blogPosts' => 'ASC']],
+            ['User Apple', 'User Banana', 'User Zebra', 'User Cherry', 'User Mango'],
         ];
 
-        yield 'descending by oneToManyRelations count' => [
-            ['sort' => ['oneToManyRelations' => 'DESC']],
-            ['Mango Entity', 'Cherry Entity', 'Zebra Entity', 'Banana Entity', 'Apple Entity'],
+        yield 'descending by blogPosts count' => [
+            ['sort' => ['blogPosts' => 'DESC']],
+            ['User Mango', 'User Cherry', 'User Zebra', 'User Banana', 'User Apple'],
         ];
     }
 }

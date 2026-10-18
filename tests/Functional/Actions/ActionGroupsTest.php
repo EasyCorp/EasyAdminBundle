@@ -3,10 +3,10 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Actions;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\ActionGroupsEntityCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\ActionGroupsInlineEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\ActionGroupsEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\ActionGroupsInlineEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ActionTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 
 /**
  * Tests for ActionGroup functionality across different CRUD pages.
@@ -157,7 +157,7 @@ class ActionGroupsTest extends AbstractCrudTestCase
         $dropdownCount = $crawler->filter('.action-group')->count();
         static::assertGreaterThan(0, $dropdownCount, 'Should have dropdowns on the page');
 
-        // the displayIf() callable of group6global requires an ActionTestEntity, but global
+        // the displayIf() callable of group6global requires a Category, but global
         // action groups don't receive any entity, so the group must not be rendered
         static::assertCount(1, $crawler->filter('.action-group[data-action-group-name="group1global"]'));
         static::assertCount(0, $crawler->filter('.action-group[data-action-group-name="group6global"]'));
@@ -186,8 +186,8 @@ class ActionGroupsTest extends AbstractCrudTestCase
 
     public function testEntityActionGroupsInIndexPage(): void
     {
-        $activeEntity = ActionTestEntityFactory::createOne(['isActive' => true]);
-        $inactiveEntity = ActionTestEntityFactory::createOne(['isActive' => false]);
+        $activeEntity = CategoryFactory::createOne(['active' => true]);
+        $inactiveEntity = CategoryFactory::createOne(['active' => false]);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -243,7 +243,7 @@ class ActionGroupsTest extends AbstractCrudTestCase
 
     public function testActionGroupsInDetailPage(): void
     {
-        $activeEntity = ActionTestEntityFactory::createOne(['isActive' => true]);
+        $activeEntity = CategoryFactory::createOne(['active' => true]);
         $crawler = $this->client->request('GET', $this->generateDetailUrl($activeEntity->getId()));
 
         static::assertGreaterThanOrEqual(5, $crawler->filter('.action-group')->count());
@@ -261,8 +261,8 @@ class ActionGroupsTest extends AbstractCrudTestCase
 
     public function testConditionalActionGroupsInDetail(): void
     {
-        $activeEntity = ActionTestEntityFactory::createOne(['isActive' => true]);
-        $inactiveEntity = ActionTestEntityFactory::createOne(['isActive' => false]);
+        $activeEntity = CategoryFactory::createOne(['active' => true]);
+        $inactiveEntity = CategoryFactory::createOne(['active' => false]);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($activeEntity->getId()));
 
@@ -283,7 +283,7 @@ class ActionGroupsTest extends AbstractCrudTestCase
 
     public function testActionGroupsInEditPage(): void
     {
-        $activeEntity = ActionTestEntityFactory::createOne(['isActive' => true]);
+        $activeEntity = CategoryFactory::createOne(['active' => true]);
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($activeEntity->getId()));
 
         // test dropdowns exist
@@ -392,7 +392,7 @@ class ActionGroupsTest extends AbstractCrudTestCase
 
     public function testActionGroupsWithInlineEntityActions(): void
     {
-        $entity = ActionTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $url = $this->generateIndexUrl(
             controllerFqcn: ActionGroupsInlineEntityCrudController::class,

@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Se
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Search\SearchAutofocusTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -35,7 +35,7 @@ class SearchAutofocusTest extends AbstractCrudTestCase
 
     public function testSearchAutofocusConfiguration(): void
     {
-        DemoEntityFactory::createMany(2);
+        CategoryFactory::createMany(2);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 

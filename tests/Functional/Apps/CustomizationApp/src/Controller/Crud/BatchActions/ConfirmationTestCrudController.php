@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Entity\DemoEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Entity\Category;
 
 /**
  * CRUD controller for testing Crud::askConfirmationOnBatchActions().
@@ -13,7 +13,7 @@ class ConfirmationTestCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return DemoEntity::class;
+        return Category::class;
     }
 
     public function configureCrud(Crud $crud): Crud

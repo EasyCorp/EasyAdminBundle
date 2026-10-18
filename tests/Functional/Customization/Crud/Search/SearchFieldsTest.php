@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Se
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Search\SearchFieldsTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -35,8 +35,8 @@ class SearchFieldsTest extends AbstractCrudTestCase
 
     public function testSearchFieldsConfiguration(): void
     {
-        $alpha = DemoEntityFactory::createOne(['name' => 'Alpha item']);
-        $beta = DemoEntityFactory::createOne(['name' => 'Beta item']);
+        $alpha = CategoryFactory::createOne(['name' => 'Category Alpha']);
+        $beta = CategoryFactory::createOne(['name' => 'Category Beta']);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 

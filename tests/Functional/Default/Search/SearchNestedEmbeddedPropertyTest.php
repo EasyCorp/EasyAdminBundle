@@ -4,15 +4,16 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Search;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchNestedEmbeddedCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\EntityFactory\Address;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SearchTestAuthorFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SearchTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Search\SearchNestedEmbeddedCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Address;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests for search on association + embedded properties (e.g. author.address.city).
- * This scenario is currently broken and requires the fix from PR #7427 / Issue #6854.
+ * The search joins the author association and then filters by a column of its
+ * embedded Address.
  */
 class SearchNestedEmbeddedPropertyTest extends AbstractCrudTestCase
 {
@@ -31,12 +32,13 @@ class SearchNestedEmbeddedPropertyTest extends AbstractCrudTestCase
         parent::setUp();
         $this->client->followRedirects();
 
-        SearchTestEntityFactory::createSequence([
-            ['author' => SearchTestAuthorFactory::new(['address' => (new Address())->setStreet(10)->setCity('New York')])],
-            ['author' => SearchTestAuthorFactory::new(['address' => (new Address())->setStreet(20)->setCity('London')])],
-            ['author' => SearchTestAuthorFactory::new(['address' => (new Address())->setStreet(30)->setCity('New York')])],
-            ['author' => SearchTestAuthorFactory::new(['address' => (new Address())->setStreet(40)->setCity('Paris')])],
-            ['author' => null],
+        BlogPostFactory::createSequence([
+            ['author' => UserFactory::new(['address' => (new Address())->setCity('New York')])],
+            ['author' => UserFactory::new(['address' => (new Address())->setCity('London')])],
+            ['author' => UserFactory::new(['address' => (new Address())->setCity('New York')])],
+            ['author' => UserFactory::new(['address' => (new Address())->setCity('Paris')])],
+            // an author without address must not match any city
+            ['author' => UserFactory::new()],
         ]);
     }
 
@@ -54,7 +56,7 @@ class SearchNestedEmbeddedPropertyTest extends AbstractCrudTestCase
     {
         yield 'search author.address.city New York' => [
             'New York',
-            2, // two entities whose authors are different but live in the same city
+            2, // two posts whose authors are different but live in the same city
         ];
 
         yield 'search author.address.city London' => [

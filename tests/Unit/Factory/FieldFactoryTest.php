@@ -12,7 +12,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\DoctrineTypesTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\User;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -20,14 +23,12 @@ use Symfony\Component\Translation\IdentityTranslator;
 
 class FieldFactoryTest extends KernelTestCase
 {
-    private EntityDto $projectDto;
+    private EntityDto $categoryDto;
     private FieldFactory $fieldFactory;
 
     protected function setUp(): void
     {
-        /** @var EntityManagerInterface $entityManager */
-        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
-        $this->projectDto = new EntityDto(Project::class, $entityManager->getClassMetadata(Project::class));
+        $this->categoryDto = $this->createEntityDto(Category::class);
 
         $authorizationCheckerInterface = $this->getMockBuilder(AuthorizationCheckerInterface::class)->disableOriginalConstructor()->getMock();
         $authorizationCheckerInterface->method('isGranted')->willReturn(true);
@@ -44,7 +45,7 @@ class FieldFactoryTest extends KernelTestCase
     {
         $fieldCollection = new FieldCollection([]);
 
-        $this->fieldFactory->processFields($this->projectDto, $fieldCollection, Crud::PAGE_INDEX);
+        $this->fieldFactory->processFields($this->categoryDto, $fieldCollection, Crud::PAGE_INDEX);
 
         $this->assertEmpty($fieldCollection);
     }
@@ -54,7 +55,7 @@ class FieldFactoryTest extends KernelTestCase
     {
         $fieldCollection = new FieldCollection([$field]);
 
-        $this->fieldFactory->processFields($this->projectDto, $fieldCollection, $pageName);
+        $this->fieldFactory->processFields($this->categoryDto, $fieldCollection, $pageName);
 
         $this->assertEmpty($fieldCollection);
     }
@@ -88,7 +89,7 @@ class FieldFactoryTest extends KernelTestCase
     {
         $fieldCollection = new FieldCollection([$field]);
 
-        $this->fieldFactory->processFields($this->projectDto, $fieldCollection, $pageName);
+        $this->fieldFactory->processFields($this->categoryDto, $fieldCollection, $pageName);
 
         // remove layout fields
         foreach ($fieldCollection as $field) {
@@ -129,11 +130,11 @@ class FieldFactoryTest extends KernelTestCase
     }
 
     #[DataProvider('stringNames')]
-    public function testStringNamesAreTurnedIntoFields(string $property, string $expectedField): void
+    public function testStringNamesAreTurnedIntoFields(string $entityFqcn, string $property, string $expectedField): void
     {
         $fieldCollection = new FieldCollection([$property]);
 
-        $this->fieldFactory->processFields($this->projectDto, $fieldCollection, Crud::PAGE_INDEX);
+        $this->fieldFactory->processFields($this->createEntityDto($entityFqcn), $fieldCollection, Crud::PAGE_INDEX);
 
         $this->assertSame(
             $expectedField,
@@ -144,30 +145,41 @@ class FieldFactoryTest extends KernelTestCase
 
     public static function stringNames(): \Generator
     {
-        yield ['rolesJson', Field\ArrayField::class];
-        yield ['statesSimpleArray', Field\ArrayField::class];
-        yield ['internal', Field\BooleanField::class];
-        yield ['startDateMutable', Field\DateField::class];
-        yield ['startDateImmutable', Field\DateField::class];
-        yield ['startDateTimeMutable', Field\DateTimeField::class];
-        yield ['startDateTimeImmutable', Field\DateTimeField::class];
-        yield ['startDateTimeTzMutable', Field\DateTimeField::class];
-        yield ['startDateTimeTzImmutable', Field\DateTimeField::class];
-        yield ['id', Field\IdField::class];
-        yield ['countInteger', Field\IntegerField::class];
-        yield ['countSmallint', Field\IntegerField::class];
-        yield ['priceDecimal', Field\NumberField::class];
-        yield ['priceFloat', Field\NumberField::class];
-        yield ['description', Field\TextareaField::class];
-        yield ['name', Field\TextField::class];
-        yield ['startTimeMutable', Field\TimeField::class];
-        yield ['startTimeImmutable', Field\TimeField::class];
-        yield ['price.amount', Field\IntegerField::class];
-        yield ['price.currency', Field\TextField::class];
-        yield ['latestRelease', Field\AssociationField::class];
-        yield ['leadDeveloper', Field\AssociationField::class];
-        yield ['projectIssues', Field\CollectionField::class];
-        yield ['favouriteProjectOf', Field\AssociationField::class];
-        yield ['projectTags', Field\AssociationField::class];
+        yield [DoctrineTypesTestEntity::class, 'jsonColumn', Field\ArrayField::class];
+        yield [DoctrineTypesTestEntity::class, 'simpleArrayColumn', Field\ArrayField::class];
+        yield [DoctrineTypesTestEntity::class, 'booleanColumn', Field\BooleanField::class];
+        yield [DoctrineTypesTestEntity::class, 'dateMutableColumn', Field\DateField::class];
+        yield [DoctrineTypesTestEntity::class, 'dateImmutableColumn', Field\DateField::class];
+        yield [DoctrineTypesTestEntity::class, 'dateTimeMutableColumn', Field\DateTimeField::class];
+        yield [DoctrineTypesTestEntity::class, 'dateTimeImmutableColumn', Field\DateTimeField::class];
+        yield [DoctrineTypesTestEntity::class, 'dateTimeTzMutableColumn', Field\DateTimeField::class];
+        yield [DoctrineTypesTestEntity::class, 'dateTimeTzImmutableColumn', Field\DateTimeField::class];
+        yield [DoctrineTypesTestEntity::class, 'id', Field\IdField::class];
+        yield [DoctrineTypesTestEntity::class, 'integerColumn', Field\IntegerField::class];
+        yield [DoctrineTypesTestEntity::class, 'smallintColumn', Field\IntegerField::class];
+        yield [DoctrineTypesTestEntity::class, 'decimalColumn', Field\NumberField::class];
+        yield [DoctrineTypesTestEntity::class, 'floatColumn', Field\NumberField::class];
+        yield [DoctrineTypesTestEntity::class, 'textColumn', Field\TextareaField::class];
+        yield [DoctrineTypesTestEntity::class, 'stringColumn', Field\TextField::class];
+        yield [DoctrineTypesTestEntity::class, 'timeMutableColumn', Field\TimeField::class];
+        yield [DoctrineTypesTestEntity::class, 'timeImmutableColumn', Field\TimeField::class];
+        yield [DoctrineTypesTestEntity::class, 'address.street', Field\IntegerField::class];
+        yield [DoctrineTypesTestEntity::class, 'address.city', Field\TextField::class];
+        yield [BlogPost::class, 'author', Field\AssociationField::class];
+        yield [User::class, 'favoriteCategory', Field\AssociationField::class];
+        yield [User::class, 'blogPosts', Field\CollectionField::class];
+        yield [Category::class, 'blogPosts', Field\AssociationField::class];
+        yield [BlogPost::class, 'categories', Field\AssociationField::class];
+    }
+
+    /**
+     * @param class-string $entityFqcn
+     */
+    private function createEntityDto(string $entityFqcn): EntityDto
+    {
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
+
+        return new EntityDto($entityFqcn, $entityManager->getClassMetadata($entityFqcn));
     }
 }

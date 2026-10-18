@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\MultipleRouteCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Entity\Product;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Entity\Synthetic\AdminRouteTestEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Kernel;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -695,19 +695,18 @@ class AdminRouteTest extends WebTestCase
         $schemaTool->dropSchema($metadata);
         $schemaTool->createSchema($metadata);
 
-        $product = new Product();
-        $product->setName('Test Product');
-        $product->setPrice(9.99);
-        $entityManager->persist($product);
+        $entity = new AdminRouteTestEntity();
+        $entity->setName('Entity 1');
+        $entityManager->persist($entity);
         $entityManager->flush();
 
         // request a custom action whose route uses the "{id}" placeholder: EasyAdmin must load the
         // entity from the "id" route parameter and expose it through AdminContext::getEntity()
-        $client->request('GET', sprintf('/admin/multiple-route/detail-by-id/%d', $product->getId()));
+        $client->request('GET', sprintf('/admin/multiple-route/detail-by-id/%d', $entity->getId()));
 
         $this->assertResponseIsSuccessful();
         $this->assertSame(
-            sprintf('Detail by id: %d:Test Product', $product->getId()),
+            sprintf('Detail by id: %d:Entity 1', $entity->getId()),
             $client->getResponse()->getContent()
         );
     }

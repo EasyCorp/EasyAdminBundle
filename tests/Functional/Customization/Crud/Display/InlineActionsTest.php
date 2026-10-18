@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Di
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Display\InlineActionsTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -35,7 +35,7 @@ class InlineActionsTest extends AbstractCrudTestCase
 
     public function testInlineActionsConfiguration(): void
     {
-        DemoEntityFactory::createOne();
+        CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 

@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\GrayScale;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Theme;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\DemoEntityCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\CategoryCrudController;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -24,7 +24,7 @@ class ThemeTestDashboardController extends AbstractDashboardController
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
 
         return $this->redirect($adminUrlGenerator
-            ->setController(DemoEntityCrudController::class)
+            ->setController(CategoryCrudController::class)
             ->generateUrl());
     }
 
@@ -47,6 +47,6 @@ class ThemeTestDashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::linkTo(DemoEntityCrudController::class, 'Demo', 'fas fa-list');
+        yield MenuItem::linkTo(CategoryCrudController::class, 'Categories', 'fas fa-list');
     }
 }

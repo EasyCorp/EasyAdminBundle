@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Co
 
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Entity\Product;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Entity\Synthetic\AdminRouteTestEntity;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -16,7 +16,7 @@ class SameActionOneCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Product::class;
+        return AdminRouteTestEntity::class;
     }
 
     #[AdminRoute(path: '/same-action-name', name: 'same_action_name')]

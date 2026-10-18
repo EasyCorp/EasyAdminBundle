@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Fo
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Formatting\TimezoneTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\BlogPostFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -35,7 +35,7 @@ class TimezoneTest extends AbstractCrudTestCase
 
     public function testTimezoneConfiguration(): void
     {
-        $entity = DemoEntityFactory::createOne(['createdAt' => new \DateTime('2024-01-02 10:00:00', new \DateTimeZone('UTC'))]);
+        $entity = BlogPostFactory::createOne(['createdAt' => new \DateTime('2024-01-02 10:00:00', new \DateTimeZone('UTC'))]);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 

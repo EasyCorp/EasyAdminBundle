@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -43,6 +44,17 @@ abstract class AbstractFieldTestCase extends KernelTestCase
         $metadataProperty->setValue($entityDto, $classMetadata);
 
         return $this->entityDto = $entityDto;
+    }
+
+    /**
+     * @param class-string $entityFqcn
+     */
+    protected function createEntityDto(string $entityFqcn): EntityDto
+    {
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
+
+        return new EntityDto($entityFqcn, $entityManager->getClassMetadata($entityFqcn));
     }
 
     protected function getAdminContext(string $pageName, string $requestLocale, string $actionName, ?string $controllerFqcn = null): AdminContextInterface

@@ -4,15 +4,15 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Search;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchCustomPropertiesCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SearchTestAuthorFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SearchTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Search\SearchCustomPropertiesCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests for custom search properties configuration.
- * The controller is configured to search only in searchableTextField and author.email fields
- * (not in searchableContentField).
+ * The controller is configured to search only in title and author.email fields
+ * (not in content or slug).
  */
 class SearchCustomPropertiesTest extends AbstractCrudTestCase
 {
@@ -31,23 +31,23 @@ class SearchCustomPropertiesTest extends AbstractCrudTestCase
         parent::setUp();
         $this->client->followRedirects();
 
-        $johnSmith = SearchTestAuthorFactory::createOne(['email' => 'john.smith@example.com']);
-        $janeDoe = SearchTestAuthorFactory::createOne(['email' => 'jane.doe@example.com']);
-        $aliceJohnson = SearchTestAuthorFactory::createOne(['email' => 'alice@company.org']);
+        $johnSmith = UserFactory::createOne(['email' => 'john.smith@example.com']);
+        $janeDoe = UserFactory::createOne(['email' => 'jane.doe@example.com']);
+        $aliceJohnson = UserFactory::createOne(['email' => 'alice@company.org']);
 
-        SearchTestEntityFactory::createSequence([
+        BlogPostFactory::createSequence([
             [
-                'searchableTextField' => 'Introduction to PHP Programming',
-                'searchableContentField' => 'PHP was created by Rasmus Lerdorf.',
-                'nonSearchableField' => 'secret-code-123',
+                'title' => 'Introduction to PHP Programming',
+                'content' => 'PHP was created by Rasmus Lerdorf.',
+                'slug' => 'secret-code-123',
                 'author' => $johnSmith,
             ],
-            ['searchableTextField' => 'Advanced Symfony Framework Guide', 'author' => $janeDoe],
-            ['searchableTextField' => 'REST API Development', 'author' => $janeDoe],
-            ['searchableTextField' => 'JavaScript and PHP Integration', 'author' => $aliceJohnson],
+            ['title' => 'Advanced Symfony Framework Guide', 'author' => $janeDoe],
+            ['title' => 'REST API Development', 'author' => $janeDoe],
+            ['title' => 'JavaScript and PHP Integration', 'author' => $aliceJohnson],
             [
-                'searchableTextField' => 'Testing Best Practices',
-                'searchableContentField' => 'PHPUnit is the standard testing framework.',
+                'title' => 'Testing Best Practices',
+                'content' => 'PHPUnit is the standard testing framework.',
                 'author' => $aliceJohnson,
             ],
         ]);
@@ -65,7 +65,7 @@ class SearchCustomPropertiesTest extends AbstractCrudTestCase
      */
     public static function provideSearchTests(): iterable
     {
-        // the CRUD Controller is configured to search in searchableTextField and author.email only
+        // the CRUD controller only searches in title and author.email
         yield 'search by title field matches' => [
             'PHP',
             2, // "Introduction to PHP Programming" and "JavaScript and PHP Integration" ("PHPUnit" is only in the content field)
@@ -73,12 +73,12 @@ class SearchCustomPropertiesTest extends AbstractCrudTestCase
 
         yield 'search by content field yields no results (not in search fields)' => [
             'Rasmus Lerdorf',
-            0, // This text is in searchableContentField, not searchableTextField
+            0,
         ];
 
         yield 'search by author email domain' => [
             '@example.com',
-            3, // John Smith (1) + Jane Doe (2) entities
+            3, // John Smith (1) + Jane Doe (2)
         ];
 
         yield 'search by title and author email together' => [
@@ -93,7 +93,7 @@ class SearchCustomPropertiesTest extends AbstractCrudTestCase
 
         yield 'search by specific author email' => [
             '"alice@company.org"',
-            2, // Alice Johnson's entities
+            2, // Alice Johnson's posts
         ];
 
         yield 'search by title with author email matching' => [
@@ -103,7 +103,7 @@ class SearchCustomPropertiesTest extends AbstractCrudTestCase
 
         yield 'search by non-searchable field yields no results' => [
             'secret-code',
-            0, // nonSearchableField is not in search fields
+            0, // slug is not in search fields
         ];
     }
 }

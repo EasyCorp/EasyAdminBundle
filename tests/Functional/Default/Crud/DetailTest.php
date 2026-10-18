@@ -4,9 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Crud;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Crud\DefaultCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\DefaultCrudTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\DefaultCrudTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use function Zenstruck\Foundry\Persistence\delete;
 
 /**
@@ -16,7 +16,7 @@ class DetailTest extends AbstractCrudTestCase
 {
     protected function getControllerFqcn(): string
     {
-        return DefaultCrudTestEntityCrudController::class;
+        return DefaultCategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -32,7 +32,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testDetailPageLoadsForEntity(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -41,7 +41,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testDetailPageShowsFieldGroups(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -54,7 +54,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testAllFieldsAreDisplayed(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -75,19 +75,19 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testDetailPageShowsCorrectEntityData(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne(['name' => 'CRUD Test Item 1']);
+        $entity = CategoryFactory::createOne(['name' => 'Category A']);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
         $this->assertResponseIsSuccessful();
 
         // the page content should contain the entity's name
-        $this->assertSelectorTextContains('.content-body', 'CRUD Test Item 1');
+        $this->assertSelectorTextContains('.content-body', 'Category A');
     }
 
     public function testBackActionIsAvailable(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -100,7 +100,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testEditActionIsAvailable(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -113,7 +113,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testDeleteActionIsAvailable(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -126,7 +126,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testEditActionLinkWorks(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -145,7 +145,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testBackActionLinkWorks(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -166,7 +166,7 @@ class DetailTest extends AbstractCrudTestCase
     {
         $this->client->catchExceptions(true);
 
-        $deletedEntity = DefaultCrudTestEntityFactory::createOne();
+        $deletedEntity = CategoryFactory::createOne();
         $deletedEntityId = $deletedEntity->getId();
         delete($deletedEntity);
 
@@ -178,7 +178,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testIdFieldIsDisplayed(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -191,7 +191,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testBooleanFieldIsDisplayedCorrectly(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne(['active' => true]);
+        $entity = CategoryFactory::createOne(['active' => true]);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 

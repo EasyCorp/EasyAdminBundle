@@ -23,6 +23,10 @@ Each is a real, self-contained Symfony app with its own Kernel, config, controll
 - **SecuredApp** — security and permission tests
 - **AdminRouteApp** — routing and i18n (ships a separate `I18nKernel.php`)
 
+Write tests against the blog entities of each app (`BlogPost`, `Category` and `User` in DefaultApp; `BlogPost` and `Category` in CustomizationApp) so they're easy to read. If a test needs a column or relation they don't have, add it to them. Only add an entity to `Entity/Synthetic/` when the test needs a shape the blog can't have (`CompositeKeyTestEntity`, `ConstructorArgsTestEntity`) or a catalog of one column per type (`FieldTestEntity`, `FilterTestEntity`, `FormTestEntity`, `DoctrineTypesTestEntity`).
+
+Put CRUD controllers in a folder named after the feature they test (`Controller/Actions/`, `Controller/Sort/`, …) and keep `Controller/Synthetic/` for the synthetic entities. EasyAdmin builds route names from the short class name, so two controllers with the same short name in different namespaces fail unless one of them sets its route name with `#[AdminRoute]`.
+
 ## Base classes and helpers (`src/Test/`)
 
 These are **public, stable API** — bundle users rely on them too, so don't break them.

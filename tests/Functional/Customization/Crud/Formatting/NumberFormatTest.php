@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Fo
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Formatting\NumberFormatTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\BlogPostFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -35,7 +35,7 @@ class NumberFormatTest extends AbstractCrudTestCase
 
     public function testNumberFormatConfiguration(): void
     {
-        $entity = DemoEntityFactory::createOne(['price' => '1234.56', 'quantity' => 5000]);
+        $entity = BlogPostFactory::createOne(['rating' => '4.75', 'views' => 5000]);
 
         $this->client->request('GET', $this->generateIndexUrl());
 
@@ -44,7 +44,7 @@ class NumberFormatTest extends AbstractCrudTestCase
 
         // the '%.2f' format shows two decimal places, even for integer values
         $rowSelector = $this->getIndexEntityRowSelector($entity->getId());
-        static::assertSelectorTextSame($rowSelector.' td[data-column="price"]', '1234.56');
-        static::assertSelectorTextSame($rowSelector.' td[data-column="quantity"]', '5000.00');
+        static::assertSelectorTextSame($rowSelector.' td[data-column="rating"]', '4.75');
+        static::assertSelectorTextSame($rowSelector.' td[data-column="views"]', '5000.00');
     }
 }

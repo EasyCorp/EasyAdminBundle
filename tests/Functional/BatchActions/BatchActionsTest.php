@@ -4,10 +4,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\BatchActions;
 
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\BatchActionsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\BatchActionTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\BatchActionTestEntity;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BatchActionTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Kernel;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -22,7 +22,7 @@ class BatchActionsTest extends AbstractCrudTestCase
 
     protected function getControllerFqcn(): string
     {
-        return BatchActionTestEntityCrudController::class;
+        return BatchActionsCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -34,7 +34,7 @@ class BatchActionsTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(BatchActionTestEntity::class);
+        $this->repository = $this->entityManager->getRepository(Category::class);
     }
 
     public function testCustomBatchActionsExistInIndex(): void
@@ -52,8 +52,8 @@ class BatchActionsTest extends AbstractCrudTestCase
 
     public function testBatchActivateAction(): void
     {
-        $inactiveEntities = BatchActionTestEntityFactory::createMany(2, ['active' => false, 'status' => null]);
-        $entityIdsToActivate = array_map(static fn (BatchActionTestEntity $entity) => $entity->getId(), $inactiveEntities);
+        $inactiveEntities = CategoryFactory::createMany(2, ['active' => false]);
+        $entityIdsToActivate = array_map(static fn (Category $entity) => $entity->getId(), $inactiveEntities);
 
         $this->submitBatchAction('batchActivate', $entityIdsToActivate);
         self::assertResponseIsSuccessful();
@@ -63,14 +63,13 @@ class BatchActionsTest extends AbstractCrudTestCase
         foreach ($entityIdsToActivate as $id) {
             $entity = $this->repository->find($id);
             self::assertTrue($entity->isActive(), sprintf('Entity %s should be active after batch activate', $id));
-            self::assertSame('activated', $entity->getStatus(), sprintf('Entity %s status should be "activated"', $id));
         }
     }
 
     public function testBatchDeactivateAction(): void
     {
-        $activeEntities = BatchActionTestEntityFactory::createMany(2, ['active' => true, 'status' => null]);
-        $entityIdsToDeactivate = array_map(static fn (BatchActionTestEntity $entity) => $entity->getId(), $activeEntities);
+        $activeEntities = CategoryFactory::createMany(2, ['active' => true]);
+        $entityIdsToDeactivate = array_map(static fn (Category $entity) => $entity->getId(), $activeEntities);
 
         $this->submitBatchAction('batchDeactivate', $entityIdsToDeactivate);
         self::assertResponseIsSuccessful();
@@ -80,13 +79,12 @@ class BatchActionsTest extends AbstractCrudTestCase
         foreach ($entityIdsToDeactivate as $id) {
             $entity = $this->repository->find($id);
             self::assertFalse($entity->isActive(), sprintf('Entity %s should be inactive after batch deactivate', $id));
-            self::assertSame('deactivated', $entity->getStatus(), sprintf('Entity %s status should be "deactivated"', $id));
         }
     }
 
     public function testBatchActionShowsFlashMessage(): void
     {
-        $inactiveEntity = BatchActionTestEntityFactory::createOne(['active' => false]);
+        $inactiveEntity = CategoryFactory::createOne(['active' => false]);
 
         $crawler = $this->submitBatchAction('batchActivate', [$inactiveEntity->getId()]);
         self::assertResponseIsSuccessful();
@@ -98,8 +96,8 @@ class BatchActionsTest extends AbstractCrudTestCase
 
     public function testBatchActionWithMultipleEntities(): void
     {
-        $inactiveEntities = BatchActionTestEntityFactory::createMany(3, ['active' => false]);
-        $entityIdsToActivate = array_map(static fn (BatchActionTestEntity $entity) => $entity->getId(), $inactiveEntities);
+        $inactiveEntities = CategoryFactory::createMany(3, ['active' => false]);
+        $entityIdsToActivate = array_map(static fn (Category $entity) => $entity->getId(), $inactiveEntities);
 
         $crawler = $this->submitBatchAction('batchActivate', $entityIdsToActivate);
         self::assertResponseIsSuccessful();
@@ -127,8 +125,8 @@ class BatchActionsTest extends AbstractCrudTestCase
 
     public function testCheckboxesHaveCorrectEntityIds(): void
     {
-        $entities = BatchActionTestEntityFactory::createMany(3);
-        $createdIds = array_map(static fn (BatchActionTestEntity $entity) => (string) $entity->getId(), $entities);
+        $entities = CategoryFactory::createMany(3);
+        $createdIds = array_map(static fn (Category $entity) => (string) $entity->getId(), $entities);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
         self::assertResponseIsSuccessful();
@@ -146,18 +144,15 @@ class BatchActionsTest extends AbstractCrudTestCase
 
     public function testBatchActionWithInvalidCsrfTokenFails(): void
     {
-        $entityToTest = BatchActionTestEntityFactory::createOne(['active' => false, 'status' => 'pending']);
+        $entityToTest = CategoryFactory::createOne(['active' => false]);
         $entityId = $entityToTest->getId();
 
         $this->submitBatchAction('batchActivate', [$entityId], useValidCsrfToken: false);
 
         $this->entityManager->clear();
 
-        // the batch activate action changes status to 'activated', so if CSRF fails,
-        // the status should remain unchanged
         $entity = $this->repository->find($entityId);
-        self::assertSame('pending', $entity->getStatus(), 'Entity status should not be modified with invalid CSRF token');
-        self::assertFalse($entity->isActive());
+        self::assertFalse($entity->isActive(), 'Entity should not be modified with invalid CSRF token');
     }
 
     /**

@@ -4,9 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Search;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchAnyTermsCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SearchTestAuthorFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SearchTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Search\SearchAnyTermsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -31,20 +31,19 @@ class SearchAnyTermsTest extends AbstractCrudTestCase
         parent::setUp();
         $this->client->followRedirects();
 
-        $johnSmith = SearchTestAuthorFactory::createOne(['name' => 'John Smith', 'email' => 'john.smith@example.com']);
-        $janeDoe = SearchTestAuthorFactory::createOne(['name' => 'Jane Doe', 'email' => 'jane.doe@example.com']);
-        $aliceJohnson = SearchTestAuthorFactory::createOne(['name' => 'Alice Johnson', 'email' => 'alice@company.org']);
+        $johnSmith = UserFactory::createOne(['name' => 'John Smith', 'email' => 'john.smith@example.com']);
+        $janeDoe = UserFactory::createOne(['name' => 'Jane Doe', 'email' => 'jane.doe@example.com']);
+        $aliceJohnson = UserFactory::createOne(['name' => 'Alice Johnson', 'email' => 'alice@company.org']);
 
-        SearchTestEntityFactory::createSequence([
+        BlogPostFactory::createSequence([
             ['author' => $johnSmith],
             ['author' => $johnSmith],
             [
-                'searchableTextField' => 'Introduction to PHP Programming',
-                'searchableContentField' => 'PHP is a popular scripting language.',
+                'title' => 'Introduction to PHP Programming',
+                'content' => 'PHP is a popular scripting language.',
                 'author' => $janeDoe,
             ],
             ['author' => $aliceJohnson],
-            ['author' => null],
         ]);
     }
 
@@ -60,8 +59,8 @@ class SearchAnyTermsTest extends AbstractCrudTestCase
      */
     public static function provideSearchTests(): iterable
     {
-        // the CRUD Controller is configured to only search in author.name and author.email
-        yield 'search by entity text field yields no results (not in search fields)' => [
+        // the CRUD controller only searches in author.name and author.email
+        yield 'search by title yields no results (not in search fields)' => [
             'PHP Programming',
             0,
         ];
@@ -78,12 +77,12 @@ class SearchAnyTermsTest extends AbstractCrudTestCase
 
         yield 'quoted search by specific author email' => [
             '"john.smith@"',
-            2, // Only John Smith's entities
+            2, // only John Smith's posts
         ];
 
         yield 'search by author name' => [
             'Smith',
-            2, // John Smith's entities (only Smith matches "Smith", not Johnson)
+            2, // John Smith's posts (only Smith matches "Smith", not Johnson)
         ];
 
         yield 'any terms search - multiple authors (OR logic)' => [
@@ -93,7 +92,7 @@ class SearchAnyTermsTest extends AbstractCrudTestCase
 
         yield 'quoted search by full author email' => [
             '"alice@company.org"',
-            1, // Alice Johnson's entity
+            1, // Alice Johnson's post
         ];
     }
 }

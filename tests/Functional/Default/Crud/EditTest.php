@@ -4,10 +4,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Crud;
 
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Crud\DefaultCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\DefaultCrudTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\DefaultCrudTestEntity;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\DefaultCrudTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use function Zenstruck\Foundry\Persistence\delete;
 
 /**
@@ -15,12 +15,12 @@ use function Zenstruck\Foundry\Persistence\delete;
  */
 class EditTest extends AbstractCrudTestCase
 {
-    /** @var EntityRepository<DefaultCrudTestEntity> */
+    /** @var EntityRepository<Category> */
     protected EntityRepository $repository;
 
     protected function getControllerFqcn(): string
     {
-        return DefaultCrudTestEntityCrudController::class;
+        return DefaultCategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -32,12 +32,12 @@ class EditTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(DefaultCrudTestEntity::class);
+        $this->repository = $this->entityManager->getRepository(Category::class);
     }
 
     public function testEditFormLoadsWithExistingEntityData(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -46,7 +46,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testEditFormDisplaysForm(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -56,7 +56,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testEditFormShowsExistingValues(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne(['name' => 'Edit Form Values Test Entity']);
+        $entity = CategoryFactory::createOne(['name' => 'Category A']);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -66,12 +66,12 @@ class EditTest extends AbstractCrudTestCase
         $form = $crawler->filter($this->getEntityFormSelector())->form();
 
         $formName = $this->getFormEntity();
-        $this->assertEquals('Edit Form Values Test Entity', $form[$formName.'[name]']->getValue());
+        $this->assertEquals('Category A', $form[$formName.'[name]']->getValue());
     }
 
     public function testEditFormHasRequiredFields(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -86,7 +86,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testFormCanBeSubmittedWithUpdatedData(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne(['name' => 'Original Name']);
+        $entity = CategoryFactory::createOne(['name' => 'Original Name']);
         $entityId = $entity->getId();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entityId));
@@ -112,8 +112,8 @@ class EditTest extends AbstractCrudTestCase
 
     public function testEntityIsUpdatedInDatabase(): void
     {
-        $entityId = DefaultCrudTestEntityFactory::createOne([
-            'name' => 'Entity To Update',
+        $entityId = CategoryFactory::createOne([
+            'name' => 'Category A',
             'description' => 'Original description',
             'active' => false,
             'priority' => 10,
@@ -126,7 +126,7 @@ class EditTest extends AbstractCrudTestCase
         $form = $crawler->filter($this->getEntityFormSelector())->form();
 
         $formName = $this->getFormEntity();
-        $form[$formName.'[name]'] = 'Updated Entity Name';
+        $form[$formName.'[name]'] = 'Category B';
         $form[$formName.'[description]'] = 'Updated description';
         $form[$formName.'[active]'] = '1';
         $form[$formName.'[priority]'] = '99';
@@ -140,7 +140,7 @@ class EditTest extends AbstractCrudTestCase
         $updatedEntity = $this->repository->find($entityId);
 
         $this->assertNotNull($updatedEntity);
-        $this->assertEquals('Updated Entity Name', $updatedEntity->getName());
+        $this->assertEquals('Category B', $updatedEntity->getName());
         $this->assertEquals('Updated description', $updatedEntity->getDescription());
         $this->assertTrue($updatedEntity->isActive());
         $this->assertEquals(99, $updatedEntity->getPriority());
@@ -148,7 +148,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testRedirectAfterSuccessfulUpdate(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
         $this->assertResponseIsSuccessful();
@@ -175,7 +175,7 @@ class EditTest extends AbstractCrudTestCase
     {
         $this->client->catchExceptions(true);
 
-        $deletedEntity = DefaultCrudTestEntityFactory::createOne();
+        $deletedEntity = CategoryFactory::createOne();
         $deletedEntityId = $deletedEntity->getId();
         delete($deletedEntity);
 
@@ -187,7 +187,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testEditFormHasFormElements(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -200,7 +200,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testEditFormHasCsrfToken(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -213,7 +213,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testEditFormFieldsCanBeModified(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
         $entityId = $entity->getId();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entityId));
@@ -230,7 +230,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testEditDoesNotCreateNewEntity(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
         $this->assertResponseIsSuccessful();
@@ -252,7 +252,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testBooleanFieldCanBeToggled(): void
     {
-        $entityId = DefaultCrudTestEntityFactory::createOne(['active' => false])->getId();
+        $entityId = CategoryFactory::createOne(['active' => false])->getId();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entityId));
         $this->assertResponseIsSuccessful();
@@ -277,8 +277,8 @@ class EditTest extends AbstractCrudTestCase
 
     public function testNullableFieldCanBeClearedOnEdit(): void
     {
-        $entityId = DefaultCrudTestEntityFactory::createOne([
-            'name' => 'Entity With Values',
+        $entityId = CategoryFactory::createOne([
+            'name' => 'Category A',
             'description' => 'Has description',
             'active' => true,
             'priority' => 50,

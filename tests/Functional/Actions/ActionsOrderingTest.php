@@ -3,9 +3,9 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Actions;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\ActionsOrderingCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\ActionsOrderingCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ActionTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 
 class ActionsOrderingTest extends AbstractCrudTestCase
 {
@@ -53,7 +53,7 @@ class ActionsOrderingTest extends AbstractCrudTestCase
 
     public function testIndexPageEntityActionsOrder(): void
     {
-        $entity = ActionTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -85,7 +85,7 @@ class ActionsOrderingTest extends AbstractCrudTestCase
 
     public function testDetailPageActionsOrder(): void
     {
-        $entity = ActionTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -114,7 +114,7 @@ class ActionsOrderingTest extends AbstractCrudTestCase
 
     public function testEditPageActionsOrder(): void
     {
-        $entity = ActionTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 

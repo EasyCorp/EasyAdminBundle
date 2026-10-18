@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Entity\DemoEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Entity\BlogPost;
 
 /**
  * CRUD controller for testing Crud::setDateTimeFormat().
@@ -14,7 +14,7 @@ class DateTimeFormatTestCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return DemoEntity::class;
+        return BlogPost::class;
     }
 
     public function configureCrud(Crud $crud): Crud

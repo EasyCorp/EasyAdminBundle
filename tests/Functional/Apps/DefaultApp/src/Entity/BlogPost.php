@@ -39,6 +39,9 @@ class BlogPost
     #[ORM\ManyToOne(targetEntity: User::class)]
     private $publisher;
 
+    #[ORM\Column(type: 'integer')]
+    private int $views = 0;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -153,5 +156,17 @@ class BlogPost
     public function setPublisher(?User $publisher): void
     {
         $this->publisher = $publisher;
+    }
+
+    public function getViews(): int
+    {
+        return $this->views;
+    }
+
+    public function setViews(int $views): self
+    {
+        $this->views = $views;
+
+        return $this;
     }
 }

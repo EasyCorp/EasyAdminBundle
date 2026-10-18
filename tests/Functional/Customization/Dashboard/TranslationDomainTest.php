@@ -3,9 +3,9 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Dashboard;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Dashboard\TranslationDomainTestDashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\DemoEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -20,7 +20,7 @@ class TranslationDomainTest extends AbstractCrudTestCase
 
     protected function getControllerFqcn(): string
     {
-        return DemoEntityCrudController::class;
+        return CategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -36,7 +36,7 @@ class TranslationDomainTest extends AbstractCrudTestCase
 
     public function testTranslationDomainIsConfigured(): void
     {
-        DemoEntityFactory::createSequence([['name' => 'Demo Item 1'], ['name' => 'Demo Item 2']]);
+        CategoryFactory::createSequence([['name' => 'Category A'], ['name' => 'Category B']]);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -52,7 +52,7 @@ class TranslationDomainTest extends AbstractCrudTestCase
 
         // verify data is displayed
         $this->assertIndexPageEntityCount(2);
-        static::assertStringContainsString('Demo Item 1', $pageText);
-        static::assertStringContainsString('Demo Item 2', $pageText);
+        static::assertStringContainsString('Category A', $pageText);
+        static::assertStringContainsString('Category B', $pageText);
     }
 }

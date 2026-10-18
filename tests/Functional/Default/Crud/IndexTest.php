@@ -4,12 +4,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Crud;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\NoEntityActionsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\SomeRowsWithEntityActionsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Crud\DefaultCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\DefaultCrudTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\NoEntityActionsCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SomeRowsWithEntityActionsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\DefaultCrudTestEntityFactory;
 
 /**
  * Tests for default index page behavior in EasyAdmin CRUD operations.
@@ -18,7 +17,7 @@ class IndexTest extends AbstractCrudTestCase
 {
     protected function getControllerFqcn(): string
     {
-        return DefaultCrudTestEntityCrudController::class;
+        return DefaultCategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -50,7 +49,7 @@ class IndexTest extends AbstractCrudTestCase
 
     public function testDefaultPaginationIsPresent(): void
     {
-        DefaultCrudTestEntityFactory::createMany(3);
+        CategoryFactory::createMany(3);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -65,7 +64,7 @@ class IndexTest extends AbstractCrudTestCase
 
     public function testDefaultColumnsAreDisplayed(): void
     {
-        DefaultCrudTestEntityFactory::createOne();
+        CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -97,7 +96,7 @@ class IndexTest extends AbstractCrudTestCase
 
     public function testDefaultEntityActionsAreAvailable(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $this->client->request('GET', $this->generateIndexUrl());
 
@@ -112,7 +111,7 @@ class IndexTest extends AbstractCrudTestCase
 
     public function testEntityCountIsDisplayedCorrectly(): void
     {
-        DefaultCrudTestEntityFactory::createMany(2);
+        CategoryFactory::createMany(2);
 
         $this->client->request('GET', $this->generateIndexUrl());
 
@@ -123,7 +122,7 @@ class IndexTest extends AbstractCrudTestCase
 
     public function testIndexShowsEntitiesInTable(): void
     {
-        DefaultCrudTestEntityFactory::createMany(2);
+        CategoryFactory::createMany(2);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -138,7 +137,7 @@ class IndexTest extends AbstractCrudTestCase
 
     public function testEntityRowsExist(): void
     {
-        $entities = DefaultCrudTestEntityFactory::createMany(2);
+        $entities = CategoryFactory::createMany(2);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -152,7 +151,7 @@ class IndexTest extends AbstractCrudTestCase
 
     public function testActionsColumnExists(): void
     {
-        DefaultCrudTestEntityFactory::createMany(2);
+        CategoryFactory::createMany(2);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -230,7 +229,7 @@ class IndexTest extends AbstractCrudTestCase
     public function testPaginationWorksWithMultiplePages(): void
     {
         // the default page size is 20, so 21 entities need two pages
-        DefaultCrudTestEntityFactory::createMany(21);
+        CategoryFactory::createMany(21);
 
         $this->client->request('GET', $this->generateIndexUrl());
 

@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Pa
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Pagination\RangeSizeTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -36,7 +36,7 @@ class RangeSizeTest extends AbstractCrudTestCase
     public function testRangeSizeConfiguration(): void
     {
         // 5 pages with the default page size (20)
-        DemoEntityFactory::createMany(81);
+        CategoryFactory::createMany(81);
 
         $crawler = $this->client->request('GET', $this->getCrudUrl('index', options: ['page' => 3]));
 

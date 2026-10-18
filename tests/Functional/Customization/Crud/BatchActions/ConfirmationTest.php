@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Ba
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\BatchActions\ConfirmationTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -35,7 +35,7 @@ class ConfirmationTest extends AbstractCrudTestCase
 
     public function testBatchActionConfirmationConfiguration(): void
     {
-        DemoEntityFactory::createMany(2);
+        CategoryFactory::createMany(2);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -54,7 +54,7 @@ class ConfirmationTest extends AbstractCrudTestCase
 
     public function testCustomConfirmationMessageIsShownInsteadOfTheModalTitle(): void
     {
-        DemoEntityFactory::createMany(2);
+        CategoryFactory::createMany(2);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 

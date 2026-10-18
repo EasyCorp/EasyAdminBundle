@@ -3,20 +3,20 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Autocomplete;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FilterRelatedEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FilterTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FilterRelatedEntity;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FilterRelatedEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FilterTestEntityFactory;
 use Symfony\Component\DomCrawler\Crawler;
 
 class EntityFilterAutocompleteTest extends AbstractCrudTestCase
 {
     /**
-     * @var list<FilterRelatedEntity>
+     * @var list<Category>
      */
-    private array $relatedEntities = [];
+    private array $categories = [];
 
     protected function getControllerFqcn(): string
     {
@@ -33,10 +33,11 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
         parent::setUp();
         $this->client->followRedirects();
 
-        $this->relatedEntities = FilterRelatedEntityFactory::createSequence([
-            ['name' => 'Related Entity 1'],
-            ['name' => 'Related Entity 2'],
-            ['name' => 'Related Entity 3'],
+        // the default slug ('Category 12 slug') could also match the searched names
+        $this->categories = CategoryFactory::createSequence([
+            ['name' => 'Category 1', 'slug' => 'category-1'],
+            ['name' => 'Category 2', 'slug' => 'category-2'],
+            ['name' => 'Category 3', 'slug' => 'category-3'],
         ]);
     }
 
@@ -77,13 +78,13 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
 
         static::assertTrue($response->isSuccessful());
         static::assertArrayHasKey('results', $data);
-        static::assertCount(3, $data['results'], 'Should return all 3 FilterRelatedEntity items');
+        static::assertCount(3, $data['results'], 'Should return all 3 categories');
     }
 
     public function testFilterAutocompleteFiltersResultsByQuery(): void
     {
-        // search for "Entity 1"
-        $autocompleteUrl = $this->generateFilterAutocompleteUrl('Entity 1');
+        // search for "Category 1"
+        $autocompleteUrl = $this->generateFilterAutocompleteUrl('Category 1');
 
         $this->client->request('GET', $autocompleteUrl);
         $response = $this->client->getResponse();
@@ -91,9 +92,9 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
 
         static::assertTrue($response->isSuccessful());
         static::assertArrayHasKey('results', $data);
-        static::assertCount(1, $data['results'], 'Should return only entities matching "Entity 1"');
-        static::assertSame((string) $this->relatedEntities[0]->getId(), $data['results'][0]['entityId']);
-        static::assertSame('Related Entity 1', $data['results'][0]['entityAsString']);
+        static::assertCount(1, $data['results'], 'Should return only entities matching "Category 1"');
+        static::assertSame((string) $this->categories[0]->getId(), $data['results'][0]['entityId']);
+        static::assertSame('Category 1', $data['results'][0]['entityAsString']);
     }
 
     public function testFilterAutocompleteReturnsEmptyForNonMatchingQuery(): void
@@ -142,8 +143,8 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
         static::assertArrayHasKey('results', $data);
 
         $expectedResults = array_map(
-            static fn (FilterRelatedEntity $entity): array => ['entityId' => (string) $entity->getId(), 'entityAsString' => $entity->getName()],
-            $this->relatedEntities
+            static fn (Category $category): array => ['entityId' => (string) $category->getId(), 'entityAsString' => $category->getName()],
+            $this->categories
         );
         $actualResults = array_map(
             static fn (array $result): array => ['entityId' => $result['entityId'], 'entityAsString' => $result['entityAsString']],
@@ -154,8 +155,8 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
 
     public function testFilterAutocompletePartialSearch(): void
     {
-        // search with partial name "Entity" - should match all 3 entities
-        $autocompleteUrl = $this->generateFilterAutocompleteUrl('Entity');
+        // search with partial name "Categ" - should match all 3 categories
+        $autocompleteUrl = $this->generateFilterAutocompleteUrl('Categ');
 
         $this->client->request('GET', $autocompleteUrl);
         $response = $this->client->getResponse();
@@ -163,27 +164,27 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
 
         static::assertTrue($response->isSuccessful());
         static::assertArrayHasKey('results', $data);
-        static::assertCount(3, $data['results'], 'Partial search "Entity" should match all 3 entities');
+        static::assertCount(3, $data['results'], 'Partial search "Categ" should match all 3 categories');
     }
 
     public function testFilterAutocompleteCaseInsensitiveSearch(): void
     {
         // search with lowercase
-        $autocompleteUrl = $this->generateFilterAutocompleteUrl('entity 1');
+        $autocompleteUrl = $this->generateFilterAutocompleteUrl('category 1');
 
         $this->client->request('GET', $autocompleteUrl);
         $response = $this->client->getResponse();
         $data = json_decode($response->getContent(), true);
 
         static::assertTrue($response->isSuccessful());
-        static::assertCount(1, $data['results'], 'Lowercase search "entity 1" should match "Related Entity 1"');
-        static::assertSame((string) $this->relatedEntities[0]->getId(), $data['results'][0]['entityId']);
+        static::assertCount(1, $data['results'], 'Lowercase search "category 1" should match "Category 1"');
+        static::assertSame((string) $this->categories[0]->getId(), $data['results'][0]['entityId']);
     }
 
     public function testFilterAutocompleteIntegrationWithFilter(): void
     {
         // first, get an entity via autocomplete
-        $autocompleteUrl = $this->generateFilterAutocompleteUrl('Entity 2');
+        $autocompleteUrl = $this->generateFilterAutocompleteUrl('Category 2');
 
         $this->client->request('GET', $autocompleteUrl);
         $response = $this->client->getResponse();
@@ -192,10 +193,10 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
         static::assertArrayHasKey('results', $autocompleteData);
         static::assertCount(1, $autocompleteData['results']);
         $selectedEntityId = $autocompleteData['results'][0]['entityId'];
-        static::assertSame((string) $this->relatedEntities[1]->getId(), $selectedEntityId);
+        static::assertSame((string) $this->categories[1]->getId(), $selectedEntityId);
 
-        $matchingEntity = FilterTestEntityFactory::createOne(['relatedEntity' => $this->relatedEntities[1]]);
-        FilterTestEntityFactory::createOne(['relatedEntity' => $this->relatedEntities[0]]);
+        $matchingEntity = FilterTestEntityFactory::createOne(['relatedEntity' => $this->categories[1]]);
+        FilterTestEntityFactory::createOne(['relatedEntity' => $this->categories[0]]);
 
         // now verify we can use this ID in a filter
         $filterUrl = $this->generateFilteredIndexUrl([
@@ -232,7 +233,7 @@ class EntityFilterAutocompleteTest extends AbstractCrudTestCase
             null,
             $options,
             DashboardController::class,
-            FilterRelatedEntityCrudController::class
+            CategoryCrudController::class
         );
     }
 

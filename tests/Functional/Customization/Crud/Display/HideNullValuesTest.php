@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Di
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Display\HideNullValuesTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\BlogPostFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -35,19 +35,19 @@ class HideNullValuesTest extends AbstractCrudTestCase
 
     public function testHideNullValuesConfiguration(): void
     {
-        $entityWithPrice = DemoEntityFactory::createOne(['price' => '99.99']);
-        $entityWithoutPrice = DemoEntityFactory::createOne(['price' => null]);
+        $entityWithRating = BlogPostFactory::createOne(['rating' => '4.75']);
+        $entityWithoutRating = BlogPostFactory::createOne(['rating' => null]);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
         $this->assertIndexPageEntityCount(2);
 
-        static::assertSelectorTextSame($this->getIndexEntityRowSelector($entityWithPrice->getId()).' td[data-column="price"]', '99.99');
+        static::assertSelectorTextSame($this->getIndexEntityRowSelector($entityWithRating->getId()).' td[data-column="rating"]', '4.75');
 
         // with hideNullValues() the cell of a null value is empty instead of showing the "Null" label
-        $nullPriceCell = $crawler->filter($this->getIndexEntityRowSelector($entityWithoutPrice->getId()).' td[data-column="price"]');
-        static::assertCount(1, $nullPriceCell);
-        static::assertSame('', trim($nullPriceCell->text()));
+        $nullRatingCell = $crawler->filter($this->getIndexEntityRowSelector($entityWithoutRating->getId()).' td[data-column="rating"]');
+        static::assertCount(1, $nullRatingCell);
+        static::assertSame('', trim($nullRatingCell->text()));
     }
 }

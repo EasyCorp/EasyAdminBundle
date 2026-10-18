@@ -4,16 +4,16 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SortMultiLevelAssocCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\SortMultiLevelAssocCrudController;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests sorting on multi-level association traversal.
- * The controller sorts by latestRelease.category.name (2-level association chain).
+ * The controller sorts by publisher.favoriteCategory.name (2-level association chain).
  */
 class SortByMultiLevelAssociationTest extends AbstractCrudTestCase
 {
-    use ProjectsWithReleaseCategoriesTrait;
+    use BlogPostsWithPublisherCategoriesTrait;
 
     protected function getControllerFqcn(): string
     {
@@ -29,19 +29,19 @@ class SortByMultiLevelAssociationTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->createProjectsWithReleaseCategories();
+        $this->createBlogPostsWithPublisherCategories();
     }
 
     public function testCustomSortOnAssociationCombinedWithNestedDefaultSort(): void
     {
-        // ?sort[latestRelease]=ASC replaces neither defaultSort entry, so this sort and the
-        // 'latestRelease.category.name' default sort traverse the same association; the
-        // 'latestRelease' JOIN must be added only once or Doctrine fails with
-        // "[Semantical Error] 'latestRelease' is already defined"
-        $this->client->request('GET', $this->generateIndexUrl().'?'.http_build_query(['sort' => ['latestRelease' => 'ASC']]));
+        // ?sort[publisher]=ASC replaces neither defaultSort entry, so this sort and the
+        // 'publisher.favoriteCategory.name' default sort traverse the same association; the
+        // 'publisher' JOIN must be added only once or Doctrine fails with
+        // "[Semantical Error] 'publisher' is already defined"
+        $this->client->request('GET', $this->generateIndexUrl().'?'.http_build_query(['sort' => ['publisher' => 'ASC']]));
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('tbody tr td[data-column="name"]');
+        $this->assertSelectorExists('tbody tr td[data-column="title"]');
     }
 
     public function testNestedColumnIsSortable(): void
@@ -49,15 +49,15 @@ class SortByMultiLevelAssociationTest extends AbstractCrudTestCase
         $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('th[data-column="latestRelease.category.name"] > a', 'The nested property column must render a sort link');
+        $this->assertSelectorExists('th[data-column="publisher.favoriteCategory.name"] > a', 'The nested property column must render a sort link');
     }
 
     /**
      * @param array<string, mixed> $query
-     * @param list<string>         $expectedProjectNames
+     * @param list<string>         $expectedTitles
      */
     #[DataProvider('provideSortTests')]
-    public function testSorting(array $query, array $expectedProjectNames): void
+    public function testSorting(array $query, array $expectedTitles): void
     {
         $url = $this->generateIndexUrl();
         if ([] !== $query) {
@@ -66,13 +66,13 @@ class SortByMultiLevelAssociationTest extends AbstractCrudTestCase
         $this->client->request('GET', $url);
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorCount(\count($expectedProjectNames), 'tbody tr');
-        foreach ($expectedProjectNames as $index => $expectedProjectName) {
+        $this->assertSelectorCount(\count($expectedTitles), 'tbody tr');
+        foreach ($expectedTitles as $index => $expectedTitle) {
             $row = $index + 1;
             $this->assertSelectorTextSame(
-                sprintf('tbody tr:nth-child(%d) td[data-column="name"]', $row),
-                $expectedProjectName,
-                sprintf('Expected "%s" in row %d', $expectedProjectName, $row)
+                sprintf('tbody tr:nth-child(%d) td[data-column="title"]', $row),
+                $expectedTitle,
+                sprintf('Expected "%s" in row %d', $expectedTitle, $row)
             );
         }
     }
@@ -83,26 +83,26 @@ class SortByMultiLevelAssociationTest extends AbstractCrudTestCase
     public static function provideSortTests(): iterable
     {
         // SQLite sorts NULL values first in ASC order and last in DESC order;
-        // the secondary sort by project name makes ties deterministic
+        // the secondary sort by title makes ties deterministic
 
-        yield 'default sort (category name DESC, name ASC)' => [
+        yield 'default sort (category name DESC, title ASC)' => [
             [],
-            ['Beta Project', 'Alpha Project', 'Gamma Project', 'Delta Project'],
+            ['Post Beta', 'Post Alpha', 'Post Gamma', 'Post Delta'],
         ];
 
         yield 'URL sort by nested property ASC' => [
-            ['sort' => ['latestRelease.category.name' => 'ASC', 'name' => 'ASC']],
-            ['Delta Project', 'Alpha Project', 'Gamma Project', 'Beta Project'],
+            ['sort' => ['publisher.favoriteCategory.name' => 'ASC', 'title' => 'ASC']],
+            ['Post Delta', 'Post Alpha', 'Post Gamma', 'Post Beta'],
         ];
 
         yield 'URL sort by nested property DESC' => [
-            ['sort' => ['latestRelease.category.name' => 'DESC', 'name' => 'DESC']],
-            ['Beta Project', 'Gamma Project', 'Alpha Project', 'Delta Project'],
+            ['sort' => ['publisher.favoriteCategory.name' => 'DESC', 'title' => 'DESC']],
+            ['Post Beta', 'Post Gamma', 'Post Alpha', 'Post Delta'],
         ];
 
         yield 'invalid nested sort property falls back to default sort' => [
-            ['sort' => ['latestRelease.category.secretField' => 'ASC']],
-            ['Beta Project', 'Alpha Project', 'Gamma Project', 'Delta Project'],
+            ['sort' => ['publisher.favoriteCategory.secretField' => 'ASC']],
+            ['Post Beta', 'Post Alpha', 'Post Gamma', 'Post Delta'],
         ];
     }
 }

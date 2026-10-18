@@ -3,8 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Dashboard;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Dashboard\ThemeTestDashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\DemoEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 class ThemeControllerTest extends AbstractCrudTestCase
@@ -22,7 +22,7 @@ class ThemeControllerTest extends AbstractCrudTestCase
 
     protected function getControllerFqcn(): string
     {
-        return DemoEntityCrudController::class;
+        return CategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string

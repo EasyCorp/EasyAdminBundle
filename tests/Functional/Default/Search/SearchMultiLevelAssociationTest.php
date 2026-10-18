@@ -5,15 +5,15 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Search;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchMultiLevelAssocCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectReleaseCategoryFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectReleaseFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Search\SearchMultiLevelAssocCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests for search on multi-level association traversal.
- * The controller is configured to search in latestRelease.category.name (2-level association chain).
+ * The controller is configured to search in publisher.favoriteCategory.name (2-level association chain).
  */
 class SearchMultiLevelAssociationTest extends AbstractCrudTestCase
 {
@@ -36,12 +36,15 @@ class SearchMultiLevelAssociationTest extends AbstractCrudTestCase
         parent::setUp();
         $this->client->followRedirects();
 
-        // a release category can't be shared because ProjectRelease::$category is a one-to-one association
-        ProjectFactory::createSequence([
-            ['latestRelease' => ProjectReleaseFactory::new(['category' => ProjectReleaseCategoryFactory::new(['name' => 'Major'])])],
-            ['latestRelease' => ProjectReleaseFactory::new(['category' => ProjectReleaseCategoryFactory::new(['name' => 'Minor'])])],
-            ['latestRelease' => ProjectReleaseFactory::new(['category' => ProjectReleaseCategoryFactory::new(['name' => 'Major'])])],
-            ['latestRelease' => null],
+        $categoryAlpha = CategoryFactory::createOne(['name' => 'Category Alpha']);
+        $categoryBeta = CategoryFactory::createOne(['name' => 'Category Beta']);
+
+        BlogPostFactory::createSequence([
+            ['publisher' => UserFactory::new(['favoriteCategory' => $categoryAlpha])],
+            ['publisher' => UserFactory::new(['favoriteCategory' => $categoryBeta])],
+            ['publisher' => UserFactory::new(['favoriteCategory' => $categoryAlpha])],
+            ['publisher' => UserFactory::new()],
+            ['publisher' => null],
         ]);
     }
 
@@ -57,19 +60,19 @@ class SearchMultiLevelAssociationTest extends AbstractCrudTestCase
      */
     public static function provideSearchTests(): iterable
     {
-        yield 'search 2-level assoc Major' => [
-            'Major',
+        yield 'search 2-level assoc Alpha' => [
+            'Alpha',
             2,
         ];
 
-        yield 'search 2-level assoc Minor' => [
-            'Minor',
+        yield 'search 2-level assoc Beta' => [
+            'Beta',
             1,
         ];
 
         yield 'search non-matching category' => [
             'Nonexistent',
-            0, // No project has this category name
+            0, // no publisher has this favorite category
         ];
     }
 }

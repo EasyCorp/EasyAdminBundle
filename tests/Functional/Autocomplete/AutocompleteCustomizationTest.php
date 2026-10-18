@@ -4,18 +4,18 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Autocomplete;
 
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Autocomplete\BlogPostWithAutocompleteCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Autocomplete\BlogPostWithRenderAsHtmlCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectIssueWithAutocompleteCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectIssueWithRenderAsHtmlCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectIssueFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 
 class AutocompleteCustomizationTest extends AbstractCrudTestCase
 {
     protected function getControllerFqcn(): string
     {
-        return ProjectIssueWithAutocompleteCrudController::class;
+        return BlogPostWithAutocompleteCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -31,18 +31,18 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
 
     public function testAutocompleteWithFieldLevelCallback(): void
     {
-        $project = ProjectFactory::createOne(['name' => 'Unicorn Sparkle']);
-        ProjectFactory::createOne(['name' => 'Rainbow Dash']);
+        $category = CategoryFactory::createOne(['name' => 'Category 1']);
+        CategoryFactory::createOne(['name' => 'Category 2']);
 
         $autocompleteUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)
-            ->setController(ProjectCrudController::class)
+            ->setController(CategoryCrudController::class)
             ->setAction('autocomplete')
             ->set('page', 1)
-            ->set('query', 'Unicorn Sparkle')
+            ->set('query', 'Category 1')
             ->set('autocompleteContext', [
-                'crudControllerFqcn' => ProjectIssueWithAutocompleteCrudController::class,
-                'propertyName' => 'project',
+                'crudControllerFqcn' => BlogPostWithAutocompleteCrudController::class,
+                'propertyName' => 'categories',
                 'originatingPage' => 'new',
             ])
             ->generateUrl();
@@ -55,23 +55,23 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
 
         $this->assertArrayHasKey('results', $data);
         $this->assertCount(1, $data['results']);
-        $this->assertSame(sprintf('Project: Unicorn Sparkle (ID: %d)', $project->getId()), $data['results'][0]['entityAsString']);
+        $this->assertSame(sprintf('Category: Category 1 (ID: %d)', $category->getId()), $data['results'][0]['entityAsString']);
     }
 
     public function testAutocompleteWithCrudLevelCallback(): void
     {
-        $issue = ProjectIssueFactory::createOne(['name' => 'Bug #1']);
+        $blogPost = BlogPostFactory::createOne(['title' => 'BlogPost 1']);
 
-        // the 'name' field has no field-level autocomplete callback, so the
+        // the 'title' field has no field-level autocomplete callback, so the
         // CRUD-level callback defined in configureCrud() is used
         $autocompleteUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)
-            ->setController(ProjectIssueWithAutocompleteCrudController::class)
+            ->setController(BlogPostWithAutocompleteCrudController::class)
             ->setAction('autocomplete')
             ->set('page', 1)
             ->set('autocompleteContext', [
-                'crudControllerFqcn' => ProjectIssueWithAutocompleteCrudController::class,
-                'propertyName' => 'name',
+                'crudControllerFqcn' => BlogPostWithAutocompleteCrudController::class,
+                'propertyName' => 'title',
                 'originatingPage' => 'index',
             ])
             ->generateUrl();
@@ -82,22 +82,22 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
         $data = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertCount(1, $data['results']);
-        $this->assertSame(sprintf('[%d] Bug #1', $issue->getId()), $data['results'][0]['entityAsString']);
+        $this->assertSame(sprintf('[%d] BlogPost 1', $blogPost->getId()), $data['results'][0]['entityAsString']);
     }
 
     public function testAutocompleteEscapesHtmlByDefault(): void
     {
-        ProjectFactory::createOne(['name' => '<script>alert("XSS")</script>Malicious Project']);
+        CategoryFactory::createOne(['name' => '<script>alert("XSS")</script>Malicious Category']);
 
         $autocompleteUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)
-            ->setController(ProjectCrudController::class)
+            ->setController(CategoryCrudController::class)
             ->setAction('autocomplete')
             ->set('page', 1)
             ->set('query', 'Malicious')
             ->set('autocompleteContext', [
-                'crudControllerFqcn' => ProjectIssueWithAutocompleteCrudController::class,
-                'propertyName' => 'project',
+                'crudControllerFqcn' => BlogPostWithAutocompleteCrudController::class,
+                'propertyName' => 'categories',
                 'originatingPage' => 'new',
             ])
             ->generateUrl();
@@ -121,16 +121,16 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
             $this->markTestSkipped('Doctrine DBAL 3.x+ is required.');
         }
 
-        $project = ProjectFactory::createOne(['name' => 'JSON Test Project']);
+        $category = CategoryFactory::createOne(['name' => 'Category 1']);
 
         $autocompleteUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)
-            ->setController(ProjectCrudController::class)
+            ->setController(CategoryCrudController::class)
             ->setAction('autocomplete')
             ->set('page', 1)
             ->set('autocompleteContext', [
-                'crudControllerFqcn' => ProjectIssueWithAutocompleteCrudController::class,
-                'propertyName' => 'project',
+                'crudControllerFqcn' => BlogPostWithAutocompleteCrudController::class,
+                'propertyName' => 'categories',
                 'originatingPage' => 'new',
             ])
             ->generateUrl();
@@ -146,24 +146,24 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
         $this->assertArrayHasKey('results', $data);
         $this->assertArrayHasKey('next_page', $data);
         $this->assertCount(1, $data['results']);
-        $this->assertSame((string) $project->getId(), $data['results'][0]['entityId']);
+        $this->assertSame((string) $category->getId(), $data['results'][0]['entityId']);
         $this->assertArrayHasKey('entityAsString', $data['results'][0]);
     }
 
     public function testAutocompleteWithCallbackAndRenderAsHtml(): void
     {
-        ProjectFactory::createOne(['name' => 'Important Project']);
+        CategoryFactory::createOne(['name' => 'Important Category']);
 
         // build autocomplete URL using the controller with renderAsHtml: true
         $autocompleteUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)
-            ->setController(ProjectCrudController::class)
+            ->setController(CategoryCrudController::class)
             ->setAction('autocomplete')
             ->set('page', 1)
             ->set('query', 'Important')
             ->set('autocompleteContext', [
-                'crudControllerFqcn' => ProjectIssueWithRenderAsHtmlCrudController::class,
-                'propertyName' => 'project',
+                'crudControllerFqcn' => BlogPostWithRenderAsHtmlCrudController::class,
+                'propertyName' => 'categories',
                 'originatingPage' => 'new',
             ])
             ->generateUrl();
@@ -183,42 +183,42 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
         $this->assertStringContainsString('<strong>', $firstResult);
         $this->assertStringContainsString('</strong>', $firstResult);
         $this->assertStringNotContainsString('&lt;strong&gt;', $firstResult);
-        $this->assertStringContainsString('Important Project', $firstResult);
+        $this->assertStringContainsString('Important Category', $firstResult);
     }
 
     public function testSelectedItemRenderedSameAsDropdownEntries(): void
     {
-        $project = ProjectFactory::createOne(['name' => 'Selected Project']);
-        $issue = ProjectIssueFactory::createOne(['name' => 'Test Issue', 'project' => $project]);
+        $category = CategoryFactory::createOne(['name' => 'Category 1']);
+        $blogPost = BlogPostFactory::createOne(['categories' => [$category]]);
 
-        // open the edit form for the issue
+        // open the edit form for the blog post
         $editUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)
-            ->setController(ProjectIssueWithAutocompleteCrudController::class)
+            ->setController(BlogPostWithAutocompleteCrudController::class)
             ->setAction('edit')
-            ->setEntityId($issue->getId())
+            ->setEntityId($blogPost->getId())
             ->generateUrl();
 
         $this->client->request('GET', $editUrl);
         $this->assertResponseIsSuccessful();
 
         // the selected option should use the same callback format as dropdown entries:
-        // "Project: {name} (ID: {id})"
-        $expectedLabel = sprintf('Project: %s (ID: %s)', $project->getName(), $project->getId());
+        // "Category: {name} (ID: {id})"
+        $expectedLabel = sprintf('Category: Category 1 (ID: %s)', $category->getId());
         $this->assertSelectorExists(sprintf('option[selected]:contains("%s")', $expectedLabel));
     }
 
     public function testSelectedItemRenderedWithHtmlCallback(): void
     {
-        $project = ProjectFactory::createOne(['name' => 'HTML Project']);
-        $issue = ProjectIssueFactory::createOne(['name' => 'HTML Test Issue', 'project' => $project]);
+        $category = CategoryFactory::createOne(['name' => 'Category 1']);
+        $blogPost = BlogPostFactory::createOne(['categories' => [$category]]);
 
         // open the edit form using the controller with renderAsHtml: true
         $editUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)
-            ->setController(ProjectIssueWithRenderAsHtmlCrudController::class)
+            ->setController(BlogPostWithRenderAsHtmlCrudController::class)
             ->setAction('edit')
-            ->setEntityId($issue->getId())
+            ->setEntityId($blogPost->getId())
             ->generateUrl();
 
         $this->client->request('GET', $editUrl);
@@ -227,12 +227,12 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
         // the selected option should contain the HTML-formatted label
         // the callback returns: "<strong>{name}</strong> (ID: {id})"
         $crawler = $this->client->getCrawler();
-        $selectedOption = $crawler->filter('select[name*="project"] option[selected]');
+        $selectedOption = $crawler->filter('select[name*="categories"] option[selected]');
 
         $this->assertCount(1, $selectedOption);
         $optionText = $selectedOption->text();
 
-        $this->assertStringContainsString('HTML Project', $optionText);
-        $this->assertStringContainsString(sprintf('(ID: %d)', $project->getId()), $optionText);
+        $this->assertStringContainsString('Category 1', $optionText);
+        $this->assertStringContainsString(sprintf('(ID: %d)', $category->getId()), $optionText);
     }
 }

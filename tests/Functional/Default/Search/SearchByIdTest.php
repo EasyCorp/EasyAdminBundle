@@ -4,9 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Search;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchByIdCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SearchTestAuthorFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SearchTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Search\SearchByIdCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use function Zenstruck\Foundry\Persistence\delete;
 
@@ -35,10 +35,10 @@ class SearchByIdTest extends AbstractCrudTestCase
     #[DataProvider('provideSearchTests')]
     public function testSearch(string $query, int $expectedResultCount): void
     {
-        SearchTestEntityFactory::createOne([
-            'searchableTextField' => 'Introduction to PHP Programming',
-            'searchableContentField' => 'Symfony is a set of reusable PHP components.',
-            'author' => SearchTestAuthorFactory::new(['name' => 'John Smith']),
+        BlogPostFactory::createOne([
+            'title' => 'Introduction to PHP Programming',
+            'content' => 'Symfony is a set of reusable PHP components.',
+            'author' => UserFactory::new(['name' => 'John Smith']),
         ]);
 
         $this->client->request('GET', $this->generateIndexUrl($query));
@@ -51,7 +51,7 @@ class SearchByIdTest extends AbstractCrudTestCase
      */
     public static function provideSearchTests(): iterable
     {
-        // the CRUD Controller is configured to only search in the 'id' field.
+        // the CRUD controller only searches in the 'id' field
         yield 'search by non numeric query yields no results' => [
             'PHP Programming',
             0,
@@ -70,7 +70,7 @@ class SearchByIdTest extends AbstractCrudTestCase
 
     public function testSearchByValidId(): void
     {
-        $entities = SearchTestEntityFactory::createMany(2);
+        $entities = BlogPostFactory::createMany(2);
 
         $this->client->request('GET', $this->generateIndexUrl((string) $entities[1]->getId()));
         static::assertResponseIsSuccessful();
@@ -80,7 +80,7 @@ class SearchByIdTest extends AbstractCrudTestCase
 
     public function testSearchByNonExistentId(): void
     {
-        [$deletedEntity] = SearchTestEntityFactory::createMany(2);
+        [$deletedEntity] = BlogPostFactory::createMany(2);
         $deletedEntityId = $deletedEntity->getId();
         delete($deletedEntity);
 

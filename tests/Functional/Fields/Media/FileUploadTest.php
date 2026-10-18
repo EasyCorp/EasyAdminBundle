@@ -3,10 +3,11 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Media;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Filesystem\Filesystem;
 
-class FileUploadTest extends AbstractFieldFunctionalTest
+class FileUploadTest extends AbstractFieldFunctionalTestCase
 {
     private string $uploadDir;
     private string $caseDirectory;
@@ -37,9 +38,7 @@ class FileUploadTest extends AbstractFieldFunctionalTest
         parent::tearDown();
     }
 
-    /**
-     * @dataProvider fileDeletionProvider
-     */
+    #[DataProvider('fileDeletionProvider')]
     public function testFileDeletion(string $property, bool $deleteAll, bool $deleteIndividual, bool $uploadReplacement, bool $keepReplacedFiles = false, bool $deleteEveryFile = false): void
     {
         $multiple = \in_array($property, ['multipleFileField', 'multipleImageField'], true);

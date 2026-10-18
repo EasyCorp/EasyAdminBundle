@@ -72,7 +72,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             }
         }
 
-        $options['constraints'] = (bool) $options['multiple'] ? new All($options['file_constraints']) : $options['file_constraints'];
+        $options['constraints'] = (bool) $options['multiple'] && [] !== $options['file_constraints'] ? new All($options['file_constraints']) : $options['file_constraints'];
         unset($options['upload_dir'], $options['upload_new'], $options['upload_delete'], $options['upload_filename'], $options['upload_validate'], $options['download_path'], $options['allow_add'], $options['allow_delete'], $options['allow_view'], $options['allow_download'], $options['compound'], $options['file_constraints'], $options['replaced_file_behavior'], $options['flysystem_storage'], $options['flysystem_url_prefix'], $options['risky_inline_render']);
 
         $builder->add('file', FileType::class, $options);
@@ -103,20 +103,16 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             }
         }
 
-        $uploadDir = $options['upload_dir'];
         $flysystemStorage = $options['flysystem_storage'];
         $flysystemUrlPrefix = $options['flysystem_url_prefix'];
         $currentFileNames = [];
         $currentFileUrls = [];
         foreach ($currentFiles as $file) {
+            $fileName = $this->resolveFilename($file, $options);
             if ($file instanceof FlysystemFile) {
-                $fileName = $file->getPathname();
                 $currentFileNames[] = $fileName;
                 $currentFileUrls[] = $this->resolveFlysystemFileUrl($flysystemStorage, $flysystemUrlPrefix, $fileName);
             } elseif ($file instanceof File) {
-                $fileName = str_starts_with($file->getPathname(), $uploadDir)
-                    ? mb_substr($file->getPathname(), mb_strlen($uploadDir))
-                    : $file->getFilename();
                 $currentFileNames[] = $fileName;
                 $currentFileUrls[] = null;
             }
@@ -132,6 +128,16 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $view->vars['allow_download'] = $options['allow_download'];
         $view->vars['download_path'] = $options['download_path'];
         $view->vars['risky_inline_render'] = $options['risky_inline_render'];
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    private function resolveFilename(File|FlysystemFile|null $file, array $options): ?string
+    {
+        $transformer = new StringToFileTransformer($options['upload_dir'], $options['upload_filename'], $options['upload_validate'], false);
+
+        return $transformer->reverseTransform($file);
     }
 
     private function resolveFlysystemFileUrl(?FilesystemOperator $filesystem, ?string $urlPrefix, string $fileName): ?string
@@ -389,8 +395,9 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             } else {
                 $currentFilesArray = [];
             }
-            $remainingFiles = array_values(array_filter($currentFilesArray, static function ($file) use ($state) {
-                $fileName = $file instanceof FlysystemFile ? $file->getPathname() : $file->getFilename();
+            $options = $children['file']->getParent()->getConfig()->getOptions();
+            $remainingFiles = array_values(array_filter($currentFilesArray, function ($file) use ($state, $options) {
+                $fileName = $this->resolveFilename($file, $options);
 
                 return !\in_array($fileName, $state->getDeletedFiles(), true);
             }));

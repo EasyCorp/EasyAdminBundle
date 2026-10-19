@@ -2,12 +2,13 @@
 
 namespace <?= $namespace; ?>;
 
-use <?= $entity_fqcn; ?>;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+<?php foreach ($uses as $use) { ?>
+use <?= $use; ?>;
+<?php } ?>
 
+/**
+ * @extends AbstractCrudController<<?= $entity_class_name; ?>>
+ */
 class <?= $class_name; ?> extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -15,6 +16,7 @@ class <?= $class_name; ?> extends AbstractCrudController
         return <?= $entity_class_name; ?>::class;
     }
 
+<?php if ([] === $fields) { ?>
     /*
     public function configureFields(string $pageName): iterable
     {
@@ -25,4 +27,16 @@ class <?= $class_name; ?> extends AbstractCrudController
         ];
     }
     */
+<?php } else { ?>
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            // a fieldset groups the fields below it in forms and on the detail page
+            // FormField::addFieldset('Details'),
+<?php foreach ($fields as $field) { ?>
+            <?= $field; ?>,
+<?php } ?>
+        ];
+    }
+<?php } ?>
 }

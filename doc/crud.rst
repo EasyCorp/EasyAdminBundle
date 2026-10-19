@@ -19,6 +19,20 @@ Run the following command to generate the basic structure of a CRUD controller:
 
     $ php bin/console make:admin:crud
 
+The command is interactive and asks you which properties of the entity you
+want to show as fields.
+
+To run the command without answering any question (e.g. in scripts), pass the
+entity, the properties in the ``--fields`` option and the ``--no-interaction``
+option (or ``-n``):
+
+.. code-block:: terminal
+
+    $ php bin/console make:admin:crud "App\Entity\Product" --fields=id,name,price -n
+
+Use the ``--no-fields`` option instead of ``--fields`` to generate a
+commented example of ``configureFields()``.
+
 .. _crud-pages:
 
 CRUD Controller Pages

@@ -29,7 +29,7 @@ class ArrayFilterTest extends TestCase
         $this->assertSame('%foo%', $parameters->first()->getValue());
     }
 
-    public function testApplyWithSimpleArrayFieldUsesQuotedPattern(): void
+    public function testApplyWithSimpleArrayFieldMatchesWholeItems(): void
     {
         $queryBuilder = $this->createQueryBuilder();
         $filterDataDto = $this->createFilterDataDto(['foo']);
@@ -39,10 +39,10 @@ class ArrayFilterTest extends TestCase
 
         $parameters = $queryBuilder->getParameters();
         $this->assertCount(1, $parameters);
-        $this->assertSame('%"foo"%', $parameters->first()->getValue());
+        $this->assertSame('%,foo,%', $parameters->first()->getValue());
     }
 
-    public function testApplyWithoutFieldDtoOnSimpleArrayColumnUsesQuotedPattern(): void
+    public function testApplyWithoutFieldDtoOnSimpleArrayColumnMatchesWholeItems(): void
     {
         $queryBuilder = $this->createQueryBuilder();
         $filterDataDto = $this->createFilterDataDto(['foo']);
@@ -51,7 +51,7 @@ class ArrayFilterTest extends TestCase
 
         $parameters = $queryBuilder->getParameters();
         $this->assertCount(1, $parameters);
-        $this->assertSame('%"foo"%', $parameters->first()->getValue());
+        $this->assertSame('%,foo,%', $parameters->first()->getValue());
     }
 
     private function createQueryBuilder(): QueryBuilder

@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\SortNestedAssociationCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\DatabasePlatformTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -19,6 +20,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class SortByNestedAssociationFieldTest extends AbstractCrudTestCase
 {
     use BlogPostsWithPublisherCategoriesTrait;
+    use DatabasePlatformTrait;
 
     protected function getControllerFqcn(): string
     {
@@ -87,6 +89,7 @@ class SortByNestedAssociationFieldTest extends AbstractCrudTestCase
     public function testSorting(array $query, array $expectedTitles): void
     {
         $this->client->request('GET', $this->generateIndexUrl().'?'.http_build_query($query));
+        $expectedTitles = self::sortNullsLikeTheDatabase($expectedTitles, ['Post Delta']);
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorCount(\count($expectedTitles), 'tbody tr');
@@ -105,7 +108,7 @@ class SortByNestedAssociationFieldTest extends AbstractCrudTestCase
      */
     public static function provideSortTests(): iterable
     {
-        // SQLite sorts NULL values first in ASC order and last in DESC order;
+        // NULL values are first in ASC order and last in DESC order (except on PostgreSQL);
         // the secondary sort by title makes the "Category A" tie deterministic
 
         yield 'sort by nested association ASC orders by category name' => [

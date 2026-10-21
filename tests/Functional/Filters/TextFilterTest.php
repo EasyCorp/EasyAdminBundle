@@ -4,9 +4,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Filters;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FilterTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\DatabasePlatformTrait;
 
 class TextFilterTest extends FilterFunctionalTestCase
 {
+    use DatabasePlatformTrait;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -129,8 +132,6 @@ class TextFilterTest extends FilterFunctionalTestCase
 
     public function testFilterCaseInsensitiveContains(): void
     {
-        // filter with different case - should still match (database dependent)
-        // most databases do case-insensitive LIKE by default
         $url = $this->generateFilteredIndexUrl([
             'textFilter' => [
                 'comparison' => ComparisonType::CONTAINS,
@@ -140,8 +141,14 @@ class TextFilterTest extends FilterFunctionalTestCase
 
         $this->client->request('GET', $url);
 
-        // this behavior may vary by database
-        // SQLite is case-insensitive by default for ASCII characters
+        // the filter uses LIKE, which is case-sensitive on PostgreSQL; SQLite (for ASCII
+        // characters) and the default collations of MySQL and MariaDB are case-insensitive
+        if (self::isPostgreSql()) {
+            $this->assertFilteredCount(0);
+
+            return;
+        }
+
         $this->assertFilteredCount(2);
         $this->assertVisibleEntities(['alpha test string', 'alphabetical order']);
     }

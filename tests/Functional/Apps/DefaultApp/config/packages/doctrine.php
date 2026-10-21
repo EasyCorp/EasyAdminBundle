@@ -1,11 +1,7 @@
 <?php
 
 $config = [
-    'dbal' => [
-        'driver' => 'pdo_sqlite',
-        // ParaTest workers share the compiled container but each one needs its own database
-        'path' => '%kernel.cache_dir%/test_database%env(TEST_TOKEN)%.sqlite',
-    ],
+    'dbal' => (require \dirname(__DIR__, 3).'/test_database.php')('default'),
 
     'orm' => [
         'naming_strategy' => 'doctrine.orm.naming_strategy.underscore_number_aware',
@@ -39,6 +35,12 @@ if (class_exists(Composer\InstalledVersions::class)) {
         $doctrineOrmVersion = Composer\InstalledVersions::getVersion('doctrine/orm');
         if (null !== $doctrineOrmVersion && version_compare($doctrineOrmVersion, '3.4.0', '>=') && \PHP_VERSION_ID >= 80400) {
             $config['orm']['enable_native_lazy_objects'] = true;
+        }
+
+        // ORM 3 always behaves like this; ORM 2 deprecates not opting into it
+        if (null !== $doctrineOrmVersion && version_compare($doctrineOrmVersion, '3.0.0', '<')) {
+            $config['orm']['enable_lazy_ghost_objects'] = true;
+            $config['orm']['report_fields_where_declared'] = true;
         }
     }
 }

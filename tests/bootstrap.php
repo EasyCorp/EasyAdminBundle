@@ -34,12 +34,20 @@ function createTestAppDatabase(KernelInterface $kernel): void
     $application = new Application($kernel);
     $application->setAutoExit(false);
 
-    // there's no doctrine:database:create because DBAL doesn't support it for SQLite (the
-    // database file is created when connecting to it)
-    foreach ([
+    $kernel->boot();
+    // DBAL doesn't support doctrine:database:create for SQLite (the database file is created
+    // when connecting to it), but database servers need it
+    $isSqlite = str_contains($kernel->getContainer()->get('doctrine')->getConnection()->getParams()['driver'] ?? '', 'sqlite');
+    $commands = $isSqlite ? [
         ['command' => 'doctrine:database:drop', '--no-interaction' => true, '--force' => true],
         ['command' => 'doctrine:schema:create'],
-    ] as $command) {
+    ] : [
+        ['command' => 'doctrine:database:drop', '--no-interaction' => true, '--force' => true, '--if-exists' => true],
+        ['command' => 'doctrine:database:create', '--no-interaction' => true, '--if-not-exists' => true],
+        ['command' => 'doctrine:schema:create'],
+    ];
+
+    foreach ($commands as $command) {
         if (0 !== $exitCode = $application->run(new ArrayInput($command), new ConsoleOutput())) {
             throw new RuntimeException(sprintf('The "%s" command failed with exit code %d while creating the database of "%s".', $command['command'], $exitCode, get_debug_type($kernel)));
         }

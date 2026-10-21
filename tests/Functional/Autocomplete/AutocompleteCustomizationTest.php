@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Autocomplete;
 
-use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Autocomplete\BlogPostWithAutocompleteCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Autocomplete\BlogPostWithRenderAsHtmlCrudController;
@@ -117,10 +116,6 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
 
     public function testAutocompleteReturnsValidJsonStructure(): void
     {
-        if (!class_exists(PostgreSQLPlatform::class)) {
-            $this->markTestSkipped('Doctrine DBAL 3.x+ is required.');
-        }
-
         $category = CategoryFactory::createOne(['name' => 'Category 1']);
 
         $autocompleteUrl = $this->adminUrlGenerator

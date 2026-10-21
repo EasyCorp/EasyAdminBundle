@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\MultiColumnSortCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\DatabasePlatformTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -14,6 +15,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 class SortByMultipleColumnsTest extends AbstractCrudTestCase
 {
+    use DatabasePlatformTrait;
+
     /**
      * @var array<string, BlogPost>
      */
@@ -121,8 +124,10 @@ class SortByMultipleColumnsTest extends AbstractCrudTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorCount(\count($this->blogPosts), 'tbody tr');
 
-        // SQLite sorts NULL values last in DESC order
-        $expectedOrder = ['apple10March', 'apple10February', 'apple10Null', 'banana10', 'apple20', 'cherry20'];
+        // NULL values are last in DESC order, except on PostgreSQL, where they are first
+        $expectedOrder = self::isPostgreSql()
+            ? ['apple10Null', 'apple10March', 'apple10February', 'banana10', 'apple20', 'cherry20']
+            : ['apple10March', 'apple10February', 'apple10Null', 'banana10', 'apple20', 'cherry20'];
         foreach ($expectedOrder as $index => $key) {
             $row = $index + 1;
             $blogPost = $this->blogPosts[$key];

@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\BlogPostSortCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\DatabasePlatformTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -14,6 +15,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 class SortByBasicFieldsTest extends AbstractCrudTestCase
 {
+    use DatabasePlatformTrait;
+
     /**
      * @var array<string, BlogPost>
      */
@@ -123,6 +126,7 @@ class SortByBasicFieldsTest extends AbstractCrudTestCase
         $dateFormatter = new \IntlDateFormatter('en', \IntlDateFormatter::MEDIUM, \IntlDateFormatter::MEDIUM);
 
         $this->requestIndex($query);
+        $expectedTitles = self::sortNullsLikeTheDatabase($expectedTitles, ['Post Mango']);
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('th.header-for-field-datetime[data-column="publishedAt"] > a', 'Published At');
@@ -138,7 +142,7 @@ class SortByBasicFieldsTest extends AbstractCrudTestCase
             ['Post Zebra', 'Post Apple', 'Post Mango', 'Post Banana'],
         ];
 
-        // SQLite sorts NULL values first in ASC order and last in DESC order
+        // NULL values are first in ASC order and last in DESC order (except on PostgreSQL)
         yield 'ascending by publishedAt' => [
             ['sort' => ['publishedAt' => 'ASC']],
             ['Post Mango', 'Post Zebra', 'Post Banana', 'Post Apple'],

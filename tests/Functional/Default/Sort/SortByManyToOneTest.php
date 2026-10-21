@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\BlogPostSortCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\DatabasePlatformTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -14,6 +15,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 class SortByManyToOneTest extends AbstractCrudTestCase
 {
+    use DatabasePlatformTrait;
+
     /**
      * @var array<string, string>
      */
@@ -65,6 +68,7 @@ class SortByManyToOneTest extends AbstractCrudTestCase
             $url .= '?'.http_build_query($query);
         }
         $this->client->request('GET', $url);
+        $expectedTitles = self::sortNullsLikeTheDatabase($expectedTitles, ['Post Mango']);
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('th.header-for-field-association[data-column="publisher"] > a', 'Publisher');
@@ -87,7 +91,7 @@ class SortByManyToOneTest extends AbstractCrudTestCase
             ['Post Zebra', 'Post Apple', 'Post Mango', 'Post Banana'],
         ];
 
-        // SQLite sorts NULL values first in ASC order and last in DESC order
+        // NULL values are first in ASC order and last in DESC order (except on PostgreSQL)
         yield 'ascending by publisher name' => [
             ['sort' => ['publisher' => 'ASC']],
             ['Post Mango', 'Post Zebra', 'Post Banana', 'Post Apple'],

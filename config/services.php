@@ -328,7 +328,7 @@ return static function (ContainerConfigurator $container) {
         ->set(FieldFactory::class)
             ->arg(0, service(AdminContextProvider::class))
             ->arg(1, service(AuthorizationChecker::class))
-            ->arg(2, tagged_iterator(EasyAdminExtension::TAG_FIELD_CONFIGURATOR))
+            ->arg(2, tagged_iterator(EasyAdminBundle::TAG_FIELD_CONFIGURATOR))
             ->arg(3, service(FormLayoutFactory::class))
 
         ->set(FieldProvider::class)
@@ -336,7 +336,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(FilterFactory::class)
             ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, tagged_iterator(EasyAdminExtension::TAG_FILTER_CONFIGURATOR))
+            ->arg(1, tagged_iterator(EasyAdminBundle::TAG_FILTER_CONFIGURATOR))
 
         ->set(FiltersFormType::class)
             ->tag('form.type', ['alias' => 'ea_filters'])
@@ -353,7 +353,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(CommonFilterConfigurator::class)
             ->arg(0, service(EntityTranslationIdGeneratorInterface::class))
-            ->tag(EasyAdminExtension::TAG_FILTER_CONFIGURATOR, ['priority' => 9999])
+            ->tag(EasyAdminBundle::TAG_FILTER_CONFIGURATOR, ['priority' => 9999])
 
         ->set(ComparisonFilterConfigurator::class)
 

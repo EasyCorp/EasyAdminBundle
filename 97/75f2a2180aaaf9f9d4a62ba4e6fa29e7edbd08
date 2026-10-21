@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by michaelKaefer at 2026-10-19T12:26:30Z
+
+Just to note: all Symfony bundles (`FrameworkBundle`, `SecurityBundle`, etc.) use the "old" way which is not recommended by the docs.

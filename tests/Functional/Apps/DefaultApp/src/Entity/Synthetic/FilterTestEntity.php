@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic;
 
 use Doctrine\ORM\Mapping as ORM;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 
 #[ORM\Entity]
 class FilterTestEntity
@@ -69,8 +70,8 @@ class FilterTestEntity
     private ?string $nullFilter = null;
 
     // entity filter (relation)
-    #[ORM\ManyToOne(targetEntity: FilterRelatedEntity::class)]
-    private ?FilterRelatedEntity $relatedEntity = null;
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    private ?Category $relatedEntity = null;
 
     public function __construct()
     {
@@ -273,12 +274,12 @@ class FilterTestEntity
         return $this;
     }
 
-    public function getRelatedEntity(): ?FilterRelatedEntity
+    public function getRelatedEntity(): ?Category
     {
         return $this->relatedEntity;
     }
 
-    public function setRelatedEntity(?FilterRelatedEntity $relatedEntity): self
+    public function setRelatedEntity(?Category $relatedEntity): self
     {
         $this->relatedEntity = $relatedEntity;
 

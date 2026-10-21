@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Pa
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Pagination\OutputWalkersTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -36,7 +36,7 @@ class OutputWalkersTest extends AbstractCrudTestCase
     public function testOutputWalkersConfiguration(): void
     {
         // one row more than the default page size (20) to get a second page
-        DemoEntityFactory::createMany(21);
+        CategoryFactory::createMany(21);
 
         $this->client->request('GET', $this->generateIndexUrl());
 

@@ -4,21 +4,21 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Crud;
 
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Crud\DefaultCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\DefaultCrudTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\DefaultCrudTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 
 /**
  * Tests for default new/create form behavior in EasyAdmin CRUD operations.
  */
 class NewTest extends AbstractCrudTestCase
 {
-    /** @var EntityRepository<DefaultCrudTestEntity> */
+    /** @var EntityRepository<Category> */
     protected EntityRepository $repository;
 
     protected function getControllerFqcn(): string
     {
-        return DefaultCrudTestEntityCrudController::class;
+        return DefaultCategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -30,7 +30,7 @@ class NewTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(DefaultCrudTestEntity::class);
+        $this->repository = $this->entityManager->getRepository(Category::class);
     }
 
     public function testNewFormLoadsCorrectly(): void
@@ -54,8 +54,6 @@ class NewTest extends AbstractCrudTestCase
 
         $this->assertResponseIsSuccessful();
 
-        // check that expected form fields exist
-        // for DefaultCrudTestEntity, we expect: name, description, active, priority
         $this->assertFormFieldExists('name');
         $this->assertFormFieldExists('description');
         $this->assertFormFieldExists('active');
@@ -82,7 +80,7 @@ class NewTest extends AbstractCrudTestCase
         $form = $crawler->filter($this->getEntityFormSelector())->form();
 
         $formName = $this->getFormEntity();
-        $form[$formName.'[name]'] = 'Test Entity Created By Test';
+        $form[$formName.'[name]'] = 'Category A';
         $form[$formName.'[description]'] = 'This is a test description';
         $form[$formName.'[active]'] = '1';
         $form[$formName.'[priority]'] = '99';
@@ -100,7 +98,7 @@ class NewTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
 
-        $uniqueName = 'Unique Test Entity';
+        $uniqueName = 'Category A';
 
         // get the form and fill it with valid data
         $form = $crawler->filter($this->getEntityFormSelector())->form();
@@ -132,7 +130,7 @@ class NewTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
 
-        $uniqueName = 'Redirect Test Entity';
+        $uniqueName = 'Category A';
 
         // get the form and fill it with valid data
         $form = $crawler->filter($this->getEntityFormSelector())->form();
@@ -241,7 +239,7 @@ class NewTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
 
-        $uniqueName = 'Nullable Test';
+        $uniqueName = 'Category A';
 
         // get the form and fill only required fields
         $form = $crawler->filter($this->getEntityFormSelector())->form();

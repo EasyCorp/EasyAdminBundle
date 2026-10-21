@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Se
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Search\SearchModeTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -35,9 +35,9 @@ class SearchModeTest extends AbstractCrudTestCase
 
     public function testSearchModeConfiguration(): void
     {
-        $matchingAllTerms = DemoEntityFactory::createOne(['name' => 'Demo Item']);
-        DemoEntityFactory::createOne(['name' => 'Demo Product']);
-        DemoEntityFactory::createOne(['name' => 'Other Item']);
+        $matchingAllTerms = CategoryFactory::createOne(['name' => 'Category Red One']);
+        CategoryFactory::createOne(['name' => 'Category Red Two']);
+        CategoryFactory::createOne(['name' => 'Category Blue One']);
 
         $this->client->request('GET', $this->generateIndexUrl());
 
@@ -48,7 +48,7 @@ class SearchModeTest extends AbstractCrudTestCase
         static::assertIndexFullEntityCount(3);
 
         // ALL_TERMS mode only returns the rows that match every search term
-        $this->client->request('GET', $this->generateIndexUrl('Demo Item'));
+        $this->client->request('GET', $this->generateIndexUrl('Red One'));
 
         static::assertResponseIsSuccessful();
         $this->assertIndexPageEntityCount(1);

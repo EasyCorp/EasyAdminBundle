@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Fo
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Formatting\DateIntervalFormatTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -35,13 +35,13 @@ class DateIntervalFormatTest extends AbstractCrudTestCase
 
     public function testDateIntervalFormatConfiguration(): void
     {
-        DemoEntityFactory::createMany(2);
+        CategoryFactory::createMany(2);
 
         $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
 
-        // dateInterval format config is set but DemoEntity has no DateInterval field
+        // dateInterval format config is set but Category has no DateInterval field
         // verify page renders correctly with the configuration
         $this->assertIndexPageEntityCount(2);
 

@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Entity\DemoEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Entity\BlogPost;
 
 /**
  * CRUD controller for testing Crud::hideNullValues().
@@ -15,7 +15,7 @@ class HideNullValuesTestCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return DemoEntity::class;
+        return BlogPost::class;
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -26,7 +26,7 @@ class HideNullValuesTestCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        yield TextField::new('name');
-        yield NumberField::new('price'); // Nullable field - every 3rd item has null
+        yield TextField::new('title');
+        yield NumberField::new('rating');
     }
 }

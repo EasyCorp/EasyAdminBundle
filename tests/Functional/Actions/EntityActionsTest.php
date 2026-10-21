@@ -3,10 +3,11 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Actions;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\EntityActionsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\ActionTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\ActionTestEntity;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ActionTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 
 /**
  * Tests for entity action features including displayIf(), custom actions,
@@ -16,7 +17,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 {
     protected function getControllerFqcn(): string
     {
-        return ActionTestEntityCrudController::class;
+        return EntityActionsCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -33,8 +34,8 @@ class EntityActionsTest extends AbstractCrudTestCase
     public function testDisplayIfShowsActivateForInactiveEntity(): void
     {
         // entities in the opposite state share the page, to check that displayIf() runs per entity
-        ActionTestEntityFactory::createOne(['isActive' => true]);
-        $inactiveEntity = ActionTestEntityFactory::createOne(['isActive' => false]);
+        CategoryFactory::createOne(['active' => true]);
+        $inactiveEntity = CategoryFactory::createOne(['active' => false]);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -52,8 +53,8 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testDisplayIfShowsDeactivateForActiveEntity(): void
     {
-        ActionTestEntityFactory::createOne(['isActive' => false]);
-        $activeEntity = ActionTestEntityFactory::createOne(['isActive' => true]);
+        CategoryFactory::createOne(['active' => false]);
+        $activeEntity = CategoryFactory::createOne(['active' => true]);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -71,8 +72,8 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testDisplayIfHidesDeleteForNonDeletableEntity(): void
     {
-        ActionTestEntityFactory::createOne(['isDeletable' => true]);
-        $nonDeletableEntity = ActionTestEntityFactory::createOne(['isDeletable' => false]);
+        CategoryFactory::createOne();
+        $nonDeletableEntity = CategoryFactory::createOne(['blogPosts' => [BlogPostFactory::createOne()]]);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -86,8 +87,8 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testDisplayIfShowsDeleteForDeletableEntity(): void
     {
-        ActionTestEntityFactory::createOne(['isDeletable' => false]);
-        $deletableEntity = ActionTestEntityFactory::createOne(['isDeletable' => true]);
+        CategoryFactory::createOne(['blogPosts' => [BlogPostFactory::createOne()]]);
+        $deletableEntity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -101,8 +102,8 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testDisplayIfWorksOnDetailPage(): void
     {
-        $activeEntity = ActionTestEntityFactory::createOne(['isActive' => true, 'isDeletable' => true]);
-        $inactiveNonDeletableEntity = ActionTestEntityFactory::createOne(['isActive' => false, 'isDeletable' => false]);
+        $activeEntity = CategoryFactory::createOne(['active' => true]);
+        $inactiveNonDeletableEntity = CategoryFactory::createOne(['active' => false, 'blogPosts' => [BlogPostFactory::createOne()]]);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($activeEntity->getId()));
 
@@ -135,7 +136,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testActivateEntityAction(): void
     {
-        $inactiveEntity = ActionTestEntityFactory::createOne(['name' => 'Spring catalog', 'isActive' => false]);
+        $inactiveEntity = CategoryFactory::createOne(['name' => 'Category 1', 'active' => false]);
 
         $entityId = $inactiveEntity->getId();
         $entityName = $inactiveEntity->getName();
@@ -148,7 +149,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
         // Verify the entity was activated
         $this->entityManager->clear();
-        $updatedEntity = $this->entityManager->getRepository(ActionTestEntity::class)->find($entityId);
+        $updatedEntity = $this->entityManager->getRepository(Category::class)->find($entityId);
         static::assertTrue($updatedEntity->isActive(), 'Entity should be active after clicking activate action');
 
         // verify flash message is shown; this action uses the structured flash message
@@ -165,7 +166,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testDeactivateEntityAction(): void
     {
-        $activeEntity = ActionTestEntityFactory::createOne(['name' => 'Autumn catalog', 'isActive' => true]);
+        $activeEntity = CategoryFactory::createOne(['name' => 'Category 1', 'active' => true]);
 
         $entityId = $activeEntity->getId();
         $entityName = $activeEntity->getName();
@@ -178,7 +179,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
         // Verify the entity was deactivated
         $this->entityManager->clear();
-        $updatedEntity = $this->entityManager->getRepository(ActionTestEntity::class)->find($entityId);
+        $updatedEntity = $this->entityManager->getRepository(Category::class)->find($entityId);
         static::assertFalse($updatedEntity->isActive(), 'Entity should be inactive after clicking deactivate action');
 
         // Verify flash message is shown
@@ -191,7 +192,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testActivateActionFromDetailPage(): void
     {
-        $inactiveEntity = ActionTestEntityFactory::createOne(['name' => 'Winter catalog', 'isActive' => false]);
+        $inactiveEntity = CategoryFactory::createOne(['name' => 'Category 1', 'active' => false]);
 
         $entityId = $inactiveEntity->getId();
         $entityName = $inactiveEntity->getName();
@@ -203,7 +204,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
         // Verify the entity was activated
         $this->entityManager->clear();
-        $updatedEntity = $this->entityManager->getRepository(ActionTestEntity::class)->find($entityId);
+        $updatedEntity = $this->entityManager->getRepository(Category::class)->find($entityId);
         static::assertTrue($updatedEntity->isActive(), 'Entity should be active after clicking activate action from detail page');
 
         // Verify flash message
@@ -216,7 +217,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testDeactivateActionFromDetailPage(): void
     {
-        $activeEntity = ActionTestEntityFactory::createOne(['name' => 'Summer catalog', 'isActive' => true]);
+        $activeEntity = CategoryFactory::createOne(['name' => 'Category 1', 'active' => true]);
 
         $entityId = $activeEntity->getId();
         $entityName = $activeEntity->getName();
@@ -228,7 +229,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
         // Verify the entity was deactivated
         $this->entityManager->clear();
-        $updatedEntity = $this->entityManager->getRepository(ActionTestEntity::class)->find($entityId);
+        $updatedEntity = $this->entityManager->getRepository(Category::class)->find($entityId);
         static::assertFalse($updatedEntity->isActive(), 'Entity should be inactive after clicking deactivate action from detail page');
 
         // Verify flash message
@@ -271,7 +272,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testRenderAsFormInDropdownCreatesHiddenForm(): void
     {
-        $entity = ActionTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -293,7 +294,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testSetHtmlAttributesOnAction(): void
     {
-        $entity = ActionTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -309,7 +310,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testActionWithIconOnly(): void
     {
-        $entity = ActionTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 

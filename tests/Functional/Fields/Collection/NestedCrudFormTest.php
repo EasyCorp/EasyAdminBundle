@@ -4,13 +4,13 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Collection;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\ProjectIssueNestedCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\ProjectWithNestedIssuesCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\ProjectWithNullCreateEntityIssuesCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\ProjectIssue;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectIssueFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\BlogPostNestedCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\UserWithNestedBlogPostsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\UserWithNullCreateEntityBlogPostsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -32,7 +32,7 @@ class NestedCrudFormTest extends AbstractCrudTestCase
 
     protected function getControllerFqcn(): string
     {
-        return ProjectWithNestedIssuesCrudController::class;
+        return UserWithNestedBlogPostsCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -43,9 +43,9 @@ class NestedCrudFormTest extends AbstractCrudTestCase
     /**
      * Tests that the NEW form page loads correctly with nested CRUD forms.
      *
-     * The nested ProjectIssueNestedCrudController accesses $context->getEntity() in
+     * The nested BlogPostNestedCrudController accesses $context->getEntity() in
      * configureFields(). Before the fix, this would fail because the context would
-     * contain the parent entity (Project) instead of the nested entity (ProjectIssue).
+     * contain the parent entity (User) instead of the nested entity (BlogPost).
      */
     public function testNewFormLoadsWithNestedCrudForm(): void
     {
@@ -53,8 +53,8 @@ class NestedCrudFormTest extends AbstractCrudTestCase
 
         static::assertResponseIsSuccessful();
 
-        $form = $crawler->filter('form[name="Project"]');
-        static::assertCount(1, $form, 'The Project form should exist');
+        $form = $crawler->filter('form[name="User"]');
+        static::assertCount(1, $form, 'The User form should exist');
 
         $collectionField = $crawler->filter('.field-collection');
         static::assertGreaterThanOrEqual(1, $collectionField->count(), 'The collection field should exist');
@@ -65,18 +65,18 @@ class NestedCrudFormTest extends AbstractCrudTestCase
      */
     public function testEditFormLoadsWithNestedCrudForm(): void
     {
-        $project = $this->createProjectWithIssues();
+        $user = $this->createUserWithBlogPosts();
 
-        $crawler = $this->client->request('GET', $this->generateEditFormUrl($project->getId()));
+        $crawler = $this->client->request('GET', $this->generateEditFormUrl($user->getId()));
 
         static::assertResponseIsSuccessful();
 
-        $form = $crawler->filter('form[name="Project"]');
-        static::assertCount(1, $form, 'The Project form should exist');
+        $form = $crawler->filter('form[name="User"]');
+        static::assertCount(1, $form, 'The User form should exist');
 
         $html = $crawler->html();
-        static::assertStringContainsString('Test Issue 1', $html, 'First issue should be visible');
-        static::assertStringContainsString('Test Issue 2', $html, 'Second issue should be visible');
+        static::assertStringContainsString('Blog post 1', $html, 'First blog post should be visible');
+        static::assertStringContainsString('Blog post 2', $html, 'Second blog post should be visible');
     }
 
     /**
@@ -91,7 +91,7 @@ class NestedCrudFormTest extends AbstractCrudTestCase
         $prototype = $crawler->filter('[data-prototype]');
         static::assertGreaterThanOrEqual(1, $prototype->count(), 'A collection prototype should exist');
         static::assertStringContainsString(
-            ProjectIssueNestedCrudController::DEFAULT_ENTRY_NAME,
+            BlogPostNestedCrudController::DEFAULT_ENTRY_TITLE,
             $prototype->attr('data-prototype'),
             'createEntity() defaults from the embedded controller should be reflected in the prototype HTML',
         );
@@ -104,33 +104,32 @@ class NestedCrudFormTest extends AbstractCrudTestCase
      */
     public function testNestedCreateEntityIsCalledForEmptyDataOnSubmit(): void
     {
-        $project = $this->createProjectWithIssues();
+        $user = $this->createUserWithBlogPosts();
 
-        $crawler = $this->client->request('GET', $this->generateEditFormUrl($project->getId()));
+        $crawler = $this->client->request('GET', $this->generateEditFormUrl($user->getId()));
         static::assertResponseIsSuccessful();
 
-        $form = $crawler->filter('form[name="Project"]')->form();
+        $form = $crawler->filter('form[name="User"]')->form();
         $values = $form->getPhpValues();
         // simulate the JS "add entry" behaviour: append an entry with no submitted fields
         // so Symfony Form has to invoke entry_options.empty_data to materialise the new
-        // ProjectIssue (which then routes to the embedded controller's createEntity()).
-        $values['Project']['projectIssues'][] = [];
+        // BlogPost (which then routes to the embedded controller's createEntity())
+        $values['User']['blogPosts'][] = [];
 
-        $callsBeforeSubmit = ProjectIssueNestedCrudController::$createEntityCallCount;
+        $callsBeforeSubmit = BlogPostNestedCrudController::$createEntityCallCount;
         try {
-            // form binding may fail on this fixture (the new ProjectIssue's `name` is
-            // required and not submitted, so PropertyAccessor will refuse to set null).
-            // We are not testing the persistence side here, only that empty_data was
-            // reached before the binding step ran.
+            // form binding may fail on this fixture (the new BlogPost's `title` is
+            // required and not submitted, so PropertyAccessor will refuse to set null);
+            // this only checks that empty_data was reached before the binding step ran
             $this->client->catchExceptions(false);
             $this->client->request($form->getMethod(), $form->getUri(), $values, [], ['CONTENT_TYPE' => 'application/x-www-form-urlencoded']);
         } catch (\Throwable) {
-            // expected on this fixture, see comment above.
+            // expected on this fixture, see comment above
         }
 
         static::assertGreaterThan(
             $callsBeforeSubmit,
-            ProjectIssueNestedCrudController::$createEntityCallCount,
+            BlogPostNestedCrudController::$createEntityCallCount,
             'createEntity() should be invoked through entry_options.empty_data when a new entry is bound',
         );
     }
@@ -141,23 +140,28 @@ class NestedCrudFormTest extends AbstractCrudTestCase
      */
     public function testNestedCreateEntityReturningNull(): void
     {
-        $this->client->request('GET', $this->generateNewFormUrl(controllerFqcn: ProjectWithNullCreateEntityIssuesCrudController::class));
+        $this->client->request('GET', $this->generateNewFormUrl(controllerFqcn: UserWithNullCreateEntityBlogPostsCrudController::class));
         static::assertResponseIsSuccessful();
 
-        $project = $this->createProjectWithIssues();
-        $crawler = $this->client->request('GET', $this->generateEditFormUrl($project->getId(), controllerFqcn: ProjectWithNullCreateEntityIssuesCrudController::class));
+        $user = $this->createUserWithBlogPosts();
+        $crawler = $this->client->request('GET', $this->generateEditFormUrl($user->getId(), controllerFqcn: UserWithNullCreateEntityBlogPostsCrudController::class));
         static::assertResponseIsSuccessful();
 
-        $form = $crawler->filter('form[name="Project"]')->form();
+        $form = $crawler->filter('form[name="User"]')->form();
         $values = $form->getPhpValues();
-        $values['Project']['projectIssues'][] = ['name' => 'Issue created with empty_data'];
+        $values['User']['blogPosts'][] = [
+            'title' => 'Blog post created with empty_data',
+            'slug' => 'blog-post-created-with-empty-data',
+            'content' => 'Blog post content',
+            'createdAt' => '2020-01-01T10:00',
+        ];
         $this->client->request($form->getMethod(), $form->getUri(), $values);
         static::assertResponseIsSuccessful();
 
         $this->entityManager->clear();
-        $issue = $this->entityManager->getRepository(ProjectIssue::class)->findOneBy(['name' => 'Issue created with empty_data']);
-        static::assertNotNull($issue);
-        static::assertSame($project->getId(), $issue->getProject()?->getId());
+        $blogPost = $this->entityManager->getRepository(BlogPost::class)->findOneBy(['title' => 'Blog post created with empty_data']);
+        static::assertNotNull($blogPost);
+        static::assertSame($user->getId(), $blogPost->getAuthor()?->getId());
     }
 
     /**
@@ -167,9 +171,9 @@ class NestedCrudFormTest extends AbstractCrudTestCase
      */
     public function testRenderExpandedOnCollectionField(): void
     {
-        $project = $this->createProjectWithIssues();
+        $user = $this->createUserWithBlogPosts();
 
-        $crawler = $this->client->request('GET', $this->generateEditFormUrl($project->getId()));
+        $crawler = $this->client->request('GET', $this->generateEditFormUrl($user->getId()));
 
         static::assertResponseIsSuccessful();
 
@@ -193,12 +197,12 @@ class NestedCrudFormTest extends AbstractCrudTestCase
         }
     }
 
-    private function createProjectWithIssues(): Project
+    private function createUserWithBlogPosts(): User
     {
-        return ProjectFactory::createOne([
-            'projectIssues' => [
-                ProjectIssueFactory::new(['name' => 'Test Issue 1']),
-                ProjectIssueFactory::new(['name' => 'Test Issue 2']),
+        return UserFactory::createOne([
+            'blogPosts' => [
+                BlogPostFactory::new(['title' => 'Blog post 1']),
+                BlogPostFactory::new(['title' => 'Blog post 2']),
             ],
         ]);
     }

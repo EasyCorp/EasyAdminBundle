@@ -5,10 +5,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Crud;
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Crud\DefaultCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\DefaultCrudTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\DefaultCrudTestEntity;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\DefaultCrudTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use Symfony\Component\DomCrawler\Crawler;
 use function Zenstruck\Foundry\Persistence\delete;
 
@@ -17,12 +17,12 @@ use function Zenstruck\Foundry\Persistence\delete;
  */
 class DeleteTest extends AbstractCrudTestCase
 {
-    /** @var EntityRepository<DefaultCrudTestEntity> */
+    /** @var EntityRepository<Category> */
     protected EntityRepository $repository;
 
     protected function getControllerFqcn(): string
     {
-        return DefaultCrudTestEntityCrudController::class;
+        return DefaultCategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -34,12 +34,12 @@ class DeleteTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(DefaultCrudTestEntity::class);
+        $this->repository = $this->entityManager->getRepository(Category::class);
     }
 
     public function testDeleteActionExistsOnIndexPage(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $this->client->request('GET', $this->generateIndexUrl());
 
@@ -49,7 +49,7 @@ class DeleteTest extends AbstractCrudTestCase
 
     public function testDeleteActionExistsOnDetailPage(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -62,7 +62,7 @@ class DeleteTest extends AbstractCrudTestCase
 
     public function testDeleteActionRemovesEntity(): void
     {
-        $entityId = DefaultCrudTestEntityFactory::createOne()->getId();
+        $entityId = CategoryFactory::createOne()->getId();
 
         // get the index page to access delete action
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
@@ -79,7 +79,7 @@ class DeleteTest extends AbstractCrudTestCase
 
     public function testEntityNoLongerExistsInDatabaseAfterDelete(): void
     {
-        $entityId = DefaultCrudTestEntityFactory::createOne(['name' => 'Entity To Delete'])->getId();
+        $entityId = CategoryFactory::createOne(['name' => 'Category A'])->getId();
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
         $this->assertResponseIsSuccessful();
@@ -94,13 +94,13 @@ class DeleteTest extends AbstractCrudTestCase
         $this->assertNull($deletedEntity, 'Entity should no longer exist in database');
 
         // also verify by name
-        $deletedEntityByName = $this->repository->findOneBy(['name' => 'Entity To Delete']);
+        $deletedEntityByName = $this->repository->findOneBy(['name' => 'Category A']);
         $this->assertNull($deletedEntityByName, 'Entity should not be found by name after deletion');
     }
 
     public function testRedirectAfterSuccessfulDeletion(): void
     {
-        $entityId = DefaultCrudTestEntityFactory::createOne()->getId();
+        $entityId = CategoryFactory::createOne()->getId();
 
         // disable redirect following to check the redirect
         $this->client->followRedirects(false);
@@ -124,7 +124,7 @@ class DeleteTest extends AbstractCrudTestCase
 
     public function testDeleteFromDetailPage(): void
     {
-        $entityId = DefaultCrudTestEntityFactory::createOne()->getId();
+        $entityId = CategoryFactory::createOne()->getId();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entityId));
         $this->assertResponseIsSuccessful();
@@ -139,7 +139,7 @@ class DeleteTest extends AbstractCrudTestCase
 
     public function testDeleteWithInvalidCsrfTokenFails(): void
     {
-        $entityId = DefaultCrudTestEntityFactory::createOne()->getId();
+        $entityId = CategoryFactory::createOne()->getId();
 
         $this->client->request('POST', $this->getCrudUrl(Action::DELETE, $entityId), [
             'token' => 'invalid-csrf-token',
@@ -155,7 +155,7 @@ class DeleteTest extends AbstractCrudTestCase
     {
         $this->client->catchExceptions(true);
 
-        $deletedEntity = DefaultCrudTestEntityFactory::createOne();
+        $deletedEntity = CategoryFactory::createOne();
         $deletedEntityId = $deletedEntity->getId();
         delete($deletedEntity);
 
@@ -170,7 +170,7 @@ class DeleteTest extends AbstractCrudTestCase
 
     public function testDeleteButtonHasCsrfToken(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -185,8 +185,8 @@ class DeleteTest extends AbstractCrudTestCase
 
     public function testDeleteOnlyAffectsTargetEntity(): void
     {
-        $entity1Id = DefaultCrudTestEntityFactory::createOne()->getId();
-        $entity2Id = DefaultCrudTestEntityFactory::createOne()->getId();
+        $entity1Id = CategoryFactory::createOne()->getId();
+        $entity2Id = CategoryFactory::createOne()->getId();
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
         $this->assertResponseIsSuccessful();

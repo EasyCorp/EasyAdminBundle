@@ -4,9 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SortTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SortTestEntityFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SortTestRelatedEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\BlogPostSortCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -17,18 +17,18 @@ class SortByManyToManyCountTest extends AbstractCrudTestCase
     /**
      * @var array<string, int>
      */
-    private const RELATION_COUNT_BY_TEXT_FIELD = [
-        'Zebra Entity' => 2,
-        'Apple Entity' => 0,
-        'Mango Entity' => 3,
-        'Banana Entity' => 1,
-        // same count as 'Zebra Entity' to check that ties are sorted by id in the same direction
-        'Cherry Entity' => 2,
+    private const CATEGORY_COUNT_BY_TITLE = [
+        'Post Zebra' => 2,
+        'Post Apple' => 0,
+        'Post Mango' => 3,
+        'Post Banana' => 1,
+        // same count as 'Post Zebra' to check that ties are sorted by id in the same direction
+        'Post Cherry' => 2,
     ];
 
     protected function getControllerFqcn(): string
     {
-        return SortTestEntityCrudController::class;
+        return BlogPostSortCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -41,21 +41,21 @@ class SortByManyToManyCountTest extends AbstractCrudTestCase
         parent::setUp();
         $this->client->followRedirects();
 
-        $relatedEntities = SortTestRelatedEntityFactory::createMany(max(self::RELATION_COUNT_BY_TEXT_FIELD));
-        foreach (self::RELATION_COUNT_BY_TEXT_FIELD as $textField => $relationCount) {
-            SortTestEntityFactory::createOne([
-                'textField' => $textField,
-                'manyToManyRelations' => \array_slice($relatedEntities, 0, $relationCount),
+        $categories = CategoryFactory::createMany(max(self::CATEGORY_COUNT_BY_TITLE));
+        foreach (self::CATEGORY_COUNT_BY_TITLE as $title => $categoryCount) {
+            BlogPostFactory::createOne([
+                'title' => $title,
+                'categories' => \array_slice($categories, 0, $categoryCount),
             ]);
         }
     }
 
     /**
      * @param array<string, mixed> $query
-     * @param list<string>         $expectedTextFields
+     * @param list<string>         $expectedTitles
      */
     #[DataProvider('sorting')]
-    public function testSorting(array $query, array $expectedTextFields): void
+    public function testSorting(array $query, array $expectedTitles): void
     {
         $url = $this->generateIndexUrl();
         if ([] !== $query) {
@@ -64,15 +64,15 @@ class SortByManyToManyCountTest extends AbstractCrudTestCase
         $this->client->request('GET', $url);
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextSame('th.header-for-field-association[data-column="manyToManyRelations"] > a', 'Many To Many Relations');
-        $this->assertSelectorExists('th.header-for-field-association[data-column="manyToManyRelations"] span.icon svg');
-        $this->assertSelectorCount(\count(self::RELATION_COUNT_BY_TEXT_FIELD), 'tbody tr');
+        $this->assertSelectorTextSame('th.header-for-field-association[data-column="categories"] > a', 'Categories');
+        $this->assertSelectorExists('th.header-for-field-association[data-column="categories"] span.icon svg');
+        $this->assertSelectorCount(\count(self::CATEGORY_COUNT_BY_TITLE), 'tbody tr');
 
-        foreach ($expectedTextFields as $index => $textField) {
+        foreach ($expectedTitles as $index => $title) {
             $row = $index + 1;
-            $relationCount = (string) self::RELATION_COUNT_BY_TEXT_FIELD[$textField];
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="textField"]', $textField, sprintf('Expected "%s" in row %d', $textField, $row));
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="manyToManyRelations"]', $relationCount, sprintf('Expected "%s" in row %d', $relationCount, $row));
+            $categoryCount = (string) self::CATEGORY_COUNT_BY_TITLE[$title];
+            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="title"]', $title, sprintf('Expected "%s" in row %d', $title, $row));
+            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="categories"]', $categoryCount, sprintf('Expected "%s" in row %d', $categoryCount, $row));
         }
     }
 
@@ -80,17 +80,17 @@ class SortByManyToManyCountTest extends AbstractCrudTestCase
     {
         yield 'default sorting (no sort applied)' => [
             [],
-            ['Zebra Entity', 'Apple Entity', 'Mango Entity', 'Banana Entity', 'Cherry Entity'],
+            ['Post Zebra', 'Post Apple', 'Post Mango', 'Post Banana', 'Post Cherry'],
         ];
 
-        yield 'ascending by manyToManyRelations count' => [
-            ['sort' => ['manyToManyRelations' => 'ASC']],
-            ['Apple Entity', 'Banana Entity', 'Zebra Entity', 'Cherry Entity', 'Mango Entity'],
+        yield 'ascending by categories count' => [
+            ['sort' => ['categories' => 'ASC']],
+            ['Post Apple', 'Post Banana', 'Post Zebra', 'Post Cherry', 'Post Mango'],
         ];
 
-        yield 'descending by manyToManyRelations count' => [
-            ['sort' => ['manyToManyRelations' => 'DESC']],
-            ['Mango Entity', 'Cherry Entity', 'Zebra Entity', 'Banana Entity', 'Apple Entity'],
+        yield 'descending by categories count' => [
+            ['sort' => ['categories' => 'DESC']],
+            ['Post Mango', 'Post Cherry', 'Post Zebra', 'Post Banana', 'Post Apple'],
         ];
     }
 }

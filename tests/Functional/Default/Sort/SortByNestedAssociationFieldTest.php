@@ -2,20 +2,23 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectReleaseCategoryCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SortNestedAssociationCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\SortNestedAssociationCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests an AssociationField whose property is a nested association path ending at an
- * association ('latestRelease.category') with setSortProperty('name'), so sorting via
- * ?sort[latestRelease.category] orders by the related category's name.
+ * association ('publisher.favoriteCategory') with setSortProperty('name'), so sorting via
+ * ?sort[publisher.favoriteCategory] orders by the related category's name.
  */
 class SortByNestedAssociationFieldTest extends AbstractCrudTestCase
 {
-    use ProjectsWithReleaseCategoriesTrait;
+    use BlogPostsWithPublisherCategoriesTrait;
 
     protected function getControllerFqcn(): string
     {
@@ -31,7 +34,7 @@ class SortByNestedAssociationFieldTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->createProjectsWithReleaseCategories();
+        $this->createBlogPostsWithPublisherCategories();
     }
 
     public function testNestedAssociationColumnIsSortableByDefault(): void
@@ -41,52 +44,58 @@ class SortByNestedAssociationFieldTest extends AbstractCrudTestCase
         $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('th[data-column="latestRelease.category"] > a', 'The nested association column must render a sort link');
+        $this->assertSelectorExists('th[data-column="publisher.favoriteCategory"] > a', 'The nested association column must render a sort link');
     }
 
     public function testNestedAssociationCellAutoLinksToLeafEntityCrudController(): void
     {
         // the field doesn't call setCrudController(): the cell must link to the CRUD
-        // controller of the entity at the end of the path (ProjectReleaseCategory)
+        // controller of the entity at the end of the path (Category)
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
 
         $hrefs = $crawler
-            ->filter('tbody td[data-column="latestRelease.category"] a')
+            ->filter('tbody td[data-column="publisher.favoriteCategory"] a')
             ->each(static fn ($node): string => $node->attr('href'));
 
-        $projectsWithRelease = \count(array_filter(self::RELEASE_CATEGORY_BY_PROJECT_NAME));
-        self::assertGreaterThan(0, $projectsWithRelease);
-        self::assertCount($projectsWithRelease, $hrefs, 'The projects with a release must link their category');
+        // DefaultApp has several CRUD controllers for Category; the link must use the
+        // one that the registry associates with that entity
+        $categoryCrudControllerFqcn = static::getContainer()->get(AdminControllerRegistry::class)->findCrudControllerByEntity(Category::class);
+        self::assertNotNull($categoryCrudControllerFqcn);
 
-        // depending on the URL format, the target controller appears as a query parameter
-        // (crudControllerFqcn=...) or as the URL path of its pretty route
-        foreach ($hrefs as $href) {
-            self::assertTrue(
-                str_contains($href, rawurlencode(ProjectReleaseCategoryCrudController::class)) || str_contains($href, 'project-release-category'),
-                sprintf('Expected href "%s" to target the ProjectReleaseCategory CRUD controller', $href)
-            );
+        // rows are sorted by title, so they follow the order of the trait without "Post Delta"
+        $expectedHrefs = [];
+        foreach (array_keys(array_filter(self::PUBLISHER_CATEGORY_BY_BLOG_POST_TITLE)) as $title) {
+            $blogPost = $this->entityManager->getRepository(BlogPost::class)->findOneBy(['title' => $title]);
+            $expectedHrefs[] = $this->adminUrlGenerator
+                ->setDashboard(DashboardController::class)
+                ->setController($categoryCrudControllerFqcn)
+                ->setAction(Action::DETAIL)
+                ->setEntityId($blogPost->getPublisher()->getFavoriteCategory()->getId())
+                ->generateUrl();
         }
+
+        self::assertSame($expectedHrefs, $hrefs, 'The blog posts with a publisher must link the favorite category of the publisher');
     }
 
     /**
      * @param array<string, mixed> $query
-     * @param list<string>         $expectedProjectNames
+     * @param list<string>         $expectedTitles
      */
     #[DataProvider('provideSortTests')]
-    public function testSorting(array $query, array $expectedProjectNames): void
+    public function testSorting(array $query, array $expectedTitles): void
     {
         $this->client->request('GET', $this->generateIndexUrl().'?'.http_build_query($query));
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorCount(\count($expectedProjectNames), 'tbody tr');
-        foreach ($expectedProjectNames as $index => $expectedProjectName) {
+        $this->assertSelectorCount(\count($expectedTitles), 'tbody tr');
+        foreach ($expectedTitles as $index => $expectedTitle) {
             $row = $index + 1;
             $this->assertSelectorTextSame(
-                sprintf('tbody tr:nth-child(%d) td[data-column="name"]', $row),
-                $expectedProjectName,
-                sprintf('Expected "%s" in row %d', $expectedProjectName, $row)
+                sprintf('tbody tr:nth-child(%d) td[data-column="title"]', $row),
+                $expectedTitle,
+                sprintf('Expected "%s" in row %d', $expectedTitle, $row)
             );
         }
     }
@@ -97,16 +106,16 @@ class SortByNestedAssociationFieldTest extends AbstractCrudTestCase
     public static function provideSortTests(): iterable
     {
         // SQLite sorts NULL values first in ASC order and last in DESC order;
-        // the secondary sort by project name makes the "Major" tie deterministic
+        // the secondary sort by title makes the "Category A" tie deterministic
 
         yield 'sort by nested association ASC orders by category name' => [
-            ['sort' => ['latestRelease.category' => 'ASC', 'name' => 'ASC']],
-            ['Delta Project', 'Alpha Project', 'Gamma Project', 'Beta Project'],
+            ['sort' => ['publisher.favoriteCategory' => 'ASC', 'title' => 'ASC']],
+            ['Post Delta', 'Post Alpha', 'Post Gamma', 'Post Beta'],
         ];
 
         yield 'sort by nested association DESC orders by category name' => [
-            ['sort' => ['latestRelease.category' => 'DESC', 'name' => 'DESC']],
-            ['Beta Project', 'Gamma Project', 'Alpha Project', 'Delta Project'],
+            ['sort' => ['publisher.favoriteCategory' => 'DESC', 'title' => 'DESC']],
+            ['Post Beta', 'Post Gamma', 'Post Alpha', 'Post Delta'],
         ];
     }
 }

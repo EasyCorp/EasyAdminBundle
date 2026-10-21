@@ -4,8 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SortTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SortTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\BlogPostSortCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
 
 /**
  * Tests the sort modal displayed on small screens, where the datagrid header is hidden.
@@ -14,7 +14,7 @@ class SortModalTest extends AbstractCrudTestCase
 {
     protected function getControllerFqcn(): string
     {
-        return SortTestEntityCrudController::class;
+        return BlogPostSortCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -28,7 +28,7 @@ class SortModalTest extends AbstractCrudTestCase
         $this->client->followRedirects();
 
         // the sort modal is only rendered when the index page has results
-        SortTestEntityFactory::createOne(['textField' => 'Apple Entity']);
+        BlogPostFactory::createOne(['title' => 'Post Apple']);
     }
 
     public function testSortModalTriggerIsRendered(): void
@@ -56,16 +56,16 @@ class SortModalTest extends AbstractCrudTestCase
 
     public function testSortModalLinksToggleTheSortDirection(): void
     {
-        $crawler = $this->client->request('GET', $this->generateIndexUrl().'?'.http_build_query(['sort' => ['textField' => 'ASC']]));
+        $crawler = $this->client->request('GET', $this->generateIndexUrl().'?'.http_build_query(['sort' => ['title' => 'ASC']]));
 
         $this->assertResponseIsSuccessful();
 
-        $sortedFieldLink = $crawler->filter('#modal-sort a[data-column="textField"]');
-        $this->assertStringContainsString('sort[textField]=DESC', urldecode($sortedFieldLink->attr('href')));
+        $sortedFieldLink = $crawler->filter('#modal-sort a[data-column="title"]');
+        $this->assertStringContainsString('sort[title]=DESC', urldecode($sortedFieldLink->attr('href')));
         $this->assertSame('true', $sortedFieldLink->attr('aria-current'));
 
-        $otherFieldLink = $crawler->filter('#modal-sort a[data-column="integerField"]');
-        $this->assertStringContainsString('sort[integerField]=DESC', urldecode($otherFieldLink->attr('href')));
+        $otherFieldLink = $crawler->filter('#modal-sort a[data-column="views"]');
+        $this->assertStringContainsString('sort[views]=DESC', urldecode($otherFieldLink->attr('href')));
         $this->assertNull($otherFieldLink->attr('aria-current'));
     }
 

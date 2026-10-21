@@ -3,37 +3,37 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Filters;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FilterRelatedEntity;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FilterRelatedEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FilterTestEntityFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class EntityFilterTest extends FilterFunctionalTestCase
 {
     /**
-     * @var array<string, FilterRelatedEntity>
+     * @var array<string, Category>
      */
-    private array $relatedEntities = [];
+    private array $categories = [];
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        foreach (['Related Entity 1', 'Related Entity 2', 'Related Entity 3'] as $name) {
-            $this->relatedEntities[$name] = FilterRelatedEntityFactory::createOne(['name' => $name]);
+        foreach (['Category 1', 'Category 2', 'Category 3'] as $name) {
+            $this->categories[$name] = CategoryFactory::createOne(['name' => $name]);
         }
 
         $relations = [
-            'first with 1' => 'Related Entity 1',
-            'first with 2' => 'Related Entity 2',
-            'second with 1' => 'Related Entity 1',
-            'with 3' => 'Related Entity 3',
-            'second with 2' => 'Related Entity 2',
+            'first with 1' => 'Category 1',
+            'first with 2' => 'Category 2',
+            'second with 1' => 'Category 1',
+            'with 3' => 'Category 3',
+            'second with 2' => 'Category 2',
             'without relation' => null,
         ];
-        foreach ($relations as $key => $relatedName) {
+        foreach ($relations as $key => $categoryName) {
             $this->entities[$key] = FilterTestEntityFactory::createOne([
-                'relatedEntity' => null === $relatedName ? null : $this->relatedEntities[$relatedName],
+                'relatedEntity' => null === $categoryName ? null : $this->categories[$categoryName],
             ]);
         }
     }
@@ -42,12 +42,12 @@ class EntityFilterTest extends FilterFunctionalTestCase
      * @param list<string> $expectedEntities
      */
     #[DataProvider('filterByRelatedEntityProvider')]
-    public function testFilterByRelatedEntity(string $relatedName, array $expectedEntities): void
+    public function testFilterByRelatedEntity(string $categoryName, array $expectedEntities): void
     {
         $url = $this->generateFilteredIndexUrl([
             'relatedEntity' => [
                 'comparison' => ComparisonType::EQ,
-                'value' => $this->relatedEntities[$relatedName]->getId(),
+                'value' => $this->categories[$categoryName]->getId(),
             ],
         ]);
 
@@ -62,9 +62,9 @@ class EntityFilterTest extends FilterFunctionalTestCase
      */
     public static function filterByRelatedEntityProvider(): iterable
     {
-        yield 'matches Related Entity 1' => ['Related Entity 1', ['first with 1', 'second with 1']];
-        yield 'matches Related Entity 2' => ['Related Entity 2', ['first with 2', 'second with 2']];
-        yield 'matches Related Entity 3' => ['Related Entity 3', ['with 3']];
+        yield 'matches Category 1' => ['Category 1', ['first with 1', 'second with 1']];
+        yield 'matches Category 2' => ['Category 2', ['first with 2', 'second with 2']];
+        yield 'matches Category 3' => ['Category 3', ['with 3']];
     }
 
     public function testFilterByRelatedEntityNotEqual(): void
@@ -73,7 +73,7 @@ class EntityFilterTest extends FilterFunctionalTestCase
         $url = $this->generateFilteredIndexUrl([
             'relatedEntity' => [
                 'comparison' => ComparisonType::NEQ,
-                'value' => $this->relatedEntities['Related Entity 1']->getId(),
+                'value' => $this->categories['Category 1']->getId(),
             ],
         ]);
 

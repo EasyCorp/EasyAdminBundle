@@ -4,32 +4,32 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Crud;
 
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Crud\DefaultCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\DefaultCrudTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\DefaultCrudTestEntity;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\DefaultCrudTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 
 /**
  * Tests that submitting an empty value for a text-based field doesn't pass NULL to the entity.
- * DefaultCrudTestEntity::$name is mapped to a non-nullable column, has a NotBlank constraint and a
+ * Category::$name is mapped to a non-nullable column, has a NotBlank constraint and a
  * setName(string $name) setter, so a NULL value makes the form fail with a TypeError before the
  * validation error can be displayed (see https://github.com/EasyCorp/EasyAdminBundle/issues/7797).
  */
 class EmptyDataTest extends AbstractCrudTestCase
 {
-    /** @var EntityRepository<DefaultCrudTestEntity> */
+    /** @var EntityRepository<Category> */
     protected EntityRepository $repository;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(DefaultCrudTestEntity::class);
+        $this->repository = $this->entityManager->getRepository(Category::class);
     }
 
     protected function getControllerFqcn(): string
     {
-        return DefaultCrudTestEntityCrudController::class;
+        return DefaultCategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -39,7 +39,7 @@ class EmptyDataTest extends AbstractCrudTestCase
 
     public function testEmptyNonNullableTextFieldDisplaysTheValidationError(): void
     {
-        $entity = DefaultCrudTestEntityFactory::createOne(['name' => 'Entity with a name']);
+        $entity = CategoryFactory::createOne(['name' => 'Entity with a name']);
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
         $form = $crawler->filter($this->getEntityFormSelector())->form();
         $formName = $this->getFormEntity();

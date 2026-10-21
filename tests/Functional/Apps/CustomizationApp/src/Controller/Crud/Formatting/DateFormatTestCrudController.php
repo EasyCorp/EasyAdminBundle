@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Entity\DemoEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Entity\BlogPost;
 
 /**
  * CRUD controller for testing Crud::setDateFormat().
@@ -14,7 +14,7 @@ class DateFormatTestCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return DemoEntity::class;
+        return BlogPost::class;
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -25,7 +25,7 @@ class DateFormatTestCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        yield DateField::new('dateField');
+        yield DateField::new('publishDate');
         yield DateField::new('createdAt');
     }
 }

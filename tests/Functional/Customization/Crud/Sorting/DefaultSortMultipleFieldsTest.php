@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\So
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Sorting\DefaultSortMultipleFieldsTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -35,7 +35,7 @@ class DefaultSortMultipleFieldsTest extends AbstractCrudTestCase
 
     public function testDefaultSortWithMultipleFields(): void
     {
-        [$banana1, $apple1, $banana2, $apple2] = DemoEntityFactory::createSequence([
+        [$banana1, $apple1, $banana2, $apple2] = CategoryFactory::createSequence([
             ['name' => 'Banana'],
             ['name' => 'Apple'],
             ['name' => 'Banana'],

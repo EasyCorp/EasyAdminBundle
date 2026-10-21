@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Entity\DemoEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Entity\Category;
 
 /**
  * CRUD controller for testing Crud::setDefaultSort() with multiple fields.
@@ -15,7 +15,7 @@ class DefaultSortMultipleFieldsTestCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return DemoEntity::class;
+        return Category::class;
     }
 
     public function configureCrud(Crud $crud): Crud

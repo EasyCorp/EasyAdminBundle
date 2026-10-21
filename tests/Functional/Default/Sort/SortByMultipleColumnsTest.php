@@ -4,9 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\MultiColumnSortCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SortTestEntity;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SortTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\MultiColumnSortCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -15,9 +15,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class SortByMultipleColumnsTest extends AbstractCrudTestCase
 {
     /**
-     * @var array<string, SortTestEntity>
+     * @var array<string, BlogPost>
      */
-    private array $entities = [];
+    private array $blogPosts = [];
 
     protected function getControllerFqcn(): string
     {
@@ -34,24 +34,24 @@ class SortByMultipleColumnsTest extends AbstractCrudTestCase
         parent::setUp();
         $this->client->followRedirects();
 
-        // integerField and textField values repeat so that every secondary (and the
-        // tertiary dateTimeField) sort column decides the order of some rows
+        // views and title values repeat so that every secondary (and the tertiary
+        // publishedAt) sort column decides the order of some rows
         $rows = [
-            'banana10' => ['textField' => 'Banana', 'integerField' => 10, 'dateTimeField' => new \DateTime('2024-01-01 10:00:00')],
-            'apple20' => ['textField' => 'Apple', 'integerField' => 20, 'dateTimeField' => new \DateTime('2024-01-01 10:00:00')],
-            'apple10February' => ['textField' => 'Apple', 'integerField' => 10, 'dateTimeField' => new \DateTime('2024-02-01 10:00:00')],
-            'apple10Null' => ['textField' => 'Apple', 'integerField' => 10, 'dateTimeField' => null],
-            'apple10March' => ['textField' => 'Apple', 'integerField' => 10, 'dateTimeField' => new \DateTime('2024-03-01 10:00:00')],
-            'cherry20' => ['textField' => 'Cherry', 'integerField' => 20, 'dateTimeField' => new \DateTime('2024-01-01 10:00:00')],
+            'banana10' => ['title' => 'Banana', 'views' => 10, 'publishedAt' => new \DateTimeImmutable('2024-01-01 10:00:00')],
+            'apple20' => ['title' => 'Apple', 'views' => 20, 'publishedAt' => new \DateTimeImmutable('2024-01-01 10:00:00')],
+            'apple10February' => ['title' => 'Apple', 'views' => 10, 'publishedAt' => new \DateTimeImmutable('2024-02-01 10:00:00')],
+            'apple10Null' => ['title' => 'Apple', 'views' => 10, 'publishedAt' => null],
+            'apple10March' => ['title' => 'Apple', 'views' => 10, 'publishedAt' => new \DateTimeImmutable('2024-03-01 10:00:00')],
+            'cherry20' => ['title' => 'Cherry', 'views' => 20, 'publishedAt' => new \DateTimeImmutable('2024-01-01 10:00:00')],
         ];
         foreach ($rows as $key => $row) {
-            $this->entities[$key] = SortTestEntityFactory::createOne($row);
+            $this->blogPosts[$key] = BlogPostFactory::createOne($row);
         }
     }
 
     /**
      * @param array<string, mixed>     $query
-     * @param list<array{string, int}> $expectedRows pairs of textField and integerField values
+     * @param list<array{string, int}> $expectedRows pairs of title and views values
      */
     #[DataProvider('multiColumnSorting')]
     public function testSortingByMultipleColumns(array $query, array $expectedRows): void
@@ -63,47 +63,47 @@ class SortByMultipleColumnsTest extends AbstractCrudTestCase
         $this->client->request('GET', $url);
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorCount(\count($this->entities), 'tbody tr');
+        $this->assertSelectorCount(\count($this->blogPosts), 'tbody tr');
 
-        foreach ($expectedRows as $index => [$textField, $integerField]) {
-            $this->assertRowTextAndInteger($index + 1, $textField, $integerField);
+        foreach ($expectedRows as $index => [$title, $views]) {
+            $this->assertRowTitleAndViews($index + 1, $title, $views);
         }
     }
 
     public static function multiColumnSorting(): \Generator
     {
-        yield 'default sorting (integerField ASC, textField ASC from CRUD config)' => [
+        yield 'default sorting (views ASC, title ASC from CRUD config)' => [
             [],
             [['Apple', 10], ['Apple', 10], ['Apple', 10], ['Banana', 10], ['Apple', 20], ['Cherry', 20]],
         ];
 
         yield 'primary ASC, secondary ASC' => [
-            ['sort' => ['integerField' => 'ASC', 'textField' => 'ASC']],
+            ['sort' => ['views' => 'ASC', 'title' => 'ASC']],
             [['Apple', 10], ['Apple', 10], ['Apple', 10], ['Banana', 10], ['Apple', 20], ['Cherry', 20]],
         ];
 
         yield 'primary ASC, secondary DESC' => [
-            ['sort' => ['integerField' => 'ASC', 'textField' => 'DESC']],
+            ['sort' => ['views' => 'ASC', 'title' => 'DESC']],
             [['Banana', 10], ['Apple', 10], ['Apple', 10], ['Apple', 10], ['Cherry', 20], ['Apple', 20]],
         ];
 
         yield 'primary DESC, secondary ASC' => [
-            ['sort' => ['integerField' => 'DESC', 'textField' => 'ASC']],
+            ['sort' => ['views' => 'DESC', 'title' => 'ASC']],
             [['Apple', 20], ['Cherry', 20], ['Apple', 10], ['Apple', 10], ['Apple', 10], ['Banana', 10]],
         ];
 
         yield 'primary DESC, secondary DESC' => [
-            ['sort' => ['integerField' => 'DESC', 'textField' => 'DESC']],
+            ['sort' => ['views' => 'DESC', 'title' => 'DESC']],
             [['Cherry', 20], ['Apple', 20], ['Banana', 10], ['Apple', 10], ['Apple', 10], ['Apple', 10]],
         ];
 
-        yield 'textField primary ASC, integerField secondary ASC' => [
-            ['sort' => ['textField' => 'ASC', 'integerField' => 'ASC']],
+        yield 'title primary ASC, views secondary ASC' => [
+            ['sort' => ['title' => 'ASC', 'views' => 'ASC']],
             [['Apple', 10], ['Apple', 10], ['Apple', 10], ['Apple', 20], ['Banana', 10], ['Cherry', 20]],
         ];
 
-        yield 'textField primary DESC, integerField secondary DESC' => [
-            ['sort' => ['textField' => 'DESC', 'integerField' => 'DESC']],
+        yield 'title primary DESC, views secondary DESC' => [
+            ['sort' => ['title' => 'DESC', 'views' => 'DESC']],
             [['Cherry', 20], ['Banana', 10], ['Apple', 20], ['Apple', 10], ['Apple', 10], ['Apple', 10]],
         ];
     }
@@ -114,41 +114,41 @@ class SortByMultipleColumnsTest extends AbstractCrudTestCase
         $dateFormatter = new \IntlDateFormatter('en', \IntlDateFormatter::MEDIUM, \IntlDateFormatter::MEDIUM);
 
         $url = $this->generateIndexUrl().'?'.http_build_query([
-            'sort' => ['integerField' => 'ASC', 'textField' => 'ASC', 'dateTimeField' => 'DESC'],
+            'sort' => ['views' => 'ASC', 'title' => 'ASC', 'publishedAt' => 'DESC'],
         ]);
         $this->client->request('GET', $url);
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorCount(\count($this->entities), 'tbody tr');
+        $this->assertSelectorCount(\count($this->blogPosts), 'tbody tr');
 
         // SQLite sorts NULL values last in DESC order
         $expectedOrder = ['apple10March', 'apple10February', 'apple10Null', 'banana10', 'apple20', 'cherry20'];
         foreach ($expectedOrder as $index => $key) {
             $row = $index + 1;
-            $entity = $this->entities[$key];
-            $this->assertRowTextAndInteger($row, $entity->getTextField(), $entity->getIntegerField());
+            $blogPost = $this->blogPosts[$key];
+            $this->assertRowTitleAndViews($row, $blogPost->getTitle(), $blogPost->getViews());
 
-            // easyAdmin shows "Null" label for null values
-            $expectedDateTime = null !== $entity->getDateTimeField() ? (string) $dateFormatter->format($entity->getDateTimeField()) : 'Null';
+            // null values are rendered with the "Null" label
+            $expectedDateTime = null !== $blogPost->getPublishedAt() ? (string) $dateFormatter->format($blogPost->getPublishedAt()) : 'Null';
             $this->assertSelectorTextSame(
-                'tbody tr:nth-child('.$row.') td[data-column="dateTimeField"]',
+                'tbody tr:nth-child('.$row.') td[data-column="publishedAt"]',
                 $expectedDateTime,
-                sprintf('Expected dateTimeField "%s" in row %d', $expectedDateTime, $row)
+                sprintf('Expected publishedAt "%s" in row %d', $expectedDateTime, $row)
             );
         }
     }
 
-    private function assertRowTextAndInteger(int $row, ?string $textField, ?int $integerField): void
+    private function assertRowTitleAndViews(int $row, ?string $title, int $views): void
     {
         $this->assertSelectorTextSame(
-            'tbody tr:nth-child('.$row.') td[data-column="textField"]',
-            (string) $textField,
-            sprintf('Expected textField "%s" in row %d', $textField, $row)
+            'tbody tr:nth-child('.$row.') td[data-column="title"]',
+            (string) $title,
+            sprintf('Expected title "%s" in row %d', $title, $row)
         );
         $this->assertSelectorTextSame(
-            'tbody tr:nth-child('.$row.') td[data-column="integerField"]',
-            (string) $integerField,
-            sprintf('Expected integerField "%s" in row %d', $integerField, $row)
+            'tbody tr:nth-child('.$row.') td[data-column="views"]',
+            (string) $views,
+            sprintf('Expected views "%s" in row %d', $views, $row)
         );
     }
 }

@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Te
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Templates\OverrideDetailPartialsTestCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\DemoEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -31,7 +31,7 @@ class OverrideDetailPartialsTest extends AbstractCrudTestCase
 
     public function testDetailPartialOverriddenViaOverrideTemplate(): void
     {
-        $entity = DemoEntityFactory::createOne(['name' => 'Detail page entity']);
+        $entity = CategoryFactory::createOne(['name' => 'Detail page entity']);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -48,7 +48,7 @@ class OverrideDetailPartialsTest extends AbstractCrudTestCase
 
     public function testDetailPartialOverriddenViaBundleTemplatesDir(): void
     {
-        $entity = DemoEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 

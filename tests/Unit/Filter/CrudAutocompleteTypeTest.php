@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\ChoiceList\View\ChoiceGroupView;
 use Symfony\Component\Form\ChoiceList\View\ChoiceView;
@@ -38,11 +38,11 @@ class CrudAutocompleteTypeTest extends TypeTestCase
         $this->entityManager = $this->createStub(EntityManagerInterface::class);
         $this->entityManager
             ->method('getRepository')
-            ->with(Project::class)
+            ->with(Category::class)
             ->willReturn($this->repository);
         $this->entityManager
             ->method('getClassMetadata')
-            ->with(Project::class)
+            ->with(Category::class)
             ->willReturn($this->classMetadata);
 
         parent::setUp();
@@ -53,7 +53,7 @@ class CrudAutocompleteTypeTest extends TypeTestCase
         $registry = $this->createStub(Registry::class);
         $registry
             ->method('getManagerForClass')
-            ->with(Project::class)
+            ->with(Category::class)
             ->willReturn($this->entityManager)
         ;
 
@@ -72,68 +72,68 @@ class CrudAutocompleteTypeTest extends TypeTestCase
 
     public function testSubmitValidSingleData(): void
     {
-        $project = (new Project())->setId(123)->setName('Foo');
+        $category = (new Category())->setName('Category 1');
 
         $this->entityManager
             ->method('contains')
-            ->with($project)
+            ->with($category)
             ->willReturn(true);
         $this->repository
             ->method('findBy')
-            ->willReturn([$project]);
+            ->willReturn([$category]);
         $this->classMetadata
             ->method('getIdentifierValues')
-            ->with($project)
-            ->willReturn(['id' => $project->getId()]);
+            ->with($category)
+            ->willReturn(['id' => 123]);
 
         $form = $this->factory->create(CrudAutocompleteType::class, null, [
-            'class' => Project::class,
+            'class' => Category::class,
         ]);
         $form->submit(['autocomplete' => '123']);
 
         $this->assertTrue($form->isSynchronized());
-        $this->assertSame($project, $form->getData());
+        $this->assertSame($category, $form->getData());
 
         $view = $form->createView();
 
         $this->assertArrayHasKey('autocomplete', $view->children);
         $this->assertEquals(
-            ['123' => new ChoiceView($project, 123, 'Foo')],
+            ['123' => new ChoiceView($category, 123, 'Category 1')],
             $view->children['autocomplete']->vars['choices'],
         );
     }
 
     public function testSubmitValidMultipleData(): void
     {
-        $project1 = (new Project())->setId(123)->setName('Foo');
+        $category = (new Category())->setName('Category 1');
 
         $this->entityManager
             ->method('contains')
-            ->with($project1)
+            ->with($category)
             ->willReturn(true);
         $this->repository
             ->method('findBy')
             ->withAnyParameters()
-            ->willReturn([$project1]);
+            ->willReturn([$category]);
         $this->classMetadata
             ->method('getIdentifierValues')
-            ->with($project1)
-            ->willReturn(['id' => $project1->getId()]);
+            ->with($category)
+            ->willReturn(['id' => 123]);
 
         $form = $this->factory->create(CrudAutocompleteType::class, null, [
-            'class' => Project::class,
+            'class' => Category::class,
             'multiple' => true,
         ]);
         $form->submit(['autocomplete' => ['123']]);
 
         $this->assertTrue($form->isSynchronized());
-        $this->assertEquals(new ArrayCollection([$project1]), $form->getData());
+        $this->assertEquals(new ArrayCollection([$category]), $form->getData());
     }
 
     public function testSubmitEmptySingleData(): void
     {
         $form = $this->factory->create(CrudAutocompleteType::class, null, [
-            'class' => Project::class,
+            'class' => Category::class,
         ]);
         $form->submit(['autocomplete' => '']);
 
@@ -144,7 +144,7 @@ class CrudAutocompleteTypeTest extends TypeTestCase
     public function testSubmitEmptyMultipleData(): void
     {
         $form = $this->factory->create(CrudAutocompleteType::class, null, [
-            'class' => Project::class,
+            'class' => Category::class,
             'multiple' => true,
         ]);
         $form->submit(null);
@@ -155,24 +155,23 @@ class CrudAutocompleteTypeTest extends TypeTestCase
 
     public function testCustomChoiceLabelIsPreserved(): void
     {
-        $project = (new Project())->setId(123)->setName('Foo');
+        $category = (new Category())->setName('Category 1');
 
         $this->entityManager
             ->method('contains')
-            ->with($project)
+            ->with($category)
             ->willReturn(true);
         $this->repository
             ->method('findBy')
-            ->willReturn([$project]);
+            ->willReturn([$category]);
         $this->classMetadata
             ->method('getIdentifierValues')
-            ->with($project)
-            ->willReturn(['id' => $project->getId()]);
+            ->with($category)
+            ->willReturn(['id' => 123]);
 
         $form = $this->factory->create(CrudAutocompleteType::class, null, [
-            'class' => Project::class,
-            'choice_label' => static fn (Project $p): string => sprintf('[%d] %s', $p->getId(),
-                $p->getName()),
+            'class' => Category::class,
+            'choice_label' => static fn (Category $category): string => 'Custom: '.$category->getName(),
         ]);
         $form->submit(['autocomplete' => '123']);
 
@@ -181,39 +180,39 @@ class CrudAutocompleteTypeTest extends TypeTestCase
         $view = $form->createView();
 
         // the user-supplied callable is used to build the option label,
-        // overriding the default Project::__toString() output
+        // overriding the default Category::__toString() output
         $this->assertEquals(
-            ['123' => new ChoiceView($project, 123, '[123] Foo')],
+            ['123' => new ChoiceView($category, 123, 'Custom: Category 1')],
             $view->children['autocomplete']->vars['choices'],
         );
     }
 
     public function testAutocompleteCallbackStillWinsWhenChoiceLabelIsNotSet(): void
     {
-        $project = (new Project())->setId(123)->setName('Foo');
+        $category = (new Category())->setName('Category 1');
 
         $this->entityManager
             ->method('contains')
-            ->with($project)
+            ->with($category)
             ->willReturn(true);
         $this->repository
             ->method('findBy')
-            ->willReturn([$project]);
+            ->willReturn([$category]);
         $this->classMetadata
             ->method('getIdentifierValues')
-            ->with($project)
-            ->willReturn(['id' => $project->getId()]);
+            ->with($category)
+            ->willReturn(['id' => 123]);
 
         $form = $this->factory->create(CrudAutocompleteType::class, null, [
-            'class' => Project::class,
-            'autocomplete_callback' => static fn (Project $p): string => 'cb:'.$p->getName(),
+            'class' => Category::class,
+            'autocomplete_callback' => static fn (Category $category): string => 'cb:'.$category->getName(),
         ]);
         $form->submit(['autocomplete' => '123']);
 
         $view = $form->createView();
 
         $this->assertEquals(
-            ['123' => new ChoiceView($project, 123, 'cb:Foo')],
+            ['123' => new ChoiceView($category, 123, 'cb:Category 1')],
             $view->children['autocomplete']->vars['choices'],
         );
     }
@@ -223,30 +222,30 @@ class CrudAutocompleteTypeTest extends TypeTestCase
         $this->expectException(\Symfony\Component\OptionsResolver\Exception\InvalidOptionsException::class);
 
         $this->factory->create(CrudAutocompleteType::class, null, [
-            'class' => Project::class,
+            'class' => Category::class,
             'choice_label' => 42, // int is not in the allowed types
         ]);
     }
 
     public function testGroupByCallableIsForwardedToTheInnerEntityType(): void
     {
-        $project = (new Project())->setId(123)->setName('Foo');
+        $category = (new Category())->setName('Category 1');
 
         $this->entityManager
             ->method('contains')
-            ->with($project)
+            ->with($category)
             ->willReturn(true);
         $this->repository
             ->method('findBy')
-            ->willReturn([$project]);
+            ->willReturn([$category]);
         $this->classMetadata
             ->method('getIdentifierValues')
-            ->with($project)
-            ->willReturn(['id' => $project->getId()]);
+            ->with($category)
+            ->willReturn(['id' => 123]);
 
         $form = $this->factory->create(CrudAutocompleteType::class, null, [
-            'class' => Project::class,
-            'group_by' => static fn (Project $p): string => 'Group A',
+            'class' => Category::class,
+            'group_by' => static fn (Category $category): string => 'Group A',
         ]);
         $form->submit(['autocomplete' => '123']);
 
@@ -256,29 +255,29 @@ class CrudAutocompleteTypeTest extends TypeTestCase
 
         // the selected choice is rendered inside an <optgroup> named after the group
         $this->assertEquals(
-            ['Group A' => new ChoiceGroupView('Group A', ['123' => new ChoiceView($project, 123, 'Foo')])],
+            ['Group A' => new ChoiceGroupView('Group A', ['123' => new ChoiceView($category, 123, 'Category 1')])],
             $view->children['autocomplete']->vars['choices'],
         );
     }
 
     public function testGroupByPropertyPathIsForwardedToTheInnerEntityType(): void
     {
-        $project = (new Project())->setId(123)->setName('Foo');
+        $category = (new Category())->setName('Category 1');
 
         $this->entityManager
             ->method('contains')
-            ->with($project)
+            ->with($category)
             ->willReturn(true);
         $this->repository
             ->method('findBy')
-            ->willReturn([$project]);
+            ->willReturn([$category]);
         $this->classMetadata
             ->method('getIdentifierValues')
-            ->with($project)
-            ->willReturn(['id' => $project->getId()]);
+            ->with($category)
+            ->willReturn(['id' => 123]);
 
         $form = $this->factory->create(CrudAutocompleteType::class, null, [
-            'class' => Project::class,
+            'class' => Category::class,
             'group_by' => 'name',
         ]);
         $form->submit(['autocomplete' => '123']);
@@ -286,7 +285,7 @@ class CrudAutocompleteTypeTest extends TypeTestCase
         $view = $form->createView();
 
         $this->assertEquals(
-            ['Foo' => new ChoiceGroupView('Foo', ['123' => new ChoiceView($project, 123, 'Foo')])],
+            ['Category 1' => new ChoiceGroupView('Category 1', ['123' => new ChoiceView($category, 123, 'Category 1')])],
             $view->children['autocomplete']->vars['choices'],
         );
     }
@@ -296,7 +295,7 @@ class CrudAutocompleteTypeTest extends TypeTestCase
         $this->expectException(\Symfony\Component\OptionsResolver\Exception\InvalidOptionsException::class);
 
         $this->factory->create(CrudAutocompleteType::class, null, [
-            'class' => Project::class,
+            'class' => Category::class,
             'group_by' => 42, // int is not in the allowed types
         ]);
     }

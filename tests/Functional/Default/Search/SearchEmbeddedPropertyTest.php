@@ -5,14 +5,14 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Search;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchEmbeddedCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Money;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ProjectFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Search\SearchEmbeddedCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Address;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests for search on root-level embedded properties.
- * The controller is configured to search in name and price.currency fields.
+ * The controller is configured to search in name and address.city fields.
  */
 class SearchEmbeddedPropertyTest extends AbstractCrudTestCase
 {
@@ -35,10 +35,10 @@ class SearchEmbeddedPropertyTest extends AbstractCrudTestCase
         parent::setUp();
         $this->client->followRedirects();
 
-        ProjectFactory::createSequence([
-            ['name' => 'Alpha Project', 'price' => (new Money())->setAmount(1000)->setCurrency('USD')],
-            ['name' => 'Beta Project', 'price' => (new Money())->setAmount(2000)->setCurrency('EUR')],
-            ['name' => 'Gamma Project', 'price' => (new Money())->setAmount(3000)->setCurrency('USD')],
+        UserFactory::createSequence([
+            ['name' => 'User 1', 'address' => (new Address())->setCity('London')],
+            ['name' => 'User 2', 'address' => (new Address())->setCity('Paris')],
+            ['name' => 'User 3', 'address' => (new Address())->setCity('London')],
         ]);
     }
 
@@ -54,29 +54,29 @@ class SearchEmbeddedPropertyTest extends AbstractCrudTestCase
      */
     public static function provideSearchTests(): iterable
     {
-        yield 'search by embedded currency USD' => [
-            'USD',
-            2, // Alpha Project and Gamma Project
+        yield 'search by embedded city London' => [
+            'London',
+            2, // User 1 and User 3
         ];
 
-        yield 'search by embedded currency EUR' => [
-            'EUR',
-            1, // Beta Project
+        yield 'search by embedded city Paris' => [
+            'Paris',
+            1, // User 2
         ];
 
         yield 'search by name field' => [
-            'Alpha',
-            1, // Alpha Project
+            'User 1',
+            1, // User 1
         ];
 
-        yield 'search combining name + currency' => [
-            'Alpha USD',
-            1, // Alpha Project (both terms match: name has "Alpha", currency is "USD")
+        yield 'search combining name + city' => [
+            'User 1 London',
+            1, // User 1 (all terms match: name has "User 1", city is "London")
         ];
 
-        yield 'search by non-matching currency' => [
-            'JPY',
-            0, // No project has JPY currency
+        yield 'search by non-matching city' => [
+            'Tokyo',
+            0, // no user lives in Tokyo
         ];
     }
 }

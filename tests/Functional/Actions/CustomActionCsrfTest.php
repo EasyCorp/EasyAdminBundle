@@ -3,9 +3,9 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Actions;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\EntityActionsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\ActionTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\ActionTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 
 /**
  * Anchors rule A7 of skills/easyadmin/SKILL.md: a custom action configured with
@@ -18,7 +18,7 @@ class CustomActionCsrfTest extends AbstractCrudTestCase
 {
     protected function getControllerFqcn(): string
     {
-        return ActionTestEntityCrudController::class;
+        return EntityActionsCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -42,7 +42,7 @@ class CustomActionCsrfTest extends AbstractCrudTestCase
 
     public function testEntityActionRenderedAsFormHasNoCsrfToken(): void
     {
-        $entity = ActionTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -60,7 +60,7 @@ class CustomActionCsrfTest extends AbstractCrudTestCase
 
     public function testDeleteActionIsSubmittedThroughAFormThatCarriesACsrfToken(): void
     {
-        $deletableEntity = ActionTestEntityFactory::createOne(['isDeletable' => true]);
+        $deletableEntity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 

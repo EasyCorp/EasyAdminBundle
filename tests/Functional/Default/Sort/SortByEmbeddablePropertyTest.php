@@ -4,9 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchTestAuthorCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\EntityFactory\Address;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\SearchTestAuthorFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\UserSortCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Address;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
 
 /**
  * Sorting by an embedded (embeddable) property such as `address.city`.
@@ -21,7 +21,7 @@ class SortByEmbeddablePropertyTest extends AbstractCrudTestCase
 {
     protected function getControllerFqcn(): string
     {
-        return SearchTestAuthorCrudController::class;
+        return UserSortCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -35,8 +35,8 @@ class SortByEmbeddablePropertyTest extends AbstractCrudTestCase
         $this->client->followRedirects();
 
         // cities are created in non-alphabetical order so the sort is visible
-        foreach (['Paris', 'London', 'New York'] as $street => $city) {
-            SearchTestAuthorFactory::createOne(['address' => (new Address())->setStreet($street)->setCity($city)]);
+        foreach (['Paris', 'London', 'New York'] as $city) {
+            UserFactory::createOne(['address' => (new Address())->setCity($city)]);
         }
     }
 

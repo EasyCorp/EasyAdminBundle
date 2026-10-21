@@ -2,32 +2,27 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Factory;
 
-use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\EntityFactory\Address;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\EntityFactory\Car;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\EntityFactory\ProjectCategory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Address;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\CompositeKeyTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class EntityFactoryTest extends KernelTestCase
 {
     private EntityFactory $entityFactory;
-    protected EntityManagerInterface $entityManager;
 
     protected function setUp(): void
     {
         /** @var EntityFactory $entityFactory */
         $entityFactory = static::getContainer()->get(EntityFactory::class);
         $this->entityFactory = $entityFactory;
-
-        /** @var EntityManagerInterface $entityManager */
-        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
-        $this->entityManager = $entityManager;
     }
 
     public function testCreateWithoutInstance(): void
     {
-        $entityDto = $this->entityFactory->create(ProjectCategory::class);
+        $entityDto = $this->entityFactory->create(Category::class);
         $this->assertNull($entityDto->getInstance());
     }
 
@@ -41,31 +36,27 @@ class EntityFactoryTest extends KernelTestCase
     public function testCreateFailsOnCompositePrimaryKeys(): void
     {
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage(sprintf('EasyAdmin does not support Doctrine entities with composite primary keys (such as the ones used in the "%s" entity).', Car::class));
-        $this->entityFactory->create(Car::class);
+        $this->expectExceptionMessage(sprintf('EasyAdmin does not support Doctrine entities with composite primary keys (such as the ones used in the "%s" entity).', CompositeKeyTestEntity::class));
+        $this->entityFactory->create(CompositeKeyTestEntity::class);
     }
 
     public function testCreateFromEntityId(): void
     {
-        $project = (new ProjectCategory())->setName('foo');
-        $this->entityManager->persist($project);
-        $this->entityManager->flush();
+        $category = CategoryFactory::createOne();
 
-        $entityDto = $this->entityFactory->create(ProjectCategory::class, $project->getId());
+        $entityDto = $this->entityFactory->create(Category::class, $category->getId());
 
-        $this->assertInstanceOf(ProjectCategory::class, $entityDto->getInstance());
-        $this->assertSame($project->getId(), $entityDto->getInstance()->getId());
+        $this->assertInstanceOf(Category::class, $entityDto->getInstance());
+        $this->assertSame($category->getId(), $entityDto->getInstance()->getId());
     }
 
     public function testCreateFromEntityInstance(): void
     {
-        $project = (new ProjectCategory())->setName('foo');
-        $this->entityManager->persist($project);
-        $this->entityManager->flush();
+        $category = CategoryFactory::createOne();
 
-        $entityDto = $this->entityFactory->createForEntityInstance($project);
+        $entityDto = $this->entityFactory->createForEntityInstance($category);
 
-        $this->assertInstanceOf(ProjectCategory::class, $entityDto->getInstance());
-        $this->assertSame($project->getId(), $entityDto->getInstance()->getId());
+        $this->assertInstanceOf(Category::class, $entityDto->getInstance());
+        $this->assertSame($category->getId(), $entityDto->getInstance()->getId());
     }
 }

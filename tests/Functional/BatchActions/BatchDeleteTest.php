@@ -5,12 +5,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\BatchActions;
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\BatchActionsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\BatchActionTestEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\BatchActionTestEntity;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BatchActionTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Kernel;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -28,7 +28,7 @@ class BatchDeleteTest extends AbstractCrudTestCase
 
     protected function getControllerFqcn(): string
     {
-        return BatchActionTestEntityCrudController::class;
+        return BatchActionsCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -40,12 +40,12 @@ class BatchDeleteTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(BatchActionTestEntity::class);
+        $this->repository = $this->entityManager->getRepository(Category::class);
     }
 
     public function testIndexPageShowsBatchActionCheckboxes(): void
     {
-        BatchActionTestEntityFactory::createMany(2);
+        CategoryFactory::createMany(2);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
         self::assertResponseIsSuccessful();
@@ -66,7 +66,7 @@ class BatchDeleteTest extends AbstractCrudTestCase
 
     public function testBatchDeleteWithValidCsrfToken(): void
     {
-        [$firstEntity, $secondEntity, $keptEntity] = BatchActionTestEntityFactory::createMany(3);
+        [$firstEntity, $secondEntity, $keptEntity] = CategoryFactory::createMany(3);
         $entityIdsToDelete = [$firstEntity->getId(), $secondEntity->getId()];
 
         $this->submitBatchDelete($entityIdsToDelete);
@@ -83,7 +83,7 @@ class BatchDeleteTest extends AbstractCrudTestCase
 
     public function testBatchDeleteWithInvalidCsrfTokenDoesNotDelete(): void
     {
-        $entityIdToDelete = BatchActionTestEntityFactory::createOne()->getId();
+        $entityIdToDelete = CategoryFactory::createOne()->getId();
 
         $this->submitBatchDelete([$entityIdToDelete], useValidCsrfToken: false);
 
@@ -95,7 +95,7 @@ class BatchDeleteTest extends AbstractCrudTestCase
 
     public function testBatchDeleteWithEmptySelectionDoesNothing(): void
     {
-        BatchActionTestEntityFactory::createMany(2);
+        CategoryFactory::createMany(2);
 
         $this->submitBatchDelete([]);
 
@@ -106,7 +106,7 @@ class BatchDeleteTest extends AbstractCrudTestCase
 
     public function testBatchDeleteWithNonExistentEntityId(): void
     {
-        $entity = BatchActionTestEntityFactory::createOne();
+        $entity = CategoryFactory::createOne();
 
         $this->submitBatchDelete([$entity->getId() + 1]);
         self::assertResponseIsSuccessful();
@@ -119,29 +119,29 @@ class BatchDeleteTest extends AbstractCrudTestCase
 
     public function testBatchDeleteRejectsMismatchedEntityFqcn(): void
     {
-        $categoryRepository = $this->entityManager->getRepository(Category::class);
-        $targetCategoryId = CategoryFactory::createOne()->getId();
-        BatchActionTestEntityFactory::createOne();
+        $userRepository = $this->entityManager->getRepository(User::class);
+        $targetUserId = UserFactory::createOne()->getId();
+        CategoryFactory::createOne();
 
-        // simulate an attacker that can batchDelete on BatchActionTestEntityCrudController
-        // but targets a different Doctrine entity (Category) by overriding entityFqcn in
+        // simulate an attacker that can batchDelete on BatchActionsCrudController
+        // but targets a different Doctrine entity (User) by overriding entityFqcn in
         // the POST body. The attack must be blocked (either by the FQCN-bound CSRF token
         // or by the explicit mismatch check) and no rows of any entity may be deleted.
-        $this->submitBatchDelete([$targetCategoryId], entityFqcnOverride: Category::class);
+        $this->submitBatchDelete([$targetUserId], entityFqcnOverride: User::class);
 
         $this->entityManager->clear();
 
         self::assertNotNull(
-            $categoryRepository->find($targetCategoryId),
-            'Category row must not be deleted by a cross-entity batchDelete attempt'
+            $userRepository->find($targetUserId),
+            'User row must not be deleted by a cross-entity batchDelete attempt'
         );
-        self::assertSame(1, $categoryRepository->count([]));
+        self::assertSame(1, $userRepository->count([]));
         self::assertSame(1, $this->repository->count([]));
     }
 
     public function testBatchDeleteRedirectsToIndexPage(): void
     {
-        $entityIdToDelete = BatchActionTestEntityFactory::createOne()->getId();
+        $entityIdToDelete = CategoryFactory::createOne()->getId();
 
         $this->submitBatchDelete([$entityIdToDelete]);
         self::assertResponseIsSuccessful();

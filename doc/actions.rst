@@ -667,7 +667,8 @@ that will represent the action::
 
         // this method renders the action as a `<form method="post" ...>` element,
         // so the action sends a POST request to the action URL. Visually, it looks
-        // exactly the same as a regular button
+        // exactly the same as a regular button. The submitted form includes a CSRF
+        // token that you can validate in the action (see below)
         ->renderAsForm()
 
         // a key-value array of attributes to add to the HTML element
@@ -829,6 +830,33 @@ example) without extra configuration.
     :doc:`Messenger Inspector </messenger-inspector>` (EasyAdmin Pro) to
     see each email with its subject and recipient, and retry the failed
     ones.
+
+Validating CSRF Tokens in Custom Actions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Custom actions configured with ``renderAsForm()`` are submitted as ``POST``
+requests. The form rendered by EasyAdmin includes a hidden field called
+``token`` with a CSRF token generated using ``ea-action`` as the token ID.
+Validate this token in your action to protect it against CSRF attacks::
+
+    use Symfony\Component\HttpFoundation\Request;
+    use Symfony\Component\HttpFoundation\Response;
+
+    #[AdminRoute('/{id}/publish', options: ['methods' => ['POST']])]
+    public function publish(Order $order, Request $request): Response
+    {
+        $submittedToken = $request->getPayload()->getString('token');
+        if (!$this->isCsrfTokenValid('ea-action', $submittedToken)) {
+            return new Response('Invalid CSRF token.', Response::HTTP_BAD_REQUEST);
+        }
+
+        // add your custom order logic here...
+    }
+
+.. note::
+
+    The CSRF token is only included in the form when the application enables
+    CSRF protection and the request has an available session.
 
 .. _global-actions:
 

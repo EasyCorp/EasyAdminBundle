@@ -9,8 +9,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\Act
 
 /**
  * Anchors rule A7 of skills/easyadmin/SKILL.md: a custom action configured with
- * renderAsForm() gets a bare POST <form> with no CSRF token of any kind, while
- * the built-in delete action does get one (through the shared confirmation form).
+ * renderAsForm() gets a POST <form> carrying an 'ea-action' CSRF token in a
+ * hidden 'token' field, while the built-in delete action carries its own
+ * 'ea-delete' token through the shared confirmation form.
  *
  * If this behavior changes, update that skill rule too.
  */
@@ -26,7 +27,7 @@ class CustomActionCsrfTest extends AbstractCrudTestCase
         return DashboardController::class;
     }
 
-    public function testGlobalActionRenderedAsFormHasNoCsrfToken(): void
+    public function testGlobalActionRenderedAsFormHasCsrfToken(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -35,12 +36,16 @@ class CustomActionCsrfTest extends AbstractCrudTestCase
         static::assertSame('POST', mb_strtoupper((string) $actionForm->attr('method')));
 
         static::assertCount(0, $actionForm->filter('input[name="_token"]'));
-        static::assertCount(0, $actionForm->filter('input[name="token"]'));
-        static::assertCount(0, $actionForm->filter('input[type="hidden"]'));
-        static::assertCount(0, $actionForm->filter('input'));
+
+        $csrfTokenInput = $actionForm->filter('input[name="token"]');
+        static::assertCount(1, $csrfTokenInput);
+        static::assertSame('hidden', $csrfTokenInput->attr('type'));
+        static::assertNotSame('', (string) $csrfTokenInput->attr('value'));
+
+        static::assertCount(1, $actionForm->filter('input'));
     }
 
-    public function testEntityActionRenderedAsFormHasNoCsrfToken(): void
+    public function testEntityActionRenderedAsFormHasCsrfToken(): void
     {
         $entity = ActionTestEntityFactory::createOne();
 
@@ -54,8 +59,13 @@ class CustomActionCsrfTest extends AbstractCrudTestCase
         static::assertSame('POST', mb_strtoupper((string) $actionForm->attr('method')));
 
         static::assertCount(0, $actionForm->filter('input[name="_token"]'));
-        static::assertCount(0, $actionForm->filter('input[name="token"]'));
-        static::assertCount(0, $actionForm->filter('input'));
+
+        $csrfTokenInput = $actionForm->filter('input[name="token"]');
+        static::assertCount(1, $csrfTokenInput);
+        static::assertSame('hidden', $csrfTokenInput->attr('type'));
+        static::assertNotSame('', (string) $csrfTokenInput->attr('value'));
+
+        static::assertCount(1, $actionForm->filter('input'));
     }
 
     public function testDeleteActionIsSubmittedThroughAFormThatCarriesACsrfToken(): void

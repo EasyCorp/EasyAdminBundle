@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\UiKit\ComponentDocumentationReader;
 use EasyCorp\Bundle\EasyAdminBundle\UiKit\TwigSourceHighlighter;
 use EasyCorp\Bundle\EasyAdminBundle\UiKit\UiKitController;
@@ -69,6 +70,7 @@ class EasyAdminBundle extends AbstractBundle
                     new Reference('twig'),
                     new Reference(TwigSourceHighlighter::class),
                     new Reference(ComponentDocumentationReader::class),
+                    new Reference(AdminContextProvider::class),
                     \dirname(__DIR__, 1).'/templates/ui_kit/components',
                     \dirname(__DIR__, 1).'/templates/components',
                 ])

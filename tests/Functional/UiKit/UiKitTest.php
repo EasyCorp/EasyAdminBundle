@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\UiKit;
 use EasyCorp\Bundle\EasyAdminBundle\UiKit\ComponentDocumentationReader;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Crawler;
 
 class UiKitTest extends WebTestCase
 {
@@ -144,6 +145,54 @@ class UiKitTest extends WebTestCase
         $exampleFiles = glob(sprintf('%s/%s/*.html.twig', self::COMPONENTS_DIR, $componentDirName));
         $this->assertCount(\count($exampleFiles), $crawler->filter('section.ea-ui-kit-example'));
         $this->assertCount(0, $crawler->filter('.ea-ui-kit-preview:empty'));
+        $this->assertCount(0, $this->findEmptyIcons($crawler));
+        $this->assertSame([], $this->findExamplesShowingInternalIcons($crawler));
+    }
+
+    #[DataProvider('provideComponentDirNames')]
+    public function testEveryComponentPageRendersWithCustomIconSet(string $componentDirName): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/custom_icon_set_admin/_ea_ui_kit/components/'.$componentDirName);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(0, $crawler->filter('.ea-ui-kit-preview:empty'));
+        $this->assertCount(0, $this->findEmptyIcons($crawler));
+        $this->assertSame([], $this->findExamplesShowingInternalIcons($crawler));
+    }
+
+    public function testExampleSourceShowsTheIconNamesOfTheDashboardIconSet(): void
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/admin/_ea_ui_kit/components/badge');
+        $icons = $crawler->filter('section#icons');
+        $this->assertStringContainsString('icon="fa-solid fa-check"', $icons->filter('.ea-ui-kit-source')->text());
+        $this->assertCount(3, $icons->filter('.ea-ui-kit-preview .icon svg'));
+        $this->assertCount(0, $crawler->filter('.ea-ui-kit-source-note'));
+
+        $crawler = $client->request('GET', '/custom_icon_set_admin/_ea_ui_kit/components/badge');
+        $icons = $crawler->filter('section#icons');
+        $this->assertStringContainsString('icon="lucide:check"', $icons->filter('.ea-ui-kit-source')->text());
+        $this->assertCount(1, $icons->filter('.ea-ui-kit-source-note'));
+        $this->assertCount(0, $crawler->filter('section#variants .ea-ui-kit-source-note'));
+
+        $crawler = $client->request('GET', '/custom_icon_set_with_prefix_admin/_ea_ui_kit/components/badge');
+        $icons = $crawler->filter('section#icons');
+        $this->assertStringContainsString('icon="check"', $icons->filter('.ea-ui-kit-source')->text());
+        $this->assertCount(1, $icons->filter('.ea-ui-kit-source-note'));
+    }
+
+    public function testFontAwesomeExamplesAreOnlyShownWithFontAwesomeIconSet(): void
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/admin/_ea_ui_kit/components/icon');
+        $this->assertCount(1, $crawler->filter('section#fontawesome'));
+
+        $crawler = $client->request('GET', '/custom_icon_set_admin/_ea_ui_kit/components/icon');
+        $this->assertCount(0, $crawler->filter('section#fontawesome'));
+        $this->assertCount(1, $crawler->filter('section#sizes'));
     }
 
     public static function provideComponentDirNames(): iterable
@@ -159,5 +208,20 @@ class UiKitTest extends WebTestCase
         $client->request('GET', '/admin/_ea_ui_kit/components/this_component_does_not_exist');
 
         $this->assertResponseStatusCodeSame(404);
+    }
+
+    /**
+     * @return list<string> The ids of the examples whose source shows internal icon names
+     */
+    private function findExamplesShowingInternalIcons(Crawler $crawler): array
+    {
+        return $crawler->filter('section.ea-ui-kit-example')
+            ->reduce(static fn (Crawler $example) => str_contains($example->filter('.ea-ui-kit-source')->text(), 'internal:'))
+            ->each(static fn (Crawler $example) => $example->attr('id'));
+    }
+
+    private function findEmptyIcons(Crawler $crawler): Crawler
+    {
+        return $crawler->filter('.ea-ui-kit-preview .icon')->reduce(static fn (Crawler $icon) => 0 === $icon->children()->count());
     }
 }

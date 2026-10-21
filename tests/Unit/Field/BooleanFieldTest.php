@@ -236,6 +236,25 @@ class BooleanFieldTest extends AbstractFieldTestCase
         }
     }
 
+    public function testSwapLabelAndValueByDefault(): void
+    {
+        $field = BooleanField::new('active');
+        $fieldDto = $this->configure($field);
+
+        self::assertTrue($fieldDto->getCustomOption(BooleanField::OPTION_SWAP_LABEL_AND_VALUE));
+        self::assertStringNotContainsString('field-boolean-no-swap', $fieldDto->getCssClass());
+    }
+
+    public function testDontSwapLabelAndValue(): void
+    {
+        $field = BooleanField::new('active');
+        $field->swapLabelAndValue(false);
+        $fieldDto = $this->configure($field);
+
+        self::assertFalse($fieldDto->getCustomOption(BooleanField::OPTION_SWAP_LABEL_AND_VALUE));
+        self::assertStringContainsString('field-boolean-no-swap', $fieldDto->getCssClass());
+    }
+
     public function testColoredSwitchAddsVariantLabelClass(): void
     {
         $field = BooleanField::new('active');

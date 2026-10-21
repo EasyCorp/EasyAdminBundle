@@ -250,6 +250,30 @@ class AssociationConfiguratorTest extends AbstractFieldTestCase
         $this->assertNull($fieldDto->getCustomOption(AssociationField::OPTION_RELATED_URL));
     }
 
+    public function testLinkToUrl(): void
+    {
+        $field = $this->buildLeadDeveloperField()
+            ->linkToUrl('https://example.com')
+        ;
+
+        $fieldDto = $this->configure($field);
+
+        $this->assertSame('https://example.com', $fieldDto->getCustomOption(AssociationField::OPTION_URL));
+    }
+
+    public function testLinkToUrlCallable(): void
+    {
+        $field = $this->buildLeadDeveloperField()
+            ->linkToUrl(static function (EntityDto $entityDto, AdminContextInterface $context) {
+                return sprintf('https://example.com/%s/%s', $context->getRequest()->getLocale(), $entityDto->getName());
+            })
+        ;
+
+        $fieldDto = $this->configure($field);
+
+        $this->assertSame('https://example.com/en/Project', $fieldDto->getCustomOption(AssociationField::OPTION_URL));
+    }
+
     private function buildLeadDeveloperField(): AssociationField
     {
         $field = AssociationField::new('leadDeveloper');

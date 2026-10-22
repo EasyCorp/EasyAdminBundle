@@ -247,6 +247,46 @@ Flags are ``17px`` tall by default; change that with the ``height`` prop
 
     <twig:ea:Flag countryCode="JP" height="{{ 24 }}"/>
 
+Flags have rounded corners and a subtle outline, so flags with white areas
+(like the flags of Japan or Poland) don't blend into the background. They
+look the same outside EasyAdmin too, because these styles are included in
+the HTML of the flag and you don't have to load any CSS file. Use the
+``radius`` prop to change the corners (``none``, ``sm``, ``md``, ``lg`` or
+``full``) and the ``bordered`` prop to remove the outline:
+
+.. code-block:: twig
+
+    <twig:ea:Flag countryCode="JP" radius="md"/>
+
+    <twig:ea:Flag countryCode="JP" :bordered="false"/>
+
+    {# renders the original flag, without any style #}
+    <twig:ea:Flag countryCode="JP" radius="none" :bordered="false"/>
+
+You can also customize flags with these CSS variables, which you can define
+in any parent element (e.g. ``:root``) or in the ``style`` attribute of the
+component:
+
+* ``--flag-radius``: the radius used when the ``radius`` prop is not set
+  (default: ``2px``);
+* ``--flag-outline-color``: the color of the outline (default: the text
+  color with 20% opacity);
+* ``--flag-outline-offset``: the offset of the outline (default: ``-1px``,
+  which draws it inside the flag);
+* ``--flag-name-gap``: the space between the flag and the country name
+  displayed with ``showName`` (default: ``0.375em``).
+
+.. code-block:: twig
+
+    <twig:ea:Flag countryCode="JP" style="--flag-radius: 6px"/>
+
+.. note::
+
+    These styles are defined with ``style`` HTML attributes. If your
+    `Content Security Policy`_ blocks them (because the ``style-src`` or
+    ``style-src-attr`` directives don't include ``'unsafe-inline'``),
+    flags are displayed without rounded corners and outline.
+
 Icon
 ----
 
@@ -546,3 +586,4 @@ form validation errors of the fields in that tab:
 .. _`shadcn/ui Sidebar`: https://ui.shadcn.com/docs/components/base/sidebar
 .. _`FontAwesome icons`: https://fontawesome.com/v6/search?m=free
 .. _`ISO 3166-1 alpha-2`: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+.. _`Content Security Policy`: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP

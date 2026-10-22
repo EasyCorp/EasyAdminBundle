@@ -160,16 +160,9 @@
 
 /* Country field */
 .field-country .country-flag {
-    border-radius: var(--border-radius-sm);
-    outline: var(--border-width) solid color-mix(in srgb, var(--black) 20%, transparent);
-    outline-offset: -1px;
     margin: 0 var(--ea-sp-3) 1px 0;
     max-block-size: var(--icon-size-sm);
     vertical-align: text-top;
-}
-.ea-dark-scheme .field-country .country-flag {
-    outline-color: var(--border-secondary-color);
-    outline-offset: 0;
 }
 .datagrid .field-country > span + span,
 .datalist .field-country dd > span + span {

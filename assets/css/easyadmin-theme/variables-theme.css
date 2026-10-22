@@ -171,7 +171,8 @@
     --pagination-disabled-color: var(--gray-400);
     --pagination-active-bg: var(--color-primary);
     --pagination-active-color: var(--text-on-primary);
-    --field-country-flag-border-color: var(--gray-200);
+    --flag-radius: var(--border-radius-sm);
+    --flag-outline-color: color-mix(in srgb, var(--black) 20%, transparent);
     --modal-bg: var(--white);
     --modal-border-color: var(--border-secondary-color);
     --modal-header-bg: var(--gray-50);
@@ -649,7 +650,8 @@
     --pagination-hover-border-color: var(--gray-600);
     --pagination-active-bg: var(--ea-primary);
     --pagination-active-color: var(--text-on-primary);
-    --field-country-flag-border-color: var(--gray-600);
+    --flag-outline-color: var(--border-secondary-color);
+    --flag-outline-offset: 0;
     --modal-bg: var(--gray-800);
     --modal-border-color: var(--border-secondary-color);
     --modal-header-bg: var(--gray-900);

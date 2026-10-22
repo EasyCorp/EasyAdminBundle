@@ -1,9 +1,9 @@
-<span {{- attributes.defaults({class: 'country-flag-wrapper'}) }}>
+<span {{- attributes.defaults({class: 'country-flag-wrapper' ~ (this.showName ? ' country-flag-with-name')}) }}>
     {%- if this.flagExists -%}
         {{- this.getFlagAsSvg|raw -}}
     {%- else -%}
         {##- The contents displayed when there is no flag for the given country code. -#}
         {%- block fallback %}{{ this.getFallbackSvg|raw }}{% endblock -%}
     {%- endif -%}
-    {%- if this.showName %}{{ this.getCountryName() }}{% endif -%}
+    {%- if this.showName %}<span class="country-flag-name" style="margin-inline-start: var(--flag-name-gap, 0.375em)">{{ this.getCountryName() }}</span>{% endif -%}
 </span>

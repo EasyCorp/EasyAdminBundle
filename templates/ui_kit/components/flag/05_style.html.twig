@@ -1,0 +1,17 @@
+{# Style
+   Flags are rounded and outlined by default, so flags with white areas don't
+   blend into the background. Use radius and bordered to change that, or set
+   the --flag-radius CSS variable to use any custom radius. #}
+<twig:ea:Flag countryCode="JP" />
+<twig:ea:Flag countryCode="PL" />
+<twig:ea:Flag countryCode="ID" />
+<br><br>
+<twig:ea:Flag countryCode="JP" radius="none" :height="24" />
+<twig:ea:Flag countryCode="JP" radius="sm" :height="24" />
+<twig:ea:Flag countryCode="JP" radius="md" :height="24" />
+<twig:ea:Flag countryCode="JP" radius="lg" :height="24" />
+<twig:ea:Flag countryCode="JP" radius="full" :height="24" />
+<br><br>
+<twig:ea:Flag countryCode="PL" :bordered="false" />
+<twig:ea:Flag countryCode="PL" radius="none" :bordered="false" />
+<twig:ea:Flag countryCode="ID" style="--flag-radius: 6px" :height="24" />

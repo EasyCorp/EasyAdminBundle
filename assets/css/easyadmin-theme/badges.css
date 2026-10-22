@@ -167,6 +167,7 @@
     inline-size: auto;
 }
 .badge > .country-flag-wrapper {
+    --flag-name-gap: 0;
     align-items: center;
     display: inline-flex;
     gap: var(--ea-sp-2);

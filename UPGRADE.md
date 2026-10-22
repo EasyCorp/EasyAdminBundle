@@ -3,6 +3,24 @@ Upgrade Guide
 
 ## EasyAdmin 5.7.1
 
+### Flags Are Rounded and Outlined Everywhere
+
+The `<twig:ea:Flag>` component now renders flags with rounded corners and a
+subtle outline in every page (before, only `CountryField` styled them) and also
+outside EasyAdmin, because the styles are included in the HTML of the flag. Use
+the new `radius` and `bordered` props to change them. To render flags as before:
+
+```twig
+<twig:ea:Flag countryCode="JP" radius="none" :bordered="false"/>
+```
+
+When the `showName` prop is enabled, the country name is now wrapped in a
+`<span class="country-flag-name">` element.
+
+The `--field-country-flag-border-color` CSS variable, which wasn't used, has
+been removed. Use `--flag-outline-color` and `--flag-radius` to customize the
+look of flags.
+
 ### `createEntity()` Can Return `null`
 
 The return type of `CrudControllerInterface::createEntity()` and

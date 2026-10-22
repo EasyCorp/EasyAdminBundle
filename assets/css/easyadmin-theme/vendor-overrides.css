@@ -22,6 +22,14 @@
     border: var(--border-width) solid var(--border-secondary-color) !important;
 }
 
+/* fields add .flex-fill spacers to break .row lines horizontally; when a form
+   column has no fieldsets, those spacers are direct children of the vertical
+   flex .form-column and must not grow, or they spread the fields down to match
+   the height of the tallest column */
+.form-column > :is(.flex-fill, .flex-sm-fill, .flex-md-fill, .flex-lg-fill, .flex-xl-fill, .flex-xxl-fill) {
+    flex-grow: 0 !important;
+}
+
 @media (max-width: 767px) {
     table.datagrid:not(.datagrid-empty) td {
         /* because of how the contents are rendered in small screens, table contents must be left-aligned

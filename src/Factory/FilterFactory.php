@@ -7,9 +7,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\NestedAssociationResolverInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ResolvedPropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\ArrayFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\ComparisonFilter;
@@ -60,7 +62,11 @@ final class FilterFactory
     public function __construct(
         private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly iterable $filterConfigurators,
+        private readonly ?NestedAssociationResolverInterface $associationResolver = null,
     ) {
+        if (null === $associationResolver) {
+            @trigger_deprecation('easycorp/easyadmin-bundle', '5.7.0', 'Not passing an instance of "%s" as the third argument of "%s::__construct()" is deprecated and it will be required in EasyAdmin 6.0.', NestedAssociationResolverInterface::class, self::class);
+        }
     }
 
     public function create(FilterConfigDto $filterConfig, FieldCollection $fields, EntityDto $entityDto): FilterCollection
@@ -93,18 +99,26 @@ final class FilterFactory
         return new FilterCollection($builtFilters);
     }
 
-    private function guessFilterClass(EntityDto $entityDto, string $propertyName): string
+    private function guessFilterClass(EntityDto $entityDto, string $propertyPath): string
     {
-        if ($entityDto->getClassMetadata()->hasAssociation($propertyName)) {
+        // without a resolver, keep the previous behavior, which only supported properties of the root entity;
+        // paths that end in an association (e.g. 'author.publisher') must be accepted to guess an EntityFilter
+        $resolvedProperty = null === $this->associationResolver
+            ? new ResolvedPropertyDto($entityDto, null, $propertyPath)
+            : $this->associationResolver->resolveNestedAssociations(null, $entityDto, $propertyPath, true);
+        $classMetadata = $resolvedProperty->getEntityDto()->getClassMetadata();
+        $propertyName = $resolvedProperty->getPropertyName();
+
+        if ($classMetadata->hasAssociation($propertyName)) {
             return EntityFilter::class;
         }
 
-        if (isset($entityDto->getClassMetadata()->embeddedClasses[$propertyName])) {
+        if (isset($classMetadata->embeddedClasses[$propertyName])) {
             return TextFilter::class;
         }
 
         // In Doctrine ORM 3.x, FieldMapping implements \ArrayAccess; in 4.x it's an object with properties
-        $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($propertyName);
+        $fieldMapping = $classMetadata->getFieldMapping($propertyName);
         // In Doctrine ORM 2.x, getFieldMapping() returns an array
         /** @phpstan-ignore-next-line function.impossibleType */
         if (\is_array($fieldMapping)) {

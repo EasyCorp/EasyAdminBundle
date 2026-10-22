@@ -60,7 +60,9 @@ Filters can also be applied to the properties of associated entities and
 Doctrine embeddables. Use the :ref:`dot syntax <field-association-nested>` used
 by association fields (``association.property``) to traverse any number of
 nested associations; EasyAdmin creates the needed Doctrine JOIN clauses
-automatically::
+automatically. As with the properties of the entity itself, EasyAdmin guesses
+the filter type from the Doctrine mapping of the nested property, so you only
+need to create the filter explicitly to use a different filter or to customize it::
 
     namespace App\Controller\Admin;
 
@@ -76,8 +78,11 @@ automatically::
         public function configureFilters(Filters $filters): Filters
         {
             return $filters
-                // 'author' is an association of the Book entity
-                ->add(TextFilter::new('author.fullName', 'Author Name'))
+                // 'author' is an association of the Book entity; the filter
+                // type is guessed from the Doctrine mapping of 'fullName'
+                ->add('author.fullName')
+                // define the filter explicitly to customize it
+                ->add(TextFilter::new('author.email', 'Author Email'))
                 // 'address' is a Doctrine embeddable inside the Author entity
                 ->add(TextFilter::new('author.address.country', 'Author Country'))
                 // EntityFilter paths must end in an association instead of a property

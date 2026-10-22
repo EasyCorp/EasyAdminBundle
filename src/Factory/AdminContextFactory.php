@@ -59,6 +59,8 @@ final readonly class AdminContextFactory
         $pageName = \in_array($crudAction, $validPageNames, true) ? $crudAction : null;
 
         $dashboardDto = $this->getDashboardDto($dashboardController);
+        $defaultCrudDto = $dashboardController->configureCrud()->getAsDto();
+        $dashboardDto->setComponentDefaults($defaultCrudDto->getComponentDefaults());
         $assetDto = $this->getAssetDto($dashboardController, $crudController, $pageName);
         $filters = $this->getFilters($dashboardController, $crudController);
 
@@ -68,7 +70,7 @@ final readonly class AdminContextFactory
         $entityDto = $this->getEntityDto($request, $crudDto);
         $searchDto = $this->getSearchDto($request, $crudDto);
         $i18nDto = $this->getI18nDto($request, $dashboardDto, $crudDto, $entityDto);
-        $templateRegistry = $this->getTemplateRegistry($dashboardController, $crudDto);
+        $templateRegistry = $this->getTemplateRegistry($defaultCrudDto, $crudDto);
         $user = $this->getUser($this->tokenStorage);
 
         // build sub-contexts
@@ -163,11 +165,10 @@ final readonly class AdminContextFactory
         return $crudController->configureFilters($defaultFilterConfig)->getAsDto();
     }
 
-    private function getTemplateRegistry(DashboardControllerInterface $dashboardController, ?CrudDto $crudDto): TemplateRegistry
+    private function getTemplateRegistry(CrudDto $defaultCrudDto, ?CrudDto $crudDto): TemplateRegistry
     {
         $templateRegistry = TemplateRegistry::new();
 
-        $defaultCrudDto = $dashboardController->configureCrud()->getAsDto();
         $templateRegistry->setTemplates($defaultCrudDto->getOverriddenTemplates());
 
         if (null !== $crudDto) {

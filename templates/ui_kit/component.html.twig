@@ -64,23 +64,38 @@
     <li class="breadcrumb-item active" aria-current="page">{{ component_name }}</li>
 {% endblock %}
 
+{% macro render_example(example, component_dir_name, heading_level) %}
+    <section class="ea-ui-kit-example" id="{{ example.id }}" aria-labelledby="{{ example.id }}-title">
+        <h{{ heading_level }} id="{{ example.id }}-title">{{ example.title }}</h{{ heading_level }}>
+        {% if example.description %}<p>{{ example.description }}</p>{% endif %}
+
+        <div class="ea-ui-kit-preview">
+            <div class="ea-ui-kit-preview-content" data-component="{{ component_dir_name }}">
+                {{ include(example.template) }}
+            </div>
+        </div>
+        {# the highlighter escapes all the code, so its output is safe #}
+        <pre class="ea-ui-kit-source"><code>{{ example.highlighted_code|raw }}</code></pre>
+        {% if example.uses_approximate_icon_names %}
+            <p class="ea-ui-kit-source-note">These icons are a generic example, not the exact icons of the icon set configured in this dashboard.</p>
+        {% endif %}
+    </section>
+{% endmacro %}
+
 {% block main %}
     {% for example in examples %}
-        <section class="ea-ui-kit-example" id="{{ example.id }}" aria-labelledby="{{ example.id }}-title">
-            <h2 id="{{ example.id }}-title">{{ example.title }}</h2>
-            {% if example.description %}<p>{{ example.description }}</p>{% endif %}
+        {% if example.is_group %}
+            <section class="ea-ui-kit-example-group" id="{{ example.id }}" aria-labelledby="{{ example.id }}-title">
+                <h2 id="{{ example.id }}-title">{{ example.title }}</h2>
+                {% if example.description %}<p>{{ example.description }}</p>{% endif %}
 
-            <div class="ea-ui-kit-preview">
-                <div class="ea-ui-kit-preview-content" data-component="{{ component_dir_name }}">
-                    {{ include(example.template) }}
-                </div>
-            </div>
-            {# the highlighter escapes all the code, so its output is safe #}
-            <pre class="ea-ui-kit-source"><code>{{ example.highlighted_code|raw }}</code></pre>
-            {% if example.uses_approximate_icon_names %}
-                <p class="ea-ui-kit-source-note">These icons are a generic example, not the exact icons of the icon set configured in this dashboard.</p>
-            {% endif %}
-        </section>
+                {% for group_example in example.examples %}
+                    {{ _self.render_example(group_example, component_dir_name, 3) }}
+                {% endfor %}
+            </section>
+        {% else %}
+            {{ _self.render_example(example, component_dir_name, 2) }}
+        {% endif %}
     {% endfor %}
 
     {% if documentation.props|default([]) is not empty or documentation.blocks|default([]) is not empty %}

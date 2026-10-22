@@ -3,7 +3,7 @@
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% if field.formattedValue is iterable and field.formattedValue.isRenderedAsBadge %}
     {%- for choice in field.formattedValue -%}
-        <twig:ea:Badge variant="{{ choice.variant }}">{{ choice.message|trans|raw }}</twig:ea:Badge>
+        <twig:ea:Badge color="{{ choice.variant }}">{{ choice.message|trans|raw }}</twig:ea:Badge>
     {%- endfor -%}
 {% else %}
     {{ field.formattedValue|trans|raw }}

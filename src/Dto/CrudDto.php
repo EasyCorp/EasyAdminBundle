@@ -84,6 +84,7 @@ final class CrudDto
     /** @var string|string[]|null Action name(s) to try when clicking a row. Array = fallback chain, null = disabled */
     private string|array|null $defaultRowAction = [Action::EDIT, Action::DETAIL];
     private string $defaultRowActionTrigger = ClickTrigger::SINGLE;
+    private ComponentDefaultsDto $componentDefaults;
     /** @var callable|null */
     private $autocompleteCallback;
     private ?string $autocompleteTemplate = null;
@@ -95,6 +96,7 @@ final class CrudDto
         $this->newFormOptions = KeyValueStore::new();
         $this->editFormOptions = KeyValueStore::new();
         $this->overriddenTemplates = [];
+        $this->componentDefaults = new ComponentDefaultsDto();
     }
 
     /**
@@ -574,6 +576,16 @@ final class CrudDto
     public function setDefaultRowActionTrigger(string $clickTrigger): void
     {
         $this->defaultRowActionTrigger = $clickTrigger;
+    }
+
+    public function getComponentDefaults(): ComponentDefaultsDto
+    {
+        return $this->componentDefaults;
+    }
+
+    public function setComponentDefaults(ComponentDefaultsDto $componentDefaults): void
+    {
+        $this->componentDefaults = $componentDefaults;
     }
 
     public function getAutocompleteCallback(): ?callable

@@ -1,0 +1,8 @@
+{# Images and flags
+   Add images (like avatars) or flags inside the badge contents. They are
+   resized so the badge keeps its height. #}
+<twig:ea:Badge variant="outline"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%236366f1'/%3E%3Ccircle cx='8' cy='6' r='3' fill='white'/%3E%3Cpath d='M2.5 13.5a6 6 0 0 1 11 0' fill='white'/%3E%3C/svg%3E" alt="">Jane Doe</twig:ea:Badge>
+<twig:ea:Badge variant="outline" dismissible><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%2310b981'/%3E%3Ccircle cx='8' cy='6' r='3' fill='white'/%3E%3Cpath d='M2.5 13.5a6 6 0 0 1 11 0' fill='white'/%3E%3C/svg%3E" alt="">John Smith</twig:ea:Badge>
+<twig:ea:Badge variant="outline"><twig:ea:Flag countryCode="JP" />Japan</twig:ea:Badge>
+<twig:ea:Badge color="info" size="sm"><twig:ea:Flag countryCode="FR" />France</twig:ea:Badge>
+<twig:ea:Badge color="info" size="lg"><twig:ea:Flag countryCode="BR" />Brazil</twig:ea:Badge>

@@ -120,5 +120,5 @@
 
 {% macro render_menu_badge(badge) %}
     {%- set badge_attributes = badge.htmlStyle ? badge.htmlAttributes|merge({style: badge.htmlStyle}) : badge.htmlAttributes -%}
-    <twig:ea:Badge variant="{{ badge.cssClass|replace({'badge-': ''}) }}" radius="full" class="ea-sidebar-badge" {{ ...badge_attributes }}>{{ badge.content }}</twig:ea:Badge>
+    <twig:ea:Badge color="{{ badge.cssClass|replace({'badge-': ''}) }}" variant="light" radius="full" class="ea-sidebar-badge" {{ ...badge_attributes }}>{{ badge.content }}</twig:ea:Badge>
 {%- endmacro %}

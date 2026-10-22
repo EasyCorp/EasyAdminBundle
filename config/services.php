@@ -93,6 +93,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\ComponentDefaultsProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
@@ -511,7 +512,11 @@ return static function (ContainerConfigurator $container) {
         ->set(Alert::class)
             ->tag('twig.component')
 
+        ->set(ComponentDefaultsProvider::class)
+            ->arg(0, service(AdminContextProvider::class))
+
         ->set(Badge::class)
+            ->arg(0, service(ComponentDefaultsProvider::class))
             ->tag('twig.component')
 
         ->set(Pagination::class)

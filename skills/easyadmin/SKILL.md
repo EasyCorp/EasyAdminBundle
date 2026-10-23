@@ -62,9 +62,9 @@ Files next to this one:
 1. Check whether a dashboard exists: `grep -rl AbstractDashboardController src/`.
 2. Scaffold with the makers and then edit the generated classes:
    `php bin/console make:admin:dashboard` and
-   `php bin/console make:admin:crud "App\Entity\Product"`. The CRUD maker
-   leaves `configureFields()` commented out and adds no `@extends` PHPDoc:
-   add both by hand.
+   `php bin/console make:admin:crud "App\Entity\Product" --fields=id,name,price -n`.
+   `--fields` lists the properties to show, in order (`--no-fields` keeps a
+   commented example). Review the generated `configureFields()` afterwards.
 3. Register every CRUD controller in the dashboard's `configureMenuItems()`.
 4. Before writing a method you have not seen in this skill, in
    `references/api.md` or in the source, verify it exists:

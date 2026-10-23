@@ -77,10 +77,13 @@ jobs:
                   php bin/console make:admin:dashboard --no-interaction
                   
                   # Run make:admin:crud interactively with expect
+                  # (until the next EasyAdmin release, the "Which properties" question doesn't exist:
+                  # expect waits until its timeout and the next question still matches the buffered output)
                   mkdir -p src/Controller/Admin/
                   expect <<'EOD'
                   spawn php bin/console make:admin:crud
                   expect "Which Doctrine entity" { send "0\r" }
+                  expect "Which properties" { send "\r" }
                   expect "Which directory" { send "\r" }
                   expect "Namespace of the generated CRUD controller" { send "\r" }
                   expect eof
@@ -92,6 +95,19 @@ jobs:
                     sed -i '/yield MenuItem::linkToDashboard/a\
                         yield MenuItem::linkToCrud("Products", "fa fa-box", App\\Entity\\Product::class);' "$file"
                   fi
+
+            # this step is guarded because the workflow installs EasyAdmin from Packagist,
+            # so the generated fields are not available until the next EasyAdmin release
+            - name: Check the fields of the generated CRUD controller
+              working-directory: e2e-app
+              run: |
+                  set -e
+                  if ! php bin/console make:admin:crud --help | grep -q -- --fields; then
+                    echo "make:admin:crud --fields not released yet, skipping"
+                    exit 0
+                  fi
+
+                  grep -q "TextField::new('name')" src/Controller/Admin/ProductCrudController.php
 
             # this step is guarded because the workflow installs EasyAdmin from Packagist,
             # so the command is not available until the next EasyAdmin release

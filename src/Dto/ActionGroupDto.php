@@ -272,4 +272,41 @@ final class ActionGroupDto
     {
         $this->hasAnyActionWithIcon = $hasAnyActionWithIcon;
     }
+
+    public function getAsConfigObject(): ActionGroup
+    {
+        $action = ActionGroup::new($this->name, $this->label, $this->icon);
+        $action->setCssClass($this->cssClass);
+        $action->addCssClass($this->addedCssClass);
+        $action->setHtmlAttributes($this->htmlAttributes);
+        $action->setHtmlAttributes($this->htmlAttributes);
+
+        if (null !== $this->templatePath) {
+            $action->setTemplatePath($this->templatePath);
+        }
+
+        if ($this->isGlobalAction()) {
+            $action->createAsGlobalActionGroup();
+        }
+
+        if (null !== $this->mainAction) {
+            $action->addMainAction($this->mainAction->getAsConfigObject());
+        }
+
+        foreach ($this->items as $index => $item) {
+            if ($item instanceof ActionDto) {
+                $action->addAction($item->getAsConfigObject());
+            } elseif ('divider' === ($item['type'] ?? null)) {
+                $action->addDivider();
+            } elseif ('header' === ($item['type'] ?? null)) {
+                $action->addHeader($item['content']);
+            }
+        }
+
+        if (null !== $this->displayCallable) {
+            $action->displayIf($this->displayCallable);
+        }
+
+        return $action;
+    }
 }

@@ -239,7 +239,7 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
         // Respect an explicit prototype_data option, and don't initialize prototypes
         // when additions are disabled. A lazy prototype is generated via the existing
         // CRUD URL only when the user explicitly clicks "Add new item".
-        if (array_key_exists('prototype_data', $fieldDto->getFormTypeOptions())
+        if (\array_key_exists('prototype_data', $fieldDto->getFormTypeOptions())
             || true !== $fieldDto->getFormTypeOption('allow_add')
             || false === $fieldDto->getFormTypeOption('prototype')) {
             return;

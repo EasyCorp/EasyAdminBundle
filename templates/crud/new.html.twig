@@ -69,4 +69,8 @@
     {% block new_form %}
         {{ form(new_form) }}
     {% endblock new_form %}
+
+    {% block action_confirmation_modal %}
+        {{ include('@EasyAdmin/crud/includes/_action_confirmation_modal.html.twig', with_context: false) }}
+    {% endblock action_confirmation_modal %}
 {% endblock %}

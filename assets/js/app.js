@@ -471,10 +471,16 @@ class App {
         const modalButton = document.querySelector('#modal-action-confirmation-button');
         const defaultTitleTemplate = modalTitle?.textContent;
         const defaultButtonLabel = modalButton?.textContent;
+        let actionToConfirm = null;
+
+        document.querySelector('#modal-action-confirmation')?.addEventListener('hidden.bs.modal', () => {
+            actionToConfirm = null;
+        });
 
         document.querySelectorAll('[data-action-confirmation="true"]').forEach((actionElement) => {
             actionElement.addEventListener('click', (event) => {
                 event.preventDefault();
+                actionToConfirm = actionElement;
 
                 const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
                 const entityName = actionElement.getAttribute('data-action-entity-name') || '';
@@ -509,42 +515,53 @@ class App {
                 const variantClass = variantToClass[variant] || 'btn-danger';
                 modalButton.classList.remove(...allVariantClasses);
                 modalButton.classList.add(variantClass);
-
-                modalButton.addEventListener(
-                    'click',
-                    () => {
-                        // Case 1: POST action with formaction (like DELETE with CSRF token)
-                        const formAction = actionElement.getAttribute('formaction');
-                        if (formAction) {
-                            const form = document.querySelector('#action-confirmation-form');
-                            form.setAttribute('action', formAction);
-                            form.submit();
-                            return;
-                        }
-
-                        // Case 2: dropdown action rendered as form (data-ea-action-form-id)
-                        const actionFormId = actionElement.getAttribute('data-ea-action-form-id');
-                        if (actionFormId) {
-                            document.getElementById(actionFormId).submit();
-                            return;
-                        }
-
-                        // Case 3: standalone button inside a <form> (renderAsForm)
-                        const parentForm = actionElement.closest('form');
-                        if (parentForm?.hasAttribute('action')) {
-                            parentForm.submit();
-                            return;
-                        }
-
-                        // Case 4: GET action with href
-                        const href = actionElement.getAttribute('href');
-                        if (href) {
-                            window.location.href = href;
-                        }
-                    },
-                    { once: true }
-                );
             });
+        });
+
+        // Register only one handler: cancelling a confirmation must not leave a stale
+        // listener that executes a previously dismissed action.
+        modalButton?.addEventListener('click', () => {
+            const actionElement = actionToConfirm;
+            actionToConfirm = null;
+            if (null === actionElement) {
+                return;
+            }
+
+            // POST action with formaction (e.g. DELETE with its own CSRF form).
+            const formAction = actionElement.getAttribute('formaction');
+            if (formAction) {
+                const form = document.querySelector('#action-confirmation-form');
+                form.setAttribute('action', formAction);
+                form.submit();
+                return;
+            }
+
+            // Dropdown action rendered as a separate form.
+            const actionFormId = actionElement.getAttribute('data-ea-action-form-id');
+            if (actionFormId) {
+                document.getElementById(actionFormId).submit();
+                return;
+            }
+
+            // Submit button bound to an EDIT/NEW form, possibly outside its DOM tree.
+            // requestSubmit() preserves validation and submitter-specific behavior.
+            if (actionElement instanceof HTMLButtonElement && actionElement.type === 'submit' && actionElement.form) {
+                actionElement.form.requestSubmit(actionElement);
+                return;
+            }
+
+            // Standalone action rendered as its own form.
+            const parentForm = actionElement.closest('form');
+            if (parentForm?.hasAttribute('action')) {
+                parentForm.submit();
+                return;
+            }
+
+            // GET action.
+            const href = actionElement.getAttribute('href');
+            if (href) {
+                window.location.href = href;
+            }
         });
     }
 

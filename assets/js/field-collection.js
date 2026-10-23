@@ -33,8 +33,78 @@ window.addEventListener('DOMContentLoaded', eaCollectionHandler);
 document.addEventListener('ea.collection.item-added', eaCollectionHandler);
 
 const EaCollectionProperty = {
+    // Nested collections inside unsaved entries are embedded in parent prototypes.
+    // Use each parent's actual prototype_name, which users can customize.
+    findPrototype: (doc, targetFormId) => {
+        const escapeRegex = (part) => part.replace(/[.*+?^$()|[\]{}\\]/g, '\\$&');
+        const visit = (fields, parentPlaceholders = []) => {
+            for (const field of fields) {
+                const template = field.dataset.prototype;
+                if (!template) {
+                    continue;
+                }
+
+                const candidateId = field.dataset.eaCollectionFormId;
+                if (candidateId) {
+                    const names = parentPlaceholders.map(escapeRegex);
+                    const namePattern = names.length ? new RegExp(names.join('|'), 'g') : null;
+                    const parts = namePattern ? candidateId.split(namePattern) : [candidateId];
+                    const pattern = parts.map(escapeRegex).join('(\\d+)');
+                    const matches = new RegExp('^' + pattern + '$').exec(targetFormId);
+                    if (matches) {
+                        const matchedPlaceholders = namePattern ? candidateId.match(namePattern) ?? [] : [];
+                        return matchedPlaceholders.reduce(
+                            (html, placeholder, index) => html.replaceAll(placeholder, matches[index + 1]),
+                            template
+                        );
+                    }
+                }
+
+                const nestedDoc = new DOMParser().parseFromString(template, 'text/html');
+                const placeholder = field.dataset.formTypeNamePlaceholder;
+                const nestedPrototype = visit(
+                    nestedDoc.querySelectorAll('[data-ea-collection-field]'),
+                    placeholder ? [...parentPlaceholders, placeholder] : parentPlaceholders
+                );
+                if (nestedPrototype) {
+                    return nestedPrototype;
+                }
+            }
+
+            return null;
+        };
+
+        return visit(doc.querySelectorAll('[data-ea-collection-field]'));
+    },
     handleAddButton: (addButton, collection) => {
-        addButton.addEventListener('click', function () {
+        addButton.addEventListener('click', async function () {
+            if (collection.dataset.eaLazyPrototype === 'true') {
+                this.disabled = true;
+                try {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('__ea_collection_prototype', collection.dataset.eaCollectionPrototypeField);
+                    const response = await fetch(url, { credentials: 'same-origin' });
+                    if (!response.ok) {
+                        throw new Error(`Failed to load collection prototype (HTTP ${response.status}).`);
+                    }
+
+                    const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+                    const prototype = EaCollectionProperty.findPrototype(doc, collection.dataset.eaCollectionFormId);
+                    if (!prototype) {
+                        throw new Error('The collection prototype was not found in the response.');
+                    }
+
+                    collection.dataset.prototype = prototype;
+                    collection.dataset.eaLazyPrototype = 'false';
+                } catch (error) {
+                    console.error(error);
+                    window.alert(error.message);
+                    return;
+                } finally {
+                    this.disabled = false;
+                }
+            }
+
             const isArrayCollection = collection.classList.contains('field-array');
             // Use a counter to avoid having the same index more than once
             let numItems = Number.parseInt(collection.dataset.numItems);

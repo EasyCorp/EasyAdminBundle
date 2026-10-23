@@ -23,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\LanguageType;
 use Symfony\Component\Form\Extension\Core\Type\LocaleType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use function Symfony\Component\String\u;
 
@@ -204,19 +205,12 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
             Crud::PAGE_NEW,
         );
 
-        // Build new collection entries through the embedded controller's createEntity()
-        // so its overrides (default values, factory pattern, etc.) are honored, instead of
-        // falling back to instantiating `$targetEntityFqcn` directly via Symfony Form.
-        // - `prototype_data` shapes the rendered prototype HTML (read at build time).
-        // - `entry_options.empty_data` is called by Symfony when binding a new (empty)
-        //   entry on form submit, once per added entry.
-        // The context is intentionally NOT swapped to the embedded entity around the
-        // createEntity() call: callers commonly read `$this->getContext()->getEntity()`
-        // to populate the parent foreign key on the new entry, which only works when the
-        // parent context is left in place.
-        // When createEntity() returns null, neither option is set so Symfony builds the
-        // entry with its own `empty_data` (the default one or the one set by the user).
-        // See #6991.
+        // Build collection entries through the embedded CRUD controller's createEntity()
+        // so overridden defaults are honored. Creating the prototype during an ordinary
+        // page request is unsafe: a factory/constructor may add it to a managed Doctrine
+        // collection, making simply opening the edit form change its data (see #7721).
+        // The prototype is populated on the first "Add" request instead.
+        // Keep the original parent context: factories often use it for associations.
         $controllerFactory = $this->controllerFactory;
         $requestStack = $this->requestStack;
         $createEntryEntity = static function () use ($controllerFactory, $requestStack, $targetCrudControllerFqcn, $targetEntityFqcn): ?object {
@@ -234,10 +228,32 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
         $fieldDto->setFormTypeOption('entry_options.entityDto', $editEntityDto);
         $fieldDto->setFormTypeOption('prototype_options.entityDto', $newEntityDto);
 
-        $prototypeEntity = $createEntryEntity();
-        if (null !== $prototypeEntity) {
-            $fieldDto->setFormTypeOptionIfNotSet('prototype_data', $prototypeEntity);
-            $fieldDto->setFormTypeOptionIfNotSet('entry_options.empty_data', $createEntryEntity);
+        // Symfony's empty_data is only evaluated on submission of a new entry.
+        // Falling back to the standard empty_data behavior preserves controllers that
+        // return null from createEntity(), without having to call it while rendering.
+        $fieldDto->setFormTypeOptionIfNotSet('entry_options.empty_data',
+            static fn (FormInterface $form): ?object => $createEntryEntity()
+                ?? ($form->isEmpty() && !$form->isRequired() ? null : new $targetEntityFqcn())
+        );
+
+        // Respect an explicit prototype_data option, and don't initialize prototypes
+        // when additions are disabled. A lazy prototype is generated via the existing
+        // CRUD URL only when the user explicitly clicks "Add new item".
+        if (array_key_exists('prototype_data', $fieldDto->getFormTypeOptions())
+            || true !== $fieldDto->getFormTypeOption('allow_add')
+            || false === $fieldDto->getFormTypeOption('prototype')) {
+            return;
+        }
+
+        $request = $this->requestStack->getMainRequest();
+        if (null !== $request && $request->isMethod('GET')
+            && $rootPropertyName === $request->query->get('__ea_collection_prototype')) {
+            $prototypeEntity = $createEntryEntity();
+            if (null !== $prototypeEntity) {
+                $fieldDto->setFormTypeOptionIfNotSet('prototype_data', $prototypeEntity);
+            }
+        } else {
+            $fieldDto->setCustomOption('lazyPrototype', true);
         }
     }
 

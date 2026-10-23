@@ -169,6 +169,9 @@
 
     {% set row_attr = row_attr|merge({
         'data-ea-collection-field': 'true',
+        'data-ea-collection-form-id': form.vars.id,
+        'data-ea-lazy-prototype': (form.vars.ea_vars.field.customOptions.get('lazyPrototype') ?? false) ? 'true' : 'false',
+        'data-ea-collection-prototype-field': form.vars.ea_vars.field.property,
         'data-entry-is-complex': (form.vars.ea_vars.field.customOptions.get('entryIsComplex') ?? false) ? 'true' : 'false',
         'data-allow-add': allow_add ? 'true' : 'false',
         'data-allow-delete': allow_delete ? 'true' : 'false',

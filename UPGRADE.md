@@ -55,7 +55,7 @@ The CSS of badges changed too: each color now defines `--badge-{color}-tone`,
 
 The 5.0 upgrade notes already said that the global `ea` Twig variable was removed,
 but it was still registered by mistake (and it holds the `AdminContextProvider` service
-nstead of the actual admin context). It's now removed for real. Use the `ea()` Twig
+instead of the actual admin context). It's now removed for real. Use the `ea()` Twig
 function instead.
 
 If a form theme extends an EasyAdmin template, call `ea()` directly inside the

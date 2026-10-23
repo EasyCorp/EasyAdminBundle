@@ -232,7 +232,12 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                         EA::CRUD_ACTION => $actionRouteConfig['actionName'],
                     ];
 
-                    $adminRoute = new Route($adminRoutePath, defaults: $defaults, methods: $actionRouteConfig['methods']);
+                    $adminRoute = new Route($adminRoutePath);
+                    // the framework-computed methods are applied first; if the user defined
+                    // an explicit "methods" key in the #[AdminRoute] options, applyAdminRouteOptions()
+                    // will overwrite them below
+                    $adminRoute->setMethods($actionRouteConfig['methods']);
+                    self::applyAdminRouteOptions($adminRoute, $actionRouteConfig['adminRouteOptions'] ?? [], $defaults);
                     $adminRoutes[$adminRouteName] = $adminRoute;
                     $addedRouteNames[$adminRouteName] = ['type' => 'crud', 'controllerFqcn' => $crudControllerFqcn, 'actionName' => $actionRouteConfig['actionName']];
                 }
@@ -448,49 +453,65 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     {
         $route = new Route($routePath);
 
-        $routeOptions = $adminRouteAttribute->options;
+        $defaults = [
+            '_controller' => $controllerFqcn.'::'.$methodName,
+            EA::ROUTE_CREATED_BY_EASYADMIN => true,
+            EA::DASHBOARD_CONTROLLER_FQCN => $dashboardFqcn,
+            EA::CRUD_CONTROLLER_FQCN => $controllerFqcn,
+            EA::CRUD_ACTION => $methodName,
+        ];
 
-        if (isset($routeOptions['requirements'])) {
-            $route->setRequirements($routeOptions['requirements']);
-        }
-        if (isset($routeOptions['host'])) {
-            $route->setHost($routeOptions['host']);
-        }
-        if (isset($routeOptions['methods'])) {
-            $route->setMethods($routeOptions['methods']);
-        }
-        if (isset($routeOptions['schemes'])) {
-            $route->setSchemes($routeOptions['schemes']);
-        }
-        if (isset($routeOptions['condition'])) {
-            $route->setCondition($routeOptions['condition']);
-        }
-
-        $defaults = $routeOptions['defaults'] ?? [];
-        if (isset($routeOptions['locale'])) {
-            $defaults['_locale'] = $routeOptions['locale'];
-        }
-        if (isset($routeOptions['format'])) {
-            $defaults['_format'] = $routeOptions['format'];
-        }
-        if (isset($routeOptions['stateless'])) {
-            $defaults['_stateless'] = $routeOptions['stateless'];
-        }
-        $defaults['_controller'] = $controllerFqcn.'::'.$methodName;
-        $defaults[EA::ROUTE_CREATED_BY_EASYADMIN] = true;
-        $defaults[EA::DASHBOARD_CONTROLLER_FQCN] = $dashboardFqcn;
-        $defaults[EA::CRUD_CONTROLLER_FQCN] = $controllerFqcn;
-        $defaults[EA::CRUD_ACTION] = $methodName;
-        $route->setDefaults($defaults);
-
-        if (isset($routeOptions['utf8'])) {
-            $routeOptions['options']['utf8'] = $routeOptions['utf8'];
-        }
-        if (isset($routeOptions['options'])) {
-            $route->setOptions($routeOptions['options']);
-        }
+        self::applyAdminRouteOptions($route, $adminRouteAttribute->options, $defaults);
 
         return $route;
+    }
+
+    /**
+     * Applies the options passed to an #[AdminRoute] attribute on a Symfony Route.
+     *
+     * The given $defaults are merged on top of any "defaults" defined in $options,
+     * so the framework-managed defaults (such as the controller FQCN) always win.
+     *
+     * @param array<string, mixed> $options
+     * @param array<string, mixed> $defaults
+     */
+    private static function applyAdminRouteOptions(Route $route, array $options, array $defaults): void
+    {
+        if (isset($options['requirements'])) {
+            $route->setRequirements($options['requirements']);
+        }
+        if (isset($options['host'])) {
+            $route->setHost($options['host']);
+        }
+        if (isset($options['methods'])) {
+            $route->setMethods($options['methods']);
+        }
+        if (isset($options['schemes'])) {
+            $route->setSchemes($options['schemes']);
+        }
+        if (isset($options['condition'])) {
+            $route->setCondition($options['condition']);
+        }
+
+        $mergedDefaults = array_merge($options['defaults'] ?? [], $defaults);
+        if (isset($options['locale'])) {
+            $mergedDefaults['_locale'] = $options['locale'];
+        }
+        if (isset($options['format'])) {
+            $mergedDefaults['_format'] = $options['format'];
+        }
+        if (isset($options['stateless'])) {
+            $mergedDefaults['_stateless'] = $options['stateless'];
+        }
+        $route->setDefaults($mergedDefaults);
+
+        $nativeRouteOptions = $options['options'] ?? [];
+        if (isset($options['utf8'])) {
+            $nativeRouteOptions['utf8'] = $options['utf8'];
+        }
+        if ([] !== $nativeRouteOptions) {
+            $route->setOptions($nativeRouteOptions);
+        }
     }
 
     /**
@@ -695,6 +716,10 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
 
                 // store the actual action name for the route generation
                 $customActionsConfig[$routeId]['actionName'] = $action;
+
+                // keep the full set of options so they can be applied to the generated
+                // Symfony Route later (requirements, host, schemes, condition, etc.)
+                $customActionsConfig[$routeId]['adminRouteOptions'] = $adminRouteInstance->options;
             }
         }
 
@@ -726,45 +751,15 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     {
         $route = new Route($routePath);
 
-        if (isset($routeOptions['requirements'])) {
-            $route->setRequirements($routeOptions['requirements']);
-        }
-        if (isset($routeOptions['host'])) {
-            $route->setHost($routeOptions['host']);
-        }
-        if (isset($routeOptions['methods'])) {
-            $route->setMethods($routeOptions['methods']);
-        }
-        if (isset($routeOptions['schemes'])) {
-            $route->setSchemes($routeOptions['schemes']);
-        }
-        if (isset($routeOptions['condition'])) {
-            $route->setCondition($routeOptions['condition']);
-        }
+        $defaults = [
+            '_controller' => $dashboardFqcn.'::index',
+            EA::ROUTE_CREATED_BY_EASYADMIN => true,
+            EA::DASHBOARD_CONTROLLER_FQCN => $dashboardFqcn,
+            EA::CRUD_CONTROLLER_FQCN => null,
+            EA::CRUD_ACTION => null,
+        ];
 
-        $defaults = $routeOptions['defaults'] ?? [];
-        if (isset($routeOptions['locale'])) {
-            $defaults['_locale'] = $routeOptions['locale'];
-        }
-        if (isset($routeOptions['format'])) {
-            $defaults['_format'] = $routeOptions['format'];
-        }
-        if (isset($routeOptions['stateless'])) {
-            $defaults['_stateless'] = $routeOptions['stateless'];
-        }
-        $defaults['_controller'] = $dashboardFqcn.'::index';
-        $defaults[EA::ROUTE_CREATED_BY_EASYADMIN] = true;
-        $defaults[EA::DASHBOARD_CONTROLLER_FQCN] = $dashboardFqcn;
-        $defaults[EA::CRUD_CONTROLLER_FQCN] = null;
-        $defaults[EA::CRUD_ACTION] = null;
-        $route->setDefaults($defaults);
-
-        if (isset($routeOptions['utf8'])) {
-            $routeOptions['options']['utf8'] = $routeOptions['utf8'];
-        }
-        if (isset($routeOptions['options'])) {
-            $route->setOptions($routeOptions['options']);
-        }
+        self::applyAdminRouteOptions($route, $routeOptions, $defaults);
 
         return $route;
     }

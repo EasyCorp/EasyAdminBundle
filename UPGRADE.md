@@ -1,7 +1,7 @@
 Upgrade Guide
 =============
 
-## EasyAdmin 5.7.1
+## EasyAdmin 5.8.0
 
 ### `createEntity()` Can Return `null`
 
@@ -14,7 +14,7 @@ with its `empty_data` option:
 // Before (5.0 - 5.7.0)
 public function createEntity(string $entityFqcn): object;
 
-// After (5.7.1)
+// After (5.8.0)
 public function createEntity(string $entityFqcn): ?object;
 ```
 
@@ -23,8 +23,6 @@ actions call `$this->createEntity(...)`, static analysis tools now require you t
 check for `null`. When `createEntity()` returns `null`, the entity instance is `null`
 in the `new` page until the form is submitted, so all your callables that receive the
 entity (e.g. in `ChoiceField::setChoices()` or `Action::linkToUrl()`) must accept `null`.
-
-## EasyAdmin 5.7.0
 
 ### The Color of Badges Is Now Defined With the `color` Prop
 
@@ -50,6 +48,8 @@ The CSS of badges changed too: each color now defines `--badge-{color}-tone`,
 `--badge-border`, `--badge-box-shadow`, `--badge-{color}-box-shadow`,
 `--badge-boolean-*`, `--badge-outline-box-shadow`, `--badge-outline-color` and
 `--field-language-badge-border-color` variables were removed.
+
+## EasyAdmin 5.7.0
 
 ### The `ea` Global Twig Variable Is Removed
 

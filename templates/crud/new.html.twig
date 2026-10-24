@@ -1,5 +1,9 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% types {
+    pageName: 'string',
+    templateName: 'string',
+    entity: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto',
+    new_form: '\\Symfony\\Component\\Form\\FormView',
+} %}
 {% set ea = ea() %}
 {% extends ea().templatePath('layout') %}
 {% form_theme new_form with ea.crud.formThemes only %}

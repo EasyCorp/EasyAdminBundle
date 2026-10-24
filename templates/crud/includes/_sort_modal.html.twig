@@ -1,4 +1,13 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{% types {
+    pageName: 'string',
+    templateName: 'string',
+    entities: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\EntityCollection',
+    paginator: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Orm\\EntityPaginator',
+    global_actions: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\ActionCollection',
+    batch_actions: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\ActionCollection',
+    filters: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\FilterCollection',
+    sortable_fields: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\FieldDto[]',
+} %}
 {% set ea = ea() %}
 {% set ea_sort_asc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::ASC') %}
 {% set ea_sort_desc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::DESC') %}

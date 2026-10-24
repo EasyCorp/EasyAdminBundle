@@ -1,6 +1,7 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
-{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% types {
+    field: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\FieldDto',
+    entity: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto',
+} %}
 {# Regardless of the field options, country names are always stored
    in field.formattedValue as ['alpha2CountryCode' => 'countryName'] #}
 {% set show_flag = field.customOptions.get('showFlag') %}

@@ -1,6 +1,12 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{# @var entities \EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection #}
-{# @var paginator \EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator #}
+{% types {
+    pageName: 'string',
+    templateName: 'string',
+    entities: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\EntityCollection',
+    paginator: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Orm\\EntityPaginator',
+    global_actions: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\ActionCollection',
+    batch_actions: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\ActionCollection',
+    filters: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\FilterCollection',
+} %}
 {% set ea = ea() %}
 {% extends ea().templatePath('layout') %}
 {% trans_default_domain ea.i18n.translationDomain %}

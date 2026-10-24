@@ -1,5 +1,7 @@
-{# @var group \EasyCorp\Bundle\EasyAdminBundle\Dto\ActionGroupDto #}
-{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% types {
+    group: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\ActionGroupDto',
+    entity: '?\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto',
+} %}
 {% set has_main_action = group.hasMainAction %}
 {% set main_action = group.mainAction %}
 

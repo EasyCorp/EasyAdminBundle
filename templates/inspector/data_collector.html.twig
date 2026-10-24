@@ -1,3 +1,15 @@
+{% types {
+    token: 'string',
+    profile: '\\Symfony\\Component\\HttpKernel\\Profiler\\Profile',
+    collector: '\\EasyCorp\\Bundle\\EasyAdminBundle\\DataCollector\\EasyAdminDataCollector',
+    panel: 'string',
+    page: 'string',
+    request: '\\Symfony\\Component\\HttpFoundation\\Request',
+    templates: 'array',
+    is_ajax: 'bool',
+    profiler_markup_version: 'int',
+    profile_type: 'string',
+} %}
 {% extends '@WebProfiler/Profiler/layout.html.twig' %}
 
 {% block head %}

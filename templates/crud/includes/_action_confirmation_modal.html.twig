@@ -1,4 +1,3 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# Hidden form for POST-based actions (like DELETE) with CSRF protection #}
 <form class="d-none" method="post" id="action-confirmation-form">
     {% guard function csrf_token %}

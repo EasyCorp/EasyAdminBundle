@@ -1,4 +1,4 @@
-{# @var assets \EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto[] #}
+{% types {assets: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\AssetDto[]'} %}
 {% for reprise_asset in assets %}
     {% guard function reprise_entry_link_tags %}
         {{ reprise_entry_link_tags(reprise_asset.value, reprise_asset.reprisePackageName) }}

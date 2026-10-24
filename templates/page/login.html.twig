@@ -1,4 +1,3 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider #}
 {% set ea = ea() %}
 {% extends null != ea ? ea.templatePath('layout') : '@EasyAdmin/page/login_minimal.html.twig' %}
 {% trans_default_domain null != ea ? ea.i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}

@@ -78,6 +78,14 @@ Other notable changes of the new design:
   so wide tables scroll inside it instead of moving the whole page. Update any custom CSS
   that selected the table as a direct child of `.content-body`.
 
+### `AdminRouterSubscriber` Gets Its Services From a Service Locator
+
+`AdminRouterSubscriber` now receives a single service locator in its constructor
+instead of its services, so they are only built on EasyAdmin requests. Passing
+the services as separate arguments still works, but it's deprecated and it will
+not be possible in EasyAdmin 6.0. This only affects you if you create this
+subscriber yourself.
+
 ## EasyAdmin 5.8.0
 
 ### `createEntity()` Can Return `null`

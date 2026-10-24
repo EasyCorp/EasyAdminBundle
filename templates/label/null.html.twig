@@ -1,3 +1,7 @@
+{% types {
+    field: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\FieldDto',
+    entity: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto',
+} %}
 {% if not (ea().crud.areNullValuesHidden ?? false) %}
     <twig:ea:Badge variant="outline">{{ 'label.null'|trans(domain: 'EasyAdminBundle') }}</twig:ea:Badge>
 {% endif %}

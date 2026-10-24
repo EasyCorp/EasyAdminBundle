@@ -1,4 +1,4 @@
-{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
+{% types {field: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\FieldDto'} %}
 {# this template renders the closing HTML tags of the element opened by 'crud/detail/column_group_open' #}
 {# if columns are inside tabs, don't add a '.row' element because the tab pane already opens it #}
 {% if not field.getFormTypeOption('ea_is_inside_tab')|default(false) %}

@@ -1,5 +1,7 @@
-{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
-{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% types {
+    field: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\FieldDto',
+    entity: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto',
+} %}
 {# this template renders the label and value of a regular (non-layout) field on the 'detail' page #}
 {% set has_help = field.help is ea_is_not_empty %}
 

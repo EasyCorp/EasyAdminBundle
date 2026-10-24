@@ -6,9 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -53,13 +51,8 @@ class CategoryCrudController extends AbstractCrudController
     }
 
     #[AdminRoute]
-    public function adminOnly(AdminContext $context): Response
+    public function adminOnly(): Response
     {
-        // check role directly for global actions (setPermission configures ROLE_ADMIN for this action)
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            throw new ForbiddenActionException($context);
-        }
-
         return new Response('Admin only page content');
     }
 }

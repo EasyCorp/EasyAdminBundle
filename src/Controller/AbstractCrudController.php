@@ -451,6 +451,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
+        if (!$this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::BATCH_DELETE, 'entity' => null, 'entityFqcn' => $context->getEntity()->getFqcn()])) {
+            throw new ForbiddenActionException($context);
+        }
+
         if (!$this->isCsrfTokenValid('ea-batch-action-'.Action::BATCH_DELETE.'-'.$batchActionDto->getEntityFqcn(), $batchActionDto->getCsrfToken())) {
             return $this->redirectToRoute($context->getDashboardRouteName());
         }
@@ -466,6 +470,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('doctrine')->getManagerForClass($batchActionDto->getEntityFqcn());
         $repository = $entityManager->getRepository($batchActionDto->getEntityFqcn());
+
+        // the submitted IDs are user input, so every entity is authorized before deleting any of
+        // them; otherwise a batch mixing allowed and forbidden entities would be deleted partially
+        $authorizedEntityIds = [];
         foreach ($batchActionDto->getEntityIds() as $entityId) {
             $entityInstance = $repository->find($entityId);
             if (null === $entityInstance) {
@@ -477,10 +485,24 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                 throw new ForbiddenActionException($context);
             }
 
-            if (!$entityDto->isAccessible()) {
+            // newWithInstance() doesn't evaluate the entity permission, so it must be checked here
+            if (!$this->isGranted(Permission::EA_ACCESS_ENTITY, $entityDto)) {
                 throw new InsufficientEntityPermissionException($context);
             }
 
+            $authorizedEntityIds[] = $entityId;
+        }
+
+        // the authorized entities stay managed until they are deleted, which makes each flush()
+        // of deleteEntity() slower as the batch grows; detaching them is not an option because
+        // other managed objects (e.g. collections loaded by listeners or voters) may reference them
+        foreach ($authorizedEntityIds as $entityId) {
+            $entityInstance = $repository->find($entityId);
+            if (null === $entityInstance) {
+                continue;
+            }
+
+            $entityDto = $context->getEntity()->newWithInstance($entityInstance);
             $event = new BeforeEntityDeletedEvent($entityInstance);
             $this->container->get('event_dispatcher')->dispatch($event);
             if ($event->isPropagationStopped()) {

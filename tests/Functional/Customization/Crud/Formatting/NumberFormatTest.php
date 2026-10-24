@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Fo
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Formatting\NumberFormatTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\BlogPostFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,29 +35,16 @@ class NumberFormatTest extends AbstractCrudTestCase
 
     public function testNumberFormatConfiguration(): void
     {
-        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $entity = BlogPostFactory::createOne(['rating' => '4.75', 'views' => 5000]);
+
+        $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
+        $this->assertIndexPageEntityCount(1);
 
-        // verify data is displayed
-        $this->assertIndexPageEntityCount(20);
-
-        // get first row with number data
-        $firstRow = $crawler->filter('tbody tr')->first();
-        $priceCell = $firstRow->filter('td[data-column="price"]');
-
-        // verify number columns exist and have content
-        if ($priceCell->count() > 0) {
-            $priceText = trim($priceCell->text());
-            // price with %.2f format should show 2 decimal places
-            static::assertMatchesRegularExpression(
-                '/\d+[.,]\d{2}/',
-                $priceText,
-                'Price should be formatted with 2 decimal places'
-            );
-        }
-
-        // verify table structure
-        static::assertSelectorExists('tbody tr');
+        // the '%.2f' format shows two decimal places, even for integer values
+        $rowSelector = $this->getIndexEntityRowSelector($entity->getId());
+        static::assertSelectorTextSame($rowSelector.' td[data-column="rating"]', '4.75');
+        static::assertSelectorTextSame($rowSelector.' td[data-column="views"]', '5000.00');
     }
 }

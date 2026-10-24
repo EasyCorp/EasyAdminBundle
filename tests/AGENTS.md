@@ -23,12 +23,16 @@ Each is a real, self-contained Symfony app with its own Kernel, config, controll
 - **SecuredApp** — security and permission tests
 - **AdminRouteApp** — routing and i18n (ships a separate `I18nKernel.php`)
 
+Write tests against the blog entities of each app (`BlogPost`, `Category` and `User` in DefaultApp; `BlogPost` and `Category` in CustomizationApp) so they're easy to read. If a test needs a column or relation they don't have, add it to them. Only add an entity to `Entity/Synthetic/` when the test needs a shape the blog can't have (`CompositeKeyTestEntity`, `ConstructorArgsTestEntity`) or a catalog of one column per type (`FieldTestEntity`, `FilterTestEntity`, `FormTestEntity`, `DoctrineTypesTestEntity`).
+
+Put CRUD controllers in a folder named after the feature they test (`Controller/Actions/`, `Controller/Sort/`, …) and keep `Controller/Synthetic/` for the synthetic entities. EasyAdmin builds route names from the short class name, so two controllers with the same short name in different namespaces fail unless one of them sets its route name with `#[AdminRoute]`.
+
 ## Base classes and helpers (`src/Test/`)
 
 These are **public, stable API** — bundle users rely on them too, so don't break them.
 
 - Extend **`AbstractCrudTestCase`** for CRUD controller tests. It extends `WebTestCase`, composes the `CrudTest*` traits, and exposes `$this->client`, `$this->entityManager`, and `$this->adminUrlGenerator`. Subclasses implement `getControllerFqcn()` and `getDashboardFqcn()`.
-- Extend **`tests/Functional/AbstractFieldFunctionalTest.php`** for tests of individual fields (it builds on `AbstractCrudTestCase`).
+- Extend **`tests/Functional/AbstractFieldFunctionalTestCase.php`** for tests of individual fields (it builds on `AbstractCrudTestCase`).
 - Extend **`WebTestCase`** directly for simpler functional tests (e.g. dashboards).
 - Extend **`PHPUnit\Framework\TestCase`** for unit tests.
 
@@ -48,20 +52,23 @@ Never invoke a controller method directly in PHP. Browse the controller's URL wi
 
 ## Fixtures
 
-- Load data programmatically: instantiate entities, then `$entityManager->persist()` / `flush()`. No YAML fixtures.
-- Apps that need seed data ship Doctrine fixtures in `tests/Functional/Apps/<App>/src/DataFixtures/AppFixtures.php`, loaded via DoctrineFixturesBundle (currently `DefaultApp` and `CustomizationApp`; the other apps have none).
+- Every test starts with empty tables and creates only the data it needs with the Foundry factories in `tests/Functional/Apps/<App>/src/Factory/` (`DefaultApp`, also used by `SecuredApp`, and `CustomizationApp`). There are no shared fixtures.
+- DAMA DoctrineTestBundle rolls back each test's transaction, so don't clean up rows in `tearDown()`.
+- Factories only fill the required columns. Set explicitly every value a test asserts, and never assert on a factory default.
+- Never hard-code ids or counts: use the ids of the objects you created and count the rows you created. Create rows in the order the test asserts them.
+- Auto-refresh is disabled because it needs PHP 8.4, so objects aren't refreshed after a request. To check what a request changed, clear the entity manager and find the row again by id.
 - Use simple, unrealistic data (`'Action 1'`, `'Field 1'`, …), not lifelike values.
 
 ## Conventions
 
 - Add a `void` return type to every test method.
 - Name tests descriptively; don't duplicate the `test` prefix inside the name.
-- Use `@dataProvider` / `@testWith` to avoid duplicated tests.
+- Use the `#[DataProvider]` / `#[TestWith]` attributes to avoid duplicated tests.
 - Properties before methods; `setUp()`/`tearDown()` right after any constructor.
 
 ## Running tests
 
-`make tests` accepts an optional `ARGS` to scope the run, while keeping the deprecation baseline and cache reset:
+`make tests` accepts an optional `ARGS` to scope the run, while keeping the test cache reset:
 
 ```bash
 make tests                              # full suite
@@ -70,4 +77,22 @@ make tests ARGS="--filter=testFoo"      # one test
 make tests ARGS="tests/Unit --filter=testFoo"  # combined
 ```
 
-Prefer this over a raw `./vendor/bin/simple-phpunit` run, which skips the deprecation baseline (`tests/baseline-ignore.txt`) and the cache reset.
+Prefer this over a raw `vendor/bin/phpunit` run, which skips the cache reset.
+
+`make tests-parallel` runs the suite with ParaTest. The main process compiles the test app containers once and the workers share them, but each worker gets its own SQLite database (its path includes ParaTest's `TEST_TOKEN`). Tests must not share other files: use random names for temporary directories, not `uniqid()`.
+
+## Database servers
+
+The test apps use SQLite by default. Set `EASYADMIN_TEST_DATABASE_URL` to run them on a database server: each app gets its own database (the URL's database name plus `_default`, `_secured` or `_customization`, plus ParaTest's `TEST_TOKEN`), which the bootstrap drops and creates on every run. AdminRouteApp always uses an in-memory SQLite database (it has no tables). The URL must include `serverVersion`, because the database doesn't exist yet when the bootstrap reads the platform.
+
+`compose.yaml` defines PostgreSQL, MySQL and MariaDB servers with throwaway data, and `make tests-db` starts one of them (Docker required) and runs the functional tests on it:
+
+```bash
+make tests-db DB=postgres                                         # also: mysql, mariadb
+make tests-db DB=mysql ARGS="tests/Functional/Filters/"           # one directory
+make tests-db-down                                                # stop the servers
+```
+
+CI runs the same command for the three servers. To use ParaTest, pass the URL of the `TEST_DATABASE_URL_*` variables of the `Makefile` yourself: `EASYADMIN_TEST_DATABASE_URL='...' make tests-parallel ARGS="--testsuite Functional"`.
+
+Write tests that pass on every database: sort on columns whose values are unique (PostgreSQL returns rows without `ORDER BY` in any order), and don't rely on the database rules for `NULL` sorting or text case. When the result really depends on the database, use `tests/Functional/DatabasePlatformTrait.php` (`isPostgreSql()`, `sortNullsLikeTheDatabase()`).

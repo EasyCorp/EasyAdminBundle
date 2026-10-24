@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\TextEditorType;
 
-class TextEditorFieldTest extends AbstractFieldTest
+class TextEditorFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

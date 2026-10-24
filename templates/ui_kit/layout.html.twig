@@ -1,0 +1,163 @@
+{# the UI Kit is a development tool, so its own text isn't translated (like the profiler panel) #}
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block body_class 'page-content ea-ui-kit' %}
+
+{% block head_stylesheets %}
+    {{ parent() }}
+    {% guard function csp_nonce %}
+    <style nonce="{{ csp_nonce('style') }}">
+    {% else %}
+    <style>
+    {% endguard %}
+        /* syntax highlighting colors of the Symfony Docs (based on the GitHub light and dark themes) */
+        .ea-ui-kit {
+            --ea-ui-kit-code-bg: #fafafa;
+            --ea-ui-kit-hl-comment: #6a737d;
+            --ea-ui-kit-hl-keyword: #d73a49;
+            --ea-ui-kit-hl-name: #22863a;
+            --ea-ui-kit-hl-attr: #6f42c1;
+            --ea-ui-kit-hl-string: #032f62;
+            --ea-ui-kit-hl-literal: #005cc5;
+        }
+        .ea-dark-scheme.ea-ui-kit {
+            --ea-ui-kit-code-bg: var(--gray-800);
+            --ea-ui-kit-hl-comment: #8b949e;
+            --ea-ui-kit-hl-keyword: #ff7b72;
+            --ea-ui-kit-hl-name: #7ee787;
+            --ea-ui-kit-hl-attr: #d2a8ff;
+            --ea-ui-kit-hl-string: #a5d6ff;
+            --ea-ui-kit-hl-literal: #79c0ff;
+        }
+
+        .ea-ui-kit-breadcrumb {
+            font-size: var(--font-size-sm);
+            padding-block-start: var(--ea-sp-12);
+        }
+        .ea-ui-kit-breadcrumb .breadcrumb {
+            margin: 0;
+        }
+        .ea-ui-kit .ea-ui-kit-breadcrumb + .content-header {
+            padding-block-start: var(--ea-sp-4);
+        }
+
+        /* the content is a grid item, so without this the long lines of code make the whole page
+           wider than the window instead of scrolling inside their own code block */
+        .ea-ui-kit .content {
+            min-inline-size: 0;
+        }
+        .ea-ui-kit-example,
+        .ea-ui-kit-example-group,
+        .ea-ui-kit-reference {
+            margin-block-end: var(--ea-sp-16);
+        }
+        .ea-ui-kit-example h2,
+        .ea-ui-kit-example-group h2,
+        .ea-ui-kit-reference h2 {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            margin-block-end: var(--ea-sp-2);
+        }
+        .ea-ui-kit-example-group > p {
+            margin-block-end: var(--ea-sp-12);
+        }
+        .ea-ui-kit-example h3 {
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            margin-block-end: var(--ea-sp-2);
+        }
+        .ea-ui-kit-divider {
+            border-color: var(--border-color);
+            margin-block: var(--ea-sp-24);
+            opacity: 1;
+        }
+        .ea-ui-kit-reference > h2 + div,
+        .ea-ui-kit-sub-component > h3 + div {
+            margin-block-start: var(--ea-sp-8);
+        }
+        .ea-ui-kit-reference > div + div,
+        .ea-ui-kit-sub-component > div + div {
+            margin-block-start: var(--ea-sp-12);
+        }
+        .ea-ui-kit-sub-component {
+            margin-block-start: var(--ea-sp-16);
+        }
+        .ea-ui-kit-sub-component h3 {
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+        }
+        .ea-ui-kit-reference thead th {
+            padding: var(--ea-sp-6) var(--ea-sp-4);
+            white-space: nowrap;
+        }
+        /* the props and blocks reference uses the monospaced font but not the colors of inline code */
+        .ea-ui-kit-reference code {
+            background: none;
+            border: 0;
+            color: inherit;
+            font-size: inherit;
+            padding: 0;
+        }
+        .ea-ui-kit-reference .hl-string {
+            color: var(--ea-ui-kit-hl-string);
+        }
+        .ea-ui-kit-reference .hl-literal {
+            color: var(--ea-ui-kit-hl-literal);
+        }
+        .ea-ui-kit-preview {
+            border: var(--border-width) solid var(--border-color);
+            border-start-start-radius: var(--border-radius-lg);
+            border-start-end-radius: var(--border-radius-lg);
+            padding: var(--ea-sp-12);
+        }
+        /* the sidebar parts only look right with the width they have in the real sidebar */
+        .ea-ui-kit-preview-content[data-component="sidebar"] {
+            max-inline-size: var(--sidebar-max-width);
+        }
+        .ea-ui-kit-source {
+            background: var(--ea-ui-kit-code-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-block-start: 0;
+            border-end-start-radius: var(--border-radius-lg);
+            border-end-end-radius: var(--border-radius-lg);
+            font-size: var(--font-size-sm);
+            line-height: 1.8;
+            margin: 0;
+            overflow-x: auto;
+            padding: var(--ea-sp-8) var(--ea-sp-12);
+        }
+        .ea-ui-kit-source-note {
+            color: var(--text-muted);
+            font-size: var(--font-size-xs);
+            margin-block: var(--ea-sp-4) 0;
+        }
+        .ea-ui-kit-source code {
+            color: var(--text-color);
+        }
+        .ea-ui-kit-source .hl-comment {
+            color: var(--ea-ui-kit-hl-comment);
+        }
+        .ea-ui-kit-source .hl-keyword {
+            color: var(--ea-ui-kit-hl-keyword);
+        }
+        .ea-ui-kit-source .hl-name {
+            color: var(--ea-ui-kit-hl-name);
+        }
+        .ea-ui-kit-source .hl-attr {
+            color: var(--ea-ui-kit-hl-attr);
+        }
+        .ea-ui-kit-source .hl-string {
+            color: var(--ea-ui-kit-hl-string);
+        }
+    </style>
+{% endblock %}
+
+{% block content_header_wrapper %}
+    <nav class="ea-ui-kit-breadcrumb" aria-label="Breadcrumb">
+        <ol class="breadcrumb">
+            {% block breadcrumb_items %}{% endblock %}
+        </ol>
+    </nav>
+
+    {{ parent() }}
+{% endblock %}

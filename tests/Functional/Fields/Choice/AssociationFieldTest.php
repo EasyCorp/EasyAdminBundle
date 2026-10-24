@@ -2,30 +2,20 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Choice;
 
-use Doctrine\ORM\EntityRepository;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FieldRelatedEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FieldTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FieldRelatedEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use Symfony\Component\DomCrawler\Crawler;
 
-class AssociationFieldTest extends AbstractFieldFunctionalTest
+class AssociationFieldTest extends AbstractFieldFunctionalTestCase
 {
-    protected EntityRepository $fieldRelatedEntities;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->fieldRelatedEntities = $this->entityManager->getRepository(FieldRelatedEntity::class);
-    }
-
     public function testManyToOneAssociationDisplaysOnIndex(): void
     {
-        $relatedEntity = $this->createRelatedEntity('Related Entity for Index');
+        $category = CategoryFactory::createOne(['name' => 'Category 1']);
         $entity = $this->createFieldTestEntity([
-            'manyToOneAssociation' => $relatedEntity,
+            'manyToOneAssociation' => $category,
         ]);
 
         $crawler = $this->client->request('GET', $this->generateIndexUrlSortedByIdDesc());
@@ -38,7 +28,7 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
 
         $cellText = $associationFieldCell->text();
         static::assertStringContainsString(
-            'Related Entity for Index',
+            'Category 1',
             $cellText,
             'ManyToOne association should display the related entity name'
         );
@@ -46,11 +36,11 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
 
     public function testManyToManyAssociationDisplaysOnIndex(): void
     {
-        $relatedEntity1 = $this->createRelatedEntity('Related M2M 1');
-        $relatedEntity2 = $this->createRelatedEntity('Related M2M 2');
+        $category1 = CategoryFactory::createOne(['name' => 'Category 1']);
+        $category2 = CategoryFactory::createOne(['name' => 'Category 2']);
         $entity = $this->createFieldTestEntity([]);
-        $entity->addManyToManyAssociation($relatedEntity1);
-        $entity->addManyToManyAssociation($relatedEntity2);
+        $entity->addManyToManyAssociation($category1);
+        $entity->addManyToManyAssociation($category2);
         $this->entityManager->flush();
 
         $crawler = $this->client->request('GET', $this->generateIndexUrlSortedByIdDesc());
@@ -64,16 +54,16 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
         $cellText = $associationFieldCell->text();
         // manyToMany typically shows as a list or comma-separated
         static::assertTrue(
-            str_contains($cellText, 'Related M2M 1') || str_contains($cellText, 'Related M2M 2') || str_contains($cellText, '2'),
+            str_contains($cellText, 'Category 1') || str_contains($cellText, 'Category 2') || str_contains($cellText, '2'),
             'ManyToMany association should display related entities or count'
         );
     }
 
     public function testManyToOneAssociationDisplaysOnDetail(): void
     {
-        $relatedEntity = $this->createRelatedEntity('Related Entity for Detail');
+        $category = CategoryFactory::createOne(['name' => 'Category 1']);
         $entity = $this->createFieldTestEntity([
-            'manyToOneAssociation' => $relatedEntity,
+            'manyToOneAssociation' => $category,
         ]);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
@@ -90,7 +80,7 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
                 $fieldValue = $groupCrawler->filter('.field-value');
                 $valueText = $fieldValue->text();
                 static::assertStringContainsString(
-                    'Related Entity for Detail',
+                    'Category 1',
                     $valueText,
                     'ManyToOne association should display the related entity name on detail page'
                 );
@@ -103,11 +93,11 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
 
     public function testManyToManyAssociationDisplaysOnDetail(): void
     {
-        $relatedEntity1 = $this->createRelatedEntity('M2M Detail Entity 1');
-        $relatedEntity2 = $this->createRelatedEntity('M2M Detail Entity 2');
+        $category1 = CategoryFactory::createOne(['name' => 'Category 1']);
+        $category2 = CategoryFactory::createOne(['name' => 'Category 2']);
         $entity = $this->createFieldTestEntity([]);
-        $entity->addManyToManyAssociation($relatedEntity1);
-        $entity->addManyToManyAssociation($relatedEntity2);
+        $entity->addManyToManyAssociation($category1);
+        $entity->addManyToManyAssociation($category2);
         $this->entityManager->flush();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
@@ -125,8 +115,8 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
                 $valueText = $fieldValue->text();
                 // manyToMany should display related entities
                 static::assertTrue(
-                    str_contains($valueText, 'M2M Detail Entity 1')
-                    || str_contains($valueText, 'M2M Detail Entity 2')
+                    str_contains($valueText, 'Category 1')
+                    || str_contains($valueText, 'Category 2')
                     || str_contains($valueText, '2'),
                     'ManyToMany association should display related entities or count on detail page'
                 );
@@ -157,11 +147,11 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
 
     public function testManyToOneAssociationSubmission(): void
     {
-        $relatedEntity = $this->createRelatedEntity('Related for Submission');
+        $category = CategoryFactory::createOne(['name' => 'Category 1']);
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
         $form = $crawler->filter('form[name="FieldTestEntity"]')->form();
-        $form['FieldTestEntity[manyToOneAssociation]'] = $relatedEntity->getId();
+        $form['FieldTestEntity[manyToOneAssociation]'] = $category->getId();
         $form['FieldTestEntity[slugField]'] = 'association-test-submission';
 
         $this->client->submit($form);
@@ -169,22 +159,22 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
         $entity = $this->fieldTestEntities->findOneBy(['slugField' => 'association-test-submission']);
         static::assertNotNull($entity, 'Entity should be created');
         static::assertNotNull($entity->getManyToOneAssociation(), 'ManyToOne association should be set');
-        static::assertSame($relatedEntity->getId(), $entity->getManyToOneAssociation()->getId());
+        static::assertSame($category->getId(), $entity->getManyToOneAssociation()->getId());
     }
 
     public function testManyToOneAssociationEdit(): void
     {
-        $relatedEntity1 = $this->createRelatedEntity('Related Edit 1');
-        $relatedEntity2 = $this->createRelatedEntity('Related Edit 2');
+        $category1 = CategoryFactory::createOne(['name' => 'Category 1']);
+        $category2 = CategoryFactory::createOne(['name' => 'Category 2']);
         $entity = $this->createFieldTestEntity([
-            'manyToOneAssociation' => $relatedEntity1,
+            'manyToOneAssociation' => $category1,
             'slugField' => 'association-edit-test',
         ]);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
         $form = $crawler->filter('form[name="FieldTestEntity"]')->form();
-        $form['FieldTestEntity[manyToOneAssociation]'] = $relatedEntity2->getId();
+        $form['FieldTestEntity[manyToOneAssociation]'] = $category2->getId();
 
         $this->client->submit($form);
 
@@ -192,7 +182,7 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
         $updatedEntity = $this->fieldTestEntities->find($entity->getId());
         static::assertNotNull($updatedEntity->getManyToOneAssociation());
         static::assertSame(
-            $relatedEntity2->getId(),
+            $category2->getId(),
             $updatedEntity->getManyToOneAssociation()->getId(),
             'ManyToOne association should be updated'
         );
@@ -215,7 +205,7 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
         // null association should render as empty, dash, or empty link area
         $cellText = trim($associationFieldCell->text());
         static::assertTrue(
-            '' === $cellText || '-' === $cellText || !str_contains($cellText, 'Related'),
+            '' === $cellText || '-' === $cellText || !str_contains($cellText, 'Category'),
             'Null ManyToOne association should render as empty or dash'
         );
     }
@@ -242,9 +232,8 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
 
     public function testAssociationFieldAutocompleteEndpoint(): void
     {
-        // ensure related entities exist
-        $this->createRelatedEntity('Autocomplete Test 1');
-        $this->createRelatedEntity('Autocomplete Test 2');
+        CategoryFactory::createOne(['name' => 'Category 1']);
+        CategoryFactory::createOne(['name' => 'Category 2']);
 
         $autocompleteUrl = $this->generateAutocompleteUrl();
 
@@ -261,13 +250,17 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
         $data = json_decode($response->getContent(), true);
         static::assertIsArray($data, 'Response should be valid JSON');
         static::assertArrayHasKey('next_page', $data, 'Response should contain next_page key');
+        static::assertSame(
+            ['Category 1', 'Category 2'],
+            array_column($data['results'], 'entityAsString'),
+        );
     }
 
     public function testAssociationFieldAutocompleteFiltersResults(): void
     {
         // create entities with distinct names
-        $this->createRelatedEntity('Unique Alpha Entity');
-        $this->createRelatedEntity('Common Beta Entity');
+        CategoryFactory::createOne(['name' => 'Unique Alpha Category']);
+        CategoryFactory::createOne(['name' => 'Common Beta Category']);
 
         $autocompleteUrl = $this->generateAutocompleteUrl('Unique Alpha');
 
@@ -278,17 +271,7 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
         static::assertTrue($response->isSuccessful());
         static::assertArrayHasKey('results', $data);
 
-        // should find at least the entity matching the query
-        if (\count($data['results']) > 0) {
-            $found = false;
-            foreach ($data['results'] as $result) {
-                if (str_contains($result['entityAsString'], 'Unique Alpha')) {
-                    $found = true;
-                    break;
-                }
-            }
-            static::assertTrue($found, 'Autocomplete should return matching entity');
-        }
+        static::assertSame(['Unique Alpha Category'], array_column($data['results'], 'entityAsString'));
     }
 
     public function testAssociationFieldHasCorrectFormWidget(): void
@@ -301,21 +284,7 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
     }
 
     /**
-     * Creates a new FieldRelatedEntity for testing.
-     */
-    protected function createRelatedEntity(string $name): FieldRelatedEntity
-    {
-        $entity = new FieldRelatedEntity();
-        $entity->setName($name);
-
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
-
-        return $entity;
-    }
-
-    /**
-     * Generate the autocomplete URL for FieldRelatedEntity.
+     * Generate the autocomplete URL for Category.
      */
     private function generateAutocompleteUrl(?string $query = null, int $page = 1): string
     {
@@ -336,7 +305,7 @@ class AssociationFieldTest extends AbstractFieldFunctionalTest
             null,
             $options,
             DashboardController::class,
-            FieldRelatedEntityCrudController::class
+            CategoryCrudController::class
         );
     }
 }

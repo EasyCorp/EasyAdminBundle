@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class CollectionFieldTest extends AbstractFieldTest
+class CollectionFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

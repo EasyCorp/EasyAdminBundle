@@ -1,0 +1,14 @@
+{# Custom contents and size
+   Use the body block for any contents. The size option makes the window
+   smaller (sm) or bigger (lg, xl). #}
+<twig:ea:Modal:Trigger target="#ui-kit-shipping-modal" icon="internal:detail">Shipping details</twig:ea:Modal:Trigger>
+
+<twig:ea:Modal id="ui-kit-shipping-modal" size="lg" title="Shipping details">
+    <twig:block name="body">
+        <p>Order #10482 will be delivered by FastShip Express.</p>
+        <p>Tracking number: 1Z 999 AA1 01 2345 6784</p>
+    </twig:block>
+    <twig:block name="footer">
+        <twig:ea:Modal:Close>Close</twig:ea:Modal:Close>
+    </twig:block>
+</twig:ea:Modal>

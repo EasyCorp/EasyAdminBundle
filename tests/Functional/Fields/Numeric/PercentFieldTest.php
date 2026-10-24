@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Numeric;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class PercentFieldTest extends AbstractFieldFunctionalTest
+class PercentFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testPercentFieldDisplaysOnIndex(): void
     {
@@ -78,7 +78,7 @@ class PercentFieldTest extends AbstractFieldFunctionalTest
 
         $this->client->submit($form);
 
-        $entity = $this->fieldTestEntities->findOneBy([], ['id' => 'DESC']);
+        $entity = $this->fieldTestEntities->findOneBy(['slugField' => 'percent-test']);
         static::assertNotNull($entity, 'Entity should be created');
         // stored as decimal: 50% = 0.5
         static::assertEquals(0.5, $entity->getPercentField(), '', 0.01);

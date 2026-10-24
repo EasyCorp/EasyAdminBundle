@@ -2,13 +2,16 @@
    is based on GitHub Primer's UnderlineNav component:
    https://primer.style/product/components/underline-nav/ #}
 {% props
-    tabs = null, # FieldDto[] of the tabs created with FormField::addTab(); when null, the content block is rendered instead, so you can pass your own ea:Tabs:Item elements
-    translationDomain = 'messages', # domain used to translate the tab labels
+    ## FieldDto[]|null The tabs created with `FormField::addTab()`; when null, the `content` block is rendered instead, so you can pass your own `Tabs:Item` components.
+    tabs = null,
+    ## string The translation domain used to translate the tab labels.
+    translationDomain = 'messages',
 %}
 
 <div {{ attributes.defaults({class: 'form-tabs-tablist'}) }}>
     <ul class="nav nav-tabs">
         {% if tabs is null %}
+            {## Your own `<twig:ea:Tabs:Item>` elements (only rendered when `tabs` is null). -#}
             <twig:block name="content"></twig:block>
         {% else %}
             {% set tab_id_option_name = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\FormField::OPTION_TAB_ID') %}

@@ -1,6 +1,9 @@
 {% props
+    ## ActionGroupDto The action group rendered as a submenu (and its optional main action); required, even if it defaults to null.
     group = null,
+    ## bool Internal: if false, the blank icon will not be rendered when the group has no icon.
     showBlankIcons = true,
+    ## EntityDto|null The entity which the actions of the group belong to.
     entity = null,
 %}
 

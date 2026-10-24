@@ -2,11 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchTestAuthorCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SearchTestAuthor;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\UserSortCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Address;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
 
 /**
  * Sorting by an embedded (embeddable) property such as `address.city`.
@@ -19,11 +19,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synt
  */
 class SortByEmbeddablePropertyTest extends AbstractCrudTestCase
 {
-    private EntityRepository $repository;
-
     protected function getControllerFqcn(): string
     {
-        return SearchTestAuthorCrudController::class;
+        return UserSortCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -35,48 +33,29 @@ class SortByEmbeddablePropertyTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(SearchTestAuthor::class);
+
+        // cities are created in non-alphabetical order so the sort is visible
+        foreach (['Paris', 'London', 'New York'] as $city) {
+            UserFactory::createOne(['address' => (new Address())->setCity($city)]);
+        }
     }
 
     public function testSortByEmbeddablePropertyAscending(): void
     {
-        $expected = $this->citiesInOrder(\SORT_ASC);
-
         $url = $this->generateIndexUrl().'?'.http_build_query(['sort' => ['address.city' => 'ASC']]);
         $this->client->request('GET', $url);
 
         $this->assertResponseIsSuccessful();
-        $this->assertCitiesInOrder($expected);
+        $this->assertCitiesInOrder(['London', 'New York', 'Paris']);
     }
 
     public function testSortByEmbeddablePropertyDescending(): void
     {
-        $expected = $this->citiesInOrder(\SORT_DESC);
-
         $url = $this->generateIndexUrl().'?'.http_build_query(['sort' => ['address.city' => 'DESC']]);
         $this->client->request('GET', $url);
 
         $this->assertResponseIsSuccessful();
-        $this->assertCitiesInOrder($expected);
-    }
-
-    /**
-     * Returns the embedded `address.city` values of every fixture row, ordered by
-     * the given direction. Duplicate cities are fine: the assertion compares the
-     * city values in order, which are deterministic under `ORDER BY address.city`.
-     *
-     * @return list<string>
-     */
-    private function citiesInOrder(int $direction): array
-    {
-        $cities = array_map(
-            static fn (SearchTestAuthor $author): string => $author->getAddress()->getCity(),
-            $this->repository->findAll(),
-        );
-
-        \SORT_ASC === $direction ? sort($cities) : rsort($cities);
-
-        return $cities;
+        $this->assertCitiesInOrder(['Paris', 'New York', 'London']);
     }
 
     /**
@@ -84,6 +63,8 @@ class SortByEmbeddablePropertyTest extends AbstractCrudTestCase
      */
     private function assertCitiesInOrder(array $expectedCities): void
     {
+        $this->assertSelectorCount(\count($expectedCities), 'tbody tr');
+
         foreach ($expectedCities as $i => $city) {
             $this->assertSelectorTextSame(
                 sprintf('tbody tr:nth-child(%d) td[data-column="address.city"]', $i + 1),

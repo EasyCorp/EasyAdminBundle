@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FormLayoutTabsWithFieldsetsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FormTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FormTestEntityFactory;
 
 /**
  * Tests for tabs containing fieldsets.
@@ -139,13 +140,12 @@ class FormLayoutTabsWithFieldsetsTest extends AbstractCrudTestCase
 
     public function testEditFormPreservesTabsAndFieldsets(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Edit Tabs Fieldsets');
-        $entity->setEmail('edit@tabfieldset.com');
-        $entity->setStreet('789 Edit Rd');
-        $entity->setPriority(5);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Edit Tabs Fieldsets',
+            'email' => 'edit@tabfieldset.com',
+            'street' => '789 Edit Rd',
+            'priority' => 5,
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 

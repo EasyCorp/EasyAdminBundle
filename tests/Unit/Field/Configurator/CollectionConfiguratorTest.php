@@ -2,27 +2,27 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Configurator;
 
-use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CollectionConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\BlogPostCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
-class CollectionConfiguratorTest extends AbstractFieldTest
+class CollectionConfiguratorTest extends AbstractFieldTestCase
 {
-    private EntityDto $projectDto;
+    private EntityDto $rootEntityDto;
 
     protected function setUp(): void
     {
-        /** @var EntityManagerInterface $entityManager */
-        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
-        $this->projectDto = new EntityDto(Project::class, $entityManager->getClassMetadata(Project::class));
+        $this->rootEntityDto = $this->createEntityDto(BlogPost::class);
 
         /** @var CollectionConfigurator $collectionConfigurator */
         $collectionConfigurator = static::getContainer()->get(CollectionConfigurator::class);
@@ -31,68 +31,65 @@ class CollectionConfiguratorTest extends AbstractFieldTest
 
     protected function getEntityDto(): EntityDto
     {
-        return $this->projectDto;
+        return $this->rootEntityDto;
     }
 
-    /**
-     * @dataProvider fields
-     */
-    public function test(FieldInterface $field): void
+    #[DataProvider('fields')]
+    public function test(string $rootEntityFqcn, FieldInterface $field): void
     {
+        $this->rootEntityDto = $this->createEntityDto($rootEntityFqcn);
         $field = $this->configure($field);
         $this->assertSame(CollectionType::class, $field->getFormType());
     }
 
     public static function fields(): \Generator
     {
-        yield [CollectionField::new('projectIssues')];
-        yield [CollectionField::new('favouriteProjectOf')];
-        yield [CollectionField::new('projectTags')];
-        yield [CollectionField::new('metaData')];
+        yield [User::class, CollectionField::new('blogPosts')];
+        yield [Category::class, CollectionField::new('blogPosts')];
+        yield [BlogPost::class, CollectionField::new('categories')];
+        yield [BlogPost::class, CollectionField::new('metaData')];
     }
 
     public function testNestedCollections(): void
     {
-        $field = CollectionField::new('leadDeveloper.issues');
+        $field = CollectionField::new('author.blogPosts');
         $field->setCustomOption(CollectionField::OPTION_ENTRY_USES_CRUD_FORM, true);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(
-            'The "leadDeveloper.issues" collection field of "EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectCrudController" wants to render its entries using an EasyAdmin CRUD form. However, no CRUD form was found related to this field. You can either create a CRUD controller for the entity "EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\ProjectIssue" or pass the CRUD controller to use as the first argument of the "useEntryCrudForm()" method.'
+            'The "author.blogPosts" collection field of "EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\BlogPostCrudController" wants to render its entries using an EasyAdmin CRUD form. However, no CRUD form was found related to this field. You can either create a CRUD controller for the entity "EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost" or pass the CRUD controller to use as the first argument of the "useEntryCrudForm()" method.'
         );
 
-        $this->configure($field, pageName: Crud::PAGE_EDIT, controllerFqcn: ProjectCrudController::class);
+        $this->configure($field, pageName: Crud::PAGE_EDIT, controllerFqcn: BlogPostCrudController::class);
     }
 
-    /**
-     * @dataProvider failsOnOptionEntryUsesCrudFormIfPropertyIsNotAssociation
-     */
-    public function testFailsOnOptionEntryUsesCrudFormIfPropertyIsNotAssociation(FieldInterface $field): void
+    #[DataProvider('failsOnOptionEntryUsesCrudFormIfPropertyIsNotAssociation')]
+    public function testFailsOnOptionEntryUsesCrudFormIfPropertyIsNotAssociation(string $rootEntityFqcn, FieldInterface $field): void
     {
+        $this->rootEntityDto = $this->createEntityDto($rootEntityFqcn);
         $field->setCustomOption(CollectionField::OPTION_ENTRY_USES_CRUD_FORM, true);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(sprintf(
             'The "%s" collection field of "%s" cannot use the "useEntryCrudForm()" method because it is not a Doctrine association.',
             $field->getAsDto()->getProperty(),
-            ProjectCrudController::class,
+            BlogPostCrudController::class,
         ));
 
-        $this->configure($field, pageName: Crud::PAGE_EDIT, controllerFqcn: ProjectCrudController::class);
+        $this->configure($field, pageName: Crud::PAGE_EDIT, controllerFqcn: BlogPostCrudController::class);
     }
 
     public static function failsOnOptionEntryUsesCrudFormIfPropertyIsNotAssociation(): \Generator
     {
-        yield [TextField::new('name')];
-        yield [TextField::new('price')];
-        yield [TextField::new('price.currency')];
+        yield [BlogPost::class, TextField::new('title')];
+        yield [User::class, TextField::new('address')];
+        yield [User::class, TextField::new('address.city')];
     }
 
-    /**
-     * @dataProvider failsOnOptionEntryUsesCrudFormIfOptionEntryTypeIsUsed
-     */
-    public function testFailsOnOptionEntryUsesCrudFormIfOptionEntryTypeIsUsed(FieldInterface $field): void
+    #[DataProvider('failsOnOptionEntryUsesCrudFormIfOptionEntryTypeIsUsed')]
+    public function testFailsOnOptionEntryUsesCrudFormIfOptionEntryTypeIsUsed(string $rootEntityFqcn, FieldInterface $field): void
     {
+        $this->rootEntityDto = $this->createEntityDto($rootEntityFqcn);
         $field->setCustomOption(CollectionField::OPTION_ENTRY_USES_CRUD_FORM, true)
             ->setCustomOption(CollectionField::OPTION_ENTRY_TYPE, 'foo')
         ;
@@ -101,42 +98,41 @@ class CollectionConfiguratorTest extends AbstractFieldTest
         $this->expectExceptionMessage(sprintf(
             'The "%s" collection field of "%s" can render its entries using a Symfony Form (via the "setEntryType()" method) or using an EasyAdmin CRUD Form (via the "useEntryCrudForm()" method) but you cannot use both methods at the same time. Remove one of those two methods.',
             $field->getAsDto()->getProperty(),
-            ProjectCrudController::class,
+            BlogPostCrudController::class,
         ));
 
-        $this->configure($field, pageName: Crud::PAGE_EDIT, controllerFqcn: ProjectCrudController::class);
+        $this->configure($field, pageName: Crud::PAGE_EDIT, controllerFqcn: BlogPostCrudController::class);
     }
 
     public static function failsOnOptionEntryUsesCrudFormIfOptionEntryTypeIsUsed(): \Generator
     {
-        yield [CollectionField::new('projectIssues')];
-        yield [CollectionField::new('favouriteProjectOf')];
-        yield [CollectionField::new('projectTags')];
+        yield [User::class, CollectionField::new('blogPosts')];
+        yield [Category::class, CollectionField::new('blogPosts')];
+        yield [BlogPost::class, CollectionField::new('categories')];
     }
 
-    /**
-     * @dataProvider failsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound
-     */
-    public function testFailsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound(FieldInterface $field): void
+    #[DataProvider('failsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound')]
+    public function testFailsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound(string $rootEntityFqcn, FieldInterface $field): void
     {
-        $field->getAsDto()->setDoctrineMetadata((array) $this->projectDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));
+        $this->rootEntityDto = $this->createEntityDto($rootEntityFqcn);
+        $field->getAsDto()->setDoctrineMetadata((array) $this->rootEntityDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));
         $field->setCustomOption(CollectionField::OPTION_ENTRY_USES_CRUD_FORM, true);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(sprintf('The "%s" collection field of "%s" wants to render its entries using an EasyAdmin CRUD form. However, no CRUD form was found related to this field. You can either create a CRUD controller for the entity "%s" or pass the CRUD controller to use as the first argument of the "useEntryCrudForm()" method.',
             $field->getAsDto()->getProperty(),
-            ProjectCrudController::class,
+            BlogPostCrudController::class,
             $field->getAsDto()->getDoctrineMetadata()->get('targetEntity'),
         ));
 
-        $this->configure($field, pageName: Crud::PAGE_EDIT, controllerFqcn: ProjectCrudController::class);
+        $this->configure($field, pageName: Crud::PAGE_EDIT, controllerFqcn: BlogPostCrudController::class);
     }
 
     public static function failsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound(): \Generator
     {
-        yield [CollectionField::new('projectIssues')];
-        yield [CollectionField::new('favouriteProjectOf')];
-        yield [CollectionField::new('projectTags')];
+        yield [User::class, CollectionField::new('blogPosts')];
+        yield [Category::class, CollectionField::new('blogPosts')];
+        yield [BlogPost::class, CollectionField::new('categories')];
     }
 
     /**
@@ -148,7 +144,7 @@ class CollectionConfiguratorTest extends AbstractFieldTest
      */
     public function testFormatCollectionShortCircuitsWhenFormatValueCallableIsSet(): void
     {
-        $field = CollectionField::new('projectIssues');
+        $field = CollectionField::new('categories');
 
         // force the (string)-casting code path by simulating an 'array' doctrine type
         // (otherwise formatCollection() short-circuits earlier on association fields).

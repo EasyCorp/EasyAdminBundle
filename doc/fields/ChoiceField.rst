@@ -25,8 +25,8 @@ Basic Information
 Options
 -------
 
-allowMultipleChoices
-~~~~~~~~~~~~~~~~~~~~
+``allowMultipleChoices``
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 By default, in form pages (``edit`` and ``new``) you can only select one of the
 possible values of the field. Use this option to allow selecting an unlimited
@@ -34,37 +34,39 @@ number of items::
 
     yield ChoiceField::new('...')->allowMultipleChoices();
 
-autocomplete
-~~~~~~~~~~~~
+``autocomplete``
+~~~~~~~~~~~~~~~~
 
 By default, all possible items are loaded at once and shown in the item selector.
 If there are many items, consider using this option to filter items dynamically
-based on the user input::
+based on the user input (see :ref:`crud-autocomplete` for details about how
+autocompletion works)::
 
     yield ChoiceField::new('...')->autocomplete();
 
-This is how the autocomplete field looks like when it's expanded:
+This is what the autocomplete field looks like when it's expanded:
 
 .. image:: ../images/fields/field-choice-autocomplete.png
    :alt: Default style of EasyAdmin choice field with autocomplete
 
-escapeHtml
-~~~~~~~~~~
+``escapeHtml``
+~~~~~~~~~~~~~~
 
 By default, in the list of possible values all the HTML contents are escaped.
 Use this option if your values have HTML contents and want to render them::
 
     yield ChoiceField::new('...')->escapeHtml(false);
 
-renderAsBadges
-~~~~~~~~~~~~~~
+``renderAsBadges``
+~~~~~~~~~~~~~~~~~~
 
-When using this kind of field, is common for listings to represent the selected
-value(s) as badges (e.g. the paid/unpaid status of an invoice). This option
-provides many different ways of turning your choices into badges in read-only
-pages (``index`` and ``detail``)::
+When using this kind of field, it's common for listings to represent the selected
+value(s) as badges (e.g. the paid/unpaid status of an invoice). Badges are
+rendered with the :doc:`Badge component </components>`. This option provides many
+different ways of turning your choices into badges in read-only pages (``index``
+and ``detail``)::
 
-    // all values are rendered with the same badge style (Bootstrap's ' secondary' style)
+    // all values are rendered with the same badge style (Bootstrap's 'secondary' style)
     yield ChoiceField::new('...')->renderAsBadges();
 
     // you can assign different badge styles per value using an array
@@ -77,12 +79,12 @@ pages (``index`` and ``detail``)::
         'refunded' => 'danger',
     ]);
 
-    // in addition to an array, you can also use a callback; this callback
-    // receives a FieldDto object as its first and only argument
+    // in addition to an array, you can also use a callback; this callback receives
+    // the choice value as its first argument and the FieldDto as its second one
     // (unlike when using arrays, when using callables you must return a badge
     // style for all possible values)
     yield ChoiceField::new('...')->renderAsBadges(
-        static fn (FieldDto $field): string => $field->getValue() < 10 ? 'warning' : 'primary'
+        static fn (mixed $value, FieldDto $field): string => $value < 10 ? 'warning' : 'primary'
     );
 
     // no badges are displayed for any value (this is the default behavior)
@@ -92,8 +94,8 @@ The built-in badge styles are the same as Bootstrap: ``'success'``,
 ``'warning'``, ``'danger'``, ``'info'``, ``'primary'``, ``'secondary'``,
 ``'light'``, ``'dark'``.
 
-renderAsNativeWidget
-~~~~~~~~~~~~~~~~~~~~
+``renderAsNativeWidget``
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 By default, when the field values are not rendered expanded (see ``renderExpanded``
 option) it uses an advanced JavaScript widget based on `TomSelect`_ library.
@@ -101,8 +103,8 @@ Use this option if you prefer to use a default ``<select>`` HTML element::
 
     yield ChoiceField::new('...')->renderAsNativeWidget();
 
-renderExpanded
-~~~~~~~~~~~~~~
+``renderExpanded``
+~~~~~~~~~~~~~~~~~~
 
 By default, the list of possible values is displayed using an advanced JavaScript
 widget (or a ``<select>`` element; see ``renderAsNativeWidget`` option). If the
@@ -111,40 +113,18 @@ values at once::
 
     yield ChoiceField::new('...')->renderExpanded();
 
-If ``allowMultipleChoices`` is false, the expanded field will display radio buttons:
+If ``allowMultipleChoices`` is ``false``, the expanded field will display radio buttons:
 
 .. image:: ../images/fields/field-choice-radiobutton.png
    :alt: Default style of EasyAdmin choice field with radiobuttons
 
-If ``allowMultipleChoices`` is true, the expanded field will display checkboxes:
+If ``allowMultipleChoices`` is ``true``, the expanded field will display checkboxes:
 
 .. image:: ../images/fields/field-choice-checkbox.png
    :alt: Default style of EasyAdmin choice field with checkboxes
 
-setPreferredChoices
-~~~~~~~~~~~~~~~~~~~
-
-Use this option to display certain choices at the top of the dropdown, visually
-separated from the rest. This is useful when some choices are more commonly used
-than others::
-
-    yield ChoiceField::new('...')->setChoices([
-        'Draft' => 'draft',
-        'Published' => 'published',
-        'Archived' => 'archived',
-        'Pending Review' => 'pending',
-        'Scheduled' => 'scheduled',
-    ])->setPreferredChoices(['draft', 'published']);
-
-You can also use a callable that receives the choice value and returns ``true``
-for preferred choices::
-
-    yield ChoiceField::new('...')->setPreferredChoices(
-        static fn ($value): bool => in_array($value, ['draft', 'published'], true)
-    );
-
-setChoices
-~~~~~~~~~~
+``setChoices``
+~~~~~~~~~~~~~~
 
 This is the most important option, because it sets the possible valid options
 for the field. These options are defined in the same way as Symfony Forms:
@@ -188,8 +168,8 @@ This enum is supported in the ``setChoices()`` in different ways::
     // you can select only some of the possible enum values:
     yield ChoiceField::new('status')->setChoices([BlogPostStatus::Draft, BlogPostStatus::Published]);
 
-In addition, EasyAdmin provides automatic supports for Doctrine properties
-associated to PHP enums. Consider the following Doctrine entity::
+In addition, EasyAdmin provides automatic support for Doctrine properties
+associated with PHP enums. Consider the following Doctrine entity::
 
     #[Entity]
     class BlogPost
@@ -209,7 +189,7 @@ add them explicitly::
 
 To customize the values displayed for each enum case, implement the ``TranslatableInterface``
 in your enum class. This is `recommended in the Symfony Docs`_ even if your application
-is not translated into any languages::
+is not translated into any language::
 
     use Symfony\Contracts\Translation\TranslatableInterface;
     use Symfony\Contracts\Translation\TranslatorInterface;
@@ -248,12 +228,34 @@ the labels to display::
         }
     }
 
-Then, configure your field to use it with ``setFormTypeOption()``:: 
-  
+Then, configure your field to use it with ``setFormTypeOption()``::
+
     yield ChoiceField::new('status')->setFormTypeOption('choice_label', fn ($value) => $value->getLabel());
 
-setTranslatableChoices
-~~~~~~~~~~~~~~~~~~~~~~
+``setPreferredChoices``
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Use this option to display certain choices at the top of the dropdown, visually
+separated from the rest. This is useful when some choices are more commonly used
+than others::
+
+    yield ChoiceField::new('...')->setChoices([
+        'Draft' => 'draft',
+        'Published' => 'published',
+        'Archived' => 'archived',
+        'Pending Review' => 'pending',
+        'Scheduled' => 'scheduled',
+    ])->setPreferredChoices(['draft', 'published']);
+
+You can also use a callable that receives the choice value and returns ``true``
+for preferred choices::
+
+    yield ChoiceField::new('...')->setPreferredChoices(
+        static fn ($value): bool => in_array($value, ['draft', 'published'], true)
+    );
+
+``setTranslatableChoices``
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PHP doesn't allow using objects as array keys. That's why you can't use the
 ``setChoices()`` method when using ``TranslatableMessage`` objects to define

@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FormLayoutCompleteIntegrationCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FormTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FormTestEntityFactory;
 
 /**
  * Tests for complete integration of all form layout features
@@ -240,13 +241,12 @@ class FormLayoutCompleteIntegrationTest extends AbstractCrudTestCase
 
     public function testComplexLayoutWorksInEditForm(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Edit Test');
-        $entity->setEmail('edit@test.com');
-        $entity->setStreet('456 Edit St');
-        $entity->setPriority(3);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Edit Test',
+            'email' => 'edit@test.com',
+            'street' => '456 Edit St',
+            'priority' => 3,
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -263,13 +263,12 @@ class FormLayoutCompleteIntegrationTest extends AbstractCrudTestCase
 
     public function testComplexLayoutRendersInDetailPage(): void
     {
-        $entity = new FormTestEntity();
-        $entity->setName('Detail Test');
-        $entity->setEmail('detail@test.com');
-        $entity->setStreet('789 Detail Ave');
-        $entity->setPriority(7);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $entity = FormTestEntityFactory::createOne([
+            'name' => 'Detail Test',
+            'email' => 'detail@test.com',
+            'street' => '789 Detail Ave',
+            'priority' => 7,
+        ]);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 

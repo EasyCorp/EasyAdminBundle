@@ -6,6 +6,8 @@ use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 
 /**
+ * Paginates the results of an entity query.
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 interface EntityPaginatorInterface

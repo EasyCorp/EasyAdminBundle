@@ -32,7 +32,7 @@ Options
 
 This field uses JavaScript to generate the slug dynamically based on the contents
 of another field. This option defines the name of the entity property that is
-associated to that field::
+associated with that field (usually a :doc:`TextField </fields/TextField>`)::
 
     yield SlugField::new('...')->setTargetFieldName('title');
 
@@ -42,6 +42,9 @@ fields)::
 
     // the slugs are concatenated in the same order (e.g. '2023-news-lorem-ipsum')
     yield SlugField::new('...')->setTargetFieldName(['year', 'type', 'title']);
+
+This option is required. If you don't define any target field name, EasyAdmin
+throws a ``\RuntimeException`` when processing the field.
 
 ``setUnlockConfirmationMessage``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,5 +60,8 @@ the sync of contents::
     yield SlugField::new('...')->setUnlockConfirmationMessage(
         'It is highly recommended to use the automatic slugs, but you can customize them'
     );
+
+The message can also be a ``TranslatableInterface`` object. Plain strings are
+translated using the translation domain configured for the backend.
 
 .. _`TextType`: https://symfony.com/doc/current/reference/forms/types/text.html

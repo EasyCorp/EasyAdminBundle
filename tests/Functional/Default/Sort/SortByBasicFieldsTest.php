@@ -2,22 +2,29 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SortTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SortTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\BlogPostSortCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\DatabasePlatformTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests sorting by basic fields (text, integer, datetime).
  */
 class SortByBasicFieldsTest extends AbstractCrudTestCase
 {
-    private EntityRepository $repository;
+    use DatabasePlatformTrait;
+
+    /**
+     * @var array<string, BlogPost>
+     */
+    private array $blogPosts = [];
 
     protected function getControllerFqcn(): string
     {
-        return SortTestEntityCrudController::class;
+        return BlogPostSortCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -29,271 +36,150 @@ class SortByBasicFieldsTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(SortTestEntity::class);
+
+        // the order by id, title, views and publishedAt is different for each column
+        $rows = [
+            ['title' => 'Post Zebra', 'views' => 100, 'publishedAt' => new \DateTimeImmutable('2024-01-15 10:00:00')],
+            ['title' => 'Post Apple', 'views' => 50, 'publishedAt' => new \DateTimeImmutable('2024-03-20 14:30:00')],
+            ['title' => 'Post Mango', 'views' => 75, 'publishedAt' => null],
+            ['title' => 'Post Banana', 'views' => 200, 'publishedAt' => new \DateTimeImmutable('2024-02-10 08:15:00')],
+        ];
+        foreach ($rows as $row) {
+            $this->blogPosts[$row['title']] = BlogPostFactory::createOne($row);
+        }
     }
 
     /**
-     * @dataProvider textFieldSorting
+     * @param array<string, mixed> $query
+     * @param list<string>         $expectedTitles
      */
-    public function testSortingByTextField(array $query, ?string $sortFunction): void
+    #[DataProvider('titleSorting')]
+    public function testSortingByTitle(array $query, array $expectedTitles): void
     {
-        // arrange
-        $expectedValues = [];
+        $this->requestIndex($query);
 
-        /**
-         * @var SortTestEntity $entity
-         */
-        foreach ($this->repository->findAll() as $entity) {
-            $expectedValues[$entity->getId()] = $entity->getTextField();
-        }
-
-        if (null !== $sortFunction) {
-            $sortFunction($expectedValues);
-        }
-
-        // act
-        $url = $this->generateIndexUrl();
-        if (!empty($query)) {
-            $url .= '?'.http_build_query($query);
-        }
-        $crawler = $this->client->request('GET', $url);
-
-        // assert
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextSame('th.header-for-field-text[data-column="textField"] > a', 'Text Field');
-
-        $index = 1;
-        foreach ($expectedValues as $expectedValue) {
-            $expectedRow = $index++;
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$expectedRow.') td[data-column="textField"]', $expectedValue, sprintf('Expected "%s" in row %d', $expectedValue, $expectedRow));
-        }
+        $this->assertSelectorTextSame('th.header-for-field-text[data-column="title"] > a', 'Title');
+        $this->assertRowsInOrder($expectedTitles, 'title', static fn (BlogPost $blogPost): string => $blogPost->getTitle());
     }
 
-    public static function textFieldSorting(): \Generator
+    public static function titleSorting(): \Generator
     {
         // default sort is by ID ASC (configured in the CRUD controller)
         yield 'default sorting (by id ASC)' => [
             [],
-            'ksort',
+            ['Post Zebra', 'Post Apple', 'Post Mango', 'Post Banana'],
         ];
 
-        yield 'ascending by textField' => [
-            ['sort' => ['textField' => 'ASC']],
-            'asort',
+        yield 'ascending by title' => [
+            ['sort' => ['title' => 'ASC']],
+            ['Post Apple', 'Post Banana', 'Post Mango', 'Post Zebra'],
         ];
 
-        yield 'descending by textField' => [
-            ['sort' => ['textField' => 'DESC']],
-            'arsort',
+        yield 'descending by title' => [
+            ['sort' => ['title' => 'DESC']],
+            ['Post Zebra', 'Post Mango', 'Post Banana', 'Post Apple'],
         ];
     }
 
     /**
-     * @dataProvider integerFieldSorting
+     * @param array<string, mixed> $query
+     * @param list<string>         $expectedTitles
      */
-    public function testSortingByIntegerField(array $query, ?\Closure $sortFunction): void
+    #[DataProvider('viewsSorting')]
+    public function testSortingByViews(array $query, array $expectedTitles): void
     {
-        // arrange
-        $expectedMapping = [];
-        $entities = $this->repository->findAll();
+        $this->requestIndex($query);
 
-        if (null !== $sortFunction) {
-            $sortFunction($entities);
-        }
-
-        /**
-         * @var SortTestEntity $entity
-         */
-        foreach ($entities as $entity) {
-            $expectedMapping[$entity->getTextField()] = $entity->getIntegerField();
-        }
-
-        // act
-        $url = $this->generateIndexUrl();
-        if (!empty($query)) {
-            $url .= '?'.http_build_query($query);
-        }
-        $crawler = $this->client->request('GET', $url);
-
-        // assert
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextSame('th.header-for-field-integer[data-column="integerField"] > a', 'Integer Field');
-
-        $index = 1;
-        foreach ($expectedMapping as $expectedName => $expectedValue) {
-            $expectedRow = $index++;
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$expectedRow.') td[data-column="textField"]', $expectedName, sprintf('Expected "%s" in row %d', $expectedName, $expectedRow));
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$expectedRow.') td[data-column="integerField"]', (string) $expectedValue, sprintf('Expected "%s" in row %d', $expectedValue, $expectedRow));
-        }
+        $this->assertSelectorTextSame('th.header-for-field-integer[data-column="views"] > a', 'Views');
+        $this->assertRowsInOrder($expectedTitles, 'views', static fn (BlogPost $blogPost): string => (string) $blogPost->getViews());
     }
 
-    public static function integerFieldSorting(): \Generator
+    public static function viewsSorting(): \Generator
     {
         // default sort is by ID ASC (configured in the CRUD controller)
         yield 'default sorting (by id ASC)' => [
             [],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static fn (SortTestEntity $a, SortTestEntity $b) => $a->getId() <=> $b->getId());
-            },
+            ['Post Zebra', 'Post Apple', 'Post Mango', 'Post Banana'],
         ];
 
-        yield 'ascending by integerField' => [
-            ['sort' => ['integerField' => 'ASC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $aValue = $a->getIntegerField();
-                    $bValue = $b->getIntegerField();
-
-                    if ($aValue === $bValue) {
-                        return $a->getId() <=> $b->getId();
-                    }
-
-                    return $aValue <=> $bValue;
-                });
-            },
+        yield 'ascending by views' => [
+            ['sort' => ['views' => 'ASC']],
+            ['Post Apple', 'Post Mango', 'Post Zebra', 'Post Banana'],
         ];
 
-        yield 'descending by integerField' => [
-            ['sort' => ['integerField' => 'DESC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $aValue = $a->getIntegerField();
-                    $bValue = $b->getIntegerField();
-
-                    if ($aValue === $bValue) {
-                        return $b->getId() <=> $a->getId();
-                    }
-
-                    return $bValue <=> $aValue;
-                });
-            },
+        yield 'descending by views' => [
+            ['sort' => ['views' => 'DESC']],
+            ['Post Banana', 'Post Zebra', 'Post Mango', 'Post Apple'],
         ];
     }
 
     /**
-     * @dataProvider dateTimeFieldSorting
+     * @param array<string, mixed> $query
+     * @param list<string>         $expectedTitles
      */
-    public function testSortingByDateTimeField(array $query, ?\Closure $sortFunction): void
+    #[DataProvider('publishedAtSorting')]
+    public function testSortingByPublishedAt(array $query, array $expectedTitles): void
     {
-        // arrange
-        $expectedMapping = [];
-        $entities = $this->repository->findAll();
-
-        if (null !== $sortFunction) {
-            $sortFunction($entities);
-        }
-
         // use IntlDateFormatter to match EasyAdmin's default datetime format (MEDIUM/MEDIUM)
         $dateFormatter = new \IntlDateFormatter('en', \IntlDateFormatter::MEDIUM, \IntlDateFormatter::MEDIUM);
 
-        /**
-         * @var SortTestEntity $entity
-         */
-        foreach ($entities as $entity) {
-            $dateTime = $entity->getDateTimeField();
-            // easyAdmin shows "Null" label for null values
-            $expectedMapping[$entity->getTextField()] = null !== $dateTime ? $dateFormatter->format($dateTime) : 'Null';
-        }
+        $this->requestIndex($query);
+        $expectedTitles = self::sortNullsLikeTheDatabase($expectedTitles, ['Post Mango']);
 
-        // act
-        $url = $this->generateIndexUrl();
-        if (!empty($query)) {
-            $url .= '?'.http_build_query($query);
-        }
-        $crawler = $this->client->request('GET', $url);
-
-        // assert
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextSame('th.header-for-field-datetime[data-column="dateTimeField"] > a', 'Date Time Field');
-
-        $index = 1;
-        foreach ($expectedMapping as $expectedName => $expectedValue) {
-            $expectedRow = $index++;
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$expectedRow.') td[data-column="textField"]', $expectedName, sprintf('Expected "%s" in row %d', $expectedName, $expectedRow));
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$expectedRow.') td[data-column="dateTimeField"]', $expectedValue, sprintf('Expected "%s" in row %d', $expectedValue, $expectedRow));
-        }
+        $this->assertSelectorTextSame('th.header-for-field-datetime[data-column="publishedAt"] > a', 'Published At');
+        // null values are rendered with the "Null" label
+        $this->assertRowsInOrder($expectedTitles, 'publishedAt', static fn (BlogPost $blogPost): string => null !== $blogPost->getPublishedAt() ? (string) $dateFormatter->format($blogPost->getPublishedAt()) : 'Null');
     }
 
-    public static function dateTimeFieldSorting(): \Generator
+    public static function publishedAtSorting(): \Generator
     {
         // default sort is by ID ASC (configured in the CRUD controller)
         yield 'default sorting (by id ASC)' => [
             [],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static fn (SortTestEntity $a, SortTestEntity $b) => $a->getId() <=> $b->getId());
-            },
+            ['Post Zebra', 'Post Apple', 'Post Mango', 'Post Banana'],
         ];
 
-        yield 'ascending by dateTimeField' => [
-            ['sort' => ['dateTimeField' => 'ASC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $aValue = $a->getDateTimeField();
-                    $bValue = $b->getDateTimeField();
-
-                    // handle nulls (nulls go first in ASC)
-                    if (null === $aValue && null === $bValue) {
-                        return $a->getId() <=> $b->getId();
-                    }
-                    if (null === $aValue) {
-                        return -1;
-                    }
-                    if (null === $bValue) {
-                        return 1;
-                    }
-
-                    if ($aValue == $bValue) {
-                        return $a->getId() <=> $b->getId();
-                    }
-
-                    return $aValue <=> $bValue;
-                });
-            },
+        // NULL values are first in ASC order and last in DESC order (except on PostgreSQL)
+        yield 'ascending by publishedAt' => [
+            ['sort' => ['publishedAt' => 'ASC']],
+            ['Post Mango', 'Post Zebra', 'Post Banana', 'Post Apple'],
         ];
 
-        yield 'descending by dateTimeField' => [
-            ['sort' => ['dateTimeField' => 'DESC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $aValue = $a->getDateTimeField();
-                    $bValue = $b->getDateTimeField();
-
-                    // handle nulls (nulls go last in DESC)
-                    if (null === $aValue && null === $bValue) {
-                        return $b->getId() <=> $a->getId();
-                    }
-                    if (null === $aValue) {
-                        return 1;
-                    }
-                    if (null === $bValue) {
-                        return -1;
-                    }
-
-                    if ($aValue == $bValue) {
-                        return $b->getId() <=> $a->getId();
-                    }
-
-                    return $bValue <=> $aValue;
-                });
-            },
+        yield 'descending by publishedAt' => [
+            ['sort' => ['publishedAt' => 'DESC']],
+            ['Post Apple', 'Post Banana', 'Post Zebra', 'Post Mango'],
         ];
+    }
+
+    /**
+     * @param array<string, mixed> $query
+     */
+    private function requestIndex(array $query): void
+    {
+        $url = $this->generateIndexUrl();
+        if ([] !== $query) {
+            $url .= '?'.http_build_query($query);
+        }
+
+        $this->client->request('GET', $url);
+    }
+
+    /**
+     * @param list<string>               $expectedTitles
+     * @param \Closure(BlogPost): string $expectedColumnValue
+     */
+    private function assertRowsInOrder(array $expectedTitles, string $column, \Closure $expectedColumnValue): void
+    {
+        $this->assertSelectorCount(\count($this->blogPosts), 'tbody tr');
+
+        foreach ($expectedTitles as $index => $title) {
+            $row = $index + 1;
+            $expectedValue = $expectedColumnValue($this->blogPosts[$title]);
+            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="title"]', $title, sprintf('Expected "%s" in row %d', $title, $row));
+            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="'.$column.'"]', $expectedValue, sprintf('Expected "%s" in row %d', $expectedValue, $row));
+        }
     }
 }

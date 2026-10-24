@@ -2,22 +2,29 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Sort;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SortTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SortTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Sort\BlogPostSortCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\DatabasePlatformTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests sorting by ManyToOne relationship property.
  */
 class SortByManyToOneTest extends AbstractCrudTestCase
 {
-    private EntityRepository $repository;
+    use DatabasePlatformTrait;
+
+    /**
+     * @var array<string, string>
+     */
+    private array $publisherNameByTitle = [];
 
     protected function getControllerFqcn(): string
     {
-        return SortTestEntityCrudController::class;
+        return BlogPostSortCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -29,49 +36,50 @@ class SortByManyToOneTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(SortTestEntity::class);
+
+        // publishers are created in non-alphabetical order so sorting by their
+        // name gives a different result than sorting by their id
+        $gamma = UserFactory::createOne(['name' => 'User Gamma']);
+        $alpha = UserFactory::createOne(['name' => 'User Alpha']);
+        $beta = UserFactory::createOne(['name' => 'User Beta']);
+
+        $rows = [
+            'Post Zebra' => $alpha,
+            'Post Apple' => $gamma,
+            'Post Mango' => null,
+            'Post Banana' => $beta,
+        ];
+        foreach ($rows as $title => $publisher) {
+            BlogPostFactory::createOne(['title' => $title, 'publisher' => $publisher]);
+            // null associations are rendered with the "Null" label
+            $this->publisherNameByTitle[$title] = $publisher?->getName() ?? 'Null';
+        }
     }
 
     /**
-     * @dataProvider sorting
+     * @param array<string, mixed> $query
+     * @param list<string>         $expectedTitles
      */
-    public function testSorting(array $query, ?\Closure $sortFunction, string $expectedSortIcon): void
+    #[DataProvider('sorting')]
+    public function testSorting(array $query, array $expectedTitles): void
     {
-        // arrange
-        $expectedAmountMapping = [];
-
-        /** @var list<SortTestEntity> $entities */
-        $entities = $this->repository->findAll();
-
-        if (null !== $sortFunction) {
-            $sortFunction($entities);
-        }
-
-        foreach ($entities as $entity) {
-            // easyAdmin shows "Null" label for null associations
-            $relatedName = $entity->getManyToOneRelation()?->getName() ?? 'Null';
-            $expectedAmountMapping[$entity->getTextField()] = $relatedName;
-        }
-
-        // act
         $url = $this->generateIndexUrl();
-        if (!empty($query)) {
+        if ([] !== $query) {
             $url .= '?'.http_build_query($query);
         }
-        $crawler = $this->client->request('GET', $url);
+        $this->client->request('GET', $url);
+        $expectedTitles = self::sortNullsLikeTheDatabase($expectedTitles, ['Post Mango']);
 
-        // assert
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextSame('th.header-for-field-association[data-column="manyToOneRelation"] > a', 'Many To One Relation');
-        $this->assertSelectorExists('th.header-for-field-association[data-column="manyToOneRelation"] span.icon svg');
+        $this->assertSelectorTextSame('th.header-for-field-association[data-column="publisher"] > a', 'Publisher');
+        $this->assertSelectorExists('th.header-for-field-association[data-column="publisher"] span.icon svg');
+        $this->assertSelectorCount(\count($this->publisherNameByTitle), 'tbody tr');
 
-        $index = 1;
-
-        foreach ($expectedAmountMapping as $expectedEntityName => $expectedRelatedName) {
-            $expectedRow = $index++;
-
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$expectedRow.') td[data-column="textField"]', $expectedEntityName, sprintf('Expected "%s" in row %d', $expectedEntityName, $expectedRow));
-            $this->assertSelectorTextSame('tbody tr:nth-child('.$expectedRow.') td[data-column="manyToOneRelation"]', $expectedRelatedName, sprintf('Expected "%s" in row %d', $expectedRelatedName, $expectedRow));
+        foreach ($expectedTitles as $index => $title) {
+            $row = $index + 1;
+            $publisherName = $this->publisherNameByTitle[$title];
+            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="title"]', $title, sprintf('Expected "%s" in row %d', $title, $row));
+            $this->assertSelectorTextSame('tbody tr:nth-child('.$row.') td[data-column="publisher"]', $publisherName, sprintf('Expected "%s" in row %d', $publisherName, $row));
         }
     }
 
@@ -80,71 +88,18 @@ class SortByManyToOneTest extends AbstractCrudTestCase
         // default sort is by ID ASC (configured in the CRUD controller)
         yield 'default sorting (by id ASC)' => [
             [],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static fn (SortTestEntity $a, SortTestEntity $b) => $a->getId() <=> $b->getId());
-            },
-            'internal:sort-arrows',
+            ['Post Zebra', 'Post Apple', 'Post Mango', 'Post Banana'],
         ];
 
-        yield 'ascending by manyToOneRelation name' => [
-            ['sort' => ['manyToOneRelation' => 'ASC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $aName = $a->getManyToOneRelation()?->getName();
-                    $bName = $b->getManyToOneRelation()?->getName();
-
-                    // sQLite: NULL values are sorted FIRST in ASC order
-                    if (null === $aName && null === $bName) {
-                        return $a->getId() <=> $b->getId();
-                    }
-                    if (null === $aName) {
-                        return -1;
-                    }
-                    if (null === $bName) {
-                        return 1;
-                    }
-
-                    $cmp = $aName <=> $bName;
-
-                    return 0 !== $cmp ? $cmp : $a->getId() <=> $b->getId();
-                });
-            },
-            'internal:sort-arrow-up',
+        // NULL values are first in ASC order and last in DESC order (except on PostgreSQL)
+        yield 'ascending by publisher name' => [
+            ['sort' => ['publisher' => 'ASC']],
+            ['Post Mango', 'Post Zebra', 'Post Banana', 'Post Apple'],
         ];
 
-        yield 'descending by manyToOneRelation name' => [
-            ['sort' => ['manyToOneRelation' => 'DESC']],
-            /**
-             * @param list<SortTestEntity> $array
-             */
-            static function (array &$array) {
-                usort($array, static function (SortTestEntity $a, SortTestEntity $b) {
-                    $aName = $a->getManyToOneRelation()?->getName();
-                    $bName = $b->getManyToOneRelation()?->getName();
-
-                    // sQLite: NULL values are sorted LAST in DESC order
-                    if (null === $aName && null === $bName) {
-                        return $b->getId() <=> $a->getId();
-                    }
-                    if (null === $aName) {
-                        return 1;
-                    }
-                    if (null === $bName) {
-                        return -1;
-                    }
-
-                    $cmp = $bName <=> $aName;
-
-                    return 0 !== $cmp ? $cmp : $b->getId() <=> $a->getId();
-                });
-            },
-            'internal:sort-arrow-down',
+        yield 'descending by publisher name' => [
+            ['sort' => ['publisher' => 'DESC']],
+            ['Post Apple', 'Post Banana', 'Post Zebra', 'Post Mango'],
         ];
     }
 }

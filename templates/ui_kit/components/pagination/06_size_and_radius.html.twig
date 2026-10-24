@@ -1,0 +1,5 @@
+{# Size and radius
+   Use the small size in dense places. Without a radius, the page links use the
+   default radius of your theme. #}
+<twig:ea:Pagination :currentPage="2" :lastPage="5" urlPattern="?page={page}" size="sm" />
+<twig:ea:Pagination :currentPage="2" :lastPage="5" urlPattern="?page={page}" radius="full" />

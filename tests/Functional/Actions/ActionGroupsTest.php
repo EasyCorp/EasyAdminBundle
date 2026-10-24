@@ -2,20 +2,17 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Actions;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\ActionGroupsEntityCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\ActionGroupsInlineEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\ActionGroupsEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\ActionGroupsInlineEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\ActionTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 
 /**
  * Tests for ActionGroup functionality across different CRUD pages.
  */
 class ActionGroupsTest extends AbstractCrudTestCase
 {
-    protected EntityRepository $actionTestEntities;
-
     protected function getControllerFqcn(): string
     {
         return ActionGroupsEntityCrudController::class;
@@ -30,8 +27,6 @@ class ActionGroupsTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-
-        $this->actionTestEntities = $this->entityManager->getRepository(ActionTestEntity::class);
     }
 
     public function testActionGroupsInIndexPage(): void
@@ -122,12 +117,8 @@ class ActionGroupsTest extends AbstractCrudTestCase
         // since our test controller has form_action configured with renderAsForm(),
         // forms should exist somewhere in the dropdowns
         $forms = $crawler->filter('.dropdown-menu form');
-        if ($forms->count() > 0) {
-            static::assertSame('POST', $forms->first()->attr('method'));
-        } else {
-            // if no forms found, at least verify dropdowns work
-            static::assertTrue(true, 'Dropdowns exist even if no form actions');
-        }
+        static::assertGreaterThan(0, $forms->count());
+        static::assertSame('POST', $forms->first()->attr('method'));
     }
 
     public function testActionGroupsWithCustomStylingInIndexPage(): void
@@ -166,12 +157,10 @@ class ActionGroupsTest extends AbstractCrudTestCase
         $dropdownCount = $crawler->filter('.action-group')->count();
         static::assertGreaterThan(0, $dropdownCount, 'Should have dropdowns on the page');
 
-        // the conditional dropdown feature is tested by having group6 configured with displayIf()
-        // it should only show for entities where isActive() returns true
-        // this is a complex feature that's better tested in detail view where we can control the entity
-
-        // for index page, just verify that dropdowns work
-        static::assertTrue(true, 'Conditional dropdown feature is configured and dropdowns are rendered');
+        // the displayIf() callable of group6global requires a Category, but global
+        // action groups don't receive any entity, so the group must not be rendered
+        static::assertCount(1, $crawler->filter('.action-group[data-action-group-name="group1global"]'));
+        static::assertCount(0, $crawler->filter('.action-group[data-action-group-name="group6global"]'));
     }
 
     public function testDActionGroupsWithIconOnlyInIndexPage(): void
@@ -197,17 +186,20 @@ class ActionGroupsTest extends AbstractCrudTestCase
 
     public function testEntityActionGroupsInIndexPage(): void
     {
+        $activeEntity = CategoryFactory::createOne(['active' => true]);
+        $inactiveEntity = CategoryFactory::createOne(['active' => false]);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $entityRows = $crawler->filter('table.datagrid tbody tr[data-id]');
-        static::assertGreaterThan(0, $entityRows->count(), 'Should have entity rows in the table');
+        static::assertCount(2, $entityRows, 'Should have entity rows in the table');
 
-        $firstRow = $entityRows->first();
+        $firstRow = $crawler->filter(sprintf('table.datagrid tbody tr[data-id="%d"]', $activeEntity->getId()));
         $actionsDropdown = $firstRow->filter('.actions.actions-as-dropdown');
         static::assertCount(1, $actionsDropdown, 'Each row should have an actions dropdown');
 
         $submenus = $actionsDropdown->filter('.dropdown-submenu');
-        static::assertGreaterThanOrEqual(3, $submenus->count(), 'Should have at least 3 entity action group submenus per row (group1, group2, group3, possibly group6 for active entities)');
+        static::assertCount(4, $submenus, 'Active entities should have 4 entity action group submenus (group1, group2, group3, group6)');
 
         $firstSubmenu = $submenus->first();
         static::assertCount(1, $firstSubmenu->filter('a.dropdown-toggle'), 'Submenu should have a dropdown toggle');
@@ -231,48 +223,27 @@ class ActionGroupsTest extends AbstractCrudTestCase
         static::assertGreaterThanOrEqual(1, $submenuWithHeader->filter('.dropdown-header')->count(), 'Submenu should have headers');
         static::assertGreaterThanOrEqual(1, $submenuWithHeader->filter('.dropdown-divider')->count(), 'Submenu should have dividers');
 
-        // test conditional entity action groups (group6)
-        // find a row for an active entity (should have group6)
-        $activeEntityRows = $entityRows->reduce(static function ($node) {
-            // look for an entity row that shows group6 (which only displays for active entities)
-            return $node->filter('.dropdown-submenu')->reduce(static function ($submenu) {
-                return str_contains($submenu->text(), 'Action Group 6');
-            })->count() > 0;
-        });
+        $inactiveRow = $crawler->filter(sprintf('table.datagrid tbody tr[data-id="%d"]', $inactiveEntity->getId()));
+        static::assertCount(1, $inactiveRow);
+        static::assertCount(3, $inactiveRow->filter('.dropdown-submenu'), 'Inactive entities should not have the group6 submenu');
 
-        // find a row for an inactive entity (should NOT have group6)
-        $inactiveEntityRows = $entityRows->reduce(static function ($node) {
-            $hasGroup6 = false;
-            $node->filter('.dropdown-submenu')->each(static function ($submenu) use (&$hasGroup6) {
-                if (str_contains($submenu->text(), 'Action Group 6')) {
-                    $hasGroup6 = true;
-                }
-            });
+        $hasGroup6 = static fn ($row): bool => $row->filter('.dropdown-submenu')->reduce(static function ($submenu) {
+            return str_contains($submenu->text(), 'Action Group 6');
+        })->count() > 0;
+        static::assertTrue($hasGroup6($firstRow), 'Active entities should display group6');
+        static::assertFalse($hasGroup6($inactiveRow), 'Inactive entities should not display group6');
 
-            return !$hasGroup6;
-        });
-
-        // we should have both active and inactive entities in fixtures
-        static::assertGreaterThan(0, $activeEntityRows->count() + $inactiveEntityRows->count(), 'Should have entities with different active states');
-
-        // test that action URLs are different for each entity (verifies __clone() works correctly)
-        if ($entityRows->count() >= 2) {
-            $firstRowActionLinks = $entityRows->eq(0)->filter('.dropdown-submenu .dropdown-item[data-action-name]');
-            $secondRowActionLinks = $entityRows->eq(1)->filter('.dropdown-submenu .dropdown-item[data-action-name]');
-
-            if ($firstRowActionLinks->count() > 0 && $secondRowActionLinks->count() > 0) {
-                $firstUrl = $firstRowActionLinks->first()->attr('href');
-                $secondUrl = $secondRowActionLinks->first()->attr('href');
-
-                static::assertNotSame($firstUrl, $secondUrl, 'Action URLs should be different for each entity');
-            }
-        }
+        // action URLs must be different for each entity (verifies __clone() works correctly)
+        $firstRowActionLinks = $firstRow->filter('.dropdown-submenu .dropdown-item[data-action-name]');
+        $secondRowActionLinks = $inactiveRow->filter('.dropdown-submenu .dropdown-item[data-action-name]');
+        static::assertGreaterThan(0, $firstRowActionLinks->count());
+        static::assertGreaterThan(0, $secondRowActionLinks->count());
+        static::assertNotSame($firstRowActionLinks->first()->attr('href'), $secondRowActionLinks->first()->attr('href'), 'Action URLs should be different for each entity');
     }
 
     public function testActionGroupsInDetailPage(): void
     {
-        // get an active entity (should show group6)
-        $activeEntity = $this->actionTestEntities->findOneBy(['isActive' => true]);
+        $activeEntity = CategoryFactory::createOne(['active' => true]);
         $crawler = $this->client->request('GET', $this->generateDetailUrl($activeEntity->getId()));
 
         static::assertGreaterThanOrEqual(5, $crawler->filter('.action-group')->count());
@@ -283,16 +254,16 @@ class ActionGroupsTest extends AbstractCrudTestCase
         });
         static::assertGreaterThan(0, $dropdownsWithHeaders->count(), 'Should have dropdowns with headers');
 
-        $dropdownsWithTooltip = $crawler->filter('.action-group button[data-bs-toggle="tooltip"]');
-        if ($dropdownsWithTooltip->count() > 0) {
-            static::assertSame('Complex dropdown', $dropdownsWithTooltip->first()->attr('title'), 'Should have dropdown with tooltip');
-        }
+        $dropdownsWithTooltip = $crawler->filter('.action-group[data-bs-toggle="tooltip"]');
+        static::assertGreaterThan(0, $dropdownsWithTooltip->count());
+        static::assertSame('Complex dropdown', $dropdownsWithTooltip->first()->attr('title'), 'Should have dropdown with tooltip');
     }
 
     public function testConditionalActionGroupsInDetail(): void
     {
-        // test with an active entity (should show group6)
-        $activeEntity = $this->actionTestEntities->findOneBy(['isActive' => true]);
+        $activeEntity = CategoryFactory::createOne(['active' => true]);
+        $inactiveEntity = CategoryFactory::createOne(['active' => false]);
+
         $crawler = $this->client->request('GET', $this->generateDetailUrl($activeEntity->getId()));
 
         $group6Count = $crawler->filter('.action-group')->reduce(static function ($node) {
@@ -301,9 +272,6 @@ class ActionGroupsTest extends AbstractCrudTestCase
 
         static::assertGreaterThan(0, $group6Count, 'Should show group6 for active entity');
 
-        // test with an inactive entity (should not show group6)
-        $inactiveEntity = $this->actionTestEntities->findOneBy(['isActive' => false]);
-        static::assertNotNull($inactiveEntity, 'Inactive entity should exist in fixtures');
         $crawler = $this->client->request('GET', $this->generateDetailUrl($inactiveEntity->getId()));
 
         $group6Count = $crawler->filter('.action-group')->reduce(static function ($node) {
@@ -315,7 +283,7 @@ class ActionGroupsTest extends AbstractCrudTestCase
 
     public function testActionGroupsInEditPage(): void
     {
-        $activeEntity = $this->actionTestEntities->findOneBy(['isActive' => true]);
+        $activeEntity = CategoryFactory::createOne(['active' => true]);
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($activeEntity->getId()));
 
         // test dropdowns exist
@@ -424,15 +392,15 @@ class ActionGroupsTest extends AbstractCrudTestCase
 
     public function testActionGroupsWithInlineEntityActions(): void
     {
+        $entity = CategoryFactory::createOne();
+
         $url = $this->generateIndexUrl(
             controllerFqcn: ActionGroupsInlineEntityCrudController::class,
         );
         $crawler = $this->client->request('GET', $url);
 
-        $entityRows = $crawler->filter('table.datagrid tbody tr[data-id]');
-        static::assertGreaterThan(0, $entityRows->count(), 'Should have entity rows');
-
-        $firstRow = $entityRows->first();
+        $firstRow = $crawler->filter(sprintf('table.datagrid tbody tr[data-id="%d"]', $entity->getId()));
+        static::assertCount(1, $firstRow, 'Should have the entity row');
         $inlineActions = $firstRow->filter('.actions:not(.actions-as-dropdown)');
         static::assertCount(1, $inlineActions, 'Actions should be displayed inline');
 

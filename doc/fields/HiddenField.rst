@@ -2,8 +2,8 @@ EasyAdmin Hidden Field
 ======================
 
 This is a very special field used to include hidden fields in the forms used
-to create and edit entities. Most probably you'll never use this field, but it
-could help in uncommon scenarios.
+to create and edit entities. You will probably never need this field, but it
+can help in uncommon scenarios.
 
 Basic Information
 -----------------

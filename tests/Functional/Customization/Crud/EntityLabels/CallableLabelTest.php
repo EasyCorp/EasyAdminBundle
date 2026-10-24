@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\En
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\EntityLabels\CallableLabelTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -47,6 +48,8 @@ class CallableLabelTest extends AbstractCrudTestCase
 
     public function testCallablePluralLabel(): void
     {
+        CategoryFactory::createMany(2);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
@@ -55,6 +58,6 @@ class CallableLabelTest extends AbstractCrudTestCase
         static::assertStringContainsString('Callable Plural', $pageContent);
 
         // verify data is displayed
-        $this->assertIndexPageEntityCount(20);
+        $this->assertIndexPageEntityCount(2);
     }
 }

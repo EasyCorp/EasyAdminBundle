@@ -37,6 +37,13 @@ permissions when browsing that URL path:
             - { path: ^/admin, roles: ROLE_ADMIN }
             # ...
 
+.. note::
+
+    Some custom actions dispatch the request to a different Symfony controller.
+    In those cases, EasyAdmin re-evaluates the ``access_control`` rules against
+    the route of the target controller, so any rule protecting that route is
+    still applied.
+
 .. _security-controllers:
 
 Restrict Access to Some CRUD Controllers
@@ -50,26 +57,26 @@ used by your employees and ``GuestDashboardController`` used by external collabo
 In the guest dashboard you only want to allow certain actions related to your blog.
 
 By default, EasyAdmin generates routes for all CRUD controllers in all dashboards. This means that
-there will be undesired routes like ``admin_guest_invoice``, ``admin_guest_user_detail``, etc.
+there will be undesired routes like ``admin_guest_invoice_index``, ``admin_guest_user_detail``, etc.
 The best way to restrict which CRUD controllers are accessible via each dashboard
-is to use the ``#[AdminDashboard]`` attribute::
+is to use the :ref:`#[AdminDashboard] attribute <dashboard-route>`::
 
-    // app/Controller/Admin/DashboardController.php
+    // src/Controller/Admin/GuestDashboardController.php
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 
-    #[AdminDashboard(routePath: '/admin', routeName: 'admin', allowedControllers: [
+    #[AdminDashboard(routePath: '/admin/guest', routeName: 'admin_guest', allowedControllers: [
         BlogPostCrudController::class,
         BlogCategoryCrudController::class,
     ])]
-    class DashboardController extends AbstractDashboardController
+    class GuestDashboardController extends AbstractDashboardController
     {
         // ...
     }
 
 The ``allowedControllers`` option defines the only CRUD controllers that will be
 available in the dashboard via Symfony routes. In practice, the above configuration
-will make EasyAdmin to only generate the routes ``admin_guest_blog_post_*`` and
+will make EasyAdmin generate only the routes ``admin_guest_blog_post_*`` and
 ``admin_guest_blog_category_*``, skipping all the other routes that would have
 allowed to access the other controllers.
 
@@ -98,7 +105,7 @@ user must have to see the menu item::
 
 .. note::
 
-    This permission only shows/hides menu items. The actions associated to those
+    This permission only shows/hides menu items. The actions associated with those
     menu items are still executable, even if the user can't see the menu items.
     Use the :ref:`actions permissions <security-permissions-actions>` to also
     restrict the access to those actions.
@@ -125,7 +132,9 @@ Restrict Access to Actions
 --------------------------
 
 Use the ``setPermission()`` method to define the security permission required to
-see the action link/button::
+see the action link/button on any of the :ref:`backend pages <crud-pages>`. This
+works both for :ref:`built-in actions <actions-built-in>` and for
+:ref:`custom actions <actions-custom>`::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -154,10 +163,10 @@ Restrict Access to Fields
 -------------------------
 
 There are several options to restrict the information displayed in the page
-depending on the logged in user. First, you can show/hide the entire field with
+depending on the logged-in user. First, you can show/hide the entire field with
 the ``setPermission()`` method::
 
-    public function getFields(string $action): iterable
+    public function configureFields(string $pageName): iterable
     {
         return [
             IdField::new('id'),
@@ -165,15 +174,16 @@ the ``setPermission()`` method::
             IntegerField::new('stock'),
             // users must have this permission/role to see this field
             IntegerField::new('sales')->setPermission('ROLE_ADMIN'),
-            FloatField::new('commission')->setPermission('ROLE_FINANCE'),
+            NumberField::new('commission')->setPermission('ROLE_FINANCE'),
             // ...
         ];
     }
 
 You can also restrict which items users can see in the ``index`` and ``detail``
-pages thanks to the ``setEntityPermission()`` method. This value is passed as
-the first argument of the call to ``is_granted($permissions, $item)`` function
-to decide whether the current user can see the given item::
+pages thanks to the ``setEntityPermission()`` method of the
+:doc:`CRUD controller configuration </crud>`. This value is passed as the first
+argument of the call to the ``is_granted($permission, $item)`` function to
+decide whether the current user can see the given item::
 
     namespace App\Controller\Admin;
 
@@ -246,12 +256,20 @@ Custom Security Voters
 EasyAdmin implements a Symfony `security voter`_ to check the permissions
 defined for actions, entities, menu items, etc. The actual security permissions
 are defined as constants in the ``EasyCorp\Bundle\EasyAdminBundle\Security\Permission``
-class (e.g. ``Permission::EA_EXECUTE_ACTION``, ``Permission::EA_VIEW_MENU_ITEM``, etc.)
+class:
+
+* ``Permission::EA_ACCESS_ENTITY``: checked before displaying an entity in the
+  ``index`` and ``detail`` pages;
+* ``Permission::EA_EXECUTE_ACTION``: checked before displaying and running an action;
+* ``Permission::EA_VIEW_MENU_ITEM``: checked before displaying a menu item;
+* ``Permission::EA_VIEW_FIELD``: checked before displaying a field;
+* ``Permission::EA_EXIT_IMPERSONATION``: checked before displaying the link that
+  stops impersonating another user.
 
 If you define a custom security voter for the backend, consider changing the
 `access decision strategy`_ used by your application. The default strategy,
 called ``affirmative``, grants access as soon as one voter grants access (if
-EasyAdmin voter grants access, your custom voter won't be able to deny it).
+the EasyAdmin voter grants access, your custom voter won't be able to deny it).
 
 That's why you should change the default strategy to ``unanimous``, which
 grants access only if there are no voters denying access:

@@ -19,17 +19,18 @@ Basic Information
 
   .. code-block:: html
 
-    <input type="date"> ... </select>
+    <input type="date">
 
 Options
 -------
 
-renderAsChoice
-~~~~~~~~~~~~~~
-
 By default, in form pages (``edit`` and ``new``) the field is rendered as an
 HTML5 input field. This is done because modern browsers display an advanced
-date picker for these fields, making them easier to use.
+date picker for these fields, making them easier to use. The following options
+change that behavior.
+
+``renderAsChoice``
+~~~~~~~~~~~~~~~~~~
 
 If you prefer to display the date as 3 separate ``<select>`` elements to pick
 the day, month and year separately, use this option::
@@ -41,12 +42,8 @@ the day, month and year separately, use this option::
     Setting this option is equivalent to setting ``widget = choice`` and
     ``html5 = true`` options in the underlying ``DateType`` Symfony field.
 
-renderAsNativeWidget
-~~~~~~~~~~~~~~~~~~~~
-
-By default, in form pages (``edit`` and ``new``) the field is rendered as an
-HTML5 input field. This is done because modern browsers display an advanced
-date picker for these fields, making them easier to use.
+``renderAsNativeWidget``
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 This option allows you to programmatically enable/disable this behavior (e.g.
 based on the result of some expression). Setting it to ``false`` is equivalent
@@ -59,12 +56,8 @@ to calling ``renderAsChoice()``::
     Setting this option is equivalent to setting ``widget = single_text`` and
     ``html5 = true`` options in the underlying ``DateType`` Symfony field.
 
-renderAsText
-~~~~~~~~~~~~
-
-By default, in form pages (``edit`` and ``new``) the field is rendered as an
-HTML5 input field. This is done because modern browsers display an advanced
-date picker for these fields, making them easier to use.
+``renderAsText``
+~~~~~~~~~~~~~~~~
 
 If you prefer to display the date as a single ``<input type="text">`` element,
 use this option::
@@ -73,11 +66,11 @@ use this option::
 
 .. note::
 
-    Setting this  option is equivalent to setting ``widget = single_text`` and
+    Setting this option is equivalent to setting ``widget = single_text`` and
     ``html5 = false`` options in the underlying ``DateType`` Symfony field.
 
-setFormat
-~~~~~~~~~
+``setFormat``
+~~~~~~~~~~~~~
 
 By default, in read-only pages (``index`` and ``detail``) dates are displayed in
 the format defined by the :ref:`setDateFormat() CRUD option <crud-date-time-number-format-options>`.
@@ -97,8 +90,8 @@ a valid `ICU Datetime Pattern`_ to this function::
     yield DateField::new('...')->setFormat('yyyy.MM.dd G');
     yield DateField::new('...')->setFormat('EEE, MMM d, \'\'yy');
 
-setTimezone
-~~~~~~~~~~~
+``setTimezone``
+~~~~~~~~~~~~~~~
 
 By default, in read-only pages (``index`` and ``detail``) dates are displayed
 using the timezone defined by the :ref:`setTimezone() CRUD option <crud-date-time-number-format-options>`.

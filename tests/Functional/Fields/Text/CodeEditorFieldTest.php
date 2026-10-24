@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Text;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class CodeEditorFieldTest extends AbstractFieldFunctionalTest
+class CodeEditorFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testCodeEditorFieldDisplaysOnIndex(): void
     {
@@ -80,7 +80,7 @@ class CodeEditorFieldTest extends AbstractFieldFunctionalTest
 
         $this->client->submit($form);
 
-        $entity = $this->fieldTestEntities->findOneBy([], ['id' => 'DESC']);
+        $entity = $this->fieldTestEntities->findOneBy(['slugField' => 'code-test']);
         static::assertNotNull($entity, 'Entity should be created');
         static::assertSame($code, $entity->getCodeEditorField());
     }

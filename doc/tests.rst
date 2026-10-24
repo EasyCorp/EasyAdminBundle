@@ -2,14 +2,15 @@ Tests
 =====
 
 As EasyAdmin is based on Symfony, you can add functional tests for admin pages by
-extending the ``WebTestCase`` class and using the `Symfony functional testing workflow`_ .
+extending the ``WebTestCase`` class and using the `Symfony functional testing workflow`_.
 
 However, as EasyAdmin uses specific ways of displaying the data in its
 CRUD pages, a custom test class is provided: ``AbstractCrudTestCase``. The
 class is based on traits that define custom asserts and helpers:
 
 #. `Functional Test Case Example`_
-#. `Url Generation`_
+#. `URL Generation`_
+#. `Actions`_
 #. `Asserts`_
 #. `Selector Helpers`_
 
@@ -23,7 +24,7 @@ Here's an example of a functional test class for that controller.
 
 First, your test class needs to extend the ``AbstractCrudTestCase``::
 
-    # tests/Admin/Controller/CategoryCrudControllerTest.php
+    // tests/Admin/Controller/CategoryCrudControllerTest.php
     namespace App\Tests\Admin\Controller;
 
     use App\Controller\Admin\AppDashboardController;
@@ -44,9 +45,9 @@ First, your test class needs to extend the ``AbstractCrudTestCase``::
 
         public function testIndexPage(): void
         {
-            // this examples doesn't use security; in your application you may
-            // need to ensure that the user is logged before the test
-            $this->client->request("GET", $this->generateIndexUrl());
+            // this example doesn't use security; in your application you may
+            // need to ensure that the user is logged in before the test runs
+            $this->client->request('GET', $this->generateIndexUrl());
             static::assertResponseIsSuccessful();
         }
     }
@@ -54,23 +55,25 @@ First, your test class needs to extend the ``AbstractCrudTestCase``::
 URL Generation
 --------------
 
-Used by the ``AbstractCrudTestCase``, ``CrudTestUrlGeneration`` is a
-URL generation trait that helps generate EasyAdmin-specific URLs.
+The ``CrudTestUrlGeneration`` trait, used by ``AbstractCrudTestCase``, generates
+EasyAdmin URLs.
 
 .. note::
 
     The trait can be used on its own but, in that case, the class that is using
-    it needs either of the following:
+    it needs a class property ``adminUrlGenerator`` (an instance of
+    ``EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface``) and
+    either of the following:
 
-    * to define two functions ``getControllerFqcn()`` and ``getDashboardFqcn()``;
+    * to define two methods ``getControllerFqcn()`` and ``getDashboardFqcn()``;
     * to pass the DashboardFqcn (class name) and ControllerFqcn (class name) as
       input to the URL generation functions.
 
 Here is the list of URL generation functions. All of them build URLs
 based on the provided Dashboard and Controller class names:
 
-* ``getCrudUrl()``: is the main function that allows for a complete generation
-  with all possible options;
+* ``getCrudUrl()``: the main method; it generates any admin URL and accepts all
+  available options;
 * ``generateIndexUrl()``: generates the URL for the index page (based on the
   Dashboard and Controller defined);
 * ``generateNewFormUrl()``: generates the URL for the New form page (based on
@@ -82,14 +85,31 @@ based on the provided Dashboard and Controller class names:
 * ``generateFilterRenderUrl()``: generates the URL to get the rendering of the
   filters (based on the Dashboard and Controller defined).
 
+Actions
+-------
+
+Used by the ``AbstractCrudTestCase``, the ``CrudTestActions`` trait provides
+helpers to interact with the actions displayed in the backend:
+
+* ``clickOnIndexGlobalAction()``: clicks on the
+  :ref:`global action <global-actions>` with the given name in the page that the
+  test client has just loaded.
+
+.. note::
+
+    The trait can be used on its own but, in that case, the class that is using
+    it needs a class property ``client``: instance of
+    ``Symfony\Bundle\FrameworkBundle\KernelBrowser``. The trait also includes
+    the ``CrudTestSelectors`` trait to locate the actions.
+
 Asserts
 -------
 
-Used by the ``AbstractCrudTestCase``, are two traits filled with specific
-asserts for EasyAdmin web testing:
+``AbstractCrudTestCase`` uses two traits that provide asserts specific to
+EasyAdmin:
 
 * ``CrudTestIndexAsserts``: providing asserts for the index page of EasyAdmin;
-* ``CrudTestFormAsserts`` : providing asserts for the form page of EasyAdmin.
+* ``CrudTestFormAsserts``: providing asserts for the form page of EasyAdmin.
 
 .. note::
 
@@ -104,7 +124,7 @@ CrudTestIndexAsserts
 
 As EasyAdmin uses specific layout, the goal of these asserts is to ease the way
 you're testing your EasyAdmin backend by providing specific asserts linked to
-the index page.
+the :ref:`index page <crud-pages>`.
 
 The following asserts are provided:
 
@@ -124,6 +144,9 @@ The following asserts are provided:
 * ``assertIndexColumnHeaderContains()``
 * ``assertIndexColumnHeaderNotContains()``
 
+The ``assertGlobalAction*()`` asserts refer to the
+:ref:`global actions <global-actions>` displayed above the listing.
+
 CrudTestFormAsserts
 ~~~~~~~~~~~~~~~~~~~
 
@@ -131,7 +154,8 @@ As EasyAdmin uses specific layout, the goal of these asserts is to ease the way
 you're testing your EasyAdmin backend by providing specific asserts linked to
 the **form** (new or edit) page.
 
-The following asserts are provided:
+The following asserts are provided for the :doc:`fields </fields>` displayed in
+those forms:
 
 * ``assertFormFieldExists()``
 * ``assertFormFieldNotExists()``

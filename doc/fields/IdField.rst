@@ -1,7 +1,7 @@
 EasyAdmin ID Field
 ==================
 
-This field is used to represent the primary key of an integer, no matter if it's
+This field is used to represent the primary key of an entity, no matter if it's
 a traditional auto-increment numeric value or a UID value.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
@@ -29,7 +29,8 @@ Options
 
 By default, this value is truncated in ``index`` page to a maximum of 7 characters
 because usually there's not enough space to display full UID values. If you prefer
-to not truncate this value or to do it at different length, use this option:
+to not truncate this value or to truncate it at a different length, use this
+option::
 
     // set this value to -1 to not truncate the value
     yield IdField::new('...')->setMaxLength(16);

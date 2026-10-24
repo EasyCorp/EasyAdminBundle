@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'Unele rezultate sunt ascunse pentru ca nu aveți drepturile necesare.',
         'no_results' => 'Niciun rezultat.',
+        'sort' => 'Sortare',
+        'sort_by' => 'Sortare după',
     ],
 
     'paginator' => [

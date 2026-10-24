@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\IdConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class IdFieldTest extends AbstractFieldTest
+class IdFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

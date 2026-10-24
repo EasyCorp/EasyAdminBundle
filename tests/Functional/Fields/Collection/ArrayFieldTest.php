@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Collection;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class ArrayFieldTest extends AbstractFieldFunctionalTest
+class ArrayFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testArrayFieldDisplaysOnIndex(): void
     {

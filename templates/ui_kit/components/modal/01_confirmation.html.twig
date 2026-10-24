@@ -1,0 +1,11 @@
+{# Confirmation dialog
+   Modal:Trigger is a button that opens the modal with the given id. Put the
+   buttons of the modal in the footer block; Modal:Close is a button that closes it. #}
+<twig:ea:Modal:Trigger target="#ui-kit-delete-modal" variant="danger" icon="internal:delete">Delete customer</twig:ea:Modal:Trigger>
+
+<twig:ea:Modal id="ui-kit-delete-modal" title="Delete this customer?" description="Their orders and invoices will be deleted too. This can't be undone.">
+    <twig:block name="footer">
+        <twig:ea:Modal:Close>Cancel</twig:ea:Modal:Close>
+        <twig:ea:Button variant="danger" type="button" data-bs-dismiss="modal">Delete</twig:ea:Button>
+    </twig:block>
+</twig:ea:Modal>

@@ -43,7 +43,7 @@ Keep in mind that:
 * This option is ignored when using the ``renderAsSwitch()`` option, which always
   displays a switch/toggle with the field value;
 * This option is only applied to the ``index`` page; in the ``detail`` page you
-  will always see the field value to avoid any confussion.
+  will always see the field value to avoid any confusion.
 
 ``hideValueWhenTrue``
 ~~~~~~~~~~~~~~~~~~~~~
@@ -60,31 +60,45 @@ Keep in mind that:
 * This option is ignored when using the ``renderAsSwitch()`` option, which always
   displays a switch/toggle with the field value;
 * This option is only applied to the ``index`` page; in the ``detail`` page you
-  will always see the field value to avoid any confussion.
+  will always see the field value to avoid any confusion.
 
 ``renderAsSwitch``
 ~~~~~~~~~~~~~~~~~~
 
 By default, in read-only pages (``index`` and ``detail``) this field is rendered
 as a dynamic switch/toggle that can flip the underlying value when clicking on it.
-If you prefer to not allow changing the property value in this way, use this option::
+This switch is rendered with the :doc:`Switch component </components>`. If you
+prefer to not allow changing the property value in this way, use this option::
 
     yield BooleanField::new('...')->renderAsSwitch(false);
 
-Colored Switches
-~~~~~~~~~~~~~~~~
+``renderAsSuccessSwitch``
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default the switch uses a neutral color when it's turned on. If you want to
-highlight its meaning, use one of the following methods to color the "on" state
-with the same colors as the ``success``, ``warning`` and ``danger`` buttons.
-These methods also enable the switch rendering, so you don't need to call
-``renderAsSwitch()`` too::
+By default the switch uses a neutral color when it's turned on. Use this option
+to color the "on" state with the same color as the ``success`` (green) buttons::
 
-    yield BooleanField::new('...')->renderAsSuccessSwitch();  // green when on
-    yield BooleanField::new('...')->renderAsWarningSwitch();  // amber when on
-    yield BooleanField::new('...')->renderAsDangerSwitch();   // red when on
+    yield BooleanField::new('...')->renderAsSuccessSwitch();
 
-The color is applied everywhere the field is rendered as a switch (the ``index``
-toggle and the ``edit``/``new`` forms). The "off" state always uses the neutral color.
+This method also enables the switch rendering, so you don't need to call
+``renderAsSwitch()`` too. The color is applied everywhere the field is rendered
+as a switch (the ``index`` toggle and the ``edit``/``new`` forms). The "off"
+state always uses the neutral color. The same applies to the two options below.
+
+``renderAsWarningSwitch``
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Same as ``renderAsSuccessSwitch()``, but the "on" state uses the same color as
+the ``warning`` (amber) buttons::
+
+    yield BooleanField::new('...')->renderAsWarningSwitch();
+
+``renderAsDangerSwitch``
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Same as ``renderAsSuccessSwitch()``, but the "on" state uses the same color as
+the ``danger`` (red) buttons::
+
+    yield BooleanField::new('...')->renderAsDangerSwitch();
 
 .. _`CheckboxType`: https://symfony.com/doc/current/reference/forms/types/checkbox.html

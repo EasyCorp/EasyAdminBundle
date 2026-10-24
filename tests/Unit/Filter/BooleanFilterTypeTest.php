@@ -3,13 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Filter;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\BooleanFilterType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 class BooleanFilterTypeTest extends TypeTestCase
 {
-    /**
-     * @dataProvider submit
-     */
+    #[DataProvider('submit')]
     public function test(string $dataToSubmit, bool $expectedData): void
     {
         $form = $this->factory->create(BooleanFilterType::class);

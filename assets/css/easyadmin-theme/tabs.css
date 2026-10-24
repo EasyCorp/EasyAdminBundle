@@ -33,6 +33,7 @@
     border: 0;
     border-radius: var(--border-radius-lg);
     color: var(--text-color);
+    column-gap: var(--ea-sp-2);
     display: flex;
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-normal);
@@ -207,7 +208,6 @@
 /* the label is as wide as its semibold version (see ::before below), so the regular
    text is centered to split the extra width evenly between both sides */
 .form-tabs-tablist .nav-tabs .tab-nav-item-label {
-    margin-inline-start: -4px;
     text-align: center;
 }
 /* reserves the width of the semibold label, so tabs don't shift when the selection changes */
@@ -222,14 +222,13 @@
 
 .form-tabs-tablist .nav-tabs .tab-nav-item-icon {
     color: var(--text-muted);
-    margin-inline-end: var(--ea-sp-4);
 }
 
 /* scoped to '.nav-item .badge' (not to a component class) so the error badge built by form.js looks identical to the server-rendered ones */
 .form-tabs-tablist .nav-tabs .nav-item .badge {
     border-radius: var(--border-radius-full);
     line-height: var(--line-height-none);
-    margin-inline-start: var(--ea-sp-4);
+    margin-inline-start: var(--ea-sp-2);
     padding: var(--ea-sp-2) var(--ea-sp-3);
 }
 

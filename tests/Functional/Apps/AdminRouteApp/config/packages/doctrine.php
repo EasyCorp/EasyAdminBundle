@@ -33,6 +33,12 @@ return static function (ContainerConfigurator $container) {
             if (null !== $doctrineOrmVersion && version_compare($doctrineOrmVersion, '3.4.0', '>=') && \PHP_VERSION_ID >= 80400) {
                 $config['orm']['enable_native_lazy_objects'] = true;
             }
+
+            // ORM 3 always behaves like this; ORM 2 deprecates not opting into it
+            if (null !== $doctrineOrmVersion && version_compare($doctrineOrmVersion, '3.0.0', '<')) {
+                $config['orm']['enable_lazy_ghost_objects'] = true;
+                $config['orm']['report_fields_where_declared'] = true;
+            }
         }
     }
 

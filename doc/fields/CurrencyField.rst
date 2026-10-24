@@ -4,6 +4,12 @@ EasyAdmin Currency Field
 This field is used to represent a value that stores the `3-letter ISO 4217`_ code
 of some currency.
 
+To express that no currency is involved, use the ``CurrencyField::CURRENCY_NONE``
+constant, which holds the ISO 4217 ``'XXX'`` code. That code has no name or
+symbol of its own, so EasyAdmin displays the generic currency sign ``¤`` for it.
+The ``setCurrency()`` method of the :doc:`MoneyField </fields/MoneyField>`
+accepts this constant too.
+
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
 .. image:: ../images/fields/field-currency.png
@@ -39,7 +45,7 @@ Use this option to display the currency code::
 ~~~~~~~~~~~~
 
 By default, this field displays the name of the currency (``Mexican Peso``,
-``Indian rupee``, etc.). If you prefer to not display the name (and only display
+``Indian Rupee``, etc.). If you prefer to not display the name (and only display
 the symbol and/or code of the currency) set this option to ``false``::
 
     yield CurrencyField::new('...')->showName(false);

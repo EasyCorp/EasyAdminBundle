@@ -5,9 +5,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\NumberConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
-class NumberFieldTest extends AbstractFieldTest
+class NumberFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {
@@ -77,15 +78,13 @@ class NumberFieldTest extends AbstractFieldTest
         NumberField::new('foo')->setNumDecimals(-1);
     }
 
-    /**
-     * @testWith [0, "ROUND_DOWN"]
-     *           [1, "ROUND_FLOOR"]
-     *           [2, "ROUND_UP"]
-     *           [3, "ROUND_CEILING"]
-     *           [5, "ROUND_HALF_DOWN"]
-     *           [6, "ROUND_HALF_EVEN"]
-     *           [4, "ROUND_HALF_UP"]
-     */
+    #[TestWith([0, 'ROUND_DOWN'])]
+    #[TestWith([1, 'ROUND_FLOOR'])]
+    #[TestWith([2, 'ROUND_UP'])]
+    #[TestWith([3, 'ROUND_CEILING'])]
+    #[TestWith([5, 'ROUND_HALF_DOWN'])]
+    #[TestWith([6, 'ROUND_HALF_EVEN'])]
+    #[TestWith([4, 'ROUND_HALF_UP'])]
     public function testSetRoundingMode(int $mode, string $modeName): void
     {
         $field = NumberField::new('foo');

@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'لا يمكنك عرض بعض النتائج لأنك لا تملك أذونات كافية',
         'no_results' => 'لا توجد أيّ نتائج',
+        'sort' => 'فرز',
+        'sort_by' => 'الفرز حسب',
     ],
 
     'paginator' => [

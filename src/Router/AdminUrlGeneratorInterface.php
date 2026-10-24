@@ -3,6 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 /**
+ * Generates URLs to dashboards, CRUD controllers and their actions.
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 interface AdminUrlGeneratorInterface

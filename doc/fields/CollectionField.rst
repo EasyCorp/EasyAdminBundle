@@ -15,7 +15,8 @@ access its embedded form:
 .. image:: ../images/fields/field-collection-simple-expanded.png
    :alt: Default style of EasyAdmin collection field expanded
 
-The field also supports collections of nested associations using the dot syntax
+The field also supports collections of :ref:`nested associations
+<field-association-nested>` using the dot syntax
 (e.g. ``CollectionField::new('profile.attachments')``).
 
 Basic Information
@@ -23,7 +24,7 @@ Basic Information
 
 * **PHP Class**: ``EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField``
 * **Doctrine DBAL Type** used to store this value: this field is related to
-  Doctrine associations, so indirectly it uses  ``integer``, ``guid`` or any
+  Doctrine associations, so indirectly it uses ``integer``, ``guid`` or any
   other type that you use to store the ID of the associated entity
 * **Symfony Form Type** used to render the field: `CollectionType`_
 * **Rendered as**:
@@ -37,7 +38,7 @@ Prerequisites
 -------------
 
 As explained in the `documentation about Symfony CollectionType options`_, the
-``allowAdd`` and ``allowDelete`` option requires that your entity defines some
+``allowAdd`` and ``allowDelete`` options require that your entity defines some
 special methods with very specific names. Otherwise, changes won't be persisted
 when creating or updating the entity collection items in the backend.
 
@@ -99,24 +100,24 @@ methods called ``add<Related Entity Singular Name>()`` and ``remove<Related Enti
 Options
 -------
 
-allowAdd
-~~~~~~~~
+``allowAdd``
+~~~~~~~~~~~~
 
 By default, you can add new items to the collection. Use this option if you
 prefer to not allow that::
 
     yield CollectionField::new('...')->allowAdd(false);
 
-allowDelete
-~~~~~~~~~~~
+``allowDelete``
+~~~~~~~~~~~~~~~
 
 By default, you can delete any of the items included in the collection. Use this
 option if you prefer to not allow that::
 
     yield CollectionField::new('...')->allowDelete(false);
 
-renderExpanded
-~~~~~~~~~~~~~~
+``renderExpanded``
+~~~~~~~~~~~~~~~~~~
 
 By default, items in the collection are represented by a single line showing
 their ``__toString()`` value. Users need to click on each item to reveal its
@@ -125,21 +126,21 @@ page load::
 
     yield CollectionField::new('...')->renderExpanded();
 
-setEntryIsComplex
-~~~~~~~~~~~~~~~~~
+``setEntryIsComplex``
+~~~~~~~~~~~~~~~~~~~~~
 
 Set this option if the embedded form of each collection item contains multiple
 fields::
 
     yield CollectionField::new('...')->setEntryIsComplex();
 
-EasyAdmin will try to do its best to display those fields correctly::
+EasyAdmin does its best to display those fields correctly:
 
 .. image:: ../images/fields/field-collection-complex-expanded.png
    :alt: Default style of EasyAdmin complex collection field expanded
 
-setEntryType
-~~~~~~~~~~~~
+``setEntryType``
+~~~~~~~~~~~~~~~~
 
 The entries of the collection can be rendered either using a Symfony form or an
 EasyAdmin CRUD Form. The ``setEntryType()`` method defines the Symfony form type
@@ -147,8 +148,8 @@ used to render the form of each collection entry::
 
     yield CollectionField::new('...')->setEntryType(SomeType::class);
 
-setEntryToStringMethod
-~~~~~~~~~~~~~~~~~~~~~~
+``setEntryToStringMethod``
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By default, items in the collection are represented by a single line showing
 their ``__toString()`` value. Use this option to define how to get the string
@@ -164,17 +165,17 @@ representation of each collection entry::
         fn (Category $value, TranslatorInterface $translator): string => $translator->trans($value->getDescription())
     );
 
-showEntryLabel
-~~~~~~~~~~~~~~
+``showEntryLabel``
+~~~~~~~~~~~~~~~~~~
 
 By default, EasyAdmin hides the form label of each collection item (because it's
-an auto-increment integer number which doesn't look good most of the times).
+an auto-increment integer number which usually doesn't look good).
 Use this option if you prefer to display that label::
 
     yield CollectionField::new('...')->showEntryLabel();
 
-useEntryCrudForm
-~~~~~~~~~~~~~~~~
+``useEntryCrudForm``
+~~~~~~~~~~~~~~~~~~~~
 
 The entries of the collection can be rendered either using a Symfony form or an
 EasyAdmin CRUD Form. The ``useEntryCrudForm()`` method defines the EasyAdmin CRUD
@@ -182,9 +183,9 @@ form used to render the form of each collection entry::
 
     yield CollectionField::new('...')->useEntryCrudForm();
 
-By default, EasyAdmin finds the CRUD controller associated to the property automatically.
-If you need better control about which CRUD controller to use, pass the fully-qualified
-class name of the controller as the first argument::
+By default, EasyAdmin finds the CRUD controller associated with the property
+automatically. If you need more control over which CRUD controller to use, pass
+the fully-qualified class name of the controller as the first argument::
 
     yield CollectionField::new('...')->useEntryCrudForm(CategoryCrudController::class);
 
@@ -196,7 +197,7 @@ class name of the controller as the first argument::
 
 .. note::
 
-    The ``useEntryCrudForm()`` method requires Symfony 6.1 or newer version.
+    The ``useEntryCrudForm()`` method requires Symfony 6.1 or newer.
 
 .. note::
 
@@ -204,12 +205,16 @@ class name of the controller as the first argument::
     When no Symfony form option ``entry_type`` is set, ``CollectionField`` for
     association properties will use ``CrudFormType`` as the default ``entry_type``.
 
+.. _collection-field-javascript-events:
+
 JavaScript Events
 -----------------
 
 When an item is added to a collection field, a `CustomEvent`_ with the type
 ``'ea.collection.item-added'`` is dispatched. Similarly, when an item is removed,
-an `Event`_ with the type ``'ea.collection.item-removed'`` is dispatched.
+an `Event`_ with the type ``'ea.collection.item-removed'`` is dispatched. These
+are browser events; for the server-side events dispatched by EasyAdmin, see
+:doc:`/events`.
 
 The ``'ea.collection.item-added'`` event contains information about the added
 item in the `detail property`_:

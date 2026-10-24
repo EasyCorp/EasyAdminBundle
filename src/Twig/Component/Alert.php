@@ -10,9 +10,21 @@ use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\AlertVariant;
  */
 class Alert
 {
+    /**
+     * The color and meaning of the alert: the usual Bootstrap values ('info', 'success', 'warning', 'danger', etc.; 'notice' and 'error' are aliases of 'info' and 'danger'), and any other value is added as an 'alert-{variant}' CSS class.
+     */
     public AlertVariant $variant = AlertVariant::Info;
+    /**
+     * Whether to display a button to close the alert.
+     */
     public bool $withDismissButton = false;
+    /**
+     * The name of the optional icon displayed before the contents.
+     */
     public ?string $icon = null;
+    /**
+     * The optional title displayed above the message (use the title block for custom HTML contents).
+     */
     public ?string $title = null;
     private ?string $customVariant = null;
 

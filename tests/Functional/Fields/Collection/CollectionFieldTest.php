@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Collection;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class CollectionFieldTest extends AbstractFieldFunctionalTest
+class CollectionFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testCollectionFieldDisplaysOnIndex(): void
     {
@@ -170,13 +170,12 @@ class CollectionFieldTest extends AbstractFieldFunctionalTest
 
         $form = $crawler->filter('form[name="FieldTestEntity"]')->form();
 
-        // set a unique identifier so we can find this entity later
-        $form['FieldTestEntity[slugField]'] = 'collection-test-'.uniqid();
+        $form['FieldTestEntity[slugField]'] = 'collection-test';
 
         $this->client->submit($form);
 
         // verify the entity was created (collection may be empty by default)
-        $entity = $this->fieldTestEntities->findOneBy([], ['id' => 'DESC']);
+        $entity = $this->fieldTestEntities->findOneBy(['slugField' => 'collection-test']);
         static::assertNotNull($entity, 'Entity should be created');
         static::assertIsArray($entity->getCollectionField(), 'Collection field should return an array');
     }

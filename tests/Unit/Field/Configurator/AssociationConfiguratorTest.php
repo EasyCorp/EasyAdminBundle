@@ -2,9 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Configurator;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
@@ -21,28 +18,25 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\DeveloperCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectReleaseCategoryCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Developer;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\ProjectReleaseCategory;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\ProjectTag;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\BlogPostCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class AssociationConfiguratorTest extends AbstractFieldTest
+class AssociationConfiguratorTest extends AbstractFieldTestCase
 {
-    private EntityDto $projectDto;
+    private EntityDto $rootEntityDto;
     private RequestStack $requestStack;
 
     protected function setUp(): void
     {
-        /** @var EntityManagerInterface $entityManager */
-        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
-        $this->projectDto = new EntityDto(Project::class, $entityManager->getClassMetadata(Project::class));
+        $this->rootEntityDto = $this->createEntityDto(BlogPost::class);
 
         $adminUrlGenerator = $this->getMockBuilder(AdminUrlGeneratorInterface::class)->disableOriginalConstructor()->getMock();
 
@@ -62,7 +56,7 @@ class AssociationConfiguratorTest extends AbstractFieldTest
 
     protected function getEntityDto(): EntityDto
     {
-        return $this->projectDto;
+        return $this->rootEntityDto;
     }
 
     protected function getAdminContext(string $pageName, string $requestLocale, string $actionName, ?string $controllerFqcn = null): AdminContextInterface
@@ -76,58 +70,57 @@ class AssociationConfiguratorTest extends AbstractFieldTest
 
     public function testToOneAssociation(): void
     {
-        $field = AssociationField::new('leadDeveloper');
-        $entityDto = new EntityDto(Project::class, $this->createStub(ClassMetadata::class));
-        $entityDto->setFields(new FieldCollection([$field]));
+        $this->rootEntityDto = $this->createEntityDto(User::class);
+        $field = AssociationField::new('favoriteCategory');
 
-        $field->getAsDto()->setDoctrineMetadata((array) $this->projectDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));
-        $field->setCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, DeveloperCrudController::class);
+        $field->getAsDto()->setDoctrineMetadata((array) $this->rootEntityDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));
+        $field->setCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, CategoryCrudController::class);
 
-        $fieldDto = $this->configure($field, controllerFqcn: ProjectCrudController::class);
+        $fieldDto = $this->configure($field);
         $this->assertSame('toOne', $fieldDto->getCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE));
         $this->assertSame(EntityType::class, $fieldDto->getFormType());
-        $this->assertSame(Developer::class, $fieldDto->getFormTypeOption('class'));
+        $this->assertSame(Category::class, $fieldDto->getFormTypeOption('class'));
     }
 
     public function testToManyAssociation(): void
     {
-        $field = AssociationField::new('projectTags');
-        $field->getAsDto()->setDoctrineMetadata((array) $this->projectDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));
-        $field->setCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, DeveloperCrudController::class);
+        $field = AssociationField::new('categories');
+        $field->getAsDto()->setDoctrineMetadata((array) $this->rootEntityDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));
+        $field->setCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, CategoryCrudController::class);
 
-        $fieldDto = $this->configure($field, controllerFqcn: ProjectCrudController::class);
+        $fieldDto = $this->configure($field, controllerFqcn: BlogPostCrudController::class);
         $this->assertSame('toMany', $fieldDto->getCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE));
         $this->assertSame(EntityType::class, $fieldDto->getFormType());
-        $this->assertSame(ProjectTag::class, $fieldDto->getFormTypeOption('class'));
+        $this->assertSame(Category::class, $fieldDto->getFormTypeOption('class'));
     }
 
     public function testNestedAssociationWithCrudControllerSet(): void
     {
-        $field = AssociationField::new('latestRelease.category')
-            ->setCrudController(ProjectReleaseCategoryCrudController::class)
+        $field = AssociationField::new('publisher.favoriteCategory')
+            ->setCrudController(CategoryCrudController::class)
         ;
 
         $fieldDto = $this->configure($field);
 
         $this->assertSame(EntityType::class, $fieldDto->getFormType());
-        $this->assertSame(ProjectReleaseCategory::class, $fieldDto->getFormTypeOption('class'));
+        $this->assertSame(Category::class, $fieldDto->getFormTypeOption('class'));
     }
 
     public function testNestedAssociationWithAutoConfiguration(): void
     {
-        $field = AssociationField::new('latestRelease.category');
+        $field = AssociationField::new('publisher.favoriteCategory');
 
         $fieldDto = $this->configure($field);
 
         $this->assertSame(EntityType::class, $fieldDto->getFormType());
-        $this->assertSame(ProjectReleaseCategory::class, $fieldDto->getFormTypeOption('class'));
+        $this->assertSame(Category::class, $fieldDto->getFormTypeOption('class'));
     }
 
-    /**
-     * @dataProvider failsIfPropertyIsNotAssociation
-     */
-    public function testFailsIfPropertyIsNotAssociation(FieldInterface $field): void
+    #[DataProvider('failsIfPropertyIsNotAssociation')]
+    public function testFailsIfPropertyIsNotAssociation(string $rootEntityFqcn, FieldInterface $field): void
     {
+        $this->rootEntityDto = $this->createEntityDto($rootEntityFqcn);
+
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(sprintf(
             'The "%s" field is not a Doctrine association, so it cannot be used as an association field.',
@@ -139,16 +132,15 @@ class AssociationConfiguratorTest extends AbstractFieldTest
 
     public static function failsIfPropertyIsNotAssociation(): \Generator
     {
-        yield [TextField::new('name')];
-        yield [TextField::new('price')];
-        yield [TextField::new('price.currency')]; // Doctrine embeddable
+        yield [BlogPost::class, TextField::new('title')];
+        yield [User::class, TextField::new('address')];
+        yield [User::class, TextField::new('address.city')]; // Doctrine embeddable
     }
 
-    /**
-     * @dataProvider failsOnOptionRenderAsEmbeddedCrudFormIfPropertyIsCollection
-     */
-    public function testFailsOnOptionRenderAsEmbeddedCrudFormIfPropertyIsCollection(FieldInterface $field): void
+    #[DataProvider('failsOnOptionRenderAsEmbeddedCrudFormIfPropertyIsCollection')]
+    public function testFailsOnOptionRenderAsEmbeddedCrudFormIfPropertyIsCollection(string $rootEntityFqcn, FieldInterface $field): void
     {
+        $this->rootEntityDto = $this->createEntityDto($rootEntityFqcn);
         $field->setCustomOption(AssociationField::OPTION_RENDER_AS_EMBEDDED_FORM, true)
             ->setCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, 'foo')
         ;
@@ -157,41 +149,39 @@ class AssociationConfiguratorTest extends AbstractFieldTest
         $this->expectExceptionMessage(sprintf(
             'The "%s" association field of "%s" is a to-many association but it\'s trying to use the "renderAsEmbeddedForm()" option, which is only available for to-one associations. If you want to use a CRUD form to render to-many associations, use a CollectionField instead of the AssociationField.',
             $field->getAsDto()->getProperty(),
-            ProjectCrudController::class,
+            BlogPostCrudController::class,
         ));
 
-        $this->configure($field, controllerFqcn: ProjectCrudController::class);
+        $this->configure($field, controllerFqcn: BlogPostCrudController::class);
     }
 
     public static function failsOnOptionRenderAsEmbeddedCrudFormIfPropertyIsCollection(): \Generator
     {
-        yield [AssociationField::new('projectIssues')];
-        yield [AssociationField::new('favouriteProjectOf')];
-        yield [AssociationField::new('projectTags')];
+        yield [User::class, AssociationField::new('blogPosts')];
+        yield [Category::class, AssociationField::new('blogPosts')];
+        yield [BlogPost::class, AssociationField::new('categories')];
     }
 
-    /**
-     * @dataProvider failsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound
-     */
+    #[DataProvider('failsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound')]
     public function testFailsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound(FieldInterface $field): void
     {
-        $field->getAsDto()->setDoctrineMetadata((array) $this->projectDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));
+        $field->getAsDto()->setDoctrineMetadata((array) $this->rootEntityDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));
         $field->setCustomOption(AssociationField::OPTION_RENDER_AS_EMBEDDED_FORM, true);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(sprintf(
             'The "%s" association field of "%s" wants to render its contents using an EasyAdmin CRUD form. However, no CRUD form was found related to this field. You can either create a CRUD controller for the entity "%s" or pass the CRUD controller to use as the first argument of the "renderAsEmbeddedForm()" method.',
             $field->getAsDto()->getProperty(),
-            ProjectCrudController::class,
+            BlogPostCrudController::class,
             $field->getAsDto()->getDoctrineMetadata()->get('targetEntity'),
         ));
 
-        $this->configure($field, controllerFqcn: ProjectCrudController::class);
+        $this->configure($field, controllerFqcn: BlogPostCrudController::class);
     }
 
     public static function failsOnOptionRenderAsEmbeddedCrudFormIfNoCrudControllerCanBeFound(): \Generator
     {
-        yield [AssociationField::new('latestRelease')];
+        yield [AssociationField::new('author')];
     }
 
     public function testAssociationLinkIsRenderedWhenUserIsPermitted(): void
@@ -206,9 +196,10 @@ class AssociationConfiguratorTest extends AbstractFieldTest
             $authChecker,
             $this->buildUrlGeneratorReturning('http://expected-url'),
         );
-        $this->primeTargetCrudDtoCache($this->configurator, DeveloperCrudController::class, Action::INDEX, $targetCrud);
+        $this->primeTargetCrudDtoCache($this->configurator, CategoryCrudController::class, Action::INDEX, $targetCrud);
 
-        $fieldDto = $this->configure($this->buildLeadDeveloperField(), controllerFqcn: ProjectCrudController::class);
+        $this->rootEntityDto = $this->createEntityDto(User::class);
+        $fieldDto = $this->configure($this->buildFavoriteCategoryField());
 
         $this->assertSame('http://expected-url', $fieldDto->getCustomOption(AssociationField::OPTION_RELATED_URL));
     }
@@ -227,9 +218,10 @@ class AssociationConfiguratorTest extends AbstractFieldTest
             $authChecker,
             $this->buildUrlGeneratorReturning('http://should-not-appear'),
         );
-        $this->primeTargetCrudDtoCache($this->configurator, DeveloperCrudController::class, Action::INDEX, $targetCrud);
+        $this->primeTargetCrudDtoCache($this->configurator, CategoryCrudController::class, Action::INDEX, $targetCrud);
 
-        $fieldDto = $this->configure($this->buildLeadDeveloperField(), controllerFqcn: ProjectCrudController::class);
+        $this->rootEntityDto = $this->createEntityDto(User::class);
+        $fieldDto = $this->configure($this->buildFavoriteCategoryField());
 
         $this->assertNull($fieldDto->getCustomOption(AssociationField::OPTION_RELATED_URL));
     }
@@ -248,20 +240,21 @@ class AssociationConfiguratorTest extends AbstractFieldTest
             $authChecker,
             $this->buildUrlGeneratorReturning('http://should-not-appear'),
         );
-        $this->primeTargetCrudDtoCache($this->configurator, DeveloperCrudController::class, Action::INDEX, $targetCrud);
+        $this->primeTargetCrudDtoCache($this->configurator, CategoryCrudController::class, Action::INDEX, $targetCrud);
 
-        $fieldDto = $this->configure($this->buildLeadDeveloperField(), controllerFqcn: ProjectCrudController::class);
+        $this->rootEntityDto = $this->createEntityDto(User::class);
+        $fieldDto = $this->configure($this->buildFavoriteCategoryField());
 
         $this->assertNull($fieldDto->getCustomOption(AssociationField::OPTION_RELATED_URL));
     }
 
-    private function buildLeadDeveloperField(): AssociationField
+    private function buildFavoriteCategoryField(): AssociationField
     {
-        $field = AssociationField::new('leadDeveloper');
+        $field = AssociationField::new('favoriteCategory');
         $field->getAsDto()->setDoctrineMetadata(
-            (array) $this->projectDto->getClassMetadata()->getAssociationMapping('leadDeveloper'),
+            (array) $this->rootEntityDto->getClassMetadata()->getAssociationMapping('favoriteCategory'),
         );
-        $field->setCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, DeveloperCrudController::class);
+        $field->setCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, CategoryCrudController::class);
 
         return $field;
     }

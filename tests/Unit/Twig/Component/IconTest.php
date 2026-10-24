@@ -9,18 +9,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Icon;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Size;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class IconTest extends TestCase
 {
-    use ExpectDeprecationTrait;
-
-    /**
-     * @dataProvider provideGetInternalIconData
-     */
+    #[DataProvider('provideGetInternalIconData')]
     public function testGetInternalIcon(string $iconName, string $appIconSet): void
     {
         $iconComponent = new Icon($this->getAdminContextProvider($appIconSet));
@@ -41,11 +38,7 @@ class IconTest extends TestCase
         yield ['internal:user', IconSet::FontAwesome];
     }
 
-    /**
-     * @dataProvider provideGetFontAwesomeIconData
-     *
-     * @group legacy (needed for tests that use legacy FontAwesome icon names)
-     */
+    #[DataProvider('provideGetFontAwesomeIconData')]
     public function testGetFontAwesomeIcon(string $iconName): void
     {
         $iconComponent = new Icon($this->getAdminContextProvider(IconSet::FontAwesome));
@@ -92,9 +85,7 @@ class IconTest extends TestCase
         yield ['fa-fw fa-file-text-o far'];
     }
 
-    /**
-     * @dataProvider provideGetCustomIconData
-     */
+    #[DataProvider('provideGetCustomIconData')]
     public function testGetCustomIcon(string $iconName): void
     {
         $iconComponent = new Icon($this->getAdminContextProvider(IconSet::Custom));
@@ -112,9 +103,7 @@ class IconTest extends TestCase
         yield ['another-custom-prefix:some-other-icon'];
     }
 
-    /**
-     * @dataProvider provideIconSetCheckersData
-     */
+    #[DataProvider('provideIconSetCheckersData')]
     public function testIconSetCheckers(string $appIconSet, bool $isBuiltIn, bool $isFontAwesome): void
     {
         $iconComponent = new Icon($this->getAdminContextProvider($appIconSet));
@@ -150,9 +139,7 @@ class IconTest extends TestCase
         $iconComponent->getIcon();
     }
 
-    /**
-     * @dataProvider providePathTraversalInternalIconNames
-     */
+    #[DataProvider('providePathTraversalInternalIconNames')]
     public function testInternalIconNameRejectsPathTraversalCharacters(string $iconName): void
     {
         $this->expectException(\RuntimeException::class);
@@ -176,6 +163,38 @@ class IconTest extends TestCase
         yield 'filetypes subdirectory access' => ['filetypes:subdir/icon'];
         yield 'filetypes backslash separator' => ['filetypes:..\\foo'];
         yield 'filetypes empty icon name' => ['filetypes:'];
+    }
+
+    public function testDefaultCssClassWithoutSize(): void
+    {
+        $iconComponent = new Icon($this->getAdminContextProvider(IconSet::FontAwesome));
+        $iconComponent->mount();
+
+        $this->assertNull($iconComponent->size);
+        $this->assertSame('icon', $iconComponent->getDefaultCssClass());
+    }
+
+    #[DataProvider('provideSizeData')]
+    public function testDefaultCssClassWithSize(string|Size|null $size, ?Size $expectedSize, string $expectedCssClass): void
+    {
+        $iconComponent = new Icon($this->getAdminContextProvider(IconSet::FontAwesome));
+        $iconComponent->mount(size: $size);
+
+        $this->assertSame($expectedSize, $iconComponent->size);
+        $this->assertSame($expectedCssClass, $iconComponent->getDefaultCssClass());
+    }
+
+    public static function provideSizeData(): iterable
+    {
+        yield 'null' => [null, null, 'icon'];
+        yield 'sm as string' => ['sm', Size::Small, 'icon ea-icon-sm'];
+        yield 'md as string' => ['md', Size::Medium, 'icon ea-icon-md'];
+        yield 'lg as string' => ['lg', Size::Large, 'icon ea-icon-lg'];
+        yield 'sm as enum' => [Size::Small, Size::Small, 'icon ea-icon-sm'];
+        yield 'md as enum' => [Size::Medium, Size::Medium, 'icon ea-icon-md'];
+        yield 'lg as enum' => [Size::Large, Size::Large, 'icon ea-icon-lg'];
+        yield 'unknown string' => ['xl', null, 'icon'];
+        yield 'empty string' => ['', null, 'icon'];
     }
 
     private function getAdminContextProvider(string $appIconSet): AdminContextProvider

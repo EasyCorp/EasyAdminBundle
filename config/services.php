@@ -2,11 +2,15 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Ai\GuidelinesFileWriter;
+use EasyCorp\Bundle\EasyAdminBundle\Ai\SkillInstaller;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\AdminContextResolver;
 use EasyCorp\Bundle\EasyAdminBundle\ArgumentResolver\BatchActionDtoResolver;
 use EasyCorp\Bundle\EasyAdminBundle\Asset\AssetPackage;
+use EasyCorp\Bundle\EasyAdminBundle\Command\InstallAiSkillCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeCrudControllerCommand;
+use EasyCorp\Bundle\EasyAdminBundle\Command\UpdateAiSkillCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemMatcherInterface;
@@ -19,6 +23,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Registry\AdminControllerRegistryIn
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Translation\EntityTranslationIdGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector;
 use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
+use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\AdminRouterSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudResponseListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
@@ -45,6 +50,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CountryConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CurrencyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\DateTimeConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\EmailConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\EmptyDataConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\FileConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\FormConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\IdConfigurator;
@@ -87,6 +93,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\ComponentDefaultsProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
@@ -127,12 +134,31 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, service('doctrine'))
             ->tag('console.command')
 
+        ->set(InstallAiSkillCommand::class)->public()
+            ->arg(0, service(SkillInstaller::class))
+            ->arg(1, service(GuidelinesFileWriter::class))
+            ->tag('console.command')
+
+        ->set(UpdateAiSkillCommand::class)->public()
+            ->arg(0, service(SkillInstaller::class))
+            ->arg(1, service(GuidelinesFileWriter::class))
+            ->tag('console.command')
+
+        ->set(SkillInstaller::class)
+            ->arg(0, param('kernel.project_dir'))
+            ->arg(1, \dirname(__DIR__).'/skills')
+            ->arg(2, \dirname(__DIR__).'/src/Resources/ai/guidelines.md')
+            ->arg(3, EasyAdminBundle::VERSION)
+
+        ->set(GuidelinesFileWriter::class)
+
         ->set(ClassMaker::class)
             ->arg(0, service(KernelInterface::class))
             ->arg(1, param('kernel.project_dir'))
 
         ->set(EasyAdminDataCollector::class)
             ->arg(0, service(AdminContextProvider::class))
+            ->arg(1, service('router'))
             ->tag('data_collector', ['id' => 'easyadmin', 'template' => '@EasyAdmin/inspector/data_collector.html.twig'])
 
         ->set(ExceptionListener::class)
@@ -303,7 +329,7 @@ return static function (ContainerConfigurator $container) {
         ->set(FieldFactory::class)
             ->arg(0, service(AdminContextProvider::class))
             ->arg(1, service(AuthorizationChecker::class))
-            ->arg(2, tagged_iterator(EasyAdminExtension::TAG_FIELD_CONFIGURATOR))
+            ->arg(2, tagged_iterator(EasyAdminBundle::TAG_FIELD_CONFIGURATOR))
             ->arg(3, service(FormLayoutFactory::class))
 
         ->set(FieldProvider::class)
@@ -311,7 +337,8 @@ return static function (ContainerConfigurator $container) {
 
         ->set(FilterFactory::class)
             ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, tagged_iterator(EasyAdminExtension::TAG_FILTER_CONFIGURATOR))
+            ->arg(1, tagged_iterator(EasyAdminBundle::TAG_FILTER_CONFIGURATOR))
+            ->arg(2, service(EntityRepository::class))
 
         ->set(FiltersFormType::class)
             ->tag('form.type', ['alias' => 'ea_filters'])
@@ -328,15 +355,17 @@ return static function (ContainerConfigurator $container) {
 
         ->set(CommonFilterConfigurator::class)
             ->arg(0, service(EntityTranslationIdGeneratorInterface::class))
-            ->tag(EasyAdminExtension::TAG_FILTER_CONFIGURATOR, ['priority' => 9999])
+            ->tag(EasyAdminBundle::TAG_FILTER_CONFIGURATOR, ['priority' => 9999])
 
         ->set(ComparisonFilterConfigurator::class)
+            ->arg(0, service(EntityRepository::class))
 
         ->set(CountryFilterConfigurator::class)
 
         ->set(CurrencyFilterConfigurator::class)
 
         ->set(DateTimeFilterConfigurator::class)
+            ->arg(0, service(EntityRepository::class))
 
         ->set(EntityFilterConfigurator::class)
             ->arg(0, new Reference(AdminUrlGenerator::class))
@@ -349,8 +378,10 @@ return static function (ContainerConfigurator $container) {
         ->set(NullFilterConfigurator::class)
 
         ->set(NumericFilterConfigurator::class)
+            ->arg(0, service(EntityRepository::class))
 
         ->set(TextFilterConfigurator::class)
+            ->arg(0, service(EntityRepository::class))
 
         ->set(TimezoneFilterConfigurator::class)
 
@@ -415,6 +446,8 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, service(IntlFormatter::class))
 
         ->set(EmailConfigurator::class)
+
+        ->set(EmptyDataConfigurator::class)
 
         ->set(FormConfigurator::class)
 
@@ -484,7 +517,11 @@ return static function (ContainerConfigurator $container) {
         ->set(Alert::class)
             ->tag('twig.component')
 
+        ->set(ComponentDefaultsProvider::class)
+            ->arg(0, service(AdminContextProvider::class))
+
         ->set(Badge::class)
+            ->arg(0, service(ComponentDefaultsProvider::class))
             ->tag('twig.component')
 
         ->set(Pagination::class)

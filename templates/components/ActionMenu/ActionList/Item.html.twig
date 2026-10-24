@@ -1,13 +1,22 @@
 {% props
+    ## string|null The text of the item.
     label = null,
+    ## bool If true, the label is rendered without escaping its HTML contents.
     renderLabelRaw = false,
+    ## string|null The name of the optional icon displayed before the label.
     icon = null,
+    ## string|null The URL of the item.
     url = null,
+    ## array Extra HTML attributes for the `<a>` element.
     htmlAttributes = {},
-    renderAsForm = false, # if true, the item will be rendered as a <form> element (and POST method) instead of an <a> (and GET method)
-    showBlankIcons = true, # (this is mostly an internal option) if false, the blank icon will not be rendered when action icon is null
-    selected = null, # null = regular item; true/false turns the item into a selectable one (radio/checkbox) that shows a trailing checkmark
-    wrapInListItem = true, # (this is an internal option) if false, the <li> wrapper is not rendered, so the item can be embedded in custom markup (e.g. the split dropdown of ItemGroup)
+    ## bool If true, the item will be rendered as a `<form>` element (and POST method) instead of an `<a>` (and GET method).
+    renderAsForm = false,
+    ## bool Internal: if false, the blank icon will not be rendered when the item has no icon.
+    showBlankIcons = true,
+    ## bool|null null renders a regular item; true/false turns the item into a selectable one (radio/checkbox) that shows a trailing checkmark.
+    selected = null,
+    ## bool Internal: if false, the `<li>` wrapper is not rendered, so the item can be embedded in custom markup (e.g. the split dropdown of ItemGroup).
+    wrapInListItem = true,
 %}
 
 {% set is_selectable = selected is not null %}

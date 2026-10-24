@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use Money\Currency;
 use Money\Money;
 
-class MoneyFieldTest extends AbstractFieldTest
+class MoneyFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

@@ -7,9 +7,21 @@ use Symfony\Component\Intl\Exception\MissingResourceException;
 
 class Flag
 {
+    /**
+     * The two-letter ISO 3166-1 alpha-2 code of the country (e.g. JP).
+     */
     public string $countryCode;
+    /**
+     * The height of the flag in pixels (the width is adjusted automatically).
+     */
     public int $height = 17;
+    /**
+     * Whether to display the name of the country next to the flag.
+     */
     public bool $showName = false;
+    /**
+     * A custom name to display instead of the country name provided by the Intl component.
+     */
     public ?string $countryName = null;
 
     private ?bool $flagExists = null;

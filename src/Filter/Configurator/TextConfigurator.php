@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator;
 use Doctrine\DBAL\Types\Types;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\NestedAssociationResolverInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
@@ -17,6 +18,16 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
  */
 final class TextConfigurator implements FilterConfiguratorInterface
 {
+    use ResolveMappedPropertyTrait;
+
+    public function __construct(
+        private readonly ?NestedAssociationResolverInterface $associationResolver = null,
+    ) {
+        if (null === $associationResolver) {
+            self::triggerMissingResolverDeprecation();
+        }
+    }
+
     public function supports(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): bool
     {
         return TextFilter::class === $filterDto->getFqcn();
@@ -24,12 +35,12 @@ final class TextConfigurator implements FilterConfiguratorInterface
 
     public function configure(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): void
     {
-        if (!isset($entityDto->getClassMetadata()->fieldMappings[$filterDto->getProperty()])) {
+        if (null === $resolvedProperty = $this->resolveMappedProperty($entityDto, $filterDto->getProperty())) {
             return;
         }
 
         // In Doctrine ORM 3.x, FieldMapping implements \ArrayAccess; in 4.x it's an object with properties
-        $fieldMapping = $entityDto->getClassMetadata()->getFieldMapping($filterDto->getProperty());
+        $fieldMapping = $resolvedProperty->getEntityDto()->getClassMetadata()->getFieldMapping($resolvedProperty->getPropertyName());
         // In Doctrine ORM 2.x, getFieldMapping() returns an array
         /** @phpstan-ignore-next-line function.impossibleType */
         if (\is_array($fieldMapping)) {

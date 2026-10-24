@@ -4,69 +4,26 @@ This directory contains comprehensive tests for ALL configuration methods availa
 
 ## Overview
 
-- **Total Test Files**: 43 (10 Dashboard + 33 Crud)
-- **Total Controllers**: 41 (10 Dashboard + 31 Crud)
 - **Coverage**: 100% of Dashboard and Crud configuration methods
 
 ## Structure
 
 ```
 tests/Functional/Customization/
-├── Dashboard/                      # Dashboard configuration tests (10 files)
-│   ├── ColorSchemeTest.php
-│   ├── ContentMaximizedTest.php
-│   ├── DarkModeTest.php
-│   ├── FaviconTest.php
-│   ├── LocalesTest.php
-│   ├── RelativeUrlsTest.php
-│   ├── SidebarMinimizedTest.php
-│   ├── TextDirectionTest.php
-│   ├── TitleTest.php
-│   └── TranslationDomainTest.php
-└── Crud/                          # Crud configuration tests (33 files)
+├── Dashboard/          # Dashboard configuration tests
+└── Crud/               # Crud configuration tests, one directory per topic
     ├── BatchActions/
-    │   └── ConfirmationTest.php
     ├── Display/
-    │   ├── HideNullValuesTest.php
-    │   └── InlineActionsTest.php
     ├── EntityLabels/
-    │   ├── CallableLabelTest.php
-    │   ├── PluralLabelTest.php
-    │   └── SingularLabelTest.php
     ├── Formatting/
-    │   ├── DateFormatTest.php
-    │   ├── DateIntervalFormatTest.php
-    │   ├── DateTimeFormatTest.php
-    │   ├── NumberFormatTest.php
-    │   ├── SeparatorsTest.php
-    │   ├── TimeFormatTest.php
-    │   └── TimezoneTest.php
     ├── Forms/
-    │   ├── FormOptionsTest.php
-    │   └── FormThemesTest.php
     ├── Layout/
-    │   ├── ContentMaximizedTest.php
-    │   └── SidebarMinimizedTest.php
     ├── Pages/
-    │   ├── HelpMessagesTest.php
-    │   ├── PageTitlesCallableTest.php
-    │   └── PageTitlesTest.php
     ├── Pagination/
-    │   ├── FetchJoinCollectionTest.php
-    │   ├── OutputWalkersTest.php
-    │   ├── PageSizeTest.php
-    │   └── RangeSizeTest.php
     ├── Permissions/
-    │   └── EntityPermissionTest.php
     ├── Search/
-    │   ├── SearchAutofocusTest.php
-    │   ├── SearchFieldsTest.php
-    │   └── SearchModeTest.php
     ├── Sorting/
-    │   ├── DefaultSortMultipleFieldsTest.php
-    │   └── DefaultSortTest.php
     └── Templates/
-        └── OverrideTemplateTest.php
 ```
 
 ## Dashboard Configuration Methods Tested (10)
@@ -138,30 +95,30 @@ tests/Functional/Customization/
 ## Test Application
 
 All tests use a dedicated test application located at:
-- `tests/Functional/CustomizationApp/`
+- `tests/Functional/Apps/CustomizationApp/`
 
 This includes:
 - **Kernel**: Custom kernel for test app
-- **Entity**: `DemoEntity` with various field types (text, date, time, number)
-- **Controllers**: 41 dedicated controllers (10 Dashboard + 31 Crud)
+- **Entities**: `Category` (name) and `BlogPost` (title plus date, time and number fields)
+- **Controllers**: one dedicated controller per tested configuration method
 - **Configuration**: Complete Symfony configuration (Doctrine, Twig, Framework)
 
 ## Running Tests
 
 ```bash
 # Run all Customization tests
-php vendor/bin/phpunit tests/Functional/Customization/
+make tests ARGS="tests/Functional/Customization/"
 
 # Run Dashboard tests only
-php vendor/bin/phpunit tests/Functional/Customization/Dashboard/
+make tests ARGS="tests/Functional/Customization/Dashboard/"
 
 # Run Crud tests only
-php vendor/bin/phpunit tests/Functional/Customization/Crud/
+make tests ARGS="tests/Functional/Customization/Crud/"
 
 # Run specific category tests
-php vendor/bin/phpunit tests/Functional/Customization/Crud/Formatting/
-php vendor/bin/phpunit tests/Functional/Customization/Crud/Search/
-php vendor/bin/phpunit tests/Functional/Customization/Crud/Pagination/
+make tests ARGS="tests/Functional/Customization/Crud/Formatting/"
+make tests ARGS="tests/Functional/Customization/Crud/Search/"
+make tests ARGS="tests/Functional/Customization/Crud/Pagination/"
 ```
 
 ## Test Pattern
@@ -179,7 +136,7 @@ class TitleTest extends AbstractCrudTestCase
 {
     protected function getControllerFqcn(): string
     {
-        return DemoEntityCrudController::class;
+        return CategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string

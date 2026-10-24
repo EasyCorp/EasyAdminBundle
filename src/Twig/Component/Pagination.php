@@ -21,20 +21,65 @@ use EasyCorp\Bundle\EasyAdminBundle\Util\PageRangeCalculator;
  */
 final class Pagination
 {
+    /**
+     * The paginator of EasyAdmin index pages; when passed, you cannot pass currentPage, lastPage, totalItems, pageSize or urlPattern.
+     */
     public ?EntityPaginatorInterface $paginator = null;
+    /**
+     * The number of the current page (required when not passing a paginator).
+     */
     public ?int $currentPage = null;
+    /**
+     * The number of the last page (or pass totalItems and pageSize instead).
+     */
     public ?int $lastPage = null;
+    /**
+     * The total number of items, used with pageSize to calculate the last page.
+     */
     public ?int $totalItems = null;
+    /**
+     * The number of items per page, used with totalItems to calculate the last page.
+     */
     public ?int $pageSize = null;
+    /**
+     * The URL of the page links, with a '{page}' placeholder (required when not passing a paginator).
+     */
     public ?string $urlPattern = null;
+    /**
+     * The size of the control: 'sm' or 'md'.
+     */
     public string $size = 'md';
+    /**
+     * The border radius of the page links: 'none', 'sm', 'md', 'lg' or 'full'; when null, they inherit the border radius of the project.
+     */
     public ?Radius $radius = null;
+    /**
+     * Whether to display the total number of results.
+     */
     public bool $showResultsCount = true;
+    /**
+     * Whether to display the links to each page number.
+     */
     public bool $showPageNumbers = true;
+    /**
+     * Whether to display the links to the first and last pages.
+     */
     public bool $showFirstLast = false;
+    /**
+     * Whether to display the labels of the previous/next links (otherwise only their icons are visible).
+     */
     public bool $showPreviousNextLabels = true;
+    /**
+     * How many page links are displayed around the current page (default: 3).
+     */
     public ?int $rangeSize = null;
+    /**
+     * How many page links are displayed at the first and last pages (default: 1).
+     */
     public ?int $rangeEdgeSize = null;
+    /**
+     * The translation domain used to translate the labels of the control.
+     */
     public string $translationDomain = 'EasyAdminBundle';
 
     public function __construct(

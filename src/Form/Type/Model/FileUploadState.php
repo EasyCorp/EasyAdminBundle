@@ -21,6 +21,9 @@ class FileUploadState
     /** @var string[] */
     private array $deletedFiles = [];
 
+    /** @var array<File|FlysystemFile> */
+    private array $removedFiles = [];
+
     public function __construct(private bool $allowAdd = false)
     {
     }
@@ -125,6 +128,30 @@ class FileUploadState
     public function setDeletedFiles(array $deletedFiles): void
     {
         $this->deletedFiles = $deletedFiles;
+    }
+
+    /**
+     * @return array<File|FlysystemFile>
+     */
+    public function getRemovedFiles(): array
+    {
+        return $this->removedFiles;
+    }
+
+    /**
+     * @param array<File|FlysystemFile> $removedFiles
+     */
+    public function setRemovedFiles(array $removedFiles): void
+    {
+        $this->removedFiles = $removedFiles;
+    }
+
+    /**
+     * @return array<File|FlysystemFile>
+     */
+    public function getRemainingFiles(): array
+    {
+        return array_values(array_filter($this->currentFiles, fn (File|FlysystemFile|null $file): bool => !\in_array($file, $this->removedFiles, true)));
     }
 
     public function isModified(): bool

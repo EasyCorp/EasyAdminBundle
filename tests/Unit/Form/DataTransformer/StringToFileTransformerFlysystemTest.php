@@ -104,11 +104,11 @@ class StringToFileTransformerFlysystemTest extends TestCase
 
     // --- reverseTransform() tests ---
 
-    public function testReverseTransformNullReturnsEmptyString(): void
+    public function testReverseTransformNullReturnsNull(): void
     {
         $fs = $this->createMock(FilesystemOperator::class);
 
-        $this->assertSame('', $this->createTransformer($fs)->reverseTransform(null));
+        $this->assertNull($this->createTransformer($fs)->reverseTransform(null));
     }
 
     public function testReverseTransformNullReturnsEmptyArrayWhenMultiple(): void

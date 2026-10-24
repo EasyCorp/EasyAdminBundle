@@ -23,7 +23,7 @@ Complex components can be split into **sub-components in a subdirectory** of `te
 
 ## Conventions
 
-**Naming & usage.** All components use the `ea` prefix: a class/template named `Alert` is used as `<twig:ea:Alert>`. This is configured once in `EasyAdminExtension::prepend()` (`name_prefix: ea`, `template_directory: @EasyAdmin/components/`) — you don't annotate classes with `#[AsTwigComponent]`.
+**Naming & usage.** All components use the `ea` prefix: a class/template named `Alert` is used as `<twig:ea:Alert>`. This is configured once in `EasyAdminBundle::prependExtension()` (`name_prefix: ea`, `template_directory: @EasyAdmin/components/`) — you don't annotate classes with `#[AsTwigComponent]`.
 
 **Registration (class-backed).** Register the component explicitly in `config/services.php` with the `twig.component` tag. No autowiring — pass dependencies as explicit args, like every service in this bundle:
 ```php
@@ -32,8 +32,18 @@ Complex components can be split into **sub-components in a subdirectory** of `te
 ```
 
 **Props.**
-- Class-backed: declare public typed properties; use `mount()` for coercion/validation of inputs.
+- Class-backed: declare public typed properties; use `mount()` for coercion/validation of inputs. Give every public property a docblock with its description (no type, PHP already has it). The UI Kit shows the type of the `mount()` argument with the same name when there is one (it usually accepts more, e.g. `string|AlertVariant`) and the default value of the property. Document arguments of `mount()` that have no property with `@param`.
 - Anonymous: declare `{% props name = default %}`.
+- Document every prop of an anonymous component with a Twig documentation comment (`## ...`) on the line **above** it, never after it (a `## ...` takes the rest of its line). The first word is the type, with no spaces (`bool`, `string|null`, `'sm'|'md'|Size`); mark internal props as `## bool Internal: ...`. See `Switch.html.twig`:
+  ```twig
+  {% props
+      ## 'sm'|'md'|Size The size of the switch (a string or a `Size` enum case).
+      size = 'md',
+  %}
+  ```
+  ⚠️ Never write a `<twig:...>` tag inside a `##` prop comment: the TwigComponent pre-lexer doesn't treat it as a comment and parses the tag as a component. Name the sub-component instead (`ItemGroup` sub-components).
+- Document every block (`<twig:block>` or `{% block %}`) with `{## ... -#}` on the line above it (or `{##- ... -#}` before `{%-`), so the output doesn't change. Free-form comments (usage examples, design notes) stay as `{# ... #}`.
+- `ComponentDocumentationTest` fails when a prop or block of `templates/components/` or a public property of a component class has no documentation, and the UI Kit (`/_ea_ui_kit`) renders these docs as the props and blocks tables of each component.
 
 **Variants via backed enums.** Put option enums in `src/Twig/Component/Option/` (e.g. `AlertVariant`, `ButtonVariant`). ⚠️ **TwigComponent does NOT auto-coerce string props to enums.** Accept `string|Enum` in `mount()` and coerce with `tryFrom()`, falling back to a default (see `Alert::mount()`):
 ```php
@@ -61,8 +71,8 @@ Compose by calling other components: `<twig:ea:Button ... />`.
 
 ## Adding a component — checklist
 
-1. Template in `templates/components/<Name>.html.twig` (`{% props %}` if anonymous).
-2. PHP class in `src/Twig/Component/<Name>.php` only if it needs logic; option enums in `Option/`.
+1. Template in `templates/components/<Name>.html.twig` (`{% props %}` if anonymous, with a `##` doc above each prop and a `{## ##}` doc above each block).
+2. PHP class in `src/Twig/Component/<Name>.php` only if it needs logic, with a docblock on each public property; option enums in `Option/`.
 3. Register in `config/services.php` with `->tag('twig.component')` (class-backed only).
 4. Styles via shared tokens in `variables-theme.css` + a per-component CSS file; `make build-assets`.
 5. Use it as `<twig:ea:<Name>>`; build variants from shared scales, not one-off booleans.

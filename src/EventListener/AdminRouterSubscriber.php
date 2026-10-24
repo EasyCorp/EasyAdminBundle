@@ -15,6 +15,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -190,7 +197,19 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
     {
         $routeName = $request->query->get(EA::ROUTE_NAME);
         $routeParams = $request->query->all(EA::ROUTE_PARAMS);
-        $url = $this->urlGenerator->generate($routeName, $routeParams, UrlGeneratorInterface::ABSOLUTE_PATH);
+
+        try {
+            $url = $this->urlGenerator->generate($routeName, $routeParams, UrlGeneratorInterface::ABSOLUTE_PATH);
+        } catch (RouteNotFoundException $e) {
+            // 'routeName' and 'routeParams' come from the query string, so a
+            // typo (or a bot probing legacy ?routeName= URLs) is a client
+            // error: return a 404 instead of an uncaught 500 (#7827)
+            throw new NotFoundHttpException(sprintf('The route "%s" does not exist.', $routeName), $e);
+        } catch (MissingMandatoryParametersException $e) {
+            throw new NotFoundHttpException(sprintf('The route "%s" cannot be generated because some mandatory parameters are missing.', $routeName), $e);
+        } catch (InvalidParameterException $e) {
+            throw new NotFoundHttpException(sprintf('The parameters provided for the route "%s" are not valid.', $routeName), $e);
+        }
 
         $newRequest = $request->duplicate();
         $newRequest->attributes->remove('_controller');
@@ -210,7 +229,13 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
 
         $this->assertTargetRouteAccessIsGranted($newRequest);
 
-        $parameters = $this->requestMatcher->matchRequest($newRequest);
+        try {
+            $parameters = $this->requestMatcher->matchRequest($newRequest);
+        } catch (MethodNotAllowedException $e) {
+            throw new MethodNotAllowedHttpException($e->getAllowedMethods(), sprintf('The route "%s" does not allow the "%s" method (allowed methods: %s).', $routeName, $newRequest->getMethod(), implode(', ', $e->getAllowedMethods())), $e);
+        } catch (ResourceNotFoundException $e) {
+            throw new NotFoundHttpException(sprintf('The route "%s" does not match the current request (check its host, scheme and condition).', $routeName), $e);
+        }
 
         return $parameters['_controller'] ?? null;
     }

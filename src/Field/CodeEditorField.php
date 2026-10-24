@@ -40,7 +40,7 @@ final class CodeEditorField implements FieldInterface
             ->setCustomOption(self::OPTION_SHOW_LINE_NUMBERS, true);
     }
 
-    public function setIndentWithTabs(bool $useTabs): self
+    public function setIndentWithTabs(bool $useTabs = true): self
     {
         $this->setCustomOption(self::OPTION_INDENT_WITH_TABS, $useTabs);
 

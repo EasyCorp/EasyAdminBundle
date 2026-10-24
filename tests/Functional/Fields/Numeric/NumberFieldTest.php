@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Numeric;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class NumberFieldTest extends AbstractFieldFunctionalTest
+class NumberFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testNumberFieldDisplaysOnIndex(): void
     {
@@ -72,7 +72,7 @@ class NumberFieldTest extends AbstractFieldFunctionalTest
 
         $this->client->submit($form);
 
-        $entity = $this->fieldTestEntities->findOneBy([], ['id' => 'DESC']);
+        $entity = $this->fieldTestEntities->findOneBy(['slugField' => 'number-test']);
         static::assertNotNull($entity, 'Entity should be created');
         static::assertEqualsWithDelta(9.876, $entity->getNumberField(), 0.001);
     }

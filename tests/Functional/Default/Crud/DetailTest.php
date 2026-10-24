@@ -2,26 +2,21 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Crud;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Crud\DefaultCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\DefaultCrudTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\DefaultCrudTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
+use function Zenstruck\Foundry\Persistence\delete;
 
 /**
  * Tests for default detail page behavior in EasyAdmin CRUD operations.
  */
 class DetailTest extends AbstractCrudTestCase
 {
-    protected EntityRepository $repository;
-
-    /** @var int[] IDs of entities created during tests that should be cleaned up */
-    private array $createdEntityIds = [];
-
     protected function getControllerFqcn(): string
     {
-        return DefaultCrudTestEntityCrudController::class;
+        return DefaultCategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -33,97 +28,11 @@ class DetailTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(DefaultCrudTestEntity::class);
-        $this->createdEntityIds = [];
-    }
-
-    protected function tearDown(): void
-    {
-        // clean up any entities created during this test
-        foreach ($this->createdEntityIds as $entityId) {
-            $entity = $this->repository->find($entityId);
-            if (null !== $entity) {
-                $this->entityManager->remove($entity);
-            }
-        }
-        if (!empty($this->createdEntityIds)) {
-            $this->entityManager->flush();
-        }
-
-        parent::tearDown();
-    }
-
-    /**
-     * Creates a test entity specifically for detail tests.
-     *
-     * @param bool $trackForCleanup If true, entity will be deleted in tearDown
-     */
-    private function createTestEntity(bool $trackForCleanup = false): DefaultCrudTestEntity
-    {
-        $entity = new DefaultCrudTestEntity();
-        $entity->setName('Detail Test Item '.uniqid());
-        $entity->setDescription('This entity is for detail tests');
-        $entity->setActive(true);
-        $entity->setPriority(1);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
-
-        if ($trackForCleanup) {
-            $this->createdEntityIds[] = $entity->getId();
-        }
-
-        return $entity;
-    }
-
-    /**
-     * Ensures at least one entity exists for tests that need to read existing entities.
-     */
-    private function ensureEntityExists(): DefaultCrudTestEntity
-    {
-        $entity = $this->repository->findOneBy([]);
-        if (null === $entity) {
-            $entity = $this->createTestEntity(true);
-        }
-
-        return $entity;
-    }
-
-    /**
-     * Ensures an entity with active=true exists for tests that need it.
-     */
-    private function ensureActiveEntityExists(): DefaultCrudTestEntity
-    {
-        $entity = $this->repository->findOneBy(['active' => true]);
-        if (null === $entity) {
-            $entity = $this->createTestEntity(true);
-        }
-
-        return $entity;
-    }
-
-    /**
-     * Ensures an entity with a specific name exists for tests that need it.
-     */
-    private function ensureNamedEntityExists(string $name): DefaultCrudTestEntity
-    {
-        $entity = $this->repository->findOneBy(['name' => $name]);
-        if (null === $entity) {
-            $entity = new DefaultCrudTestEntity();
-            $entity->setName($name);
-            $entity->setDescription('This entity is for detail tests');
-            $entity->setActive(true);
-            $entity->setPriority(1);
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
-            $this->createdEntityIds[] = $entity->getId();
-        }
-
-        return $entity;
     }
 
     public function testDetailPageLoadsForEntity(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -132,7 +41,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testDetailPageShowsFieldGroups(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -145,7 +54,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testAllFieldsAreDisplayed(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -166,19 +75,19 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testDetailPageShowsCorrectEntityData(): void
     {
-        $entity = $this->ensureNamedEntityExists('CRUD Test Item 1');
+        $entity = CategoryFactory::createOne(['name' => 'Category A']);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
         $this->assertResponseIsSuccessful();
 
         // the page content should contain the entity's name
-        $this->assertSelectorTextContains('.content-body', 'CRUD Test Item 1');
+        $this->assertSelectorTextContains('.content-body', 'Category A');
     }
 
     public function testBackActionIsAvailable(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -191,7 +100,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testEditActionIsAvailable(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -204,7 +113,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testDeleteActionIsAvailable(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -217,7 +126,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testEditActionLinkWorks(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -236,7 +145,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testBackActionLinkWorks(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -257,7 +166,11 @@ class DetailTest extends AbstractCrudTestCase
     {
         $this->client->catchExceptions(true);
 
-        $this->client->request('GET', $this->generateDetailUrl(999999));
+        $deletedEntity = CategoryFactory::createOne();
+        $deletedEntityId = $deletedEntity->getId();
+        delete($deletedEntity);
+
+        $this->client->request('GET', $this->generateDetailUrl($deletedEntityId));
 
         $this->assertResponseStatusCodeSame(404);
         $this->assertSelectorTextContains('.error-message', 'This item is no longer available.');
@@ -265,7 +178,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testIdFieldIsDisplayed(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 
@@ -278,8 +191,7 @@ class DetailTest extends AbstractCrudTestCase
 
     public function testBooleanFieldIsDisplayedCorrectly(): void
     {
-        // get an entity with active = true
-        $entity = $this->ensureActiveEntityExists();
+        $entity = CategoryFactory::createOne(['active' => true]);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
 

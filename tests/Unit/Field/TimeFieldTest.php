@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Trait\DateTimeWidgetTestTrait;
 
-class TimeFieldTest extends AbstractFieldTest
+class TimeFieldTest extends AbstractFieldTestCase
 {
     use DateTimeWidgetTestTrait;
 

@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Security;
 
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
@@ -97,9 +98,7 @@ class AuthorizationCheckerTest extends TestCase
         $this->assertTrue($result);
     }
 
-    /**
-     * @dataProvider provideValidAttributes
-     */
+    #[DataProvider('provideValidAttributes')]
     public function testIsGrantedDelegatesToInnerCheckerForValidAttributes(mixed $attribute): void
     {
         $this->innerChecker
@@ -121,9 +120,7 @@ class AuthorizationCheckerTest extends TestCase
         yield 'zero string' => ['0'];
     }
 
-    /**
-     * @dataProvider provideNullLikeAttributes
-     */
+    #[DataProvider('provideNullLikeAttributes')]
     public function testIsGrantedReturnsTrueWithoutDelegatingForNullLikeAttributes(mixed $attribute): void
     {
         $this->innerChecker

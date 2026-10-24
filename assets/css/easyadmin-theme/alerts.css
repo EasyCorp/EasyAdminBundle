@@ -35,7 +35,9 @@
     margin-block-start: var(--ea-sp-4);
 }
 
-.alert-dismissible .btn-close {
+/* scoped to '.btn.btn-close' because these rules only undo what '.btn' does to the Alert
+   dismiss button; plain Bootstrap close buttons must keep Bootstrap's layout */
+.alert-dismissible .btn.btn-close {
     --bs-btn-close-opacity: 1;
     --bs-btn-close-hover-opacity: 1;
 
@@ -46,7 +48,11 @@
     inset-inline-end: 5px;
     padding: var(--button-padding-y-md) var(--button-padding-x-md);
 }
-[data-bs-theme="dark"] .btn-close {
+
+/* Bootstrap inverts close buttons in dark mode because their glyph is a black data-URI
+   background-image; ours is a child <svg> painted with currentColor, so it must not be inverted.
+   Keep it scoped to '.btn.btn-close': plain close buttons still need the inversion */
+[data-bs-theme="dark"] .btn.btn-close {
     filter: none;
 }
 

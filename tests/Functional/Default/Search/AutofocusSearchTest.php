@@ -52,7 +52,7 @@ class AutofocusSearchTest extends AbstractCrudTestCase
 
     public function testSearchInputDoesNotHaveAutofocusByDefault(): void
     {
-        // defaultCrudSearchController does not call setAutofocusSearch(), so the default behavior applies
+        // the controller doesn't call setAutofocusSearch(), so this checks the default behavior
         $crawler = $this->client->request(
             'GET',
             $this->generateIndexUrl(null, null, DefaultCrudSearchController::class)

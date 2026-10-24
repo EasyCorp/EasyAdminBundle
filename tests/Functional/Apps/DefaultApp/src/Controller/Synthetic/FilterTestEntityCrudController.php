@@ -101,6 +101,7 @@ class FilterTestEntityCrudController extends AbstractCrudController
                 ])
                 ->canSelectMultiple()
             )
+            ->add(ArrayFilter::new('simpleArrayFilter'))
 
             // null filter
             ->add(NullFilter::new('nullFilter')

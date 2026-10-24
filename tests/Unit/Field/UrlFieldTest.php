@@ -6,10 +6,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\UrlConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Url;
 
-class UrlFieldTest extends AbstractFieldTest
+class UrlFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {
@@ -27,12 +28,10 @@ class UrlFieldTest extends AbstractFieldTest
         self::assertNull($fieldDto->getCustomOption(UrlField::OPTION_DEFAULT_PROTOCOL));
     }
 
-    /**
-     * @testWith [""]
-     *           ["http"]
-     *           ["https"]
-     *           ["ftp"]
-     */
+    #[TestWith([''])]
+    #[TestWith(['http'])]
+    #[TestWith(['https'])]
+    #[TestWith(['ftp'])]
     public function testDefaultProtocolOption(string $defaultProtocol): void
     {
         $this->initializeConfigurator();
@@ -45,13 +44,11 @@ class UrlFieldTest extends AbstractFieldTest
         self::assertSame($defaultProtocol, $fieldDto->getFormTypeOption('default_protocol'));
     }
 
-    /**
-     * @testWith ["http://example.com", "example.com"]
-     *           ["https://example.com", "example.com"]
-     *           ["http://www.example.com", "example.com"]
-     *           ["https://www.example.com", "example.com"]
-     *           ["https://01234567890123456789012345678901234567890123456789.com", "0123456789012345678901234567890…"]
-     */
+    #[TestWith(['http://example.com', 'example.com'])]
+    #[TestWith(['https://example.com', 'example.com'])]
+    #[TestWith(['http://www.example.com', 'example.com'])]
+    #[TestWith(['https://www.example.com', 'example.com'])]
+    #[TestWith(['https://01234567890123456789012345678901234567890123456789.com', '0123456789012345678901234567890…'])]
     public function testFormattedValuesOnIndexAction(string $url, string $expectedRenderedUrl): void
     {
         $this->initializeConfigurator();
@@ -62,18 +59,16 @@ class UrlFieldTest extends AbstractFieldTest
         self::assertSame($expectedRenderedUrl, $fieldDto->getFormattedValue());
     }
 
-    /**
-     * @testWith ["javascript:alert(1)"]
-     *           ["JavaScript:alert(1)"]
-     *           ["JaVaScRiPt:alert(1)"]
-     *           ["data:text/html,<script>alert(1)</script>"]
-     *           ["vbscript:msgbox(1)"]
-     *           ["file:///etc/passwd"]
-     *           ["  javascript:alert(1)"]
-     *           ["\tjavascript:alert(1)"]
-     *           ["\njavascript:alert(1)"]
-     *           ["\u0000javascript:alert(1)"]
-     */
+    #[TestWith(['javascript:alert(1)'])]
+    #[TestWith(['JavaScript:alert(1)'])]
+    #[TestWith(['JaVaScRiPt:alert(1)'])]
+    #[TestWith(['data:text/html,<script>alert(1)</script>'])]
+    #[TestWith(['vbscript:msgbox(1)'])]
+    #[TestWith(['file:///etc/passwd'])]
+    #[TestWith(['  javascript:alert(1)'])]
+    #[TestWith(["\tjavascript:alert(1)"])]
+    #[TestWith(["\njavascript:alert(1)"])]
+    #[TestWith(["\x00javascript:alert(1)"])]
     public function testDangerousSchemesAreMarkedUnsafe(string $url): void
     {
         $this->initializeConfigurator();
@@ -84,21 +79,19 @@ class UrlFieldTest extends AbstractFieldTest
         self::assertTrue($fieldDto->getCustomOption(UrlField::OPTION_IS_UNSAFE));
     }
 
-    /**
-     * @testWith ["http://example.com"]
-     *           ["https://example.com"]
-     *           ["ftp://example.com"]
-     *           ["ftps://example.com"]
-     *           ["ssh://user@example.com"]
-     *           ["sftp://user@example.com"]
-     *           ["git://example.com/repo.git"]
-     *           ["mailto:user@example.com"]
-     *           ["webcal://example.com/cal.ics"]
-     *           ["/relative/path"]
-     *           ["relative/path"]
-     *           ["//example.com/protocol-relative"]
-     *           [""]
-     */
+    #[TestWith(['http://example.com'])]
+    #[TestWith(['https://example.com'])]
+    #[TestWith(['ftp://example.com'])]
+    #[TestWith(['ftps://example.com'])]
+    #[TestWith(['ssh://user@example.com'])]
+    #[TestWith(['sftp://user@example.com'])]
+    #[TestWith(['git://example.com/repo.git'])]
+    #[TestWith(['mailto:user@example.com'])]
+    #[TestWith(['webcal://example.com/cal.ics'])]
+    #[TestWith(['/relative/path'])]
+    #[TestWith(['relative/path'])]
+    #[TestWith(['//example.com/protocol-relative'])]
+    #[TestWith([''])]
     public function testSafeSchemesAreNotMarkedUnsafe(string $url): void
     {
         $this->initializeConfigurator();
@@ -218,13 +211,11 @@ class UrlFieldTest extends AbstractFieldTest
         self::assertSame($field, $field->allowedProtocols(['http', 'https']));
     }
 
-    /**
-     * @testWith [["http"]]
-     *           [["https"]]
-     *           [["ftp", "ftps"]]
-     *           [["ssh", "sftp", "git"]]
-     *           [["http", "https", "ftp", "mailto", "webcal"]]
-     */
+    #[TestWith([['http']])]
+    #[TestWith([['https']])]
+    #[TestWith([['ftp', 'ftps']])]
+    #[TestWith([['ssh', 'sftp', 'git']])]
+    #[TestWith([['http', 'https', 'ftp', 'mailto', 'webcal']])]
     public function testAllowedProtocolsAcceptsDifferentProtocolSets(array $protocols): void
     {
         $this->initializeConfigurator();

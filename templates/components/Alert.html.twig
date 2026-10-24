@@ -11,7 +11,7 @@
             {% if this.title or has_title_block %}
                 <div class="alert-title">{{ has_title_block ? block('title') : this.title }}</div>
             {% endif %}
-            <div class="alert-description"><twig:block name="content"></twig:block></div>
+            <div class="alert-description">{## The message of the alert. ##}<twig:block name="content"></twig:block></div>
             {% if has_actions_block %}
                 <div class="alert-actions">{{ block('actions') }}</div>
             {% endif %}

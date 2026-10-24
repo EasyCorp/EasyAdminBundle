@@ -6,6 +6,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\ClickTrigger;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\BadgeVariant;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Translation\TranslatableMessage;
 
@@ -76,9 +78,7 @@ class CrudTest extends TestCase
         $this->assertNull($crudConfig->getAsDto()->getThousandsSeparator());
     }
 
-    /**
-     * @testWith [",", ".", " ", "-", ""]
-     */
+    #[TestWith([',', '.', ' ', '-', ''])]
     public function testSetThousandsSeparator(string $separator): void
     {
         $crudConfig = Crud::new();
@@ -94,9 +94,7 @@ class CrudTest extends TestCase
         $this->assertNull($crudConfig->getAsDto()->getDecimalSeparator());
     }
 
-    /**
-     * @testWith [",", ".", " ", "-", ""]
-     */
+    #[TestWith([',', '.', ' ', '-', ''])]
     public function testSetDecimalSeparator(string $separator): void
     {
         $crudConfig = Crud::new();
@@ -105,18 +103,16 @@ class CrudTest extends TestCase
         $this->assertSame($separator, $crudConfig->getAsDto()->getDecimalSeparator());
     }
 
-    /**
-     * @testWith ["short"]
-     *           ["medium"]
-     *           ["long"]
-     *           ["full"]
-     *           // custom time pattern
-     *           ["EEEE"]
-     *           // custom time pattern
-     *           ["MMMM/d, EEEE"]
-     *           // invalid value used on purpose to test that the method accepts any custom pattern/format
-     *           ["this is wrong"]
-     */
+    #[TestWith(['short'])]
+    #[TestWith(['medium'])]
+    #[TestWith(['long'])]
+    #[TestWith(['full'])]
+    // custom time pattern
+    #[TestWith(['EEEE'])]
+    // custom time pattern
+    #[TestWith(['MMMM/d, EEEE'])]
+    // invalid value used on purpose to test that the method accepts any custom pattern/format
+    #[TestWith(['this is wrong'])]
     public function testSetDateFormat(string $dateFormat): void
     {
         $crudConfig = Crud::new();
@@ -125,9 +121,7 @@ class CrudTest extends TestCase
         $this->assertSame($dateFormat, $crudConfig->getAsDto()->getDatePattern());
     }
 
-    /**
-     * @testWith ["none", ""]
-     */
+    #[TestWith(['none', ''])]
     public function testSetDateFormatWithInvalidFormat(string $dateFormat): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -137,18 +131,16 @@ class CrudTest extends TestCase
         $crudConfig->setDateFormat($dateFormat);
     }
 
-    /**
-     * @testWith ["short"]
-     *           ["medium"]
-     *           ["long"]
-     *           ["full"]
-     *           // custom time pattern
-     *           ["zzzz"]
-     *           // custom time pattern
-     *           ["ss, a, mm"]
-     *           // invalid value used on purpose to test that the method accepts any custom pattern/format
-     *           ["this is wrong"]
-     */
+    #[TestWith(['short'])]
+    #[TestWith(['medium'])]
+    #[TestWith(['long'])]
+    #[TestWith(['full'])]
+    // custom time pattern
+    #[TestWith(['zzzz'])]
+    // custom time pattern
+    #[TestWith(['ss, a, mm'])]
+    // invalid value used on purpose to test that the method accepts any custom pattern/format
+    #[TestWith(['this is wrong'])]
     public function testSetTimeFormat(string $timeFormat): void
     {
         $crudConfig = Crud::new();
@@ -157,9 +149,7 @@ class CrudTest extends TestCase
         $this->assertSame($timeFormat, $crudConfig->getAsDto()->getTimePattern());
     }
 
-    /**
-     * @testWith ["none", ""]
-     */
+    #[TestWith(['none', ''])]
     public function testSetTimeFormatWithInvalidFormat(string $timeFormat): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -169,35 +159,33 @@ class CrudTest extends TestCase
         $crudConfig->setTimeFormat($timeFormat);
     }
 
-    /**
-     * @testWith ["none", "short"]
-     *           ["none", "medium"]
-     *           ["none", "long"]
-     *           ["none", "full"]
-     *           ["short", "none"]
-     *           ["short", "short"]
-     *           ["short", "medium"]
-     *           ["short", "long"]
-     *           ["short", "full"]
-     *           ["medium", "none"]
-     *           ["medium", "short"]
-     *           ["medium", "medium"]
-     *           ["medium", "long"]
-     *           ["medium", "full"]
-     *           ["long", "none"]
-     *           ["long", "short"]
-     *           ["long", "medium"]
-     *           ["long", "long"]
-     *           ["long", "full"]
-     *           ["full", "none"]
-     *           ["full", "short"]
-     *           ["full", "medium"]
-     *           ["full", "long"]
-     *           ["full", "full"]
-     *           ["MMMM/d, EEEE ss, a, mm", "none"]
-     *           // the following invalid value are used on purpose to test that the method accepts any custom formats/patterns
-     *           ["this is wrong", "this is wrong"]
-     */
+    #[TestWith(['none', 'short'])]
+    #[TestWith(['none', 'medium'])]
+    #[TestWith(['none', 'long'])]
+    #[TestWith(['none', 'full'])]
+    #[TestWith(['short', 'none'])]
+    #[TestWith(['short', 'short'])]
+    #[TestWith(['short', 'medium'])]
+    #[TestWith(['short', 'long'])]
+    #[TestWith(['short', 'full'])]
+    #[TestWith(['medium', 'none'])]
+    #[TestWith(['medium', 'short'])]
+    #[TestWith(['medium', 'medium'])]
+    #[TestWith(['medium', 'long'])]
+    #[TestWith(['medium', 'full'])]
+    #[TestWith(['long', 'none'])]
+    #[TestWith(['long', 'short'])]
+    #[TestWith(['long', 'medium'])]
+    #[TestWith(['long', 'long'])]
+    #[TestWith(['long', 'full'])]
+    #[TestWith(['full', 'none'])]
+    #[TestWith(['full', 'short'])]
+    #[TestWith(['full', 'medium'])]
+    #[TestWith(['full', 'long'])]
+    #[TestWith(['full', 'full'])]
+    #[TestWith(['MMMM/d, EEEE ss, a, mm', 'none'])]
+    // invalid value used on purpose to test that the method accepts any custom datetime pattern
+    #[TestWith(['this is wrong', 'none'])]
     public function testSetDateTimeFormat(string $dateFormat, string $timeFormat): void
     {
         $crudConfig = Crud::new();
@@ -206,13 +194,11 @@ class CrudTest extends TestCase
         $this->assertSame([$dateFormat, $timeFormat], $crudConfig->getAsDto()->getDateTimePattern());
     }
 
-    /**
-     * @testWith ["", "short", "The first argument of the \"EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::setDateTimeFormat()\" method cannot be an empty string. Use either a date format (none, short, medium, long, full) or a datetime Intl pattern."]
-     *           ["none", "", "The values of the arguments of \"EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::setDateTimeFormat()\" cannot be \"none\" or an empty string at the same time. Change any of them (or both)."]
-     *           ["none", "none", "The values of the arguments of \"EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::setDateTimeFormat()\" cannot be \"none\" or an empty string at the same time. Change any of them (or both)."]
-     *           ["EEEE", "zzzz", "When the first argument of \"EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::setDateTimeFormat()\" is a datetime pattern, you cannot set the time format in the second argument (define the time format inside the datetime pattern)."]
-     *           ["long", "zzz", "When using a predefined format for the date, the time format must also be a predefined format (one of the following: none, short, medium, long, full) but \"zzz\" was given."]
-     */
+    #[TestWith(['', 'short', 'The first argument of the "EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::setDateTimeFormat()" method cannot be an empty string. Use either a date format (none, short, medium, long, full) or a datetime Intl pattern.'])]
+    #[TestWith(['none', '', 'The values of the arguments of "EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::setDateTimeFormat()" cannot be "none" or an empty string at the same time. Change any of them (or both).'])]
+    #[TestWith(['none', 'none', 'The values of the arguments of "EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::setDateTimeFormat()" cannot be "none" or an empty string at the same time. Change any of them (or both).'])]
+    #[TestWith(['EEEE', 'zzzz', 'When the first argument of "EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::setDateTimeFormat()" is a datetime pattern, you cannot set the time format in the second argument (define the time format inside the datetime pattern).'])]
+    #[TestWith(['long', 'zzz', 'When using a predefined format for the date, the time format must also be a predefined format (one of the following: none, short, medium, long, full) but "zzz" was given.'])]
     public function testSetDateTimeExceptions(string $dateFormat, string $timeFormat, string $exceptionMessage): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -229,12 +215,10 @@ class CrudTest extends TestCase
         $this->assertSame([Action::EDIT, Action::DETAIL], $crudConfig->getAsDto()->getDefaultRowAction());
     }
 
-    /**
-     * @testWith ["detail"]
-     *           ["edit"]
-     *           ["myCustomAction"]
-     *           [["detail", "edit", "customAction"]]
-     */
+    #[TestWith(['detail'])]
+    #[TestWith(['edit'])]
+    #[TestWith(['myCustomAction'])]
+    #[TestWith([['detail', 'edit', 'customAction']])]
     public function testSetDefaultRowAction(string|array $actionNames): void
     {
         $crudConfig = Crud::new();
@@ -251,10 +235,8 @@ class CrudTest extends TestCase
         $this->assertNull($crudConfig->getAsDto()->getDefaultRowAction());
     }
 
-    /**
-     * @testWith [""]
-     *           ["   "]
-     */
+    #[TestWith([''])]
+    #[TestWith(['   '])]
     public function testSetDefaultRowActionWithInvalidString(string $actionName): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -264,10 +246,8 @@ class CrudTest extends TestCase
         $crudConfig->setDefaultRowAction($actionName);
     }
 
-    /**
-     * @testWith [["edit", ""]]
-     *           [["edit", "   "]]
-     */
+    #[TestWith([['edit', '']])]
+    #[TestWith([['edit', '   ']])]
     public function testSetDefaultRowActionWithInvalidArray(array $actionNames): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -284,10 +264,8 @@ class CrudTest extends TestCase
         $this->assertSame(ClickTrigger::SINGLE, $crudConfig->getAsDto()->getDefaultRowActionTrigger());
     }
 
-    /**
-     * @testWith ["single"]
-     *           ["double"]
-     */
+    #[TestWith(['single'])]
+    #[TestWith(['double'])]
     public function testSetDefaultRowActionDefaultTrigger(string $clickTrigger): void
     {
         $crudConfig = Crud::new();
@@ -296,11 +274,9 @@ class CrudTest extends TestCase
         $this->assertSame($clickTrigger, $crudConfig->getAsDto()->getDefaultRowActionTrigger());
     }
 
-    /**
-     * @testWith [""]
-     *           ["   "]
-     *           ["invalid"]
-     */
+    #[TestWith([''])]
+    #[TestWith(['   '])]
+    #[TestWith(['invalid'])]
     public function testSetDefaultRowActionDefaultTriggerWithInvalidString(string $clickTrigger): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -316,5 +292,41 @@ class CrudTest extends TestCase
         $crudConfig->setFilters(null);
 
         $this->assertInstanceOf(FilterConfigDto::class, $crudConfig->getAsDto()->getFiltersConfig());
+    }
+
+    public function testDefaultBadgeVariant(): void
+    {
+        $this->assertNull(Crud::new()->getAsDto()->getComponentDefaults()->getBadgeVariant());
+    }
+
+    #[TestWith(['light'])]
+    #[TestWith(['solid'])]
+    #[TestWith(['outline'])]
+    #[TestWith(['dot'])]
+    public function testSetBadgeVariant(string $variant): void
+    {
+        $crudConfig = Crud::new();
+        $crudConfig->setBadgeVariant($variant);
+
+        $this->assertSame(BadgeVariant::from($variant), $crudConfig->getAsDto()->getComponentDefaults()->getBadgeVariant());
+    }
+
+    public function testSetBadgeVariantAsEnum(): void
+    {
+        $crudConfig = Crud::new();
+        $crudConfig->setBadgeVariant(BadgeVariant::Solid);
+
+        $this->assertSame(BadgeVariant::Solid, $crudConfig->getAsDto()->getComponentDefaults()->getBadgeVariant());
+    }
+
+    #[TestWith([''])]
+    #[TestWith(['invalid'])]
+    #[TestWith(['success'])]
+    public function testSetBadgeVariantWithInvalidValue(string $variant): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('The "%s" badge variant is not valid. Use one of these values: "light", "solid", "outline", "dot".', $variant));
+
+        Crud::new()->setBadgeVariant($variant);
     }
 }

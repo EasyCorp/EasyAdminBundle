@@ -2,11 +2,12 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Actions;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\EntityActionsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\ActionTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\ActionTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 
 /**
  * Tests for entity action features including displayIf(), custom actions,
@@ -14,11 +15,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synt
  */
 class EntityActionsTest extends AbstractCrudTestCase
 {
-    protected EntityRepository $actionTestEntities;
-
     protected function getControllerFqcn(): string
     {
-        return ActionTestEntityCrudController::class;
+        return EntityActionsCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -30,21 +29,15 @@ class EntityActionsTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-
-        $this->actionTestEntities = $this->entityManager->getRepository(ActionTestEntity::class);
     }
-
-    // ============================================
-    // displayIf() Tests
-    // ============================================
 
     public function testDisplayIfShowsActivateForInactiveEntity(): void
     {
-        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        // entities in the opposite state share the page, to check that displayIf() runs per entity
+        CategoryFactory::createOne(['active' => true]);
+        $inactiveEntity = CategoryFactory::createOne(['active' => false]);
 
-        // Find an inactive entity row and verify activate action is shown
-        $inactiveEntity = $this->actionTestEntities->findOneBy(['isActive' => false]);
-        static::assertNotNull($inactiveEntity, 'Test requires at least one inactive entity');
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $row = $crawler->filter(sprintf('tr[data-id="%s"]', $inactiveEntity->getId()));
         static::assertCount(1, $row, 'Entity row should exist');
@@ -60,11 +53,10 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testDisplayIfShowsDeactivateForActiveEntity(): void
     {
-        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        CategoryFactory::createOne(['active' => false]);
+        $activeEntity = CategoryFactory::createOne(['active' => true]);
 
-        // Find an active entity row and verify deactivate action is shown
-        $activeEntity = $this->actionTestEntities->findOneBy(['isActive' => true]);
-        static::assertNotNull($activeEntity, 'Test requires at least one active entity');
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $row = $crawler->filter(sprintf('tr[data-id="%s"]', $activeEntity->getId()));
         static::assertCount(1, $row, 'Entity row should exist');
@@ -80,11 +72,10 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testDisplayIfHidesDeleteForNonDeletableEntity(): void
     {
-        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        CategoryFactory::createOne();
+        $nonDeletableEntity = CategoryFactory::createOne(['blogPosts' => [BlogPostFactory::createOne()]]);
 
-        // Find a non-deletable entity row
-        $nonDeletableEntity = $this->actionTestEntities->findOneBy(['isDeletable' => false]);
-        static::assertNotNull($nonDeletableEntity, 'Test requires at least one non-deletable entity');
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $row = $crawler->filter(sprintf('tr[data-id="%s"]', $nonDeletableEntity->getId()));
         static::assertCount(1, $row, 'Entity row should exist');
@@ -96,11 +87,10 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testDisplayIfShowsDeleteForDeletableEntity(): void
     {
-        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        CategoryFactory::createOne(['blogPosts' => [BlogPostFactory::createOne()]]);
+        $deletableEntity = CategoryFactory::createOne();
 
-        // Find a deletable entity row
-        $deletableEntity = $this->actionTestEntities->findOneBy(['isDeletable' => true]);
-        static::assertNotNull($deletableEntity, 'Test requires at least one deletable entity');
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $row = $crawler->filter(sprintf('tr[data-id="%s"]', $deletableEntity->getId()));
         static::assertCount(1, $row, 'Entity row should exist');
@@ -112,9 +102,8 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testDisplayIfWorksOnDetailPage(): void
     {
-        // Test with an active, deletable entity
-        $activeEntity = $this->actionTestEntities->findOneBy(['isActive' => true, 'isDeletable' => true]);
-        static::assertNotNull($activeEntity, 'Test requires an active, deletable entity');
+        $activeEntity = CategoryFactory::createOne(['active' => true]);
+        $inactiveNonDeletableEntity = CategoryFactory::createOne(['active' => false, 'blogPosts' => [BlogPostFactory::createOne()]]);
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($activeEntity->getId()));
 
@@ -129,10 +118,6 @@ class EntityActionsTest extends AbstractCrudTestCase
         // Delete should be visible (entity is deletable)
         $deleteAction = $crawler->filter('a[data-action-name="delete"]');
         static::assertCount(1, $deleteAction, 'Delete action should be visible on detail page for deletable entity');
-
-        // Now test with an inactive, non-deletable entity
-        $inactiveNonDeletableEntity = $this->actionTestEntities->findOneBy(['isActive' => false, 'isDeletable' => false]);
-        static::assertNotNull($inactiveNonDeletableEntity, 'Test requires an inactive, non-deletable entity');
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($inactiveNonDeletableEntity->getId()));
 
@@ -149,16 +134,9 @@ class EntityActionsTest extends AbstractCrudTestCase
         static::assertCount(0, $deleteAction, 'Delete action should not be visible on detail page for non-deletable entity');
     }
 
-    // ============================================
-    // Custom Action Execution Tests
-    // ============================================
-
     public function testActivateEntityAction(): void
     {
-        // Find an inactive entity to activate
-        $inactiveEntity = $this->actionTestEntities->findOneBy(['isActive' => false]);
-        static::assertNotNull($inactiveEntity, 'Test requires an inactive entity');
-        static::assertFalse($inactiveEntity->isActive(), 'Entity should be inactive before test');
+        $inactiveEntity = CategoryFactory::createOne(['name' => 'Category 1', 'active' => false]);
 
         $entityId = $inactiveEntity->getId();
         $entityName = $inactiveEntity->getName();
@@ -171,7 +149,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
         // Verify the entity was activated
         $this->entityManager->clear();
-        $updatedEntity = $this->actionTestEntities->find($entityId);
+        $updatedEntity = $this->entityManager->getRepository(Category::class)->find($entityId);
         static::assertTrue($updatedEntity->isActive(), 'Entity should be active after clicking activate action');
 
         // verify flash message is shown; this action uses the structured flash message
@@ -188,10 +166,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testDeactivateEntityAction(): void
     {
-        // Find an active entity to deactivate
-        $activeEntity = $this->actionTestEntities->findOneBy(['isActive' => true]);
-        static::assertNotNull($activeEntity, 'Test requires an active entity');
-        static::assertTrue($activeEntity->isActive(), 'Entity should be active before test');
+        $activeEntity = CategoryFactory::createOne(['name' => 'Category 1', 'active' => true]);
 
         $entityId = $activeEntity->getId();
         $entityName = $activeEntity->getName();
@@ -204,7 +179,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
         // Verify the entity was deactivated
         $this->entityManager->clear();
-        $updatedEntity = $this->actionTestEntities->find($entityId);
+        $updatedEntity = $this->entityManager->getRepository(Category::class)->find($entityId);
         static::assertFalse($updatedEntity->isActive(), 'Entity should be inactive after clicking deactivate action');
 
         // Verify flash message is shown
@@ -217,9 +192,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testActivateActionFromDetailPage(): void
     {
-        // Find an inactive entity
-        $inactiveEntity = $this->actionTestEntities->findOneBy(['isActive' => false]);
-        static::assertNotNull($inactiveEntity, 'Test requires an inactive entity');
+        $inactiveEntity = CategoryFactory::createOne(['name' => 'Category 1', 'active' => false]);
 
         $entityId = $inactiveEntity->getId();
         $entityName = $inactiveEntity->getName();
@@ -231,7 +204,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
         // Verify the entity was activated
         $this->entityManager->clear();
-        $updatedEntity = $this->actionTestEntities->find($entityId);
+        $updatedEntity = $this->entityManager->getRepository(Category::class)->find($entityId);
         static::assertTrue($updatedEntity->isActive(), 'Entity should be active after clicking activate action from detail page');
 
         // Verify flash message
@@ -244,9 +217,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testDeactivateActionFromDetailPage(): void
     {
-        // Find an active entity
-        $activeEntity = $this->actionTestEntities->findOneBy(['isActive' => true]);
-        static::assertNotNull($activeEntity, 'Test requires an active entity');
+        $activeEntity = CategoryFactory::createOne(['name' => 'Category 1', 'active' => true]);
 
         $entityId = $activeEntity->getId();
         $entityName = $activeEntity->getName();
@@ -258,7 +229,7 @@ class EntityActionsTest extends AbstractCrudTestCase
 
         // Verify the entity was deactivated
         $this->entityManager->clear();
-        $updatedEntity = $this->actionTestEntities->find($entityId);
+        $updatedEntity = $this->entityManager->getRepository(Category::class)->find($entityId);
         static::assertFalse($updatedEntity->isActive(), 'Entity should be inactive after clicking deactivate action from detail page');
 
         // Verify flash message
@@ -268,10 +239,6 @@ class EntityActionsTest extends AbstractCrudTestCase
             $crawler->filter('.alert-success')->text()
         );
     }
-
-    // ============================================
-    // Render Mode Tests (Global Actions)
-    // ============================================
 
     public function testRenderAsButtonCreatesButtonElement(): void
     {
@@ -305,14 +272,11 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testRenderAsFormInDropdownCreatesHiddenForm(): void
     {
+        $entity = CategoryFactory::createOne();
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
-        // Entity actions with renderAsForm() in the dropdown should have an associated form
-        // Find any entity row and look for the entityFormAction in its dropdown
-        $firstEntity = $this->actionTestEntities->findOneBy([]);
-        static::assertNotNull($firstEntity, 'Test requires at least one entity');
-
-        $row = $crawler->filter(sprintf('tr[data-id="%s"]', $firstEntity->getId()));
+        $row = $crawler->filter(sprintf('tr[data-id="%s"]', $entity->getId()));
         static::assertCount(1, $row, 'Entity row should exist');
 
         // The dropdown should contain a link for the entityFormAction
@@ -328,19 +292,14 @@ class EntityActionsTest extends AbstractCrudTestCase
         static::assertSame('POST', $hiddenForm->attr('method'), 'Hidden form should use POST method');
     }
 
-    // ============================================
-    // HTML Attributes Tests (Entity Actions in Dropdown)
-    // ============================================
-
     public function testSetHtmlAttributesOnAction(): void
     {
+        $entity = CategoryFactory::createOne();
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
-        // Find action with custom HTML attributes in the first entity's dropdown
-        $firstEntity = $this->actionTestEntities->findOneBy([]);
-        static::assertNotNull($firstEntity, 'Test requires at least one entity');
-
-        $row = $crawler->filter(sprintf('tr[data-id="%s"]', $firstEntity->getId()));
+        $row = $crawler->filter(sprintf('tr[data-id="%s"]', $entity->getId()));
+        static::assertCount(1, $row, 'Entity row should exist');
         $attrAction = $row->filter('[data-action-name="attrAction"]')->first();
         static::assertCount(1, $attrAction, 'Action with HTML attributes should exist');
 
@@ -351,13 +310,12 @@ class EntityActionsTest extends AbstractCrudTestCase
 
     public function testActionWithIconOnly(): void
     {
+        $entity = CategoryFactory::createOne();
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
-        // Find the icon-only action in the first entity's dropdown
-        $firstEntity = $this->actionTestEntities->findOneBy([]);
-        static::assertNotNull($firstEntity, 'Test requires at least one entity');
-
-        $row = $crawler->filter(sprintf('tr[data-id="%s"]', $firstEntity->getId()));
+        $row = $crawler->filter(sprintf('tr[data-id="%s"]', $entity->getId()));
+        static::assertCount(1, $row, 'Entity row should exist');
         $iconOnlyAction = $row->filter('[data-action-name="iconOnly"]')->first();
         static::assertCount(1, $iconOnlyAction, 'Icon-only action should exist');
 
@@ -365,10 +323,6 @@ class EntityActionsTest extends AbstractCrudTestCase
         $icon = $iconOnlyAction->filter('.fa-cog, [class*="fa-cog"]');
         static::assertGreaterThanOrEqual(1, $icon->count(), 'Icon should be present in icon-only action');
     }
-
-    // ============================================
-    // Custom Template Tests (Global Actions)
-    // ============================================
 
     public function testSetTemplatePathRendersCustomTemplate(): void
     {

@@ -4,10 +4,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Security;
 
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\ProtectedCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\SecuredDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Kernel;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -36,9 +38,7 @@ class RolePermissionTest extends AbstractCrudTestCase
         $this->client->followRedirects();
     }
 
-    /**
-     * @dataProvider provideRolesForAdminOnlyAction
-     */
+    #[DataProvider('provideRolesForAdminOnlyAction')]
     public function testAdminOnlyActionPermission(string $username, int $expectedStatusCode): void
     {
         if (Response::HTTP_FORBIDDEN === $expectedStatusCode) {
@@ -55,6 +55,24 @@ class RolePermissionTest extends AbstractCrudTestCase
         );
 
         static::assertResponseStatusCodeSame($expectedStatusCode);
+    }
+
+    /**
+     * Anchors the "Security" rules of skills/easyadmin/SKILL.md: action permissions
+     * are checked per action, so restricting the index action does not restrict the
+     * other actions of the same CRUD controller.
+     */
+    public function testIndexPermissionDoesNotProtectTheOtherActions(): void
+    {
+        $category = CategoryFactory::createOne();
+        $credentials = ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => '1234'];
+
+        $this->client->request('GET', $this->generateDetailUrl($category->getId(), null, ProtectedCategoryCrudController::class), [], [], $credentials);
+        static::assertResponseIsSuccessful();
+
+        $this->expectException(ForbiddenActionException::class);
+        $this->client->catchExceptions(false);
+        $this->client->request('GET', $this->generateIndexUrl(null, null, ProtectedCategoryCrudController::class), [], [], $credentials);
     }
 
     public static function provideRolesForAdminOnlyAction(): \Generator
@@ -86,11 +104,12 @@ class RolePermissionTest extends AbstractCrudTestCase
         static::assertResponseIsSuccessful();
     }
 
-    /**
-     * @dataProvider provideRolesForFieldPermission
-     */
+    #[DataProvider('provideRolesForFieldPermission')]
     public function testFieldPermissionHidesFieldForUnauthorizedUsers(string $username, bool $shouldSeeField): void
     {
+        // the datagrid (and its column headers) is only rendered when there are rows
+        CategoryFactory::createOne();
+
         $crawler = $this->client->request(
             'GET',
             $this->generateIndexUrl(),
@@ -99,6 +118,7 @@ class RolePermissionTest extends AbstractCrudTestCase
             ['PHP_AUTH_USER' => $username, 'PHP_AUTH_PW' => '1234']
         );
 
+        static::assertCount(1, $crawler->filter('th[data-column="name"]'), 'The unprotected fields should be rendered for every user');
         $fieldHeader = $crawler->filter('th[data-column="activeWithNoPermission"]');
 
         if ($shouldSeeField) {
@@ -131,9 +151,7 @@ class RolePermissionTest extends AbstractCrudTestCase
         yield 'super_admin can see protected field' => ['super_admin', true];
     }
 
-    /**
-     * @dataProvider provideRolesForAutocompleteAction
-     */
+    #[DataProvider('provideRolesForAutocompleteAction')]
     public function testAutocompleteActionPermission(string $username, int $expectedStatusCode): void
     {
         if (Response::HTTP_FORBIDDEN === $expectedStatusCode) {
@@ -171,9 +189,7 @@ class RolePermissionTest extends AbstractCrudTestCase
         yield 'super_admin role can access autocomplete with INDEX permission' => ['super_admin', Response::HTTP_OK];
     }
 
-    /**
-     * @dataProvider provideRolesForRenderFiltersAction
-     */
+    #[DataProvider('provideRolesForRenderFiltersAction')]
     public function testRenderFiltersActionPermission(string $username, int $expectedStatusCode): void
     {
         if (Response::HTTP_FORBIDDEN === $expectedStatusCode) {

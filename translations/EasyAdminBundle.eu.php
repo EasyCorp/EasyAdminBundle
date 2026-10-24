@@ -13,6 +13,8 @@ return [
     'datagrid' => [
         'hidden_results' => 'Emaitza batzuk ezin dira erakutsi, ez baituzu behar den adina baimen',
         'no_results' => 'Ez da emaitzarik aurkitu.',
+        'sort' => 'Ordenatu',
+        'sort_by' => 'Ordenatu honen arabera',
     ],
 
     'paginator' => [

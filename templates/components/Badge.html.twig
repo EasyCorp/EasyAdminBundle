@@ -1,5 +1,8 @@
 <span {{- attributes.defaults({class: this.defaultCssClass()}) }}>
+    {%- if this.hasDot %}<span class="badge-dot" aria-hidden="true"></span>{% endif -%}
     {%- if this.icon %}<twig:ea:Icon name="{{ this.icon }}" />{% endif -%}
+    {## The text of the badge. -#}
     <twig:block name="content"></twig:block>
     {%- if this.endIcon %}<twig:ea:Icon name="{{ this.endIcon }}" />{% endif -%}
+    {%- if this.dismissible %}<button type="button" class="badge-dismiss" aria-label="{{ 'action.remove_item'|trans(domain: 'EasyAdminBundle') }}"><twig:ea:Icon name="internal:xmark" /></button>{% endif -%}
 </span>{#--#}

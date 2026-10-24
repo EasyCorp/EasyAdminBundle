@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entit
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 
 #[ORM\Entity]
 class FieldTestEntity
@@ -97,7 +98,16 @@ class FieldTestEntity
 
     // media fields
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $fileField = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private array $multipleFileField = [];
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageField = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private array $multipleImageField = [];
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatarField = null;
@@ -110,14 +120,14 @@ class FieldTestEntity
     private ?string $hiddenField = null;
 
     // association fields
-    #[ORM\ManyToOne(targetEntity: FieldRelatedEntity::class)]
+    #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(nullable: true)]
-    private ?FieldRelatedEntity $manyToOneAssociation = null;
+    private ?Category $manyToOneAssociation = null;
 
     /**
-     * @var Collection<int, FieldRelatedEntity>
+     * @var Collection<int, Category>
      */
-    #[ORM\ManyToMany(targetEntity: FieldRelatedEntity::class)]
+    #[ORM\ManyToMany(targetEntity: Category::class)]
     #[ORM\JoinTable(name: 'field_test_entity_many_to_many')]
     private Collection $manyToManyAssociation;
 
@@ -431,6 +441,30 @@ class FieldTestEntity
         return $this;
     }
 
+    public function getFileField(): ?string
+    {
+        return $this->fileField;
+    }
+
+    public function setFileField(?string $fileField): self
+    {
+        $this->fileField = $fileField;
+
+        return $this;
+    }
+
+    public function getMultipleFileField(): array
+    {
+        return $this->multipleFileField;
+    }
+
+    public function setMultipleFileField(?array $multipleFileField): self
+    {
+        $this->multipleFileField = $multipleFileField ?? [];
+
+        return $this;
+    }
+
     public function getImageField(): ?string
     {
         return $this->imageField;
@@ -439,6 +473,18 @@ class FieldTestEntity
     public function setImageField(?string $imageField): self
     {
         $this->imageField = $imageField;
+
+        return $this;
+    }
+
+    public function getMultipleImageField(): array
+    {
+        return $this->multipleImageField;
+    }
+
+    public function setMultipleImageField(?array $multipleImageField): self
+    {
+        $this->multipleImageField = $multipleImageField ?? [];
 
         return $this;
     }
@@ -479,12 +525,12 @@ class FieldTestEntity
         return $this;
     }
 
-    public function getManyToOneAssociation(): ?FieldRelatedEntity
+    public function getManyToOneAssociation(): ?Category
     {
         return $this->manyToOneAssociation;
     }
 
-    public function setManyToOneAssociation(?FieldRelatedEntity $manyToOneAssociation): self
+    public function setManyToOneAssociation(?Category $manyToOneAssociation): self
     {
         $this->manyToOneAssociation = $manyToOneAssociation;
 
@@ -492,25 +538,25 @@ class FieldTestEntity
     }
 
     /**
-     * @return Collection<int, FieldRelatedEntity>
+     * @return Collection<int, Category>
      */
     public function getManyToManyAssociation(): Collection
     {
         return $this->manyToManyAssociation;
     }
 
-    public function addManyToManyAssociation(FieldRelatedEntity $entity): self
+    public function addManyToManyAssociation(Category $category): self
     {
-        if (!$this->manyToManyAssociation->contains($entity)) {
-            $this->manyToManyAssociation->add($entity);
+        if (!$this->manyToManyAssociation->contains($category)) {
+            $this->manyToManyAssociation->add($category);
         }
 
         return $this;
     }
 
-    public function removeManyToManyAssociation(FieldRelatedEntity $entity): self
+    public function removeManyToManyAssociation(Category $category): self
     {
-        $this->manyToManyAssociation->removeElement($entity);
+        $this->manyToManyAssociation->removeElement($category);
 
         return $this;
     }

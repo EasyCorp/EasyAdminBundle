@@ -3,20 +3,19 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Autocomplete;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Autocomplete\BlogPostWithAutocompleteCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Autocomplete\BlogPostWithGroupByCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Autocomplete\BlogPostWithGroupByPropertyPathCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\DeveloperCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectIssueWithAutocompleteCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\ProjectDomain\ProjectIssueWithGroupByCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Developer;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\ProjectIssue;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 
 class AutocompleteGroupByTest extends AbstractCrudTestCase
 {
     protected function getControllerFqcn(): string
     {
-        return ProjectIssueWithGroupByCrudController::class;
+        return BlogPostWithGroupByCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -30,29 +29,9 @@ class AutocompleteGroupByTest extends AbstractCrudTestCase
         $this->client->followRedirects();
     }
 
-    private function createProject(string $name, bool $internal): Project
-    {
-        $project = new Project();
-        $project->setName($name);
-        $project->setDescription('Test Description');
-        $project->setInternal($internal);
-        $project->setStatesSimpleArray(['active']);
-        $project->setStartDateMutable(new \DateTime());
-        $project->setStartDateImmutable(new \DateTimeImmutable());
-        $project->setStartDateTimeMutable(new \DateTime());
-        $project->setStartDateTimeImmutable(new \DateTimeImmutable());
-        $project->setStartDateTimeTzMutable(new \DateTime());
-        $project->setStartDateTimeTzImmutable(new \DateTimeImmutable());
-        $project->setCountInteger(0);
-        $project->setCountSmallint(0);
-        $project->setPriceDecimal('0.00');
-        $project->setPriceFloat(0.0);
-        $project->setStartTimeMutable(new \DateTime());
-        $project->setStartTimeImmutable(new \DateTimeImmutable());
-
-        return $project;
-    }
-
+    /**
+     * @return list<array<string, mixed>>
+     */
     private function requestAutocompleteResults(string $targetControllerFqcn, string $originatingControllerFqcn, string $propertyName, string $query): array
     {
         $autocompleteUrl = $this->adminUrlGenerator
@@ -79,91 +58,71 @@ class AutocompleteGroupByTest extends AbstractCrudTestCase
 
     public function testGroupByCallableAddsTheGroupToEachResult(): void
     {
-        $internalProject = $this->createProject('Groupby Internal Tooling', true);
-        $publicProject = $this->createProject('Groupby Public Website', false);
-
-        $this->entityManager->persist($internalProject);
-        $this->entityManager->persist($publicProject);
-        $this->entityManager->flush();
+        CategoryFactory::createOne(['name' => 'Category 1', 'active' => true]);
+        CategoryFactory::createOne(['name' => 'Category 2', 'active' => false]);
 
         $results = $this->requestAutocompleteResults(
-            ProjectCrudController::class,
-            ProjectIssueWithGroupByCrudController::class,
-            'project',
-            'Groupby'
+            CategoryCrudController::class,
+            BlogPostWithGroupByCrudController::class,
+            'categories',
+            'Category'
         );
 
         $this->assertCount(2, $results);
 
         $resultsByLabel = array_column($results, null, 'entityAsString');
-        $this->assertSame('Internal', $resultsByLabel['Groupby Internal Tooling']['entityGroup']);
+        $this->assertSame('Active', $resultsByLabel['Category 1']['entityGroup']);
         // a null group leaves the result ungrouped: the key must not even be present
-        $this->assertArrayNotHasKey('entityGroup', $resultsByLabel['Groupby Public Website']);
+        $this->assertArrayNotHasKey('entityGroup', $resultsByLabel['Category 2']);
     }
 
     public function testGroupByPropertyPathAddsTheGroupToEachResult(): void
     {
-        $developer = new Developer();
-        $developer->setName('Groupby Grace Hopper');
-
-        $this->entityManager->persist($developer);
-        $this->entityManager->flush();
+        CategoryFactory::createOne(['name' => 'Category 1', 'slug' => 'category-1']);
 
         $results = $this->requestAutocompleteResults(
-            DeveloperCrudController::class,
-            ProjectIssueWithGroupByCrudController::class,
-            'assignedDeveloper',
-            'Groupby Grace'
+            CategoryCrudController::class,
+            BlogPostWithGroupByPropertyPathCrudController::class,
+            'categories',
+            'Category 1'
         );
 
         $this->assertCount(1, $results);
-        $this->assertSame('Groupby Grace Hopper', $results[0]['entityGroup']);
+        $this->assertSame('category-1', $results[0]['entityGroup']);
     }
 
     public function testResultsHaveNoGroupWhenGroupByIsNotDefined(): void
     {
-        $project = $this->createProject('Groupby Control Project', false);
-
-        $this->entityManager->persist($project);
-        $this->entityManager->flush();
+        CategoryFactory::createOne(['name' => 'Category 1', 'active' => true]);
 
         $results = $this->requestAutocompleteResults(
-            ProjectCrudController::class,
-            ProjectIssueWithAutocompleteCrudController::class,
-            'project',
-            'Groupby Control'
+            CategoryCrudController::class,
+            BlogPostWithAutocompleteCrudController::class,
+            'categories',
+            'Category 1'
         );
 
-        $this->assertNotEmpty($results);
-        foreach ($results as $result) {
-            $this->assertArrayNotHasKey('entityGroup', $result);
-        }
+        $this->assertCount(1, $results);
+        $this->assertArrayNotHasKey('entityGroup', $results[0]);
     }
 
     public function testSelectedChoicesAreRenderedInsideOptgroupsInTheForm(): void
     {
-        $internalProject = $this->createProject('Groupby Form Project', true);
-
-        $issue = new ProjectIssue();
-        $issue->setName('Groupby Form Issue');
-        $issue->setProject($internalProject);
-
-        $this->entityManager->persist($internalProject);
-        $this->entityManager->persist($issue);
-        $this->entityManager->flush();
+        $activeCategory = CategoryFactory::createOne(['name' => 'Category 1', 'active' => true]);
+        $blogPost = BlogPostFactory::createOne(['categories' => [$activeCategory]]);
 
         $editUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)
-            ->setController(ProjectIssueWithGroupByCrudController::class)
+            ->setController(BlogPostWithGroupByCrudController::class)
             ->setAction('edit')
-            ->setEntityId($issue->getId())
+            ->setEntityId($blogPost->getId())
             ->generateUrl();
 
         $crawler = $this->client->request('GET', $editUrl);
         $this->assertResponseIsSuccessful();
 
-        $selectedOption = $crawler->filter('optgroup[label="Internal"] option[selected]');
+        $selectedOption = $crawler->filter('optgroup[label="Active"] option[selected]');
         $this->assertCount(1, $selectedOption);
-        $this->assertSame('Groupby Form Project', $selectedOption->text());
+        $this->assertSame('Category 1', $selectedOption->text());
     }
 }

@@ -2,23 +2,22 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Crud;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\NoEntityActionsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\SomeRowsWithEntityActionsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Crud\DefaultCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\DefaultCrudTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\DefaultCrudTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 
 /**
  * Tests for default index page behavior in EasyAdmin CRUD operations.
  */
 class IndexTest extends AbstractCrudTestCase
 {
-    protected EntityRepository $repository;
-
     protected function getControllerFqcn(): string
     {
-        return DefaultCrudTestEntityCrudController::class;
+        return DefaultCategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -30,7 +29,6 @@ class IndexTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(DefaultCrudTestEntity::class);
     }
 
     public function testIndexPageLoadsSuccessfully(): void
@@ -51,6 +49,8 @@ class IndexTest extends AbstractCrudTestCase
 
     public function testDefaultPaginationIsPresent(): void
     {
+        CategoryFactory::createMany(3);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
@@ -59,12 +59,13 @@ class IndexTest extends AbstractCrudTestCase
         $this->assertSelectorExists('.list-pagination-counter', 'Pagination counter should be present');
 
         // check that entity count is displayed
-        $totalEntities = \count($this->repository->findAll());
-        $this->assertIndexFullEntityCount($totalEntities);
+        $this->assertIndexFullEntityCount(3);
     }
 
     public function testDefaultColumnsAreDisplayed(): void
     {
+        CategoryFactory::createOne();
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
@@ -95,8 +96,7 @@ class IndexTest extends AbstractCrudTestCase
 
     public function testDefaultEntityActionsAreAvailable(): void
     {
-        $entity = $this->repository->findOneBy([]);
-        $this->assertNotNull($entity, 'At least one entity should exist in fixtures');
+        $entity = CategoryFactory::createOne();
 
         $this->client->request('GET', $this->generateIndexUrl());
 
@@ -111,16 +111,19 @@ class IndexTest extends AbstractCrudTestCase
 
     public function testEntityCountIsDisplayedCorrectly(): void
     {
+        CategoryFactory::createMany(2);
+
         $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
 
-        $totalEntities = \count($this->repository->findAll());
-        $this->assertIndexFullEntityCount($totalEntities);
+        $this->assertIndexFullEntityCount(2);
     }
 
     public function testIndexShowsEntitiesInTable(): void
     {
+        CategoryFactory::createMany(2);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
@@ -128,30 +131,71 @@ class IndexTest extends AbstractCrudTestCase
         // check that table body exists with rows
         $this->assertSelectorExists('tbody', 'Table should have a body');
 
-        $rows = $crawler->filter('tbody tr');
-        $this->assertGreaterThan(0, $rows->count(), 'Table should have data rows');
+        $rows = $crawler->filter('tbody tr[data-id]');
+        $this->assertCount(2, $rows, 'Table should have one row per entity');
     }
 
     public function testEntityRowsExist(): void
     {
+        $entities = CategoryFactory::createMany(2);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
 
         // check that entity rows exist in the table body
-        $rows = $crawler->filter('tbody tr');
-        $this->assertGreaterThan(0, $rows->count(), 'Table should have entity rows');
+        foreach ($entities as $entity) {
+            $this->assertCount(1, $crawler->filter($this->getIndexEntityRowSelector($entity->getId())), 'Table should have a row for each entity');
+        }
     }
 
     public function testActionsColumnExists(): void
     {
+        CategoryFactory::createMany(2);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
 
         // check for actions column (contains edit/delete links)
         $actionsColumn = $crawler->filter('td.actions');
-        $this->assertGreaterThan(0, $actionsColumn->count(), 'Actions column should be present for each row');
+        $this->assertCount(2, $actionsColumn, 'Actions column should be present for each row');
+    }
+
+    public function testActionsColumnIsHiddenWhenNoRowHasActions(): void
+    {
+        CategoryFactory::createMany(2);
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl(null, null, NoEntityActionsCrudController::class));
+
+        $this->assertResponseIsSuccessful();
+
+        $rows = $crawler->filter('tbody tr[data-id]');
+        $this->assertCount(2, $rows, 'Table should have entity rows');
+        $this->assertSame(0, $crawler->filter('td.actions')->count(), 'Actions cells should not be rendered when no row has actions');
+        $this->assertSame(1, $crawler->filter('thead th')->count(), 'Only the configured field should have a header cell');
+        $this->assertSame(1, $rows->first()->filter('td')->count(), 'Rows should only contain the configured field cell');
+        $this->assertSelectorExists('td[data-column="name"]');
+    }
+
+    public function testActionsColumnIsShownWhenSomeRowsHaveActions(): void
+    {
+        // the controller only displays the edit action for entities with an even id
+        $categories = CategoryFactory::createMany(2);
+        [$categoryWithActions, $categoryWithoutActions] = 0 === $categories[0]->getId() % 2 ? $categories : array_reverse($categories);
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl(null, null, SomeRowsWithEntityActionsCrudController::class));
+
+        $this->assertResponseIsSuccessful();
+
+        $rows = $crawler->filter('tbody tr[data-id]');
+        $this->assertCount(2, $rows, 'Table should have entity rows');
+        $this->assertSame(2, $crawler->filter('thead th')->count(), 'The actions header cell should be rendered next to the field header');
+        $this->assertCount(2, $crawler->filter('td.actions'), 'Every row should have an actions cell, even the rows without actions');
+
+        $this->assertCount(1, $crawler->filter('td.actions .action-edit'), 'Only one row should display the edit action');
+        $this->assertIndexEntityActionExists(Action::EDIT, $categoryWithActions->getId());
+        $this->assertIndexEntityActionNotExists(Action::EDIT, $categoryWithoutActions->getId());
     }
 
     public function testSearchFormExists(): void
@@ -184,17 +228,14 @@ class IndexTest extends AbstractCrudTestCase
 
     public function testPaginationWorksWithMultiplePages(): void
     {
-        // this test verifies pagination when there are more entities than fit on one page
-        // the default page size in EasyAdmin is typically 15-20 items
-        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        // the default page size is 20, so 21 entities need two pages
+        CategoryFactory::createMany(21);
+
+        $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseIsSuccessful();
-
-        // check that pagination exists
-        $paginationExists = $crawler->filter('.list-pagination-paginator')->count() > 0;
-        if ($paginationExists) {
-            $pageItems = $crawler->filter('.list-pagination-paginator .page-item');
-            $this->assertGreaterThan(0, $pageItems->count(), 'Pagination should have page items');
-        }
+        $this->assertIndexFullEntityCount(21);
+        $this->assertIndexPageEntityCount(20);
+        $this->assertIndexPagesCount(2);
     }
 }

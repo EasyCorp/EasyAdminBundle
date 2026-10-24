@@ -2,6 +2,7 @@
     {%- if this.flagExists -%}
         {{- this.getFlagAsSvg|raw -}}
     {%- else -%}
+        {##- The contents displayed when there is no flag for the given country code. -#}
         {%- block fallback %}{{ this.getFallbackSvg|raw }}{% endblock -%}
     {%- endif -%}
     {%- if this.showName %}{{ this.getCountryName() }}{% endif -%}

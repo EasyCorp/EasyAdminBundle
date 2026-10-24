@@ -8,6 +8,8 @@ use Doctrine\Persistence\ObjectManager;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -17,11 +19,9 @@ use Twig\Environment;
 
 class EntityPaginatorTest extends TestCase
 {
-    /**
-     * @testWith [5, 5]
-     *           [-1, 1]
-     *           [0, 1]
-     */
+    #[TestWith([5, 5])]
+    #[TestWith([-1, 1])]
+    #[TestWith([0, 1])]
     public function testGetCurrentPage(int $pageNumber, int $expectedPage): void
     {
         $paginator = $this->createPaginatedPaginator(pageNumber: $pageNumber, pageSize: 10, totalResults: 100);
@@ -29,12 +29,10 @@ class EntityPaginatorTest extends TestCase
         $this->assertSame($expectedPage, $paginator->getCurrentPage());
     }
 
-    /**
-     * @testWith [95, 10]
-     *           [100, 10]
-     *           [5, 1]
-     *           [0, 1]
-     */
+    #[TestWith([95, 10])]
+    #[TestWith([100, 10])]
+    #[TestWith([5, 1])]
+    #[TestWith([0, 1])]
     public function testGetLastPage(int $totalResults, int $expectedLastPage): void
     {
         $paginator = $this->createPaginatedPaginator(pageNumber: 1, pageSize: 10, totalResults: $totalResults);
@@ -189,9 +187,7 @@ class EntityPaginatorTest extends TestCase
         $this->assertSame(95, $paginator->getRangeLastResultNumber());
     }
 
-    /**
-     * @dataProvider pageRangeDataProvider
-     */
+    #[DataProvider('pageRangeDataProvider')]
     public function testGetPageRange(int $currentPage, int $lastPage, int $pagesOnEachSide, int $pagesOnEdges, array $expectedRange): void
     {
         $pageSize = 10;

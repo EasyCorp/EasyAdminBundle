@@ -78,13 +78,12 @@ Run the relevant target(s) for what you changed:
 | Documentation    | `make linter-docs`                                                |
 | Translations     | keep all locales consistent; use English as placeholder if unsure |
 
-Run targeted tests with `make tests ARGS=...` (keeps the deprecation baseline and cache reset; full guide in `tests/AGENTS.md`):
+Run targeted tests with `make tests ARGS=...` (it also resets the test cache; full guide in `tests/AGENTS.md`):
 ```bash
 make tests                            # whole suite
 make tests ARGS="tests/Unit/Field/"   # one directory
 make tests ARGS="--filter=testFoo"    # one test
 ```
-A bare `./vendor/bin/simple-phpunit` run skips the deprecation baseline (`tests/baseline-ignore.txt`) and the cache reset.
 
 ## Git and Pull Requests
 
@@ -191,3 +190,25 @@ biome handles formatting (`yarn ci`). Conventions it doesn't enforce:
 - Avoid: "just", "obviously", "easy", "simply"
 - Realistic examples (no foo/bar placeholders)
 - Write for non-native English speakers: use simple vocabulary, avoid idioms, and complex sentence structures
+
+## Agent Skill (skills/easyadmin/)
+
+The `skills/easyadmin/` directory ships an agent skill for AI coding assistants
+inside the Composer package. It describes the public API and the rules that keep
+generated code working on the current version, so it changes together with the code:
+
+- After changing a public method, constant or attribute in `src/Config/`,
+  `src/Field/`, `src/Filter/`, `src/Attribute/`, `src/Test/`, `src/Controller/Abstract*`
+  or `src/Router/AdminUrlGenerator.php`, run `make skill-api-reference` and commit
+  the regenerated `skills/easyadmin/references/api.md` (a unit test fails otherwise)
+- After adding an entry to `UPGRADE.md`, review the "Legacy" table and the rules of
+  `skills/easyadmin/SKILL.md` that the change contradicts
+- Every bullet inside a `<!-- rules:start -->` / `<!-- rules:end -->` block ends
+  with a provenance comment (`<!-- path::symbol; path:line -->`) that a unit test
+  resolves against the source; a rule without provenance is not merged
+- Rules that describe behavior (not only the existence of a method) need an anchor:
+  a `source_contains` line in the `<!-- skill-check -->` trailer or a functional
+  test that names the rule in its docblock
+- The skill documents only what this package provides
+- `make tests ARGS="tests/Unit/Skill/"` runs every skill check; the manual
+  evaluation in `tests/Unit/Skill/eval/README.md` runs before each release

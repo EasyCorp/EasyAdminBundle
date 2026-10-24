@@ -2,16 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Actions;
 
-use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\ActionsCustomizationCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\ActionsCustomizationCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\ActionTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 
 class ActionsCustomizationTest extends AbstractCrudTestCase
 {
-    protected EntityRepository $actionTestEntities;
-
     protected function getControllerFqcn(): string
     {
         return ActionsCustomizationCrudController::class;
@@ -26,12 +23,12 @@ class ActionsCustomizationTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-
-        $this->actionTestEntities = $this->entityManager->getRepository(ActionTestEntity::class);
     }
 
     public function testCssClasses(): void
     {
+        CategoryFactory::createOne();
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertSame('dropdown-item action-action1 dropdown-item-variant-default', $crawler->filter('a.dropdown-item:contains("Action1")')->attr('class'));
@@ -44,11 +41,10 @@ class ActionsCustomizationTest extends AbstractCrudTestCase
 
     public function testDynamicLabels(): void
     {
-        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $entityName = 'Category 1';
+        CategoryFactory::createOne(['name' => $entityName]);
 
-        // get the first entity's name from the fixture
-        $firstEntity = $this->actionTestEntities->findOneBy([]);
-        $entityName = $firstEntity->getName();
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertSame('Action 5: '.$entityName, $crawler->filter('a.dropdown-item[data-action-name="action5"]')->text());
         static::assertSame('Action 6: '.$entityName, $crawler->filter('a.dropdown-item[data-action-name="action6"]')->text());
@@ -63,5 +59,62 @@ class ActionsCustomizationTest extends AbstractCrudTestCase
         static::assertCount(1, $crawler->filter('.global-actions form.action-action9'));
         static::assertCount(1, $crawler->filter('.global-actions form.action-action9 button'));
         static::assertSame('POST', $crawler->filter('.global-actions form.action-action9')->attr('method'));
+    }
+
+    public function testConfirmationWithoutCustomMessage(): void
+    {
+        CategoryFactory::createOne();
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $action = $crawler->filter('a.dropdown-item[data-action-name="action10"]');
+
+        static::assertSame('true', $action->attr('data-action-confirmation'));
+        static::assertNull($action->attr('data-action-confirmation-title'));
+        static::assertNull($action->attr('data-action-confirmation-message'));
+        static::assertNull($action->attr('data-action-confirmation-content'));
+    }
+
+    public function testCustomConfirmationMessageReplacesTitle(): void
+    {
+        CategoryFactory::createOne();
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $action = $crawler->filter('a.dropdown-item[data-action-name="action11"]');
+
+        static::assertNull($action->attr('data-action-confirmation-title'));
+        static::assertNull($action->attr('data-action-confirmation-content'));
+        static::assertSame('Visitors will not see this item anymore.', $action->attr('data-action-confirmation-message'));
+    }
+
+    public function testDefaultDeleteConfirmation(): void
+    {
+        CategoryFactory::createOne();
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $action = $crawler->filter('[data-action-name="delete"]')->first();
+
+        static::assertSame('Do you really want to delete this item?', $action->attr('data-action-confirmation-title'));
+        static::assertSame('There is no undo for this operation.', $action->attr('data-action-confirmation-content'));
+        static::assertNull($action->attr('data-action-confirmation-message'));
+    }
+
+    public function testCustomDeleteConfirmationMessageReplacesTitleAndDescription(): void
+    {
+        $entity = CategoryFactory::createOne();
+        $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
+        $action = $crawler->filter('[data-action-name="delete"]')->first();
+
+        static::assertNull($action->attr('data-action-confirmation-title'));
+        static::assertNull($action->attr('data-action-confirmation-content'));
+        static::assertSame('All the comments of this item will be deleted too.', $action->attr('data-action-confirmation-message'));
+    }
+
+    public function testConfirmationModalTemplate(): void
+    {
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        static::assertSame('Are you sure you want to %action_name%?', $crawler->filter('#modal-action-confirmation h4#action-confirmation-title')->text());
+        static::assertCount(1, $crawler->filter('#modal-action-confirmation p#action-confirmation-message.modal-message.d-none'));
+        static::assertCount(1, $crawler->filter('#modal-action-confirmation p#action-confirmation-content.d-none'));
     }
 }

@@ -3,22 +3,25 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Filters;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\FilterTestEntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\DatabasePlatformTrait;
 
-/**
- * Fixture data (textFilter field):
- * - ID 1: 'alpha test string'
- * - ID 2: 'beta sample text'
- * - ID 3: 'gamma record'
- * - ID 4: 'alphabetical order'
- * - ID 5: 'delta entry'
- * - ID 6: 'this ends with test'
- */
 class TextFilterTest extends FilterFunctionalTestCase
 {
+    use DatabasePlatformTrait;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        foreach (['alpha test string', 'beta sample text', 'gamma record', 'alphabetical order', 'delta entry', 'this ends with test'] as $text) {
+            $this->entities[$text] = FilterTestEntityFactory::createOne(['textFilter' => $text]);
+        }
+    }
+
     public function testFilterContains(): void
     {
         // filter for records containing "alpha"
-        // should match: ID 1 ('alpha test string'), ID 4 ('alphabetical order')
         $url = $this->generateFilteredIndexUrl([
             'textFilter' => [
                 'comparison' => ComparisonType::CONTAINS,
@@ -29,13 +32,12 @@ class TextFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(2);
-        $this->assertVisibleEntityIds([1, 4]);
+        $this->assertVisibleEntities(['alpha test string', 'alphabetical order']);
     }
 
     public function testFilterContainsPartialMatch(): void
     {
         // filter for records containing "test"
-        // should match: ID 1 ('alpha test string'), ID 6 ('this ends with test')
         $url = $this->generateFilteredIndexUrl([
             'textFilter' => [
                 'comparison' => ComparisonType::CONTAINS,
@@ -46,13 +48,12 @@ class TextFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(2);
-        $this->assertVisibleEntityIds([1, 6]);
+        $this->assertVisibleEntities(['alpha test string', 'this ends with test']);
     }
 
     public function testFilterNotContains(): void
     {
         // filter for records NOT containing "alpha"
-        // should match all except ID 1 and ID 4
         $url = $this->generateFilteredIndexUrl([
             'textFilter' => [
                 'comparison' => ComparisonType::NOT_CONTAINS,
@@ -63,13 +64,12 @@ class TextFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(4);
-        $this->assertVisibleEntityIds([2, 3, 5, 6]);
+        $this->assertVisibleEntities(['beta sample text', 'gamma record', 'delta entry', 'this ends with test']);
     }
 
     public function testFilterStartsWith(): void
     {
         // filter for records starting with "alpha"
-        // should match: ID 1 ('alpha test string'), ID 4 ('alphabetical order')
         $url = $this->generateFilteredIndexUrl([
             'textFilter' => [
                 'comparison' => ComparisonType::STARTS_WITH,
@@ -80,13 +80,12 @@ class TextFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(2);
-        $this->assertVisibleEntityIds([1, 4]);
+        $this->assertVisibleEntities(['alpha test string', 'alphabetical order']);
     }
 
     public function testFilterEndsWith(): void
     {
         // filter for records ending with "test"
-        // should match: ID 6 ('this ends with test')
         $url = $this->generateFilteredIndexUrl([
             'textFilter' => [
                 'comparison' => ComparisonType::ENDS_WITH,
@@ -97,13 +96,11 @@ class TextFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(1);
-        $this->assertVisibleEntityIds([6]);
+        $this->assertVisibleEntities(['this ends with test']);
     }
 
     public function testFilterEquals(): void
     {
-        // filter for exact match
-        // should match only ID 3
         $url = $this->generateFilteredIndexUrl([
             'textFilter' => [
                 'comparison' => ComparisonType::EQ,
@@ -114,13 +111,12 @@ class TextFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(1);
-        $this->assertVisibleEntityIds([3]);
+        $this->assertVisibleEntities(['gamma record']);
     }
 
     public function testFilterNotEquals(): void
     {
         // filter for records NOT equal to 'gamma record'
-        // should match all except ID 3
         $url = $this->generateFilteredIndexUrl([
             'textFilter' => [
                 'comparison' => ComparisonType::NEQ,
@@ -131,13 +127,11 @@ class TextFilterTest extends FilterFunctionalTestCase
         $this->client->request('GET', $url);
 
         $this->assertFilteredCount(5);
-        $this->assertVisibleEntityIds([1, 2, 4, 5, 6]);
+        $this->assertVisibleEntities(['alpha test string', 'beta sample text', 'alphabetical order', 'delta entry', 'this ends with test']);
     }
 
     public function testFilterCaseInsensitiveContains(): void
     {
-        // filter with different case - should still match (database dependent)
-        // most databases do case-insensitive LIKE by default
         $url = $this->generateFilteredIndexUrl([
             'textFilter' => [
                 'comparison' => ComparisonType::CONTAINS,
@@ -147,9 +141,16 @@ class TextFilterTest extends FilterFunctionalTestCase
 
         $this->client->request('GET', $url);
 
-        // this behavior may vary by database
-        // SQLite is case-insensitive by default for ASCII characters
+        // the filter uses LIKE, which is case-sensitive on PostgreSQL; SQLite (for ASCII
+        // characters) and the default collations of MySQL and MariaDB are case-insensitive
+        if (self::isPostgreSql()) {
+            $this->assertFilteredCount(0);
+
+            return;
+        }
+
         $this->assertFilteredCount(2);
+        $this->assertVisibleEntities(['alpha test string', 'alphabetical order']);
     }
 
     public function testFilterNoResults(): void

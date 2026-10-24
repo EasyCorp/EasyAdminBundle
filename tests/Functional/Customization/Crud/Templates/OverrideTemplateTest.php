@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Te
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Templates\OverrideTemplateTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,12 +35,14 @@ class OverrideTemplateTest extends AbstractCrudTestCase
 
     public function testOverrideTemplateConfiguration(): void
     {
+        CategoryFactory::createMany(2);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
 
         // verify page renders correctly with template override
-        $this->assertIndexPageEntityCount(20);
+        $this->assertIndexPageEntityCount(2);
 
         // verify page structure exists
         static::assertSelectorExists('.content');

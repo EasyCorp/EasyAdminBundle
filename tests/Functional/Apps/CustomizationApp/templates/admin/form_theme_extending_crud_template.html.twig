@@ -1,0 +1,5 @@
+{% extends ea().templatePath('crud/edit') %}
+
+{% block form_row %}
+    <div class="custom-form-theme-row">{{ form_label(form) }}{{ form_widget(form) }}</div>
+{% endblock form_row %}

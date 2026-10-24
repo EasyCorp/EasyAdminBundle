@@ -1,6 +1,7 @@
 <div {{ attributes.defaults({class: this.defaultCssClass()}) }}>
     <div class="list-pagination-counter">
         {%- if this.showResultsCount and this.numResults is not null -%}
+            {## The text that displays the total number of results. -#}
             {% block counter %}
                 {{ 'paginator.results'|trans({'%count%': this.numResults|format}, this.translationDomain)|raw }}
             {% endblock %}
@@ -30,7 +31,7 @@
                             <twig:ea:Icon name="internal:chevron-left" class="mx-1" aria-hidden="true" />
                         {% endif %}
 
-                        <span class="{{ this.showPreviousNextLabels ? 'btn-label' : 'visually-hidden' }}">{% block previous_label %}{{ 'paginator.previous'|trans({}, this.translationDomain) }}{% endblock %}</span>
+                        <span class="{{ this.showPreviousNextLabels ? 'btn-label' : 'visually-hidden' }}">{## The label of the link to the previous page. ##}{% block previous_label %}{{ 'paginator.previous'|trans({}, this.translationDomain) }}{% endblock %}</span>
                     </a>
                 </li>
 
@@ -52,7 +53,7 @@
 
                 <li class="page-item page-item-next {{ not has_next_page ? 'disabled' }}">
                     <a class="{{ page_link_css_class }}" href="{{ not has_next_page ? '#' : this.urlForPage(this.nextPage) }}"{% if has_next_page %} rel="next"{% else %} aria-disabled="true" tabindex="-1"{% endif %}>
-                        <span class="{{ this.showPreviousNextLabels ? 'btn-label' : 'visually-hidden' }}">{% block next_label %}{{ 'paginator.next'|trans({}, this.translationDomain) }}{% endblock %}</span>
+                        <span class="{{ this.showPreviousNextLabels ? 'btn-label' : 'visually-hidden' }}">{## The label of the link to the next page. ##}{% block next_label %}{{ 'paginator.next'|trans({}, this.translationDomain) }}{% endblock %}</span>
 
                         {% if is_rtl %}
                             <twig:ea:Icon name="internal:chevron-left" class="mx-1" aria-hidden="true" />

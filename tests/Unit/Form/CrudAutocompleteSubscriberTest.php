@@ -3,8 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Form;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Platforms\MySQLPlatform;
-use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Types\GuidType;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,10 +29,6 @@ class CrudAutocompleteSubscriberTest extends TestCase
 
     protected function setUp(): void
     {
-        if (!class_exists(PostgreSQLPlatform::class) || !class_exists(MySQLPlatform::class)) {
-            $this->markTestSkipped('Doctrine DBAL 3.x+ is required (PostgreSQLPlatform/MySQLPlatform classes).');
-        }
-
         // the subscriber inspects the globally registered Doctrine types, so reset
         // 'uuid' and 'ulid' to the Symfony UID types to not depend on the test execution order
         self::registerDoctrineType('uuid', UuidType::class);
@@ -50,7 +44,7 @@ class CrudAutocompleteSubscriberTest extends TestCase
         self::registerDoctrineType('ulid', UlidType::class);
     }
 
-    /** @dataProvider idFieldInDifferentPlatformsData */
+    #[DataProvider('idFieldInDifferentPlatformsData')]
     public function testIdFieldInDifferentPlatforms(
         string $expectedValue,
         string $fieldType,
@@ -103,7 +97,7 @@ class CrudAutocompleteSubscriberTest extends TestCase
                 'Doctrine\DBAL\Platforms\PostgreSQLPlatform',
             ],
             'MySQL with ULID' => [
-                Ulid::fromBase32(self::ULID_STRING)->toRfc4122(),
+                Ulid::fromBase32(self::ULID_STRING)->toBinary(),
                 'ulid',
                 self::ULID_STRING,
                 'Doctrine\DBAL\Platforms\MySQLPlatform',
@@ -135,7 +129,7 @@ class CrudAutocompleteSubscriberTest extends TestCase
         ];
     }
 
-    /** @dataProvider idFieldWithNonSymfonyUidTypeData */
+    #[DataProvider('idFieldWithNonSymfonyUidTypeData')]
     public function testIdFieldWithNonSymfonyUidType(
         string $fieldType,
         string $fieldValue,

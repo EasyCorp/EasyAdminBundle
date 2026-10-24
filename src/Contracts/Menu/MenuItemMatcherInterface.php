@@ -6,6 +6,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
+ * Marks the menu items that match the current request as selected.
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 interface MenuItemMatcherInterface

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Di
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Display\HideNullValuesTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\BlogPostFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,32 +35,19 @@ class HideNullValuesTest extends AbstractCrudTestCase
 
     public function testHideNullValuesConfiguration(): void
     {
+        $entityWithRating = BlogPostFactory::createOne(['rating' => '4.75']);
+        $entityWithoutRating = BlogPostFactory::createOne(['rating' => null]);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
+        $this->assertIndexPageEntityCount(2);
 
-        // verify data is displayed
-        $this->assertIndexPageEntityCount(20);
+        static::assertSelectorTextSame($this->getIndexEntityRowSelector($entityWithRating->getId()).' td[data-column="rating"]', '4.75');
 
-        // with fixtures, every 3rd item (3, 6, 9, ...) has null price
-        // when hideNullValues() is set, cells with null values should be empty (no "NULL" label)
-        $rows = $crawler->filter('tbody tr');
-
-        $foundNullCell = false;
-        $rows->each(static function ($row) use (&$foundNullCell) {
-            $priceCell = $row->filter('td[data-column="price"]');
-            if ($priceCell->count() > 0) {
-                $cellText = trim($priceCell->text());
-                // if cell is empty, that's correct for null values with hideNullValues()
-                if ('' === $cellText) {
-                    $foundNullCell = true;
-                }
-                // verify no "NULL" label is displayed
-                static::assertStringNotContainsStringIgnoringCase('null', $cellText, 'Null values should not display "NULL" label');
-            }
-        });
-
-        // verify we found at least one empty cell (null value hidden)
-        static::assertTrue($foundNullCell, 'Should have at least one empty cell for null price values');
+        // with hideNullValues() the cell of a null value is empty instead of showing the "Null" label
+        $nullRatingCell = $crawler->filter($this->getIndexEntityRowSelector($entityWithoutRating->getId()).' td[data-column="rating"]');
+        static::assertCount(1, $nullRatingCell);
+        static::assertSame('', trim($nullRatingCell->text()));
     }
 }

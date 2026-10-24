@@ -1,11 +1,17 @@
 {# A single tab of the <twig:ea:Tabs> component. #}
 {% props
-    paneId, # id of the '.tab-pane' element displayed when this tab is selected
-    label = '', # tab label (pass it already translated; it may contain HTML)
-    active = false, # true when this is the selected tab
-    icon = null, # optional icon displayed before the label
-    errorCount = 0, # number of form validation errors in the fields of this tab
-    badge = null, # optional FormTabBadgeDto displayed after the label
+    ## string The id of the `.tab-pane` element displayed when this tab is selected.
+    paneId,
+    ## string The tab label (pass it already translated; it may contain HTML).
+    label = '',
+    ## bool Whether this is the selected tab.
+    active = false,
+    ## string|null The name of the optional icon displayed before the label.
+    icon = null,
+    ## int The number of form validation errors in the fields of this tab.
+    errorCount = 0,
+    ## FormTabBadgeDto|null The optional badge displayed after the label.
+    badge = null,
 %}
 
 <li {{ attributes.defaults({class: 'nav-item'}) }}>
@@ -15,11 +21,11 @@
            of the semibold label, so tabs don't shift when the selected tab changes #}
         <span class="tab-nav-item-label" data-content="{{ label|striptags }}">{{- label|raw -}}</span>
         {%- if errorCount > 0 -%}
-            <twig:ea:Badge variant="danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': errorCount}, 'EasyAdminBundle') }}">{{ errorCount }}</twig:ea:Badge>
+            <twig:ea:Badge color="danger" title="{{ 'form.tab.error_badge_title'|trans({'%count%': errorCount}, 'EasyAdminBundle') }}">{{ errorCount }}</twig:ea:Badge>
         {%- endif -%}
         {%- if badge is not null and badge.hasVisibleContent -%}
             {%- set badge_attributes = badge.htmlStyle ? badge.htmlAttributes|merge({style: badge.htmlStyle}) : badge.htmlAttributes -%}
-            <twig:ea:Badge variant="{{ badge.cssClass|replace({'badge-': ''}) }}" class="tab-nav-item-badge" {{ ...badge_attributes }}>{{ badge.content }}</twig:ea:Badge>
+            <twig:ea:Badge color="{{ badge.cssClass|replace({'badge-': ''}) }}" class="tab-nav-item-badge" {{ ...badge_attributes }}>{{ badge.content }}</twig:ea:Badge>
         {%- endif -%}
     </a>
 </li>

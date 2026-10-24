@@ -1,6 +1,76 @@
 Upgrade Guide
 =============
 
+## EasyAdmin 5.8.0
+
+### `createEntity()` Can Return `null`
+
+The return type of `CrudControllerInterface::createEntity()` and
+`AbstractCrudController::createEntity()` changed from `object` to `?object`
+(`?TEntity` in PHPDoc). Return `null` to let the `new` form create the entity
+with its `empty_data` option:
+
+```php
+// Before (5.0 - 5.7.0)
+public function createEntity(string $entityFqcn): object;
+
+// After (5.8.0)
+public function createEntity(string $entityFqcn): ?object;
+```
+
+Overrides that declare `object` as their return type keep working. If your custom
+actions call `$this->createEntity(...)`, static analysis tools now require you to
+check for `null`. When `createEntity()` returns `null`, the entity instance is `null`
+in the `new` page until the form is submitted, so all your callables that receive the
+entity (e.g. in `ChoiceField::setChoices()` or `Action::linkToUrl()`) must accept `null`.
+
+### The Color of Badges Is Now Defined With the `color` Prop
+
+The `variant` prop of the `<twig:ea:Badge>` component now defines the visual
+style of the badge (`light`, `solid`, `outline` or `dot`) and the new `color`
+prop defines its color. Passing a color in `variant` still works, but it's
+deprecated:
+
+```twig
+{# before #}
+<twig:ea:Badge variant="success">Paid</twig:ea:Badge>
+
+{# after #}
+<twig:ea:Badge color="success">Paid</twig:ea:Badge>
+```
+
+The `variant="light"` and `variant="outline"` values now mean the `light` and
+`outline` styles. Use `color="light"` for the old light gray color. The color
+cases of the `BadgeVariant` enum are deprecated too; use the `BadgeColor` enum.
+
+The CSS of badges changed too: each color now defines `--badge-{color}-tone`,
+`--badge-{color}-color` and `--badge-{color}-solid-color` variables, and the
+`--badge-border`, `--badge-box-shadow`, `--badge-{color}-box-shadow`,
+`--badge-boolean-*`, `--badge-outline-box-shadow`, `--badge-outline-color` and
+`--field-language-badge-border-color` variables were removed.
+
+## EasyAdmin 5.7.0
+
+### The `ea` Global Twig Variable Is Removed
+
+The 5.0 upgrade notes already said that the global `ea` Twig variable was removed,
+but it was still registered by mistake (and it holds the `AdminContextProvider` service
+instead of the actual admin context). It's now removed for real. Use the `ea()` Twig
+function instead.
+
+If a form theme extends an EasyAdmin template, call `ea()` directly inside the
+`{% extends %}` tag, because Symfony resolves the parent templates of form themes
+before running any `{% set %}` tag of the template:
+
+```twig
+{# before #}
+{% set ea = ea() %}
+{% extends ea.templatePath('crud/edit') %}
+
+{# after #}
+{% extends ea().templatePath('crud/edit') %}
+```
+
 ## EasyAdmin 5.4.0
 
 ### Detail Page Templates Are Now Overridable Individually
@@ -25,7 +95,7 @@ Applications that copied the whole `detail.html.twig` template or that extend it
 with `@!EasyAdmin/crud/detail.html.twig` are not affected. In the unlikely case
 that your application imported those macros directly with
 `{% from '@EasyAdmin/crud/detail.html.twig' import ... %}`, use the new
-templates instead: `{{ include(ea.templatePath('crud/detail/...'), {field: field}, with_context: false) }}`.
+templates instead: `{{ include(ea().templatePath('crud/detail/...'), {field: field}, with_context: false) }}`.
 
 ## EasyAdmin 5.3.1
 
@@ -286,6 +356,8 @@ public function createEntity(string $entityFqcn);
 // After (5.x)
 public function createEntity(string $entityFqcn): object;
 ```
+
+In EasyAdmin 5.7.1 the return type changed again to `?object` (see above).
 
 #### `Contracts\Orm\EntityPaginatorInterface`
 

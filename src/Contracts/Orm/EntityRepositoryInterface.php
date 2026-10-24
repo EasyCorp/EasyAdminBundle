@@ -9,6 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 
 /**
+ * Builds the query that lists, searches and filters the entities of a CRUD controller.
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 interface EntityRepositoryInterface

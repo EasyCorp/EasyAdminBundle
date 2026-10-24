@@ -3,8 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Dashboard;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Dashboard\RelativeUrlsTestDashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\DemoEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -19,7 +19,7 @@ class RelativeUrlsTest extends AbstractCrudTestCase
 
     protected function getControllerFqcn(): string
     {
-        return DemoEntityCrudController::class;
+        return CategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -42,12 +42,11 @@ class RelativeUrlsTest extends AbstractCrudTestCase
         // check that menu links are relative (not absolute with http://)
         $menuLinks = $crawler->filter('.ea-sidebar-item a, nav a');
 
-        if ($menuLinks->count() > 0) {
-            $firstHref = $menuLinks->first()->attr('href');
+        static::assertGreaterThan(0, $menuLinks->count());
+        $firstHref = $menuLinks->first()->attr('href');
 
-            // relative URLs should not start with http:// or https://
-            static::assertStringNotContainsString('http://', $firstHref ?? '');
-            static::assertStringNotContainsString('https://', $firstHref ?? '');
-        }
+        // relative URLs should not start with http:// or https://
+        static::assertStringNotContainsString('http://', $firstHref ?? '');
+        static::assertStringNotContainsString('https://', $firstHref ?? '');
     }
 }

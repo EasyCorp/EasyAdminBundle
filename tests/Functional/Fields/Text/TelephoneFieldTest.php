@@ -2,10 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Text;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\DomCrawler\Crawler;
 
-class TelephoneFieldTest extends AbstractFieldFunctionalTest
+class TelephoneFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testTelephoneFieldDisplaysOnIndex(): void
     {
@@ -54,9 +55,7 @@ class TelephoneFieldTest extends AbstractFieldFunctionalTest
         static::assertSame('tel:'.rawurlencode($payload), $href);
     }
 
-    /**
-     * @dataProvider validE164NumbersProvider
-     */
+    #[DataProvider('validE164NumbersProvider')]
     public function testTelephoneFieldRendersValidE164Numbers(string $phoneNumber): void
     {
         $entity = $this->createFieldTestEntity([

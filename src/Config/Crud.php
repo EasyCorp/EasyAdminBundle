@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\BadgeVariant;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -468,6 +469,23 @@ final class Crud
         }
 
         $this->dto->setDefaultRowActionTrigger($trigger);
+
+        return $this;
+    }
+
+    /**
+     * Sets the visual style of all the badges rendered in this CRUD controller
+     * (or in all CRUD controllers when calling it from the dashboard).
+     * Use one of these values: 'light' (the default), 'solid', 'outline' or 'dot'.
+     */
+    public function setBadgeVariant(string|BadgeVariant $variant): self
+    {
+        $badgeVariant = $variant instanceof BadgeVariant ? $variant : BadgeVariant::tryFrom($variant);
+        if (null === $badgeVariant || $badgeVariant->isColor()) {
+            throw new \InvalidArgumentException(sprintf('The "%s" badge variant is not valid. Use one of these values: "%s".', $variant instanceof BadgeVariant ? $variant->value : $variant, implode('", "', array_map(static fn (BadgeVariant $variant): string => $variant->value, BadgeVariant::styles()))));
+        }
+
+        $this->dto->setComponentDefaults($this->dto->getComponentDefaults()->withBadgeVariant($badgeVariant));
 
         return $this;
     }

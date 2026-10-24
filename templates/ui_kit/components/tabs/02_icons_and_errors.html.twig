@@ -1,0 +1,14 @@
+{# Icons and errors
+   Tabs can display an icon. errorCount shows the number of form errors of the
+   fields in that tab. #}
+<twig:ea:Tabs>
+    <twig:ea:Tabs:Item paneId="ui-kit-tab-profile" label="Profile" icon="internal:user" active />
+    <twig:ea:Tabs:Item paneId="ui-kit-tab-security" label="Security" icon="internal:lock" :errorCount="2" />
+    <twig:ea:Tabs:Item paneId="ui-kit-tab-settings" label="Settings" icon="internal:gear" />
+</twig:ea:Tabs>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="ui-kit-tab-profile">Name, email and avatar.</div>
+    <div class="tab-pane" id="ui-kit-tab-security">Password and two-factor authentication.</div>
+    <div class="tab-pane" id="ui-kit-tab-settings">Language and time zone.</div>
+</div>

@@ -3,13 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Security;
 
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class PermissionTest extends TestCase
 {
-    /**
-     * @dataProvider provideValidPermissions
-     */
+    #[DataProvider('provideValidPermissions')]
     public function testExistsReturnsTrueForValidPermissions(string $permission): void
     {
         $this->assertTrue(Permission::exists($permission));
@@ -24,9 +23,7 @@ class PermissionTest extends TestCase
         yield [Permission::EA_EXIT_IMPERSONATION];
     }
 
-    /**
-     * @dataProvider provideInvalidPermissions
-     */
+    #[DataProvider('provideInvalidPermissions')]
     public function testExistsReturnsFalseForInvalidPermissions(string $permission): void
     {
         $this->assertFalse(Permission::exists($permission));

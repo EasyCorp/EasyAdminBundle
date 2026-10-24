@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\Extension\Validator\ViolationMapper\ViolationMapperInterface;
 use Symfony\Component\Form\PreloadedExtension;
@@ -28,9 +29,7 @@ class CrudFormTypeTest extends TypeTestCase
         ];
     }
 
-    /**
-     * @dataProvider ulidSuffix
-     */
+    #[DataProvider('ulidSuffix')]
     public function testUlidSuffix(FormField $field, array $expectedFormChildrenKeys, bool $useLayout = false): void
     {
         $this->assertTrue(Ulid::isValid($ulidSuffix = $field->getAsDto()->getPropertyNameSuffix()));
@@ -67,9 +66,7 @@ class CrudFormTypeTest extends TypeTestCase
         yield [FormField::addColumn(), ['ea_form_column_', 'ea_form_column_close_'], true];
     }
 
-    /**
-     * @dataProvider propertySuffix
-     */
+    #[DataProvider('propertySuffix')]
     public function testPropertySuffix(FormField $field, array $expectedFormChildrenKeys, bool $useLayout = false): void
     {
         if ($useLayout) {

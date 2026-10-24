@@ -232,7 +232,7 @@ final class Actions
         $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
 
         if (null !== $this->dto->getAction($pageName, $actionName)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" action already exists in the "%s" page, so you can\'t add it again. Instead, you can use the "updateAction()" method to update any options of an existing action.', $actionName, $pageName));
+            throw new \InvalidArgumentException(sprintf('The "%s" action already exists in the "%s" page, so you can\'t add it again. Instead, you can use the "update()" method to update any options of an existing action.', $actionName, $pageName));
         }
 
         $actionDto = $action->getAsDto();

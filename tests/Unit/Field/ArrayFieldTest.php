@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ArrayConfigurator;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class ArrayFieldTest extends AbstractFieldTest
+class ArrayFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {

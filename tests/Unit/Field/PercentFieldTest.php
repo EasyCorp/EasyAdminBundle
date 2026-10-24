@@ -5,9 +5,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\PercentConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\PercentField;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\Form\Extension\Core\Type\PercentType;
 
-class PercentFieldTest extends AbstractFieldTest
+class PercentFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {
@@ -97,15 +98,13 @@ class PercentFieldTest extends AbstractFieldTest
         self::assertSame('13%', $fieldDto->getFormattedValue());
     }
 
-    /**
-     * @testWith [0]
-     *           [1]
-     *           [2]
-     *           [3]
-     *           [5]
-     *           [6]
-     *           [4]
-     */
+    #[TestWith([0])]
+    #[TestWith([1])]
+    #[TestWith([2])]
+    #[TestWith([3])]
+    #[TestWith([5])]
+    #[TestWith([6])]
+    #[TestWith([4])]
     public function testSetRoundingMode(int $mode): void
     {
         $field = PercentField::new('foo');

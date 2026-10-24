@@ -9,12 +9,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ChoiceConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Fixtures\ChoiceField\PriorityUnitEnum;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Fixtures\ChoiceField\StatusBackedEnum;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Fixtures\ChoiceField\TranslatableStatusBackedEnum;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class ChoiceConfiguratorTest extends AbstractFieldTest
+class ChoiceConfiguratorTest extends AbstractFieldTestCase
 {
     private const ENTITY_CLASS = 'AppTestBundle\Entity\UnitTests\Category';
     private const PROPERTY_NAME = 'foo';
@@ -32,9 +33,7 @@ class ChoiceConfiguratorTest extends AbstractFieldTest
         $this->entity = new EntityDto(self::ENTITY_CLASS, $metadata);
     }
 
-    /**
-     * @dataProvider fieldTypes
-     */
+    #[DataProvider('fieldTypes')]
     public function testSupportsField(string $fieldType, bool $expectedResult): void
     {
         $field = new FieldDto();

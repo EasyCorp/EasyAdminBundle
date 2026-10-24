@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Customization\Crud\Fo
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Controller\Crud\Formatting\DateTimeFormatTestCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Factory\BlogPostFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel;
 
 /**
@@ -34,29 +35,15 @@ class DateTimeFormatTest extends AbstractCrudTestCase
 
     public function testDateTimeFormatConfiguration(): void
     {
+        $entity = BlogPostFactory::createOne(['createdAt' => new \DateTime('2024-01-02 10:00:00')]);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
+        $this->assertIndexPageEntityCount(1);
 
-        // verify data is displayed
-        $this->assertIndexPageEntityCount(20);
-
-        // get first row with datetime data (skip null values)
-        $firstRow = $crawler->filter('tbody tr')->first();
-        $dateTimeCell = $firstRow->filter('td[data-column="createdAt"]');
-
-        if ($dateTimeCell->count() > 0) {
-            $dateTimeText = trim($dateTimeCell->text());
-
-            // dateTime with 'medium' date and 'short' time should include time component (HH:MM)
-            static::assertMatchesRegularExpression(
-                '/\d{1,2}:\d{2}/',
-                $dateTimeText,
-                'DateTime should include time component'
-            );
-        }
-
-        // verify table structure
-        static::assertSelectorExists('tbody tr');
+        // 'medium' date and 'short' time (ICU may use a narrow no-break space before AM/PM)
+        $dateTimeText = trim($crawler->filter($this->getIndexEntityRowSelector($entity->getId()).' td[data-column="createdAt"]')->text());
+        static::assertMatchesRegularExpression('/^Jan 2, 2024, 10:00\h?AM$/u', $dateTimeText);
     }
 }

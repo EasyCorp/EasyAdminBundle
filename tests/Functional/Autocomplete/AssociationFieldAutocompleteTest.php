@@ -3,13 +3,19 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Autocomplete;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FilterRelatedEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FilterTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\FilterRelatedEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 
 class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
 {
+    /**
+     * @var list<Category>
+     */
+    private array $categories = [];
+
     protected function getControllerFqcn(): string
     {
         return FilterTestEntityCrudController::class;
@@ -24,6 +30,13 @@ class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
+
+        // the default slug ('Category 12 slug') could also match the searched names
+        $this->categories = CategoryFactory::createSequence([
+            ['name' => 'Category 1', 'slug' => 'category-1'],
+            ['name' => 'Category 2', 'slug' => 'category-2'],
+            ['name' => 'Category 3', 'slug' => 'category-3'],
+        ]);
     }
 
     public function testAutocompleteReturnsJsonWithCorrectStructure(): void
@@ -46,18 +59,14 @@ class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
         // the response should always have a next_page key (may be null)
         static::assertArrayHasKey('next_page', $data, 'Response should contain next_page key');
 
-        // if there are results, verify their structure
-        if (isset($data['results']) && \count($data['results']) > 0) {
-            $firstResult = $data['results'][0];
-            static::assertArrayHasKey('entityId', $firstResult, 'Each result should have an entityId');
-            static::assertArrayHasKey('entityAsString', $firstResult, 'Each result should have an entityAsString');
-        }
+        static::assertCount(3, $data['results']);
+        $firstResult = $data['results'][0];
+        static::assertArrayHasKey('entityId', $firstResult, 'Each result should have an entityId');
+        static::assertArrayHasKey('entityAsString', $firstResult, 'Each result should have an entityAsString');
     }
 
     public function testAutocompleteReturnsAllEntitiesWithoutQuery(): void
     {
-        $this->ensureFixturesLoaded();
-
         $autocompleteUrl = $this->generateAutocompleteUrl();
 
         $this->client->request('GET', $autocompleteUrl);
@@ -66,15 +75,14 @@ class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
 
         static::assertTrue($response->isSuccessful());
         static::assertArrayHasKey('results', $data);
-        static::assertCount(3, $data['results'], 'Should return all 3 FilterRelatedEntity items');
+        static::assertCount(3, $data['results'], 'Should return all 3 categories');
+        static::assertSame($this->getCategoryIds(), array_column($data['results'], 'entityId'));
     }
 
     public function testAutocompleteFiltersResultsByQuery(): void
     {
-        $this->ensureFixturesLoaded();
-
-        // search for "Entity 1"
-        $autocompleteUrl = $this->generateAutocompleteUrl('Entity 1');
+        // search for "Category 1"
+        $autocompleteUrl = $this->generateAutocompleteUrl('Category 1');
 
         $this->client->request('GET', $autocompleteUrl);
         $response = $this->client->getResponse();
@@ -82,16 +90,15 @@ class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
 
         static::assertTrue($response->isSuccessful());
         static::assertArrayHasKey('results', $data);
-        static::assertCount(1, $data['results'], 'Should return only entities matching "Entity 1"');
+        static::assertCount(1, $data['results'], 'Should return only entities matching "Category 1"');
 
         $result = $data['results'][0];
-        static::assertStringContainsString('Entity 1', $result['entityAsString']);
+        static::assertSame((string) $this->categories[0]->getId(), $result['entityId']);
+        static::assertSame('Category 1', $result['entityAsString']);
     }
 
     public function testAutocompleteReturnsEmptyForNonMatchingQuery(): void
     {
-        $this->ensureFixturesLoaded();
-
         $autocompleteUrl = $this->generateAutocompleteUrl('NonExistentEntity');
 
         $this->client->request('GET', $autocompleteUrl);
@@ -105,8 +112,6 @@ class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
 
     public function testAutocompleteResultStructure(): void
     {
-        $this->ensureFixturesLoaded();
-
         $autocompleteUrl = $this->generateAutocompleteUrl();
 
         $this->client->request('GET', $autocompleteUrl);
@@ -115,20 +120,17 @@ class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
 
         static::assertTrue($response->isSuccessful());
         static::assertArrayHasKey('results', $data);
-        static::assertNotEmpty($data['results']);
+        static::assertCount(3, $data['results']);
 
-        // check structure of first result
         $firstResult = $data['results'][0];
-        static::assertArrayHasKey('entityId', $firstResult, 'Each result should have an entityId');
-        static::assertArrayHasKey('entityAsString', $firstResult, 'Each result should have an entityAsString');
+        static::assertSame((string) $this->categories[0]->getId(), $firstResult['entityId']);
+        static::assertSame('Category 1', $firstResult['entityAsString']);
 
         static::assertArrayHasKey('next_page', $data, 'Response should include next_page field');
     }
 
     public function testAutocompleteRespectsPagination(): void
     {
-        $this->ensureFixturesLoaded();
-
         // request page 1 (should return results)
         $autocompleteUrl = $this->generateAutocompleteUrl(null, 1);
 
@@ -138,15 +140,14 @@ class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
 
         static::assertTrue($response->isSuccessful());
         static::assertArrayHasKey('results', $data);
-        static::assertNotEmpty($data['results'], 'Page 1 should have results');
+        static::assertCount(3, $data['results'], 'Page 1 should have results');
+        static::assertNull($data['next_page'], 'All results fit in one page');
     }
 
     public function testAutocompletePartialNameMatch(): void
     {
-        $this->ensureFixturesLoaded();
-
-        // search for "Related" which should match all entities
-        $autocompleteUrl = $this->generateAutocompleteUrl('Related');
+        // search for "Category" which should match all categories
+        $autocompleteUrl = $this->generateAutocompleteUrl('Category');
 
         $this->client->request('GET', $autocompleteUrl);
         $response = $this->client->getResponse();
@@ -154,15 +155,13 @@ class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
 
         static::assertTrue($response->isSuccessful());
         static::assertArrayHasKey('results', $data);
-        static::assertCount(3, $data['results'], 'Should return all 3 entities matching "Related"');
+        static::assertCount(3, $data['results'], 'Should return all 3 categories matching "Category"');
     }
 
     public function testAutocompleteSpecificEntityMatch(): void
     {
-        $this->ensureFixturesLoaded();
-
-        // search for "Related Entity 2"
-        $autocompleteUrl = $this->generateAutocompleteUrl('Related Entity 2');
+        // search for "Category 2"
+        $autocompleteUrl = $this->generateAutocompleteUrl('Category 2');
 
         $this->client->request('GET', $autocompleteUrl);
         $response = $this->client->getResponse();
@@ -170,14 +169,13 @@ class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
 
         static::assertTrue($response->isSuccessful());
         static::assertArrayHasKey('results', $data);
-        static::assertCount(1, $data['results'], 'Should return exactly 1 entity matching "Related Entity 2"');
-        static::assertStringContainsString('Entity 2', $data['results'][0]['entityAsString']);
+        static::assertCount(1, $data['results'], 'Should return exactly 1 entity matching "Category 2"');
+        static::assertSame((string) $this->categories[1]->getId(), $data['results'][0]['entityId']);
+        static::assertSame('Category 2', $data['results'][0]['entityAsString']);
     }
 
     public function testAutocompleteFromEditContext(): void
     {
-        $this->ensureFixturesLoaded();
-
         // generate autocomplete URL with edit context
         $autocompleteUrl = $this->generateAutocompleteUrl(null, 1, 'edit');
 
@@ -187,12 +185,11 @@ class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
         static::assertTrue($response->isSuccessful());
         $data = json_decode($response->getContent(), true);
         static::assertArrayHasKey('results', $data);
+        static::assertSame($this->getCategoryIds(), array_column($data['results'], 'entityId'));
     }
 
     public function testAutocompleteFromNewContext(): void
     {
-        $this->ensureFixturesLoaded();
-
         // generate autocomplete URL with new form context
         $autocompleteUrl = $this->generateAutocompleteUrl(null, 1, 'new');
 
@@ -202,6 +199,7 @@ class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
         static::assertTrue($response->isSuccessful());
         $data = json_decode($response->getContent(), true);
         static::assertArrayHasKey('results', $data);
+        static::assertSame($this->getCategoryIds(), array_column($data['results'], 'entityId'));
     }
 
     /**
@@ -228,17 +226,15 @@ class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
             null,
             $options,
             DashboardController::class,
-            FilterRelatedEntityCrudController::class
+            CategoryCrudController::class
         );
     }
 
-    private function ensureFixturesLoaded(): void
+    /**
+     * @return list<string>
+     */
+    private function getCategoryIds(): array
     {
-        $repository = $this->entityManager->getRepository(FilterRelatedEntity::class);
-        $count = $repository->count([]);
-
-        if (0 === $count) {
-            static::markTestSkipped('FilterRelatedEntity fixtures not loaded. Run doctrine:fixtures:load first.');
-        }
+        return array_map(static fn (Category $category) => (string) $category->getId(), $this->categories);
     }
 }

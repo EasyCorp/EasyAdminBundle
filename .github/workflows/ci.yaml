@@ -43,7 +43,6 @@ jobs:
             - name: Install dependencies
               run: |
                   composer install --no-interaction --no-progress --prefer-dist
-                  vendor/bin/simple-phpunit install
 
             - name: "Run PHPStan analysis"
               run: vendor/bin/phpstan analyse
@@ -70,9 +69,32 @@ jobs:
                       php_version: "8.2"
                       composer_args: "--prefer-lowest"
                       stability: "stable"
-                      symfony_deprecations_helper: "disabled"
+                      phpunit_args: "--do-not-fail-on-deprecation --do-not-fail-on-phpunit-deprecation"
+                      allow_failure: false
+                    # Doctrine combinations allowed by composer.json that the other jobs don't install:
+                    # ORM 3 with DBAL 3 (and the first PHP 8.3 job) and the latest ORM 2.20 release
+                    # (which needs DBAL 3 and doctrine-bundle 2.x). Without the native lazy objects of
+                    # PHP 8.4 and ORM 3.4+, Doctrine creates lazy ghost objects with
+                    # ProxyHelper::generateLazyGhost(), deprecated since symfony/var-exporter 7.3, and
+                    # disabling them triggers another ORM deprecation, so these jobs can't fail on them
+                    - os: ubuntu-latest
+                      php_version: "8.3"
+                      symfony_version: "7.4.*"
+                      composer_args: "--with 'doctrine/dbal:^3.10'"
+                      stability: "stable"
+                      phpunit_args: "--do-not-fail-on-deprecation"
+                      allow_failure: false
+                    - os: ubuntu-latest
+                      php_version: "8.4"
+                      symfony_version: "7.4.*"
+                      composer_args: "--with 'doctrine/orm:^2.20'"
+                      stability: "stable"
+                      phpunit_args: "--do-not-fail-on-deprecation"
                       allow_failure: false
                     # All supported Symfony versions
+                    # Symfony 7.1, 7.2, 7.3 and 8.0 are no longer maintained and their last twig-bridge
+                    # releases call TemplateWrapper::unwrap() without the Environment argument that
+                    # twig/twig 3.29 requires, so those jobs pin Twig to the last working version.
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "6.4.*"
@@ -81,17 +103,20 @@ jobs:
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "7.1.*"
+                      composer_args: "--with 'twig/twig:<3.29'"
                       stability: "stable"
-                      symfony_deprecations_helper: "disabled"
+                      phpunit_args: "--do-not-fail-on-deprecation --do-not-fail-on-phpunit-deprecation"
                       allow_failure: false
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "7.2.*"
+                      composer_args: "--with 'twig/twig:<3.29'"
                       stability: "stable"
                       allow_failure: false
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "7.3.*"
+                      composer_args: "--with 'twig/twig:<3.29'"
                       stability: "stable"
                       allow_failure: false
                     - os: ubuntu-latest
@@ -99,15 +124,25 @@ jobs:
                       symfony_version: "7.4.*"
                       stability: "stable"
                       allow_failure: false
+                    # Symfony 8.0 is no longer maintained and its last doctrine-bridge release (8.0.15)
+                    # calls GenerateSchemaEventArgs::setSchema(), which doctrine/orm >= 3.6.8 only accepts
+                    # when doctrine/dbal >= 4.5 is installed (see symfony/symfony#65235). Composer installs
+                    # DBAL 4.5 now, so don't pin the ORM: doctrine/orm < 3.6.8 triggers DBAL 4.5 deprecations.
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "8.0.*"
+                      composer_args: "--with 'twig/twig:<3.29'"
+                      stability: "stable"
+                      allow_failure: false
+                    - os: ubuntu-latest
+                      php_version: "8.4"
+                      symfony_version: "8.1.*"
                       stability: "stable"
                       allow_failure: false
                     # Upcoming Symfony version
                     - os: ubuntu-latest
                       php_version: "8.5"
-                      symfony_version: "8.1.*@dev"
+                      symfony_version: "8.2.*@dev"
                       stability: "dev"
                       allow_failure: true
         runs-on: ${{ matrix.os }}
@@ -159,7 +194,6 @@ jobs:
             - name: Install dependencies
               run: |
                   composer update --no-interaction --no-progress --prefer-dist ${{ matrix.composer_args }}
-                  vendor/bin/simple-phpunit install
 
             - name: Show installed dependencies
               run: |
@@ -170,7 +204,7 @@ jobs:
               shell: bash
               run: |
                   set +e
-                  make tests
+                  make tests ARGS="${{ matrix.phpunit_args }}"
                   exit_code=$?
 
                   if [ "${{ matrix.allow_failure }}" = "true" ] && [ $exit_code -ne 0 ]; then
@@ -179,8 +213,6 @@ jobs:
                   fi
 
                   exit $exit_code
-              env:
-                  SYMFONY_DEPRECATIONS_HELPER: ${{ matrix.symfony_deprecations_helper || '' }}
 
             - name: Run tests (Windows)
               if: ${{ runner.os == 'Windows' }}
@@ -189,8 +221,7 @@ jobs:
                   $cacheDir = php -r "echo sys_get_temp_dir();"
                   $cacheDir = Join-Path $cacheDir "com.github.easycorp.easyadmin/tests/var/test/cache"
                   if (Test-Path $cacheDir) { Remove-Item -Recurse -Force $cacheDir }
-                  if (-not $env:SYMFONY_DEPRECATIONS_HELPER) { $env:SYMFONY_DEPRECATIONS_HELPER = "ignoreFile=./tests/baseline-ignore.txt" }
-                  php vendor/bin/simple-phpunit -v
+                  php vendor/bin/phpunit
                   $exitCode = $LASTEXITCODE
 
                   if ("${{ matrix.allow_failure }}" -eq "true" -and $exitCode -ne 0) {
@@ -199,8 +230,60 @@ jobs:
                   }
 
                   exit $exitCode
-              env:
-                  SYMFONY_DEPRECATIONS_HELPER: ${{ matrix.symfony_deprecations_helper || '' }}
+
+    # the functional tests on database servers; GitHub only runs Linux containers on Ubuntu runners
+    phpunit-databases:
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        strategy:
+            fail-fast: false
+            matrix:
+                db: [postgres, mysql, mariadb]
+        steps:
+            - uses: actions/checkout@v7
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.4
+                  coverage: none
+                  extensions: mbstring, intl, pdo, pdo_sqlite, pdo_pgsql, pdo_mysql, fileinfo
+                  ini-values: date.timezone=UTC
+                  tools: composer:2.9.8
+
+            - name: Get Composer cache directory
+              id: composer-cache
+              run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+            - name: Cache Composer dependencies
+              uses: actions/cache@v6
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: phpunit-databases-${{ runner.os }}-php84-${{ hashFiles('composer.json') }}
+                  restore-keys: phpunit-databases-${{ runner.os }}-php84-
+
+            - name: symfony/flex is required to install the correct symfony version
+              run: |
+                  composer global config --no-plugins allow-plugins.symfony/flex true
+                  composer global require symfony/flex
+
+            - name: Configure Symfony version for symfony/flex
+              run: composer config extra.symfony.require "7.4.*"
+
+            - name: Disable Composer audit feature
+              run: |
+                  composer config audit.block-insecure false
+
+            - name: Install dependencies
+              run: |
+                  composer update --no-interaction --no-progress --prefer-dist
+
+            - name: Show installed dependencies
+              run: |
+                  composer show
+
+            - name: Run tests
+              run: make tests-db DB=${{ matrix.db }}
 
     php-linter:
         runs-on: ubuntu-latest

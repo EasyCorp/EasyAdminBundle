@@ -45,8 +45,8 @@ predefined `default Gravatar images`_ or use your own custom image by passing it
 ~~~~~~~~~~~~~
 
 Avatar images are rendered as squares, so there is only one option to set the
-``height``, which will be the same as its ``width``. By default, avatars images
-are ``24px`` height in ``index`` page and ``48px`` height in ``detail`` page.
+``height``, which will be the same as its ``width``. By default, avatar images
+are ``24px`` tall on the ``index`` page and ``48px`` tall on the ``detail`` page.
 Use this option to customize this value::
 
     // if you pass an integer, it's considered the height in pixels
@@ -68,7 +68,7 @@ URL of the avatar image. If you use `Gravatar`_ service, set this option to tell
 EasyAdmin that it has to generate the avatar image URL dynamically using the
 email stored in the property::
 
-    // turns the email into an URL of the format: 'https://www.gravatar.com/avatar/...'
+    // turns the email into a URL of the format: 'https://www.gravatar.com/avatar/...'
     yield AvatarField::new('someEmail')->setIsGravatarEmail();
 
 .. _`TextType`: https://symfony.com/doc/current/reference/forms/types/text.html

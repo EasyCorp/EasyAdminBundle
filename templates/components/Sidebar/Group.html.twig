@@ -1,6 +1,8 @@
 {% props
-    label = null, # optional group heading (pass it already translated); null renders an unlabeled group
-    icon = null, # optional icon name displayed before the label
+    ## string|null The optional group heading (pass it already translated); null renders an unlabeled group.
+    label = null,
+    ## string|null The name of the optional icon displayed before the label.
+    icon = null,
 %}
 
 <div {{ attributes.defaults({class: 'ea-sidebar-group'}) }}>
@@ -8,10 +10,12 @@
         <div class="ea-sidebar-group-label">
             {% if icon %}<twig:ea:Icon name="{{ icon }}" class="ea-sidebar-group-icon" />{% endif %}
             <span class="ea-sidebar-group-label-text">{{ label|raw }}</span>
+            {## Optional contents displayed after the group label (e.g. a badge). -#}
             <twig:block name="badge"></twig:block>
         </div>
     {% endif %}
     <ul class="ea-sidebar-group-items">
+        {## The items of the group (`<twig:ea:Sidebar:Item>` elements). -#}
         <twig:block name="content"></twig:block>
     </ul>
 </div>

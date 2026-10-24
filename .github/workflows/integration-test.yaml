@@ -35,9 +35,9 @@ jobs:
 
             - name: Create fresh Symfony app
               run: |
-                  composer create-project symfony/skeleton:"^7.3" e2e-app
+                  composer create-project symfony/skeleton:"^7.4" e2e-app
                   cd e2e-app
-                  composer config extra.symfony.require "7.3.*"
+                  composer config extra.symfony.require "7.4.*"
                   composer require symfony/orm-pack symfony/twig-pack symfony/runtime
                   composer require easycorp/easyadmin-bundle
                   composer require --dev symfony/maker-bundle doctrine/doctrine-fixtures-bundle zenstruck/foundry symfony/test-pack fakerphp/faker
@@ -92,6 +92,32 @@ jobs:
                     sed -i '/yield MenuItem::linkToDashboard/a\
                         yield MenuItem::linkToCrud("Products", "fa fa-box", App\\Entity\\Product::class);' "$file"
                   fi
+
+            # this step is guarded because the workflow installs EasyAdmin from Packagist,
+            # so the command is not available until the next EasyAdmin release
+            - name: Install the skill for AI coding agents
+              working-directory: e2e-app
+              run: |
+                  set -e
+                  if ! php bin/console list easyadmin --raw 2>/dev/null | grep -q "easyadmin:ai:install"; then
+                    echo "easyadmin:ai:install not released yet, skipping"
+                    exit 0
+                  fi
+
+                  php bin/console easyadmin:ai:install --all --no-interaction
+
+                  test -f .claude/skills/easyadmin/SKILL.md
+                  test -f .agents/skills/easyadmin/SKILL.md
+                  grep -q "<easyadmin-guidelines>" CLAUDE.md
+                  grep -q "</easyadmin-guidelines>" CLAUDE.md
+                  grep -q "<easyadmin-guidelines>" AGENTS.md
+                  grep -q "</easyadmin-guidelines>" AGENTS.md
+
+                  php bin/console easyadmin:ai:update --check
+
+                  # installing the skill again must not change anything
+                  php bin/console easyadmin:ai:install --all --no-interaction
+                  php bin/console easyadmin:ai:update --check
 
             - name: Create factory and fixtures
               working-directory: e2e-app
@@ -156,9 +182,9 @@ jobs:
                       }
                       const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
                       body += `\nRun: ${runUrl}`;
-                      #await github.rest.issues.create({
-                      #  owner: context.repo.owner,
-                      #  repo: context.repo.repo,
-                      #  title: `Integration test failed: ${new Date().toISOString().slice(0,10)}`,
-                      #  body
-                      #});
+                      // await github.rest.issues.create({
+                      //   owner: context.repo.owner,
+                      //   repo: context.repo.repo,
+                      //   title: `Integration test failed: ${new Date().toISOString().slice(0,10)}`,
+                      //   body
+                      // });

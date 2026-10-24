@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Text;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class TextareaFieldTest extends AbstractFieldFunctionalTest
+class TextareaFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testTextareaFieldDisplaysOnIndex(): void
     {
@@ -68,7 +68,7 @@ class TextareaFieldTest extends AbstractFieldFunctionalTest
 
         $this->client->submit($form);
 
-        $entity = $this->fieldTestEntities->findOneBy([], ['id' => 'DESC']);
+        $entity = $this->fieldTestEntities->findOneBy(['slugField' => 'textarea-test']);
         static::assertNotNull($entity, 'Entity should be created');
         static::assertStringContainsString('Submitted multi-line', $entity->getTextareaField());
     }

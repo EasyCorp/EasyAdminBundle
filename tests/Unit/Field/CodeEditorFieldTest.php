@@ -10,8 +10,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CodeEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
+use PHPUnit\Framework\Attributes\TestWith;
 
-class CodeEditorFieldTest extends AbstractFieldTest
+class CodeEditorFieldTest extends AbstractFieldTestCase
 {
     protected function setUp(): void
     {
@@ -85,21 +86,19 @@ class CodeEditorFieldTest extends AbstractFieldTest
         self::assertFalse($fieldDto->getCustomOption(CodeEditorField::OPTION_INDENT_WITH_TABS));
     }
 
-    /**
-     * @testWith ["css"]
-     *           ["dockerfile"]
-     *           ["js"]
-     *           ["javascript"]
-     *           ["markdown"]
-     *           ["nginx"]
-     *           ["php"]
-     *           ["shell"]
-     *           ["sql"]
-     *           ["twig"]
-     *           ["xml"]
-     *           ["yaml-frontmatter"]
-     *           ["yaml"]
-     */
+    #[TestWith(['css'])]
+    #[TestWith(['dockerfile'])]
+    #[TestWith(['js'])]
+    #[TestWith(['javascript'])]
+    #[TestWith(['markdown'])]
+    #[TestWith(['nginx'])]
+    #[TestWith(['php'])]
+    #[TestWith(['shell'])]
+    #[TestWith(['sql'])]
+    #[TestWith(['twig'])]
+    #[TestWith(['xml'])]
+    #[TestWith(['yaml-frontmatter'])]
+    #[TestWith(['yaml'])]
     public function testSetLanguage(string $language): void
     {
         $field = CodeEditorField::new('code');

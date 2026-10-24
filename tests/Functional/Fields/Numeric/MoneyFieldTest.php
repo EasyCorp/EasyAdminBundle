@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Numeric;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class MoneyFieldTest extends AbstractFieldFunctionalTest
+class MoneyFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testMoneyFieldDisplaysOnIndex(): void
     {
@@ -80,7 +80,7 @@ class MoneyFieldTest extends AbstractFieldFunctionalTest
 
         $this->client->submit($form);
 
-        $entity = $this->fieldTestEntities->findOneBy([], ['id' => 'DESC']);
+        $entity = $this->fieldTestEntities->findOneBy(['slugField' => 'money-test']);
         static::assertNotNull($entity, 'Entity should be created');
         // stored as cents: 25.50 * 100 = 2550
         static::assertSame(2550, $entity->getMoneyField());

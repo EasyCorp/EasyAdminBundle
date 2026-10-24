@@ -5,6 +5,43 @@
     margin-inline-start: var(--ea-sp-4);
 }
 
+/* the color classes only define the --badge-tone/--badge-color/--badge-solid-color
+   properties; the variant classes use them to paint the badge. The base style
+   is the 'light' variant, which has no CSS class of its own */
+.badge {
+    --badge-tone: var(--badge-secondary-tone);
+    --badge-color: var(--badge-secondary-color);
+    --badge-solid-color: var(--badge-secondary-solid-color);
+    --badge-outline-color: var(--badge-color);
+    --badge-solid-tone: var(--badge-tone);
+    --bs-badge-padding-x: var(--ea-sp-3);
+    --bs-badge-padding-y: var(--ea-sp-1);
+    --bs-badge-border-radius: var(--badge-border-radius);
+    align-items: center;
+    background-color: color-mix(in srgb, var(--badge-tone) var(--badge-tint-bg-amount), transparent);
+    box-shadow: inset 0 0 0 var(--border-width)
+        color-mix(in srgb, var(--badge-tone) var(--badge-tint-border-amount), transparent);
+    color: var(--badge-color);
+    display: inline-flex;
+    gap: var(--ea-sp-2);
+    /* fixed line-heights pin the height of each badge size, so badges with
+       icons, images or flags are as tall as badges with only text */
+    line-height: 16px;
+    vertical-align: middle;
+}
+
+.badge.badge-sm {
+    --bs-badge-padding-x: var(--ea-sp-2);
+    line-height: 14px;
+}
+
+.badge.badge-lg {
+    --bs-badge-padding-x: var(--ea-sp-4);
+    --bs-badge-font-size: var(--font-size-sm);
+    gap: var(--ea-sp-3);
+    line-height: 18px;
+}
+
 .badge.badge-pill {
     border-radius: var(--border-radius-full);
     font-size: var(--font-size-xs);
@@ -13,65 +50,159 @@
     padding: 1px var(--ea-sp-3);
 }
 
-.badge {
-    box-shadow: var(--badge-box-shadow);
-    line-height: 16px;
+.badge-primary {
+    --badge-tint-bg-amount: var(--badge-primary-tint-bg-amount);
+    --badge-tint-border-amount: var(--badge-primary-tint-border-amount);
+    --badge-tone: var(--badge-primary-tone);
+    --badge-color: var(--badge-primary-color);
+    --badge-solid-color: var(--badge-primary-solid-color);
+    --badge-outline-color: var(--badge-primary-outline-color);
+}
+.badge-success {
+    --badge-tone: var(--badge-success-tone);
+    --badge-color: var(--badge-success-color);
+    --badge-solid-color: var(--badge-success-solid-color);
+    --badge-outline-color: var(--badge-success-outline-color);
+    --badge-solid-tone: var(--badge-success-solid-tone);
+}
+.badge-warning {
+    --badge-tint-border-amount: var(--badge-warning-tint-border-amount);
+    --badge-tone: var(--badge-warning-tone);
+    --badge-color: var(--badge-warning-color);
+    --badge-solid-color: var(--badge-warning-solid-color);
+    --badge-outline-color: var(--badge-warning-outline-color);
+    --badge-solid-tone: var(--badge-warning-solid-tone);
+}
+.badge-danger {
+    --badge-tone: var(--badge-danger-tone);
+    --badge-color: var(--badge-danger-color);
+    --badge-solid-color: var(--badge-danger-solid-color);
+    --badge-outline-color: var(--badge-danger-outline-color);
+}
+.badge-info {
+    --badge-tone: var(--badge-info-tone);
+    --badge-color: var(--badge-info-color);
+    --badge-solid-color: var(--badge-info-solid-color);
+    --badge-outline-color: var(--badge-info-outline-color);
+}
+.badge-light {
+    --badge-tint-border-amount: var(--badge-light-tint-border-amount);
+    --badge-tone: var(--badge-light-tone);
+    --badge-color: var(--badge-light-color);
+    --badge-solid-color: var(--badge-light-solid-color);
+}
+.badge-dark {
+    --badge-tone: var(--badge-dark-tone);
+    --badge-color: var(--badge-dark-color);
+    --badge-solid-color: var(--badge-dark-solid-color);
+    --badge-solid-tone: var(--badge-dark-solid-tone);
+}
+/* boolean values don't use "true = green, false = red" on purpose because being
+   FALSE or TRUE can be good or bad depending on the context */
+.badge-boolean-true {
+    --badge-tint-bg-amount: var(--badge-primary-tint-bg-amount);
+    --badge-tint-border-amount: var(--badge-primary-tint-border-amount);
+    --badge-tone: var(--badge-primary-tone);
+    --badge-color: var(--badge-primary-color);
+    --badge-solid-color: var(--badge-primary-solid-color);
+    --badge-outline-color: var(--badge-primary-outline-color);
+}
+/* FALSE has no tint and muted text, so TRUE stands out without reading the label */
+.badge-boolean-false {
+    --badge-tint-bg-amount: 0%;
+    --badge-color: var(--badge-boolean-false-color);
+    --badge-outline-color: var(--badge-boolean-false-color);
 }
 
-.badge:has(> .icon) {
+/* these colors use dark text on their solid background; toning them down in
+   dark mode, like the other colors, leaves too little contrast with that text */
+.badge-warning,
+.badge-light {
+    --badge-solid-amount: 100%;
+}
+.badge.badge-variant-solid {
+    background-color: color-mix(
+        in oklab,
+        var(--badge-solid-tone) var(--badge-solid-amount),
+        var(--badge-solid-mix-base)
+    );
+    box-shadow: none;
+    color: var(--badge-solid-color);
+}
+.badge.badge-variant-outline,
+.badge.badge-variant-dot {
+    background-color: transparent;
+    color: var(--badge-outline-color);
+    box-shadow: inset 0 0 0 var(--border-width) var(--badge-outline-border-color);
+}
+
+.badge-dot {
+    background-color: currentColor;
+    block-size: var(--ea-sp-3);
+    border-radius: var(--border-radius-full);
+    flex-shrink: 0;
+    inline-size: var(--ea-sp-3);
+}
+
+/* icons, images (e.g. avatars) and flags are scaled down below the line-height
+   of the badge, so they never make the badge taller and don't touch its edges */
+.badge > .icon,
+.badge > img,
+.badge > svg,
+.badge > .country-flag-wrapper {
+    flex-shrink: 0;
+}
+.badge > .icon {
+    font-size: var(--icon-size-xs);
+    inline-size: auto;
+}
+.badge > img,
+.badge > svg {
+    block-size: calc(1lh - var(--ea-sp-1));
+    inline-size: auto;
+}
+/* flags are wider than avatars and icons, so they look bigger at the same height */
+.badge > .country-flag-wrapper > svg {
+    block-size: calc(1lh - var(--ea-sp-2));
+    inline-size: auto;
+}
+.badge > .country-flag-wrapper {
+    align-items: center;
     display: inline-flex;
     gap: var(--ea-sp-2);
+}
+
+.badge-dismiss {
     align-items: center;
+    background: none;
+    border: 0;
+    border-radius: var(--border-radius-sm);
+    color: inherit;
+    block-size: var(--icon-size-xs);
+    cursor: pointer;
+    display: inline-flex;
+    flex-shrink: 0;
+    inline-size: var(--icon-size-xs);
+    justify-content: center;
+    margin-inline-start: var(--ea-sp-1);
+    opacity: 0.6;
+    padding: 0;
+    transition: opacity var(--ea-duration-fast) var(--ea-ease-out);
 }
-
-.badge.badge-sm {
-    --bs-badge-padding-x: var(--ea-sp-2);
-    --bs-badge-padding-y: 0;
-    --bs-badge-font-size: var(--font-size-xs);
+.badge-dismiss:hover {
+    opacity: 1;
 }
-
-.badge.badge-success {
-    background-color: var(--badge-success-bg);
-    box-shadow: var(--badge-success-box-shadow);
-    color: var(--badge-success-color);
+.badge-dismiss:focus-visible {
+    opacity: 1;
+    outline: var(--border-width) solid currentColor;
 }
-.badge.badge-warning {
-    background-color: var(--badge-warning-bg);
-    box-shadow: var(--badge-warning-box-shadow);
-    color: var(--badge-warning-color);
+.badge-dismiss > .icon {
+    display: inline-flex;
+    font-size: var(--icon-size-xxs);
+    inline-size: auto;
+    line-height: 1;
 }
-.badge.badge-danger {
-    background-color: var(--badge-danger-bg);
-    box-shadow: var(--badge-danger-box-shadow);
-    color: var(--badge-danger-color);
-}
-.badge.badge-info {
-    background-color: var(--badge-info-bg);
-    box-shadow: var(--badge-info-box-shadow);
-    color: var(--badge-info-color);
-}
-.badge.badge-primary {
-    background-color: var(--badge-primary-bg);
-    box-shadow: var(--badge-primary-box-shadow);
-    color: var(--badge-primary-color);
-}
-.badge.badge-secondary {
-    background-color: var(--badge-secondary-bg);
-    box-shadow: var(--badge-secondary-box-shadow);
-    color: var(--badge-secondary-color);
-}
-.badge.badge-light {
-    background-color: var(--badge-light-bg);
-    box-shadow: var(--badge-light-box-shadow);
-    color: var(--badge-light-color);
-}
-.badge.badge-dark {
-    background-color: var(--badge-dark-bg);
-    box-shadow: var(--badge-dark-box-shadow);
-    color: var(--badge-dark-color);
-}
-.badge.badge-outline {
-    background-color: transparent;
-    box-shadow: var(--badge-outline-box-shadow);
-    color: var(--badge-outline-color);
+/* the default text-bottom alignment of icons moves the glyph off the center of the button */
+.badge-dismiss > .icon svg {
+    vertical-align: top;
 }

@@ -4,23 +4,23 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Crud;
 
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Crud\DefaultCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\DefaultCrudTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\DefaultCrudTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
+use function Zenstruck\Foundry\Persistence\delete;
 
 /**
  * Tests for default edit form behavior in EasyAdmin CRUD operations.
  */
 class EditTest extends AbstractCrudTestCase
 {
+    /** @var EntityRepository<Category> */
     protected EntityRepository $repository;
-
-    /** @var int[] IDs of entities created during tests that should be cleaned up */
-    private array $createdEntityIds = [];
 
     protected function getControllerFqcn(): string
     {
-        return DefaultCrudTestEntityCrudController::class;
+        return DefaultCategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -32,84 +32,12 @@ class EditTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(DefaultCrudTestEntity::class);
-        $this->createdEntityIds = [];
-    }
-
-    protected function tearDown(): void
-    {
-        // clean up any entities created during this test
-        foreach ($this->createdEntityIds as $entityId) {
-            $entity = $this->repository->find($entityId);
-            if (null !== $entity) {
-                $this->entityManager->remove($entity);
-            }
-        }
-        if (!empty($this->createdEntityIds)) {
-            $this->entityManager->flush();
-        }
-
-        parent::tearDown();
-    }
-
-    /**
-     * Creates a test entity specifically for edit tests.
-     *
-     * @param bool $trackForCleanup If true, entity will be deleted in tearDown if not already deleted
-     */
-    private function createTestEntity(bool $trackForCleanup = false): DefaultCrudTestEntity
-    {
-        $entity = new DefaultCrudTestEntity();
-        $entity->setName('Edit Test Entity '.uniqid());
-        $entity->setDescription('This entity is for edit tests');
-        $entity->setActive(true);
-        $entity->setPriority(1);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
-
-        if ($trackForCleanup) {
-            $this->createdEntityIds[] = $entity->getId();
-        }
-
-        return $entity;
-    }
-
-    /**
-     * Ensures at least one entity exists for tests that need to read existing entities.
-     */
-    private function ensureEntityExists(): DefaultCrudTestEntity
-    {
-        $entity = $this->repository->findOneBy([]);
-        if (null === $entity) {
-            $entity = $this->createTestEntity(true);
-        }
-
-        return $entity;
-    }
-
-    /**
-     * Ensures an entity with active = false exists for tests that need an inactive entity.
-     */
-    private function ensureInactiveEntityExists(): DefaultCrudTestEntity
-    {
-        $entity = $this->repository->findOneBy(['active' => false]);
-        if (null === $entity) {
-            $entity = new DefaultCrudTestEntity();
-            $entity->setName('Inactive Edit Test Entity '.uniqid());
-            $entity->setDescription('This entity is inactive');
-            $entity->setActive(false);
-            $entity->setPriority(1);
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
-            $this->createdEntityIds[] = $entity->getId();
-        }
-
-        return $entity;
+        $this->repository = $this->entityManager->getRepository(Category::class);
     }
 
     public function testEditFormLoadsWithExistingEntityData(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -118,7 +46,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testEditFormDisplaysForm(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -128,15 +56,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testEditFormShowsExistingValues(): void
     {
-        // create a specific entity with known values for this test
-        $entity = new DefaultCrudTestEntity();
-        $entity->setName('Edit Form Values Test Entity');
-        $entity->setDescription('Test description');
-        $entity->setActive(true);
-        $entity->setPriority(5);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
-        $this->createdEntityIds[] = $entity->getId();
+        $entity = CategoryFactory::createOne(['name' => 'Category A']);
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -146,12 +66,12 @@ class EditTest extends AbstractCrudTestCase
         $form = $crawler->filter($this->getEntityFormSelector())->form();
 
         $formName = $this->getFormEntity();
-        $this->assertEquals('Edit Form Values Test Entity', $form[$formName.'[name]']->getValue());
+        $this->assertEquals('Category A', $form[$formName.'[name]']->getValue());
     }
 
     public function testEditFormHasRequiredFields(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -166,9 +86,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testFormCanBeSubmittedWithUpdatedData(): void
     {
-        // create a specific entity for this test - track for cleanup
-        $entity = $this->createTestEntity(true);
-        $originalName = $entity->getName();
+        $entity = CategoryFactory::createOne(['name' => 'Original Name']);
         $entityId = $entity->getId();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entityId));
@@ -178,8 +96,7 @@ class EditTest extends AbstractCrudTestCase
         $form = $crawler->filter($this->getEntityFormSelector())->form();
 
         $formName = $this->getFormEntity();
-        $newName = 'Updated Name '.uniqid();
-        $form[$formName.'[name]'] = $newName;
+        $form[$formName.'[name]'] = 'Updated Name';
 
         $this->client->submit($form);
 
@@ -190,25 +107,17 @@ class EditTest extends AbstractCrudTestCase
         $updatedEntity = $this->repository->find($entityId);
 
         $this->assertNotNull($updatedEntity);
-        $this->assertEquals($newName, $updatedEntity->getName());
-        $this->assertNotEquals($originalName, $updatedEntity->getName());
+        $this->assertSame('Updated Name', $updatedEntity->getName());
     }
 
     public function testEntityIsUpdatedInDatabase(): void
     {
-        // create a specific entity for this test - track for cleanup
-        $entity = new DefaultCrudTestEntity();
-        $entity->setName('Entity To Update');
-        $entity->setDescription('Original description');
-        $entity->setActive(false);
-        $entity->setPriority(10);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
-        $entityId = $entity->getId();
-        $this->createdEntityIds[] = $entityId;
-
-        // clear entity manager
-        $this->entityManager->clear();
+        $entityId = CategoryFactory::createOne([
+            'name' => 'Category A',
+            'description' => 'Original description',
+            'active' => false,
+            'priority' => 10,
+        ])->getId();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entityId));
         $this->assertResponseIsSuccessful();
@@ -217,7 +126,7 @@ class EditTest extends AbstractCrudTestCase
         $form = $crawler->filter($this->getEntityFormSelector())->form();
 
         $formName = $this->getFormEntity();
-        $form[$formName.'[name]'] = 'Updated Entity Name';
+        $form[$formName.'[name]'] = 'Category B';
         $form[$formName.'[description]'] = 'Updated description';
         $form[$formName.'[active]'] = '1';
         $form[$formName.'[priority]'] = '99';
@@ -231,7 +140,7 @@ class EditTest extends AbstractCrudTestCase
         $updatedEntity = $this->repository->find($entityId);
 
         $this->assertNotNull($updatedEntity);
-        $this->assertEquals('Updated Entity Name', $updatedEntity->getName());
+        $this->assertEquals('Category B', $updatedEntity->getName());
         $this->assertEquals('Updated description', $updatedEntity->getDescription());
         $this->assertTrue($updatedEntity->isActive());
         $this->assertEquals(99, $updatedEntity->getPriority());
@@ -239,8 +148,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testRedirectAfterSuccessfulUpdate(): void
     {
-        // create a specific entity for this test - track for cleanup
-        $entity = $this->createTestEntity(true);
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
         $this->assertResponseIsSuccessful();
@@ -267,7 +175,11 @@ class EditTest extends AbstractCrudTestCase
     {
         $this->client->catchExceptions(true);
 
-        $this->client->request('GET', $this->generateEditFormUrl(999999));
+        $deletedEntity = CategoryFactory::createOne();
+        $deletedEntityId = $deletedEntity->getId();
+        delete($deletedEntity);
+
+        $this->client->request('GET', $this->generateEditFormUrl($deletedEntityId));
 
         $this->assertResponseStatusCodeSame(404);
         $this->assertSelectorTextContains('.error-message', 'This item is no longer available.');
@@ -275,7 +187,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testEditFormHasFormElements(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -288,7 +200,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testEditFormHasCsrfToken(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
 
@@ -301,7 +213,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testEditFormFieldsCanBeModified(): void
     {
-        $entity = $this->ensureEntityExists();
+        $entity = CategoryFactory::createOne();
         $entityId = $entity->getId();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entityId));
@@ -318,10 +230,7 @@ class EditTest extends AbstractCrudTestCase
 
     public function testEditDoesNotCreateNewEntity(): void
     {
-        // create a specific entity for this test - track for cleanup
-        $entity = $this->createTestEntity(true);
-
-        $initialCount = \count($this->repository->findAll());
+        $entity = CategoryFactory::createOne();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
         $this->assertResponseIsSuccessful();
@@ -330,22 +239,20 @@ class EditTest extends AbstractCrudTestCase
         $form = $crawler->filter($this->getEntityFormSelector())->form();
 
         $formName = $this->getFormEntity();
-        $form[$formName.'[name]'] = 'Modified Name '.uniqid();
+        $form[$formName.'[name]'] = 'Modified Name';
 
         $this->client->submit($form);
 
         $this->assertResponseIsSuccessful();
 
-        // verify no new entity was created
-        $finalCount = \count($this->repository->findAll());
-        $this->assertEquals($initialCount, $finalCount, 'Edit should not create new entities');
+        $this->entityManager->clear();
+        $this->assertSame(1, $this->repository->count([]), 'Edit should not create new entities');
+        $this->assertSame('Modified Name', $this->repository->find($entity->getId())?->getName());
     }
 
     public function testBooleanFieldCanBeToggled(): void
     {
-        // get an entity with active = false, creating one if needed
-        $entity = $this->ensureInactiveEntityExists();
-        $entityId = $entity->getId();
+        $entityId = CategoryFactory::createOne(['active' => false])->getId();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entityId));
         $this->assertResponseIsSuccessful();
@@ -370,18 +277,12 @@ class EditTest extends AbstractCrudTestCase
 
     public function testNullableFieldCanBeClearedOnEdit(): void
     {
-        // create entity with non-null values - track for cleanup
-        $entity = new DefaultCrudTestEntity();
-        $entity->setName('Entity With Values');
-        $entity->setDescription('Has description');
-        $entity->setActive(true);
-        $entity->setPriority(50);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
-        $entityId = $entity->getId();
-        $this->createdEntityIds[] = $entityId;
-
-        $this->entityManager->clear();
+        $entityId = CategoryFactory::createOne([
+            'name' => 'Category A',
+            'description' => 'Has description',
+            'active' => true,
+            'priority' => 50,
+        ])->getId();
 
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($entityId));
         $this->assertResponseIsSuccessful();

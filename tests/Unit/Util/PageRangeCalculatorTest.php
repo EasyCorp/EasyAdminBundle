@@ -3,13 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Util;
 
 use EasyCorp\Bundle\EasyAdminBundle\Util\PageRangeCalculator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class PageRangeCalculatorTest extends TestCase
 {
-    /**
-     * @dataProvider providePageRanges
-     */
+    #[DataProvider('providePageRanges')]
     public function testCalculate(array $expectedRange, int $currentPage, int $lastPage, int $pagesOnEachSide = 3, int $pagesOnEdges = 1): void
     {
         $range = PageRangeCalculator::calculate($currentPage, $lastPage, $pagesOnEachSide, $pagesOnEdges);

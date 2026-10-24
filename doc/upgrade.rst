@@ -1,8 +1,9 @@
 Upgrading from EasyAdmin 4 to EasyAdmin 5
 =========================================
 
-Read the ``UPGRADE.md`` file at the root of this project for the complete list
-of changes needed to upgrade your application from EasyAdmin 4 to EasyAdmin 5.
+Read the `UPGRADE.md file <https://github.com/EasyCorp/EasyAdminBundle/blob/5.x/UPGRADE.md>`_
+at the root of this project for the complete list of changes needed to upgrade
+your application from EasyAdmin 4 to EasyAdmin 5.
 
 Upgrading from Older EasyAdmin Versions
 ---------------------------------------

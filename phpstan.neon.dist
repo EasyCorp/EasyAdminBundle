@@ -10,8 +10,6 @@ parameters:
         analyse:
             - src/ArgumentResolver
             - src/Test/Trait/CrudTestFormAsserts.php
-    bootstrapFiles:
-        - vendor/bin/.phpunit/phpunit/vendor/autoload.php
     ignoreErrors:
         - '#Cannot use array destructuring on callable.#'
         - '#Property EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension\:\:\$importMapRenderer has unknown class Symfony\\Component\\AssetMapper\\ImportMap\\ImportMapRenderer as its type\.#'

@@ -5,6 +5,7 @@ license: MIT
 metadata:
   author: Simon Andre
   email: smn.andre@gmail.com
+  internal: true
   url: https://smnandre.dev
   version: "1.0"
 ---

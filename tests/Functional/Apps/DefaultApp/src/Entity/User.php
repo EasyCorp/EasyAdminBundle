@@ -21,12 +21,19 @@ class User implements \Stringable
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $email = null;
 
-    #[ORM\OneToMany(targetEntity: BlogPost::class, mappedBy: 'author', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: BlogPost::class, mappedBy: 'author', cascade: ['persist'], orphanRemoval: true)]
     private Collection $blogPosts;
+
+    #[ORM\Embedded(class: Address::class)]
+    private Address $address;
+
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    private ?Category $favoriteCategory = null;
 
     public function __construct()
     {
         $this->blogPosts = new ArrayCollection();
+        $this->address = new Address();
     }
 
     public function __toString(): string
@@ -89,6 +96,30 @@ class User implements \Stringable
                 $blogPost->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAddress(): Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(Address $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getFavoriteCategory(): ?Category
+    {
+        return $this->favoriteCategory;
+    }
+
+    public function setFavoriteCategory(?Category $favoriteCategory): self
+    {
+        $this->favoriteCategory = $favoriteCategory;
 
         return $this;
     }

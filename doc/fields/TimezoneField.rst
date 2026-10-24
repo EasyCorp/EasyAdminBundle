@@ -2,7 +2,10 @@ EasyAdmin Timezone Field
 ========================
 
 This field is used to represent the name of a timezone stored in a property as
-a valid `PHP timezone ID`_.
+a valid `PHP timezone ID`_. This field doesn't change the timezone used to
+display dates and times; use the
+:ref:`date, time and number format CRUD options <crud-date-time-number-format-options>`
+for that.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 

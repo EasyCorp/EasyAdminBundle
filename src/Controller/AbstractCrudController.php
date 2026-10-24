@@ -57,7 +57,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -68,6 +67,7 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\PropertyAccess\PropertyPathInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use function Symfony\Component\String\u;
 
 /**
@@ -335,11 +335,15 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions(), $context);
         $newForm->handleRequest($context->getRequest());
 
-        /** @var TEntity $entityInstance */
+        /** @var TEntity|null $entityInstance */
         $entityInstance = $newForm->getData();
         $context->getEntity()->setInstance($entityInstance);
 
         if ($newForm->isSubmitted() && $newForm->isValid()) {
+            if (null === $entityInstance) {
+                throw new \LogicException(sprintf('The "new" form of the "%s" entity has no data after submitting it. When "%s::createEntity()" returns null, define the "empty_data" option of the form (e.g. with "Crud::setFormOptions()") to create the entity using the submitted values.', $entityFqcn, static::class));
+            }
+
             $this->processUploadedFiles($newForm);
 
             $event = new BeforeEntityPersistedEvent($entityInstance);
@@ -626,9 +630,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     /**
      * @param class-string<TEntity> $entityFqcn
      *
-     * @phpstan-return TEntity
+     * @phpstan-return ?TEntity
      */
-    public function createEntity(string $entityFqcn): object
+    public function createEntity(string $entityFqcn): ?object
     {
         return new $entityFqcn();
     }
@@ -770,6 +774,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
             $uploadDelete = $config->getOption('upload_delete');
             $replacedFileBehavior = $config->getOption('replaced_file_behavior');
+
+            foreach ($state->getRemovedFiles() as $file) {
+                $uploadDelete($file);
+            }
+            $state->setCurrentFiles($state->getRemainingFiles());
 
             if ($state->hasCurrentFiles() && ($state->isDelete() || (!$state->isAddAllowed() && $state->hasUploadedFiles()))) {
                 if ($state->isDelete() || ReplacedFileBehavior::DELETE === $replacedFileBehavior) {

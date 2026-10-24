@@ -4,20 +4,21 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Crud;
 
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Crud\DefaultCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\DefaultCrudTestEntityCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\DefaultCrudTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 
 /**
  * Tests for default new/create form behavior in EasyAdmin CRUD operations.
  */
 class NewTest extends AbstractCrudTestCase
 {
+    /** @var EntityRepository<Category> */
     protected EntityRepository $repository;
 
     protected function getControllerFqcn(): string
     {
-        return DefaultCrudTestEntityCrudController::class;
+        return DefaultCategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
@@ -29,7 +30,7 @@ class NewTest extends AbstractCrudTestCase
     {
         parent::setUp();
         $this->client->followRedirects();
-        $this->repository = $this->entityManager->getRepository(DefaultCrudTestEntity::class);
+        $this->repository = $this->entityManager->getRepository(Category::class);
     }
 
     public function testNewFormLoadsCorrectly(): void
@@ -53,8 +54,6 @@ class NewTest extends AbstractCrudTestCase
 
         $this->assertResponseIsSuccessful();
 
-        // check that expected form fields exist
-        // for DefaultCrudTestEntity, we expect: name, description, active, priority
         $this->assertFormFieldExists('name');
         $this->assertFormFieldExists('description');
         $this->assertFormFieldExists('active');
@@ -74,8 +73,6 @@ class NewTest extends AbstractCrudTestCase
 
     public function testFormCanBeSubmittedWithValidData(): void
     {
-        $initialCount = \count($this->repository->findAll());
-
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
 
@@ -83,7 +80,7 @@ class NewTest extends AbstractCrudTestCase
         $form = $crawler->filter($this->getEntityFormSelector())->form();
 
         $formName = $this->getFormEntity();
-        $form[$formName.'[name]'] = 'Test Entity Created By Test';
+        $form[$formName.'[name]'] = 'Category A';
         $form[$formName.'[description]'] = 'This is a test description';
         $form[$formName.'[active]'] = '1';
         $form[$formName.'[priority]'] = '99';
@@ -92,9 +89,8 @@ class NewTest extends AbstractCrudTestCase
 
         $this->assertResponseIsSuccessful();
 
-        // verify entity was created
-        $finalCount = \count($this->repository->findAll());
-        $this->assertEquals($initialCount + 1, $finalCount, 'A new entity should have been created');
+        $this->entityManager->clear();
+        $this->assertSame(1, $this->repository->count([]), 'A new entity should have been created');
     }
 
     public function testEntityIsCreatedInDatabase(): void
@@ -102,7 +98,7 @@ class NewTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
 
-        $uniqueName = 'Unique Test Entity '.uniqid();
+        $uniqueName = 'Category A';
 
         // get the form and fill it with valid data
         $form = $crawler->filter($this->getEntityFormSelector())->form();
@@ -134,7 +130,7 @@ class NewTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
 
-        $uniqueName = 'Redirect Test Entity '.uniqid();
+        $uniqueName = 'Category A';
 
         // get the form and fill it with valid data
         $form = $crawler->filter($this->getEntityFormSelector())->form();
@@ -162,8 +158,6 @@ class NewTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
 
-        $initialCount = \count($this->repository->findAll());
-
         // get the form but don't fill the required 'name' field
         $form = $crawler->filter($this->getEntityFormSelector())->form();
 
@@ -184,8 +178,8 @@ class NewTest extends AbstractCrudTestCase
         );
 
         // verify no entity was created
-        $finalCount = \count($this->repository->findAll());
-        $this->assertEquals($initialCount, $finalCount, 'No entity should be created with invalid data');
+        $this->entityManager->clear();
+        $this->assertSame(0, $this->repository->count([]), 'No entity should be created with invalid data');
     }
 
     public function testFormFieldLabelsExist(): void
@@ -245,8 +239,7 @@ class NewTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
 
-        $initialCount = \count($this->repository->findAll());
-        $uniqueName = 'Nullable Test '.uniqid();
+        $uniqueName = 'Category A';
 
         // get the form and fill only required fields
         $form = $crawler->filter($this->getEntityFormSelector())->form();
@@ -261,12 +254,10 @@ class NewTest extends AbstractCrudTestCase
 
         $this->assertResponseIsSuccessful();
 
-        // verify entity was created
-        $finalCount = \count($this->repository->findAll());
-        $this->assertEquals($initialCount + 1, $finalCount, 'Entity should be created with nullable fields empty');
+        $this->entityManager->clear();
+        $this->assertSame(1, $this->repository->count([]), 'Entity should be created with nullable fields empty');
 
         // verify nullable fields are null/empty
-        $this->entityManager->clear();
         $createdEntity = $this->repository->findOneBy(['name' => $uniqueName]);
         $this->assertNotNull($createdEntity);
     }

@@ -252,13 +252,9 @@ class AdminUrlGeneratorTest extends KernelTestCase
 
         $router = self::getContainer()->get('router');
 
-        $adminRouteGenerator = $this->getMockBuilder(AdminRouteGeneratorInterface::class)
-            ->disableOriginalConstructor()
-            ->addMethods(['usesPrettyUrls'])
-            ->getMockForAbstractClass();
+        $adminRouteGenerator = $this->createMock(AdminRouteGeneratorInterface::class);
         $adminRouteGenerator->method('generateAll')->willReturn(new RouteCollection());
         $adminRouteGenerator->method('findRouteName')->willReturn(null);
-        $adminRouteGenerator->method('usesPrettyUrls')->willReturn(true);
 
         $cacheItem = new CacheItem();
         $cacheItem->set([]);

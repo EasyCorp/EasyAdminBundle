@@ -1,0 +1,80 @@
+<?php
+
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Actions;
+
+use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\EntityActionsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
+
+/**
+ * Anchors rule A7 of skills/easyadmin/SKILL.md: a custom action configured with
+ * renderAsForm() gets a bare POST <form> with no CSRF token of any kind, while
+ * the built-in delete action does get one (through the shared confirmation form).
+ *
+ * If this behavior changes, update that skill rule too.
+ */
+class CustomActionCsrfTest extends AbstractCrudTestCase
+{
+    protected function getControllerFqcn(): string
+    {
+        return EntityActionsCrudController::class;
+    }
+
+    protected function getDashboardFqcn(): string
+    {
+        return DashboardController::class;
+    }
+
+    public function testGlobalActionRenderedAsFormHasNoCsrfToken(): void
+    {
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        $actionForm = $crawler->filter('.global-actions form.action-formAction');
+        static::assertCount(1, $actionForm);
+        static::assertSame('POST', mb_strtoupper((string) $actionForm->attr('method')));
+
+        static::assertCount(0, $actionForm->filter('input[name="_token"]'));
+        static::assertCount(0, $actionForm->filter('input[name="token"]'));
+        static::assertCount(0, $actionForm->filter('input[type="hidden"]'));
+        static::assertCount(0, $actionForm->filter('input'));
+    }
+
+    public function testEntityActionRenderedAsFormHasNoCsrfToken(): void
+    {
+        $entity = CategoryFactory::createOne();
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        $actionLink = $crawler->filter(sprintf('tr[data-id="%s"] [data-action-name="entityFormAction"]', $entity->getId()));
+        static::assertCount(1, $actionLink);
+
+        $actionForm = $actionLink->closest('li')->filter('form');
+        static::assertCount(1, $actionForm);
+        static::assertSame('POST', mb_strtoupper((string) $actionForm->attr('method')));
+
+        static::assertCount(0, $actionForm->filter('input[name="_token"]'));
+        static::assertCount(0, $actionForm->filter('input[name="token"]'));
+        static::assertCount(0, $actionForm->filter('input'));
+    }
+
+    public function testDeleteActionIsSubmittedThroughAFormThatCarriesACsrfToken(): void
+    {
+        $deletableEntity = CategoryFactory::createOne();
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        $deleteAction = $crawler->filter(sprintf('tr[data-id="%s"] [data-action-name="delete"]', $deletableEntity->getId()));
+        static::assertCount(1, $deleteAction);
+        static::assertNotNull($deleteAction->attr('formaction'));
+        static::assertSame('true', $deleteAction->attr('data-action-confirmation'));
+
+        $confirmationForm = $crawler->filter('form#action-confirmation-form');
+        static::assertCount(1, $confirmationForm);
+        static::assertSame('post', mb_strtolower((string) $confirmationForm->attr('method')));
+
+        $csrfTokenInput = $confirmationForm->filter('input[name="token"]');
+        static::assertCount(1, $csrfTokenInput);
+        static::assertNotSame('', (string) $csrfTokenInput->attr('value'));
+    }
+}

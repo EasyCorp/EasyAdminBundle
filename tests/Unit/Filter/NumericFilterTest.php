@@ -9,13 +9,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class NumericFilterTest extends TestCase
 {
-    /**
-     * @dataProvider provideNullComparisons
-     */
+    #[DataProvider('provideNullComparisons')]
     public function testApplyNullComparisonWithMoneyFieldStoredAsCents(string $comparison): void
     {
         // when the value of a numeric filter is left empty, NumericFilterType

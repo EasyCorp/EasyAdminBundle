@@ -1,9 +1,12 @@
-EasyAdmin LocaleField
-=====================
+EasyAdmin Locale Field
+======================
 
 This field is used to represent the name of a locale stored in a property as
 a valid `ICU project`_ locale code (the same which is used by Symfony and many
 other tech projects).
+
+See also :doc:`LanguageField </fields/LanguageField>` and
+:doc:`CountryField </fields/CountryField>`.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
@@ -28,27 +31,26 @@ Options
 ``includeOnly``
 ~~~~~~~~~~~~~~~
 
-By default, the locale selector displays all the locales defined by
-the `ICU project`_, the same which is used by Symfony and many other tech projects.
-Use this option to only display the given locale codes::
+By default, the locale selector displays all the locales defined by the
+`ICU project`_. Use this option to only display the given locale codes::
 
     yield LocaleField::new('...')->includeOnly(['en', 'fr', 'pl']);
 
 ``remove``
 ~~~~~~~~~~
 
-By default, the locale selector displays all the locales defined by
-the `ICU project`_, the same which is used by Symfony and many other tech projects.
-Use this option to remove the given locale codes from that list::
+By default, the locale selector displays all the locales defined by the
+`ICU project`_. Use this option to remove the given locale codes from that
+list::
 
     yield LocaleField::new('...')->remove(['fr', 'pl']);
 
 ``showCode``
 ~~~~~~~~~~~~
 
-By default, in read-only pages (``index`` and ``show``) this field displays the
+By default, in read-only pages (``index`` and ``detail``) this field displays the
 full name of the locale (e.g. ``Somali (Djibouti)``, ``Uyghur (China)``,
-``Ukrainian``, etc.)
+``Ukrainian``, etc.).
 
 Use this option if you want to display the locale code (e.g. ``so_DJ``,
 ``ug_CN``, ``uk``, etc.) instead of or in addition to the locale name::
@@ -58,12 +60,12 @@ Use this option if you want to display the locale code (e.g. ``so_DJ``,
 ``showName``
 ~~~~~~~~~~~~
 
-By default, in read-only pages (``index`` and ``show``) this field displays the
+By default, in read-only pages (``index`` and ``detail``) this field displays the
 full name of the locale (e.g. ``Somali (Djibouti)``, ``Uyghur (China)``,
-``Ukrainian``, etc.)
+``Ukrainian``, etc.).
 
-Use this option if you want to hide this name and display instead the locale
-code (e.g. ``so_DJ``, ``ug_CN``, ``uk``, etc.)::
+Use this option to hide the locale name. Combine it with ``showCode()`` to
+display the locale code instead; otherwise the field displays nothing::
 
     yield LocaleField::new('...')->showName(false);
 

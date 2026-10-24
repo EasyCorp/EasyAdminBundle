@@ -4,9 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Search;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\SearchAllTermsCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SearchTestAuthor;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\SearchTestEntity;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Search\SearchAllTermsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests for the default all-terms search mode (AND logic).
@@ -71,13 +71,13 @@ class SearchAllTermsTest extends AbstractCrudTestCase
 
     public function testSearchIsPersistedAfterPaginationAndSorting(): void
     {
-        // make some query
+        // the sortable column headers are only rendered when the search returns some results
+        BlogPostFactory::createOne(['title' => 'Introduction to PHP Programming']);
+
         $crawler = $this->client->request('GET', $this->generateIndexUrl('PHP'));
 
-        // click on a table column to sort the results
-        $crawler = $this->client->click($crawler->filter('th[data-column="searchableTextField"] a')->link());
+        $crawler = $this->client->click($crawler->filter('th[data-column="title"] a')->link());
 
-        // assert that the search query is persisted
         $form = $crawler->filter('form.form-action-search');
         $formSearchInput = $form->filter('input[name="query"]');
         $this->assertSame('PHP', $formSearchInput->attr('value'));
@@ -85,101 +85,93 @@ class SearchAllTermsTest extends AbstractCrudTestCase
     }
 
     /**
-     * @dataProvider provideSearchTests
+     * @param list<array{title: string, content: string}> $entitiesToCreate
      */
-    public function testSearch(array $newEntitiesToCreate, string $query, int $expectedResultCount): void
+    #[DataProvider('provideSearchTests')]
+    public function testSearch(array $entitiesToCreate, string $query, int $expectedResultCount): void
     {
-        foreach ($newEntitiesToCreate as $entityData) {
-            $entity = $this->createSearchTestEntity(
-                $entityData['searchableTextField'],
-                $entityData['searchableContentField'],
-                $entityData['nonSearchableField'] ?? null,
-                $entityData['authorEmail'] ?? null
-            );
-            $this->entityManager->persist($entity);
-        }
-        $this->entityManager->flush();
+        BlogPostFactory::createSequence($entitiesToCreate);
 
         $this->client->request('GET', $this->generateIndexUrl($query));
         static::assertIndexFullEntityCount($expectedResultCount);
     }
 
+    /**
+     * @return iterable<string, array{list<array{title: string, content: string}>, string, int}>
+     */
     public static function provideSearchTests(): iterable
     {
-        // from fixtures: 8 SearchTestEntity entities
-        $totalNumberOfEntities = 8;
-
-        yield 'search all entities containing PHP' => [
-            [],
+        yield 'search all posts containing PHP' => [
+            [
+                ['title' => 'Introduction to PHP Programming', 'content' => 'A popular scripting language.'],
+                ['title' => 'JavaScript and PHP Integration', 'content' => 'Frontend and backend together.'],
+                ['title' => 'Testing Best Practices', 'content' => 'PHPUnit is the standard testing framework.'],
+                ['title' => 'Database Design Patterns', 'content' => 'Repository and unit of work.'],
+            ],
             'PHP',
-            4, // 4 entities mention PHP: "Introduction to PHP Programming", "JavaScript and PHP Integration", "Testing Best Practices" (PHPUnit), "Doctrine ORM Mastery"
+            3, // the term matches the title, the content and partial words ("PHPUnit")
         ];
 
         yield 'search with quoted phrase' => [
-            [],
+            [
+                ['title' => 'Advanced Symfony Framework Guide', 'content' => 'Dependency injection and events.'],
+                ['title' => 'Framework Comparison', 'content' => 'Symfony versus other tools.'],
+            ],
             '"Symfony Framework"',
-            1, // Only "Advanced Symfony Framework Guide" matches
+            1, // the second post contains both words, but not the exact phrase
         ];
 
         yield 'search all terms (AND logic)' => [
-            [],
+            [
+                ['title' => 'Database Design Patterns', 'content' => 'Repository and unit of work.'],
+                ['title' => 'Database Indexes', 'content' => 'How to make queries faster.'],
+            ],
             'Database patterns',
-            1, // Only "Database Design Patterns" matches both terms
+            1, // only the first post matches both terms
         ];
 
         yield 'search all terms inverted order' => [
-            [],
+            [
+                ['title' => 'Database Design Patterns', 'content' => 'Repository and unit of work.'],
+                ['title' => 'Database Indexes', 'content' => 'How to make queries faster.'],
+            ],
             'patterns Database',
-            1, // Same as above - order doesn't matter in all-terms search
+            1, // order doesn't matter in all-terms search
         ];
 
         yield 'search with quoted terms not matching' => [
-            [],
+            [
+                ['title' => 'Database Design Patterns', 'content' => 'Repository and unit of work.'],
+            ],
             '"Patterns Database"',
-            0, // No entity has this exact phrase
+            0, // no post has this exact phrase
         ];
 
         yield 'quoted terms with inside quotes' => [
             [
-                ['searchableTextField' => 'Foo "Bar Baz Article', 'searchableContentField' => 'Content about testing.'],
+                ['title' => 'Foo "Bar Baz Article', 'content' => 'Content about testing.'],
+                ['title' => 'Unrelated Article', 'content' => 'Nothing in common.'],
             ],
             '"foo "bar"',
             1,
         ];
 
         yield 'multiple quoted terms' => [
-            [],
+            [
+                ['title' => 'REST API Development', 'content' => 'This article covers HTTP methods and status codes.'],
+                ['title' => 'REST API Security', 'content' => 'This article covers authentication tokens.'],
+            ],
             '"REST API" "HTTP methods"',
-            1, // Only "REST API Development" matches both phrases
+            1, // only the first post matches both phrases
         ];
 
         yield 'multiple quoted terms and unquoted terms' => [
-            [],
+            [
+                ['title' => 'Security in Web Applications', 'content' => 'XSS attacks and CSRF protection.'],
+                ['title' => 'Web Security Basics', 'content' => 'XSS attacks and SQL injection.'],
+            ],
             '"web" security CSRF',
-            1, // Only "Security in Web Applications" matches all terms
+            1, // only the first post matches all terms
         ];
-    }
-
-    private function createSearchTestEntity(
-        string $searchableTextField,
-        string $searchableContentField,
-        ?string $nonSearchableField = null,
-        ?string $authorEmail = null,
-    ): SearchTestEntity {
-        $author = null;
-        if (null !== $authorEmail) {
-            $author = $this->entityManager->getRepository(SearchTestAuthor::class)->findOneBy(['email' => $authorEmail]);
-        }
-
-        $entity = (new SearchTestEntity())
-            ->setSearchableTextField($searchableTextField)
-            ->setSearchableContentField($searchableContentField)
-            ->setNonSearchableField($nonSearchableField);
-
-        if (null !== $author) {
-            $entity->setAuthor($author);
-        }
-
-        return $entity;
     }
 }

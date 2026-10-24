@@ -4,6 +4,13 @@ EasyAdmin Time Field
 This field is used to represent the time part of a value that stores a PHP
 ``DateTimeInterface`` value (e.g. ``DateTime``, ``DateTimeImmutable``, etc.)
 
+.. tip::
+
+    EasyAdmin provides other fields for date and time contents:
+    :doc:`DateField </fields/DateField>` displays only the date part and
+    :doc:`DateTimeField </fields/DateTimeField>` displays both the date and the
+    time parts.
+
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
 
 .. image:: ../images/fields/field-time.png
@@ -19,17 +26,17 @@ Basic Information
 
   .. code-block:: html
 
-    <input type="time"> ... </select>
+    <input type="time">
 
 Options
 -------
 
-renderAsChoice
-~~~~~~~~~~~~~~
-
 By default, in form pages (``edit`` and ``new``) the field is rendered as an
 HTML5 input field. This is done because modern browsers display an advanced
-date picker for these fields, making them easier to use.
+time picker for these fields, making them easier to use.
+
+``renderAsChoice``
+~~~~~~~~~~~~~~~~~~
 
 If you prefer to display the time as 2 separate ``<select>`` elements to pick
 the hour and minutes, use this option::
@@ -41,12 +48,8 @@ the hour and minutes, use this option::
     Setting this option is equivalent to setting ``widget = choice`` and
     ``html5 = true`` options in the underlying ``TimeType`` Symfony field.
 
-renderAsNativeWidget
-~~~~~~~~~~~~~~~~~~~~
-
-By default, in form pages (``edit`` and ``new``) the field is rendered as an
-HTML5 input field. This is done because modern browsers display an advanced
-date picker for these fields, making them easier to use.
+``renderAsNativeWidget``
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 This option allows you to programmatically enable/disable this behavior (e.g.
 based on the result of some expression). Setting it to ``false`` is equivalent
@@ -59,12 +62,8 @@ to calling ``renderAsChoice()``::
     Setting this option is equivalent to setting ``widget = single_text`` and
     ``html5 = true`` options in the underlying ``TimeType`` Symfony field.
 
-renderAsText
-~~~~~~~~~~~~
-
-By default, in form pages (``edit`` and ``new``) the field is rendered as an
-HTML5 input field. This is done because modern browsers display an advanced
-date picker for these fields, making them easier to use.
+``renderAsText``
+~~~~~~~~~~~~~~~~
 
 If you prefer to display the time as a single ``<input type="text">`` element,
 use this option::
@@ -73,11 +72,11 @@ use this option::
 
 .. note::
 
-    Setting this  option is equivalent to setting ``widget = single_text`` and
+    Setting this option is equivalent to setting ``widget = single_text`` and
     ``html5 = false`` options in the underlying ``TimeType`` Symfony field.
 
-setFormat
-~~~~~~~~~
+``setFormat``
+~~~~~~~~~~~~~
 
 By default, in read-only pages (``index`` and ``detail``) times are displayed in
 the format defined by the :ref:`setTimeFormat() CRUD option <crud-date-time-number-format-options>`.
@@ -91,14 +90,17 @@ Use this option to override that default formatting::
 
     yield TimeField::new('...')->setFormat(DateTimeField::FORMAT_LONG);
 
+The format constants are defined in ``DateTimeField`` and shared by all date and
+time fields.
+
 In addition to predefined formats, you can configure your own format by passing
 a valid `ICU Datetime Pattern`_ to this function::
 
     yield TimeField::new('...')->setFormat('HH:mm:ss zzz');
     yield TimeField::new('...')->setFormat('K:mm a, z');
 
-setTimezone
-~~~~~~~~~~~
+``setTimezone``
+~~~~~~~~~~~~~~~
 
 By default, in read-only pages (``index`` and ``detail``) times are displayed
 using the timezone defined by the :ref:`setTimezone() CRUD option <crud-date-time-number-format-options>`.

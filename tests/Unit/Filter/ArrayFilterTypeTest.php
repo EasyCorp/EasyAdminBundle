@@ -4,13 +4,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Filter;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ArrayFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 class ArrayFilterTypeTest extends TypeTestCase
 {
-    /**
-     * @dataProvider submit
-     */
+    #[DataProvider('submit')]
     public function testSubmit(array $options, array $dataToSubmit, array $expectedData): void
     {
         $form = $this->factory->create(ArrayFilterType::class, null, $options);

@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Form\DataTransformer;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\DataTransformer\StringToFileTransformer;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
@@ -34,9 +35,7 @@ class StringToFileTransformerTest extends TestCase
         self::assertNull($transformer->transform('does-not-exist.txt'));
     }
 
-    /**
-     * @dataProvider cleanRelativePathProvider
-     */
+    #[DataProvider('cleanRelativePathProvider')]
     public function testTransformReturnsFileForCleanRelativePath(string $value): void
     {
         $transformer = $this->createTransformer();
@@ -52,9 +51,7 @@ class StringToFileTransformerTest extends TestCase
         yield 'relative subpath' => ['subdir/normal.txt'];
     }
 
-    /**
-     * @dataProvider unsafeStoredPathProvider
-     */
+    #[DataProvider('unsafeStoredPathProvider')]
     public function testTransformRejectsUnsafeStoredPath(string $value): void
     {
         $transformer = $this->createTransformer();
@@ -73,6 +70,27 @@ class StringToFileTransformerTest extends TestCase
         yield 'backslash parent traversal' => ['sub\\..\\..\\etc'];
         yield 'null byte' => ["file\0.txt"];
         yield 'leading backslash' => ['\\etc\\passwd'];
+    }
+
+    #[DataProvider('emptyValueProvider')]
+    public function testReverseTransformEmptyValue(?array $value, bool $multiple, ?array $expected): void
+    {
+        $transformer = new StringToFileTransformer(
+            $this->uploadDir,
+            static fn (UploadedFile $file): string => $file->getClientOriginalName(),
+            static fn (string $filename): string => $filename,
+            $multiple,
+        );
+
+        self::assertSame($expected, $transformer->reverseTransform($value));
+    }
+
+    public static function emptyValueProvider(): iterable
+    {
+        yield 'null for a single file' => [null, false, null];
+        yield 'empty array for a single file' => [[], false, null];
+        yield 'null for multiple files' => [null, true, []];
+        yield 'empty array for multiple files' => [[], true, []];
     }
 
     public function testReverseTransformPassesFullPathToUploadValidate(): void

@@ -185,7 +185,8 @@ final class FormLayoutFactory
                 $label = $fieldDto->getLabel();
                 $label = $label instanceof TranslatableInterface ? $label->trans($this->translator) : $label;
                 $label = null !== $label ? strip_tags($label) : $label;
-                $tabId = sprintf('tab-%s', $fieldDto->getLabel() ? $slugger->slug($label)->lower()->toString() : ++$tabsWithoutLabelCounter);
+                $tabId = $fieldDto->getCustomOption(FormField::OPTION_TAB_ID)
+                    ?? sprintf('tab-%s', $fieldDto->getLabel() ? $slugger->slug($label)->lower()->toString() : ++$tabsWithoutLabelCounter);
                 $fieldDto->setCustomOption(FormField::OPTION_TAB_ID, $tabId);
                 $fieldDto->setCustomOption(FormField::OPTION_TAB_IS_ACTIVE, $isTabActive);
 

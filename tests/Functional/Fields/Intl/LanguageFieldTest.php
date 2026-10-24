@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Intl;
 
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTest;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class LanguageFieldTest extends AbstractFieldFunctionalTest
+class LanguageFieldTest extends AbstractFieldFunctionalTestCase
 {
     public function testLanguageFieldDisplaysOnIndex(): void
     {

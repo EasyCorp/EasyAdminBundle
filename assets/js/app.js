@@ -36,7 +36,7 @@ class App {
 
         this.#removeHashFormUrl();
         initTabs();
-        this.#createMainMenu();
+        this.#createSidebarSubmenus();
         this.#createLayoutResizeControls();
         this.#createNavigationToggler();
         this.#createSearchHighlight();
@@ -73,33 +73,41 @@ class App {
         window.history.replaceState({}, '', urlWithoutHash);
     }
 
-    #createMainMenu() {
+    #createSidebarSubmenus() {
         // the expand/collapse animation is fully CSS-based (see sidebar.css); this only
         // toggles the 'is-expanded' class, keeping a single submenu open at a time
         // '.is-kept-open' submenus are always expanded: they don't toggle and the
         // accordion never closes them
-        const menuItemsWithSubmenus = document.querySelectorAll(
-            '#main-menu .ea-sidebar-item.has-submenu:not(.is-kept-open)'
-        );
-        menuItemsWithSubmenus.forEach((menuItem) => {
-            const submenuToggle = menuItem.querySelector(':scope > .ea-sidebar-item-link');
-            if (null === submenuToggle) {
+        // the listener is delegated so it also works for sidebar items rendered outside
+        // the main menu (e.g. in custom pages) or added to the page after it loads
+        const submenuItemSelector = '.ea-sidebar-item.has-submenu:not(.is-kept-open)';
+        const submenuToggleSelector = ':scope > .ea-sidebar-item-link';
+
+        document.addEventListener('click', (event) => {
+            const submenuToggle = event.target.closest('.ea-sidebar-item-link');
+            const menuItem = submenuToggle?.parentElement;
+            if (!menuItem?.matches(submenuItemSelector)) {
                 return;
             }
 
-            submenuToggle.addEventListener('click', () => {
-                const willExpand = !menuItem.classList.contains('is-expanded');
+            const willExpand = !menuItem.classList.contains('is-expanded');
 
-                menuItemsWithSubmenus.forEach((otherMenuItem) => {
-                    otherMenuItem.classList.remove('is-expanded');
-                    otherMenuItem
-                        .querySelector(':scope > .ea-sidebar-item-link')
-                        ?.setAttribute('aria-expanded', 'false');
-                });
+            // the accordion applies to the whole menu that contains the item (all its
+            // groups); items rendered outside a menu only close their siblings
+            const accordionScope = menuItem.closest('.ea-sidebar-content') ?? menuItem.parentElement;
+            accordionScope.querySelectorAll(`${submenuItemSelector}.is-expanded`).forEach((otherMenuItem) => {
+                // nested submenus must keep their open ancestors (the components allow
+                // more than one level, even though the main menu only uses one)
+                if (otherMenuItem.contains(menuItem)) {
+                    return;
+                }
 
-                menuItem.classList.toggle('is-expanded', willExpand);
-                submenuToggle.setAttribute('aria-expanded', String(willExpand));
+                otherMenuItem.classList.remove('is-expanded');
+                otherMenuItem.querySelector(submenuToggleSelector)?.setAttribute('aria-expanded', 'false');
             });
+
+            menuItem.classList.toggle('is-expanded', willExpand);
+            submenuToggle.setAttribute('aria-expanded', String(willExpand));
         });
     }
 
@@ -138,23 +146,48 @@ class App {
             return;
         }
 
-        toggler.addEventListener('click', () => {
-            document.querySelector('body').classList.toggle(cssClassName);
+        // listen on window in the capture phase so this runs before Bootstrap closes
+        // open dropdowns and modals: its delegated dropdown handlers also listen in
+        // the capture phase, but on document, so they would run first otherwise
+        const onKeyDown = (event) => {
+            if ('Escape' !== event.key) {
+                return;
+            }
 
-            if (document.querySelector('body').classList.contains(cssClassName)) {
-                modalBackdrop = document.createElement('div');
-                modalBackdrop.classList.add('modal-backdrop', 'fade', 'show');
-                modalBackdrop.onclick = () => {
-                    document.querySelector('body').classList.remove(cssClassName);
-                    document.body.removeChild(modalBackdrop);
-                    modalBackdrop = null;
-                };
+            if (null !== document.querySelector('.dropdown-menu.show, .modal.show')) {
+                return;
+            }
 
-                document.body.appendChild(modalBackdrop);
-            } else if (modalBackdrop) {
-                document.body.removeChild(modalBackdrop);
+            closeSidebar();
+            toggler.focus();
+        };
+
+        const openSidebar = () => {
+            document.body.classList.add(cssClassName);
+            toggler.setAttribute('aria-expanded', 'true');
+
+            modalBackdrop = document.createElement('div');
+            modalBackdrop.classList.add('modal-backdrop', 'fade', 'show');
+            modalBackdrop.onclick = closeSidebar;
+            document.body.appendChild(modalBackdrop);
+
+            window.addEventListener('keydown', onKeyDown, true);
+        };
+
+        const closeSidebar = () => {
+            document.body.classList.remove(cssClassName);
+            toggler.setAttribute('aria-expanded', 'false');
+
+            if (modalBackdrop) {
+                modalBackdrop.remove();
                 modalBackdrop = null;
             }
+
+            window.removeEventListener('keydown', onKeyDown, true);
+        };
+
+        toggler.addEventListener('click', () => {
+            document.body.classList.contains(cssClassName) ? closeSidebar() : openSidebar();
         });
     }
 
@@ -350,7 +383,8 @@ class App {
             });
         });
 
-        const modalTitle = document.querySelector('#modal-batch-action .modal-body-content h4');
+        const modalTitle = document.querySelector('#batch-action-confirmation-title');
+        const modalMessage = document.querySelector('#batch-action-confirmation-message');
         const titleContentWithPlaceholders = modalTitle?.textContent;
 
         document.querySelectorAll('[data-action-batch]').forEach((dataActionBatch) => {
@@ -396,13 +430,19 @@ class App {
                     // show confirmation modal
                     const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
 
-                    // use custom message if provided, otherwise use default modal title
-                    const customMessage = actionElement.getAttribute('data-batch-action-confirm-message');
-                    const messageTemplate = customMessage ?? titleContentWithPlaceholders;
+                    const replacePlaceholders = (template) =>
+                        template
+                            .replace('%action_name%', actionName)
+                            .replace('%num_items%', selectedItems.length.toString());
 
-                    modalTitle.textContent = messageTemplate
-                        .replace('%action_name%', actionName)
-                        .replace('%num_items%', selectedItems.length.toString());
+                    // a custom confirmation message replaces the title and is shown as regular text
+                    const customMessage = actionElement.getAttribute('data-batch-action-confirm-message');
+                    modalTitle.textContent = replacePlaceholders(titleContentWithPlaceholders);
+                    modalTitle.classList.toggle('d-none', null !== customMessage);
+                    if (modalMessage) {
+                        modalMessage.textContent = customMessage ? replacePlaceholders(customMessage) : '';
+                        modalMessage.classList.toggle('d-none', null === customMessage);
+                    }
 
                     // apply to the modal button the same variant as the action that opened the modal
                     const modalButton = document.querySelector('#modal-batch-action-button');
@@ -426,6 +466,7 @@ class App {
 
     #createActionConfirmationModals() {
         const modalTitle = document.querySelector('#action-confirmation-title');
+        const modalMessage = document.querySelector('#action-confirmation-message');
         const modalContent = document.querySelector('#action-confirmation-content');
         const modalButton = document.querySelector('#modal-action-confirmation-button');
         const defaultTitleTemplate = modalTitle?.textContent;
@@ -438,29 +479,25 @@ class App {
                 const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
                 const entityName = actionElement.getAttribute('data-action-entity-name') || '';
                 const entityId = actionElement.getAttribute('data-action-entity-id') || '';
+                const replacePlaceholders = (template) =>
+                    template
+                        .replace('%action_name%', actionName)
+                        .replace('%entity_name%', entityName)
+                        .replace('%entity_id%', entityId);
+                const showText = (element, template) => {
+                    element.textContent = template ? replacePlaceholders(template) : '';
+                    element.classList.toggle('d-none', !template);
+                };
 
-                // use custom message if provided, otherwise use default modal title
+                // a custom confirmation message replaces the title and is shown as regular text
                 const customMessage = actionElement.getAttribute('data-action-confirmation-message');
-                const messageTemplate = customMessage ?? defaultTitleTemplate;
-
-                modalTitle.textContent = messageTemplate
-                    .replace('%action_name%', actionName)
-                    .replace('%entity_name%', entityName)
-                    .replace('%entity_id%', entityId);
-
-                // optional description below the title (e.g. the DELETE action); hidden when absent
-                const contentMessage = actionElement.getAttribute('data-action-confirmation-content');
+                const title = actionElement.getAttribute('data-action-confirmation-title') ?? defaultTitleTemplate;
+                showText(modalTitle, customMessage ? null : title);
+                if (modalMessage) {
+                    showText(modalMessage, customMessage);
+                }
                 if (modalContent) {
-                    if (contentMessage) {
-                        modalContent.textContent = contentMessage
-                            .replace('%action_name%', actionName)
-                            .replace('%entity_name%', entityName)
-                            .replace('%entity_id%', entityId);
-                        modalContent.classList.remove('d-none');
-                    } else {
-                        modalContent.textContent = '';
-                        modalContent.classList.add('d-none');
-                    }
+                    showText(modalContent, actionElement.getAttribute('data-action-confirmation-content'));
                 }
 
                 // use custom button label if provided, otherwise use default

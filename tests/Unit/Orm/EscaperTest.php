@@ -3,13 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Orm;
 
 use EasyCorp\Bundle\EasyAdminBundle\Orm\Escaper;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class EscaperTest extends TestCase
 {
-    /**
-     * @dataProvider sqlAliasDataProvider
-     */
+    #[DataProvider('sqlAliasDataProvider')]
     public function testEscapeDqlAlias(string $expectedAlias, string $entityName): void
     {
         $createdAlias = Escaper::escapeDqlAlias($entityName);

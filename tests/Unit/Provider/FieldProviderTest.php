@@ -9,7 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInter
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\ProjectDomain\Project;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\DoctrineTypesTestEntity;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class FieldProviderTest extends KernelTestCase
@@ -20,10 +21,10 @@ class FieldProviderTest extends KernelTestCase
     {
         /** @var EntityManagerInterface $entityManager */
         $entityManager = static::getContainer()->get(EntityManagerInterface::class);
-        $projectDto = new EntityDto(Project::class, $entityManager->getClassMetadata(Project::class));
+        $entityDto = new EntityDto(DoctrineTypesTestEntity::class, $entityManager->getClassMetadata(DoctrineTypesTestEntity::class));
 
         $adminContext = $this->createStub(AdminContextInterface::class);
-        $adminContext->method('getEntity')->willReturn($projectDto);
+        $adminContext->method('getEntity')->willReturn($entityDto);
 
         $adminContextProvider = $this->createStub(AdminContextProviderInterface::class);
         $adminContextProvider->method('getContext')->willReturn($adminContext);
@@ -31,9 +32,7 @@ class FieldProviderTest extends KernelTestCase
         $this->fieldProvider = new FieldProvider($adminContextProvider);
     }
 
-    /**
-     * @dataProvider getDefaultFields
-     */
+    #[DataProvider('getDefaultFields')]
     public function testGetDefaultFields(string $pageName, array $expectedDefaultFields): void
     {
         $this->assertEquals(
@@ -48,111 +47,107 @@ class FieldProviderTest extends KernelTestCase
             'not existing dummy page type',
             [
                 Field::new('id'),
-                Field::new('name'),
-                Field::new('statesSimpleArray'),
-                Field::new('rolesJson'),
-                Field::new('startDate'),
-                Field::new('internal'),
-                Field::new('description'),
-                Field::new('startDateMutable'),
-                Field::new('startDateImmutable'),
-                Field::new('startDateTimeMutable'),
-                Field::new('startDateTimeImmutable'),
-                Field::new('startDateTimeTzMutable'),
-                Field::new('startDateTimeTzImmutable'),
-                Field::new('countInteger'),
-                Field::new('countSmallint'),
-                Field::new('priceDecimal'),
-                Field::new('priceFloat'),
-                Field::new('startTimeMutable'),
-                Field::new('startTimeImmutable'),
-                Field::new('price.amount'),
-                Field::new('price.currency'),
+                Field::new('stringColumn'),
+                Field::new('simpleArrayColumn'),
+                Field::new('jsonColumn'),
+                Field::new('booleanColumn'),
+                Field::new('textColumn'),
+                Field::new('dateMutableColumn'),
+                Field::new('dateImmutableColumn'),
+                Field::new('dateTimeMutableColumn'),
+                Field::new('dateTimeImmutableColumn'),
+                Field::new('dateTimeTzMutableColumn'),
+                Field::new('dateTimeTzImmutableColumn'),
+                Field::new('integerColumn'),
+                Field::new('smallintColumn'),
+                Field::new('decimalColumn'),
+                Field::new('floatColumn'),
+                Field::new('timeMutableColumn'),
+                Field::new('timeImmutableColumn'),
+                Field::new('address.street'),
+                Field::new('address.city'),
             ],
         ];
         yield [
             Crud::PAGE_DETAIL,
             [
                 Field::new('id'),
-                Field::new('name'),
-                Field::new('statesSimpleArray'),
-                Field::new('startDate'),
-                Field::new('internal'),
-                Field::new('description'),
-                Field::new('startDateMutable'),
-                Field::new('startDateImmutable'),
-                Field::new('startDateTimeMutable'),
-                Field::new('startDateTimeImmutable'),
-                Field::new('startDateTimeTzMutable'),
-                Field::new('startDateTimeTzImmutable'),
-                Field::new('countInteger'),
-                Field::new('countSmallint'),
-                Field::new('priceDecimal'),
-                Field::new('priceFloat'),
-                Field::new('startTimeMutable'),
-                Field::new('startTimeImmutable'),
-                Field::new('price.amount'),
-                Field::new('price.currency'),
+                Field::new('stringColumn'),
+                Field::new('simpleArrayColumn'),
+                Field::new('booleanColumn'),
+                Field::new('textColumn'),
+                Field::new('dateMutableColumn'),
+                Field::new('dateImmutableColumn'),
+                Field::new('dateTimeMutableColumn'),
+                Field::new('dateTimeImmutableColumn'),
+                Field::new('dateTimeTzMutableColumn'),
+                Field::new('dateTimeTzImmutableColumn'),
+                Field::new('integerColumn'),
+                Field::new('smallintColumn'),
+                Field::new('decimalColumn'),
+                Field::new('floatColumn'),
+                Field::new('timeMutableColumn'),
+                Field::new('timeImmutableColumn'),
+                Field::new('address.street'),
+                Field::new('address.city'),
             ],
         ];
         yield [
             Crud::PAGE_EDIT,
             [
-                Field::new('name'),
-                Field::new('statesSimpleArray'),
-                Field::new('startDate'),
-                Field::new('internal'),
-                Field::new('description'),
-                Field::new('startDateMutable'),
-                Field::new('startDateImmutable'),
-                Field::new('startDateTimeMutable'),
-                Field::new('startDateTimeImmutable'),
-                Field::new('startDateTimeTzMutable'),
-                Field::new('startDateTimeTzImmutable'),
-                Field::new('countInteger'),
-                Field::new('countSmallint'),
-                Field::new('priceDecimal'),
-                Field::new('priceFloat'),
-                Field::new('startTimeMutable'),
-                Field::new('startTimeImmutable'),
-                Field::new('price.amount'),
-                Field::new('price.currency'),
+                Field::new('stringColumn'),
+                Field::new('simpleArrayColumn'),
+                Field::new('booleanColumn'),
+                Field::new('textColumn'),
+                Field::new('dateMutableColumn'),
+                Field::new('dateImmutableColumn'),
+                Field::new('dateTimeMutableColumn'),
+                Field::new('dateTimeImmutableColumn'),
+                Field::new('dateTimeTzMutableColumn'),
+                Field::new('dateTimeTzImmutableColumn'),
+                Field::new('integerColumn'),
+                Field::new('smallintColumn'),
+                Field::new('decimalColumn'),
+                Field::new('floatColumn'),
+                Field::new('timeMutableColumn'),
+                Field::new('timeImmutableColumn'),
+                Field::new('address.street'),
+                Field::new('address.city'),
             ],
         ];
         yield [
             Crud::PAGE_INDEX,
             [
                 Field::new('id'),
-                Field::new('name'),
-                Field::new('statesSimpleArray'),
-                Field::new('startDate'),
-                Field::new('internal'),
-                Field::new('startDateMutable'),
-                Field::new('startDateImmutable'),
+                Field::new('stringColumn'),
+                Field::new('simpleArrayColumn'),
+                Field::new('booleanColumn'),
+                Field::new('dateMutableColumn'),
+                Field::new('dateImmutableColumn'),
+                Field::new('dateTimeMutableColumn'),
             ],
         ];
         yield [
             Crud::PAGE_NEW,
             [
-                Field::new('name'),
-                Field::new('statesSimpleArray'),
-                Field::new('startDate'),
-                Field::new('internal'),
-                Field::new('description'),
-                Field::new('startDateMutable'),
-                Field::new('startDateImmutable'),
-                Field::new('startDateTimeMutable'),
-                Field::new('startDateTimeImmutable'),
-                Field::new('startDateTimeTzMutable'),
-                Field::new('startDateTimeTzImmutable'),
-                Field::new('countInteger'),
-                Field::new('countSmallint'),
-                Field::new('priceDecimal'),
-                Field::new('priceFloat'),
-                Field::new('startTimeMutable'),
-                Field::new('startTimeImmutable'),
-                Field::new('price.amount'),
-                Field::new('price.currency'),
+                Field::new('stringColumn'),
+                Field::new('simpleArrayColumn'),
+                Field::new('booleanColumn'),
+                Field::new('textColumn'),
+                Field::new('dateMutableColumn'),
+                Field::new('dateImmutableColumn'),
+                Field::new('dateTimeMutableColumn'),
+                Field::new('dateTimeImmutableColumn'),
+                Field::new('dateTimeTzMutableColumn'),
+                Field::new('dateTimeTzImmutableColumn'),
+                Field::new('integerColumn'),
+                Field::new('smallintColumn'),
+                Field::new('decimalColumn'),
+                Field::new('floatColumn'),
+                Field::new('timeMutableColumn'),
+                Field::new('timeImmutableColumn'),
+                Field::new('address.street'),
+                Field::new('address.city'),
             ],
         ];
     }

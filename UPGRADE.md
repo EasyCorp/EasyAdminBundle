@@ -13,7 +13,7 @@ HTML of the flag. Use the new `radius` and `bordered` props to change them. To
 render flags without any style:
 
 ```twig
-<twig:ea:Flag countryCode="JP" radius="none" :bordered="false"/>
+<twig:ea:Flag countryCode="JP" radius="none" bordered="{{ false }}"/>
 ```
 
 When the `showName` prop is enabled, the country name is now wrapped in a
@@ -22,6 +22,32 @@ When the `showName` prop is enabled, the country name is now wrapped in a
 The `--field-country-flag-border-color` CSS variable, which wasn't used, has
 been removed. Use `--flag-outline-color` and `--flag-radius` to customize the
 look of flags.
+
+### Action Permissions Now Protect the URLs of Custom Actions
+
+`Actions::setPermission()` and `Actions::disable()` used to only hide the buttons of
+custom actions, so their URLs still worked. Now, running a custom action method
+(used in `linkToCrudAction()`, or in `linkToRoute()` with a custom action route of
+the same CRUD controller) throws a 403 error when the action is disabled or the user
+doesn't have its permission.
+
+Permission checks that you added inside those methods are no longer needed. If
+several actions use the same method, one enabled and granted action is enough to run
+it, so set the same permission on all of them or add `#[IsGranted]` to the method.
+Actions that use `linkToUrl()` or other routes don't change: protect them with
+`#[IsGranted]` or `access_control`.
+
+### `?routeName=` URLs of Admin Routes Are Redirected
+
+URLs like `/admin?routeName=admin_product_publish` now redirect (with a `307` status
+code) to the URL of the admin route when `routeName` is an admin route or an alias of
+one. EasyAdmin doesn't generate these URLs, so this only affects URLs written by hand.
+
+### Batch Delete Checks All Its Permissions
+
+Batch delete now checks the permission of `Action::BATCH_DELETE` and the entity
+permission of each selected entity. If any of them isn't granted, no entity is
+deleted.
 
 ## EasyAdmin 5.9.0
 

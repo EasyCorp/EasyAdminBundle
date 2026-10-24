@@ -303,10 +303,10 @@ the HTML of the flag and you don't have to load any CSS file. Use the
 
     <twig:ea:Flag countryCode="JP" radius="md"/>
 
-    <twig:ea:Flag countryCode="JP" :bordered="false"/>
+    <twig:ea:Flag countryCode="JP" bordered="{{ false }}"/>
 
     {# renders the original flag, without any style #}
-    <twig:ea:Flag countryCode="JP" radius="none" :bordered="false"/>
+    <twig:ea:Flag countryCode="JP" radius="none" bordered="{{ false }}"/>
 
 You can also customize flags with these CSS variables, which you can define
 in any parent element (e.g. ``:root``) or in the ``style`` attribute of the

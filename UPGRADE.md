@@ -1,6 +1,16 @@
 Upgrade Guide
 =============
 
+## EasyAdmin 5.9.0
+
+### `AdminRouterSubscriber` Gets Its Services From a Service Locator
+
+`AdminRouterSubscriber` now receives a single service locator in its constructor
+instead of its services, so they are only built on EasyAdmin requests. Passing
+the services as separate arguments still works, but it's deprecated and it will
+not be possible in EasyAdmin 6.0. This only affects you if you create this
+subscriber yourself.
+
 ## EasyAdmin 5.8.0
 
 ### `createEntity()` Can Return `null`

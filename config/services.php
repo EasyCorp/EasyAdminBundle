@@ -20,6 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityUpdaterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\NestedAssociationResolverInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Registry\AdminControllerRegistryInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Translation\EntityTranslationIdGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector;
 use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
@@ -110,11 +111,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Flag;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Icon;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Pagination;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ServiceLocator;
+use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Http\AccessMapInterface;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services()
@@ -194,25 +201,28 @@ return static function (ContainerConfigurator $container) {
 
         ->alias(AdminContextProviderInterface::class, AdminContextProvider::class)
 
+        // the priority is lower than the one of Symfony's ServiceValueResolver (-50) so these
+        // resolvers are only called when no other resolver handles the controller argument
         ->set(AdminContextResolver::class)
             ->arg(0, service(AdminContextProvider::class))
-            ->tag('controller.argument_value_resolver')
+            ->tag('controller.argument_value_resolver', ['priority' => -60])
 
         ->set(BatchActionDtoResolver::class)
             ->arg(0, service(AdminContextProvider::class))
-            ->arg(1, service(AdminUrlGenerator::class))
-            ->tag('controller.argument_value_resolver')
+            ->tag('controller.argument_value_resolver', ['priority' => -60])
 
         ->set(AdminRouterSubscriber::class)
-            ->arg(0, service(AdminContextFactory::class))
-            ->arg(1, service(ControllerFactory::class))
-            ->arg(2, service('controller_resolver'))
-            ->arg(3, service('router'))
-            ->arg(4, service('router'))
-            ->arg(5, service('cache.easyadmin'))
-            ->arg(6, service(AdminRouteGenerator::class))
-            ->arg(7, new Reference('security.access_map', ContainerInterface::NULL_ON_INVALID_REFERENCE))
-            ->arg(8, new Reference('security.authorization_checker', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(0, service_locator([
+                AdminContextFactory::class => service(AdminContextFactory::class),
+                ControllerFactory::class => service(ControllerFactory::class),
+                ControllerResolverInterface::class => service('controller_resolver'),
+                UrlGeneratorInterface::class => service('router'),
+                RequestMatcherInterface::class => service('router'),
+                CacheItemPoolInterface::class => service('cache.easyadmin'),
+                AdminRouteGeneratorInterface::class => service(AdminRouteGenerator::class),
+                AccessMapInterface::class => service('security.access_map')->ignoreOnInvalid(),
+                AuthorizationCheckerInterface::class => service('security.authorization_checker')->ignoreOnInvalid(),
+            ]))
             ->tag('kernel.event_subscriber')
 
         ->set(ControllerFactory::class)

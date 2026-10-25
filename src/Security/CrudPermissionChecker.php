@@ -2,19 +2,21 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Security;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Security\CrudPermissionCheckerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
 final class CrudPermissionChecker implements CrudPermissionCheckerInterface, ResetInterface
 {
-    /** @var array<string, ?CrudDto> */
+    /** @var array<string, CrudDto> */
     private array $targetCrudDtoCache = [];
 
     public function __construct(
@@ -24,12 +26,9 @@ final class CrudPermissionChecker implements CrudPermissionCheckerInterface, Res
     ) {
     }
 
-    public function isGranted(AdminContext $context, string $crudControllerFqcn, string $action, ?EntityDto $entityDto = null): bool
+    public function isGranted(AdminContextInterface $context, string $crudControllerFqcn, string $action, ?EntityDto $entityDto = null): bool
     {
         $targetCrud = $this->getTargetCrudDto($context, $crudControllerFqcn, $action);
-        if (null === $targetCrud) {
-            return true;
-        }
 
         $entityPermission = $targetCrud->getEntityPermission();
         $entityInstance = $entityDto?->getInstance();
@@ -52,10 +51,13 @@ final class CrudPermissionChecker implements CrudPermissionCheckerInterface, Res
     /**
      * The CrudDto is cached because building the target AdminContext once per row
      * (e.g. AssociationField links on an index page) is too expensive.
+     *
+     * @param AdminContextInterface<object> $context
      */
-    private function getTargetCrudDto(AdminContext $context, string $crudControllerFqcn, string $crudAction): ?CrudDto
+    private function getTargetCrudDto(AdminContextInterface $context, string $crudControllerFqcn, string $crudAction): CrudDto
     {
-        $key = $crudControllerFqcn.'::'.$crudAction;
+        $dashboardControllerFqcn = $context->getDashboardControllerFqcn();
+        $key = $dashboardControllerFqcn.'::'.$crudControllerFqcn.'::'.$crudAction;
         if (\array_key_exists($key, $this->targetCrudDtoCache)) {
             return $this->targetCrudDtoCache[$key];
         }
@@ -65,19 +67,25 @@ final class CrudPermissionChecker implements CrudPermissionCheckerInterface, Res
         $request = new Request();
         $request->setLocale($context->getRequest()->getLocale());
 
-        $dashboardController = $this->controllerFactory->getDashboardControllerInstance(
-            $context->getDashboardControllerFqcn(),
-            $request,
-        );
+        try {
+            $dashboardController = $this->controllerFactory->getDashboardControllerInstance($dashboardControllerFqcn, $request);
+        } catch (NotFoundHttpException $e) {
+            throw new \LogicException(sprintf('The "%s" dashboard controller of the given admin context cannot be resolved.', $dashboardControllerFqcn), previous: $e);
+        }
 
-        $crudController = $this->controllerFactory->getCrudControllerInstance(
-            $crudControllerFqcn,
-            $crudAction,
-            $request,
-        );
+        if (null === $dashboardController) {
+            throw new \LogicException(sprintf('The "%s" dashboard controller of the given admin context cannot be resolved.', $dashboardControllerFqcn));
+        }
 
-        if (null === $crudController || null === $dashboardController) {
-            return $this->targetCrudDtoCache[$key] = null;
+        // resolved through the 'index' method because custom action names don't always match a method name
+        try {
+            $crudController = $this->controllerFactory->getCrudControllerInstance($crudControllerFqcn, Action::INDEX, $request);
+        } catch (NotFoundHttpException $e) {
+            throw new \InvalidArgumentException(sprintf('The "%s" class is not a CRUD controller or it doesn\'t exist.', $crudControllerFqcn), previous: $e);
+        }
+
+        if (null === $crudController) {
+            throw new \InvalidArgumentException(sprintf('The "%s" class is not a CRUD controller or it doesn\'t exist.', $crudControllerFqcn));
         }
 
         $targetContext = $this->adminContextFactory->create(
@@ -87,6 +95,7 @@ final class CrudPermissionChecker implements CrudPermissionCheckerInterface, Res
             $crudAction,
         );
 
-        return $this->targetCrudDtoCache[$key] = $targetContext->getCrud();
+        return $this->targetCrudDtoCache[$key] = $targetContext->getCrud()
+            ?? throw new \LogicException(sprintf('The admin context of the "%s" CRUD controller has no CRUD configuration.', $crudControllerFqcn));
     }
 }

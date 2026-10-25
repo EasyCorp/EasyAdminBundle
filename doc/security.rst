@@ -169,8 +169,10 @@ renders links or embedded blocks that belong to another CRUD controller (e.g. in
 a custom field configurator), use the ``CrudPermissionCheckerInterface`` service
 to apply the same rules instead of duplicating the permission names::
 
+    use App\Controller\Admin\InvoiceCrudController;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
     use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+    use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
     use EasyCorp\Bundle\EasyAdminBundle\Contracts\Security\CrudPermissionCheckerInterface;
     use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
     use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
@@ -188,7 +190,10 @@ to apply the same rules instead of duplicating the permission names::
 
             // TRUE only if the user can run the 'detail' action of InvoiceCrudController
             // for this invoice, according to that controller's own permissions
-            if (!$this->permissionChecker->isGranted($context, InvoiceCrudController::class, Action::DETAIL, $invoiceDto)) {
+            $isGranted = $this->permissionChecker->isGranted(
+                $context, InvoiceCrudController::class, Action::DETAIL, $invoiceDto
+            );
+            if (!$isGranted) {
                 // ... hide the field or render a notice instead of the preview
             }
         }
@@ -198,7 +203,11 @@ to apply the same rules instead of duplicating the permission names::
 
 Pass the ``EntityDto`` of the target entity whenever you have it: the
 ``setEntityPermission()`` check needs the entity instance. When you pass
-``null``, only the action-level permission is checked.
+``null`` (or an ``EntityDto`` without an entity instance, as in the ``index``
+action), only the action-level permission is checked.
+
+The second argument must be the FQCN of a CRUD controller. Otherwise, the
+``isGranted()`` method throws an ``\InvalidArgumentException``.
 
 .. _security-fields:
 

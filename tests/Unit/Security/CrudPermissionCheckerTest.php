@@ -23,15 +23,48 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class CrudPermissionCheckerTest extends KernelTestCase
 {
-    public function testGrantsWhenTargetCrudCannotBeResolved(): void
+    public function testThrowsWhenTargetIsNotACrudController(): void
+    {
+        $checker = $this->buildChecker($this->createMock(AuthorizationCheckerInterface::class));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('The "%s" class is not a CRUD controller', DashboardController::class));
+
+        $checker->isGranted($this->buildContext(), DashboardController::class, Action::INDEX);
+    }
+
+    public function testThrowsWhenTargetControllerDoesNotExist(): void
+    {
+        $checker = $this->buildChecker($this->createMock(AuthorizationCheckerInterface::class));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The "App\\Controller\\MissingCrudController" class is not a CRUD controller');
+
+        $checker->isGranted($this->buildContext(), 'App\\Controller\\MissingCrudController', Action::INDEX);
+    }
+
+    public function testThrowsWhenDashboardControllerCannotBeResolved(): void
+    {
+        $checker = $this->buildChecker($this->createMock(AuthorizationCheckerInterface::class));
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('The "App\\Controller\\MissingDashboardController" dashboard controller');
+
+        $checker->isGranted($this->buildContext('App\\Controller\\MissingDashboardController'), CategoryCrudController::class, Action::INDEX);
+    }
+
+    public function testResolvesCustomActionsWhoseNameIsNotAControllerMethod(): void
     {
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $authChecker->expects($this->never())->method('isGranted');
+        $authChecker->expects($this->once())->method('isGranted')
+            ->with(Permission::EA_EXECUTE_ACTION, $this->callback(
+                static fn (array $subject) => 'action1' === $subject['action'] && CategoryCrudController::class === $subject['crud']->getControllerFqcn(),
+            ))
+            ->willReturn(true);
 
         $checker = $this->buildChecker($authChecker);
-        $this->primeTargetCrudDtoCache($checker, CategoryCrudController::class, Action::DETAIL, null);
 
-        $this->assertTrue($checker->isGranted($this->buildContext(), CategoryCrudController::class, Action::DETAIL, $this->buildCategoryDto()));
+        $this->assertTrue($checker->isGranted($this->buildContext(), CategoryCrudController::class, 'action1'));
     }
 
     public function testDeniesWhenTargetEntityPermissionDenies(): void
@@ -92,9 +125,10 @@ class CrudPermissionCheckerTest extends KernelTestCase
 
         $cache = (new \ReflectionProperty($checker, 'targetCrudDtoCache'))->getValue($checker);
 
-        $this->assertArrayHasKey(CategoryCrudController::class.'::'.Action::DETAIL, $cache);
-        $this->assertInstanceOf(CrudDto::class, $cache[CategoryCrudController::class.'::'.Action::DETAIL]);
-        $this->assertSame(CategoryCrudController::class, $cache[CategoryCrudController::class.'::'.Action::DETAIL]->getControllerFqcn());
+        $key = DashboardController::class.'::'.CategoryCrudController::class.'::'.Action::DETAIL;
+        $this->assertArrayHasKey($key, $cache);
+        $this->assertInstanceOf(CrudDto::class, $cache[$key]);
+        $this->assertSame(CategoryCrudController::class, $cache[$key]->getControllerFqcn());
 
         $checker->reset();
 
@@ -112,7 +146,7 @@ class CrudPermissionCheckerTest extends KernelTestCase
         );
     }
 
-    private function buildContext(): AdminContext
+    private function buildContext(string $dashboardControllerFqcn = DashboardController::class): AdminContext
     {
         $request = new Request();
         $request->setLocale('en');
@@ -120,7 +154,7 @@ class CrudPermissionCheckerTest extends KernelTestCase
         return AdminContext::forTesting(
             requestContext: RequestContext::forTesting($request),
             crudContext: CrudContext::forTesting(new CrudDto()),
-            dashboardContext: DashboardContext::forTesting(dashboardControllerFqcn: DashboardController::class),
+            dashboardContext: DashboardContext::forTesting(dashboardControllerFqcn: $dashboardControllerFqcn),
             i18nContext: I18nContext::forTesting('en'),
         );
     }
@@ -138,11 +172,11 @@ class CrudPermissionCheckerTest extends KernelTestCase
      * Seeds the target-CrudDto cache so the permission gates run against a controlled CrudDto
      * without exercising the full AdminContext-resolution chain.
      */
-    private function primeTargetCrudDtoCache(CrudPermissionChecker $checker, string $crudControllerFqcn, string $crudAction, ?CrudDto $crudDto): void
+    private function primeTargetCrudDtoCache(CrudPermissionChecker $checker, string $crudControllerFqcn, string $crudAction, CrudDto $crudDto): void
     {
         $property = new \ReflectionProperty($checker, 'targetCrudDtoCache');
         $cache = $property->getValue($checker);
-        $cache[$crudControllerFqcn.'::'.$crudAction] = $crudDto;
+        $cache[DashboardController::class.'::'.$crudControllerFqcn.'::'.$crudAction] = $crudDto;
         $property->setValue($checker, $cache);
     }
 }

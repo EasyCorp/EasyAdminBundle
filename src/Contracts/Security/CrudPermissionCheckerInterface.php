@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Security;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 
 /**
@@ -13,8 +13,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 interface CrudPermissionCheckerInterface
 {
     /**
-     * @param AdminContext<object>   $context
-     * @param EntityDto<object>|null $entityDto when null, only the action-level permission is checked
+     * The entity permission is only checked when $entityDto wraps an entity instance;
+     * otherwise (e.g. for the 'index' action) only the action permission is checked.
+     *
+     * @param AdminContextInterface<object> $context
+     * @param EntityDto<object>|null        $entityDto
+     *
+     * @throws \InvalidArgumentException if $crudControllerFqcn is not a CRUD controller
+     * @throws \LogicException           if the dashboard controller of $context cannot be resolved
      */
-    public function isGranted(AdminContext $context, string $crudControllerFqcn, string $action, ?EntityDto $entityDto = null): bool;
+    public function isGranted(AdminContextInterface $context, string $crudControllerFqcn, string $action, ?EntityDto $entityDto = null): bool;
 }

@@ -37,6 +37,10 @@
 .modal-dialog-xl {
     --bs-modal-width: 800px;
 }
+.modal-dialog.modal-fullscreen {
+    max-inline-size: unset;
+    --bs-modal-width: 100%;
+}
 
 /* Appear/disappear in place with a quick fade + zoom (shadcn) instead of sliding from the top.
    Bootstrap only fades the backdrop, so we add opacity to the dialog here. Closing reuses the

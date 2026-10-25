@@ -132,9 +132,10 @@ Restrict Access to Actions
 --------------------------
 
 Use the ``setPermission()`` method to define the security permission required to
-see the action link/button on any of the :ref:`backend pages <crud-pages>`. This
-works both for :ref:`built-in actions <actions-built-in>` and for
-:ref:`custom actions <actions-custom>`::
+see the action link/button on any of the :ref:`backend pages <crud-pages>` and to
+run the action. This works both for :ref:`built-in actions <actions-built-in>`
+and for :ref:`custom actions <actions-custom>`. If users without this permission
+open the URL of the action, they see a "Forbidden Action" error::
 
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -156,6 +157,24 @@ works both for :ref:`built-in actions <actions-built-in>` and for
             ->setPermission(Action::NEW, 'ROLE_ADMIN')
         ;
     }
+
+If several actions run the same CRUD controller method (for example, two actions
+on different pages that call ``linkToCrudAction('renderInvoice')``), users can
+run that method when at least one of those actions is enabled and they have its
+permission. An action without a permission allows everyone to run the method,
+even if other actions that run the same method require a permission.
+
+To require the same permission no matter which action runs the method, set that
+permission on all those actions, or add the ``#[IsGranted]`` attribute to the
+controller method.
+
+.. caution::
+
+    Permissions only hide the buttons of the actions that use ``linkToUrl()``,
+    or ``linkToRoute()`` with a route that isn't a custom action of the same
+    CRUD controller, because EasyAdmin can't check those URLs. Protect them with
+    the ``#[IsGranted]`` attribute or with the ``access_control`` option of
+    Symfony Security.
 
 .. _security-fields:
 

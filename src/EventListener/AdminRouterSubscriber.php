@@ -2,19 +2,30 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
+use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\CacheKey;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionGroupDto;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
@@ -85,6 +96,12 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
             $this->adminRouteGenerator->generateAll();
         }
 
+        if (null !== $redirectResponse = $this->getRedirectionToAdminRoute($request)) {
+            $event->setResponse($redirectResponse);
+
+            return;
+        }
+
         $dashboardControllerFqcn = $request->attributes->get(EA::DASHBOARD_CONTROLLER_FQCN);
         if (null === $dashboardControllerInstance = $this->getDashboardControllerInstance($dashboardControllerFqcn, $request)) {
             return;
@@ -151,6 +168,8 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
         }
 
         $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
+
+        $this->assertCustomCrudActionIsGranted($adminContext, $request);
     }
 
     /**
@@ -193,23 +212,53 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
         return $this->controllerFactory->getDashboardControllerInstance($dashboardControllerFqcn, $request);
     }
 
+    /**
+     * EasyAdmin always links admin routes through their own URLs (see AdminUrlGenerator::generateUrl()).
+     * Forwarding one of them through '?routeName=' would run its controller with the admin context of
+     * the current URL, so its action and entity permissions would be checked against the configuration
+     * of the wrong CRUD controller (or of no CRUD controller at all). Redirect to the real URL instead,
+     * which builds the right admin context; the 307 status code keeps the HTTP method and the body.
+     *
+     * The target is recognized by the route it resolves to, not by the given name, because that name
+     * can be an alias of an admin route.
+     */
+    private function getRedirectionToAdminRoute(Request $request): ?RedirectResponse
+    {
+        if (null === $request->query->get(EA::ROUTE_NAME)) {
+            return null;
+        }
+
+        try {
+            $targetRoute = $this->resolveTargetRoute($request);
+        } catch (HttpException) {
+            // the same error is thrown later when forwarding the request, once the
+            // admin context exists, so the error page uses the EasyAdmin layout
+            return null;
+        }
+
+        if (true !== ($targetRoute['parameters'][EA::ROUTE_CREATED_BY_EASYADMIN] ?? false)) {
+            return null;
+        }
+
+        return new RedirectResponse($targetRoute['url'], Response::HTTP_TEMPORARY_REDIRECT);
+    }
+
     private function getSymfonyControllerFqcn(Request $request): ?string
+    {
+        $targetRoute = $this->resolveTargetRoute($request);
+        $this->assertTargetRouteAccessIsGranted($targetRoute['request']);
+
+        return $targetRoute['parameters']['_controller'] ?? null;
+    }
+
+    /**
+     * @return array{url: string, request: Request, parameters: array<string, mixed>}
+     */
+    private function resolveTargetRoute(Request $request): array
     {
         $routeName = $request->query->get(EA::ROUTE_NAME);
         $routeParams = $request->query->all(EA::ROUTE_PARAMS);
-
-        try {
-            $url = $this->urlGenerator->generate($routeName, $routeParams, UrlGeneratorInterface::ABSOLUTE_PATH);
-        } catch (RouteNotFoundException $e) {
-            // 'routeName' and 'routeParams' come from the query string, so a
-            // typo (or a bot probing legacy ?routeName= URLs) is a client
-            // error: return a 404 instead of an uncaught 500 (#7827)
-            throw new NotFoundHttpException(sprintf('The route "%s" does not exist.', $routeName), $e);
-        } catch (MissingMandatoryParametersException $e) {
-            throw new NotFoundHttpException(sprintf('The route "%s" cannot be generated because some mandatory parameters are missing.', $routeName), $e);
-        } catch (InvalidParameterException $e) {
-            throw new NotFoundHttpException(sprintf('The parameters provided for the route "%s" are not valid.', $routeName), $e);
-        }
+        $url = $this->generateTargetRouteUrl($routeName, $routeParams);
 
         $newRequest = $request->duplicate();
         $newRequest->attributes->remove('_controller');
@@ -220,14 +269,13 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
         // subpath prefix (AKA sub-folder, sub-url or sub-path) using the HTTP
         // header x-forwarded-prefix, the URL is generated with
         // that prefix. We need to remove it before we can match it.
+        $pathToMatch = $url;
         $basePath = $request->getBasePath();
-        if ('' !== $request->getBasePath() && str_starts_with($url, $basePath)) {
-            $url = mb_substr($url, mb_strlen($basePath));
+        if ('' !== $request->getBasePath() && str_starts_with($pathToMatch, $basePath)) {
+            $pathToMatch = mb_substr($pathToMatch, mb_strlen($basePath));
         }
 
-        $newRequest->server->set('REQUEST_URI', $url);
-
-        $this->assertTargetRouteAccessIsGranted($newRequest);
+        $newRequest->server->set('REQUEST_URI', $pathToMatch);
 
         try {
             $parameters = $this->requestMatcher->matchRequest($newRequest);
@@ -237,7 +285,26 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
             throw new NotFoundHttpException(sprintf('The route "%s" does not match the current request (check its host, scheme and condition).', $routeName), $e);
         }
 
-        return $parameters['_controller'] ?? null;
+        return ['url' => $url, 'request' => $newRequest, 'parameters' => $parameters];
+    }
+
+    /**
+     * @param array<string, mixed> $routeParams
+     */
+    private function generateTargetRouteUrl(string $routeName, array $routeParams): string
+    {
+        try {
+            return $this->urlGenerator->generate($routeName, $routeParams, UrlGeneratorInterface::ABSOLUTE_PATH);
+        } catch (RouteNotFoundException $e) {
+            // 'routeName' and 'routeParams' come from the query string, so a
+            // typo (or a bot probing legacy ?routeName= URLs) is a client
+            // error: return a 404 instead of an uncaught 500 (#7827)
+            throw new NotFoundHttpException(sprintf('The route "%s" does not exist.', $routeName), $e);
+        } catch (MissingMandatoryParametersException $e) {
+            throw new NotFoundHttpException(sprintf('The route "%s" cannot be generated because some mandatory parameters are missing.', $routeName), $e);
+        } catch (InvalidParameterException $e) {
+            throw new NotFoundHttpException(sprintf('The parameters provided for the route "%s" are not valid.', $routeName), $e);
+        }
     }
 
     /**
@@ -273,6 +340,81 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
         }
 
         throw new AccessDeniedException(sprintf('Access to the "%s" route is denied by an access control rule; it cannot be reached through an EasyAdmin custom action.', $request->attributes->get('_route')));
+    }
+
+    /**
+     * Action permissions and disabled actions are keyed by action name, but the request
+     * only carries the controller method and the route name. A custom CRUD action method
+     * can be reached by several actions (on different pages, or with different names), so
+     * the request is allowed when at least one of them could be rendered for this user.
+     * Built-in actions are excluded because their controller methods check this themselves.
+     */
+    private function assertCustomCrudActionIsGranted(AdminContext $adminContext, Request $request): void
+    {
+        $crudDto = $adminContext->getCrud();
+        $crudActionName = $crudDto?->getCurrentAction();
+        if (null === $this->authorizationChecker || null === $crudActionName || \in_array($crudActionName, AdminRouteGenerator::BUILT_IN_ACTION_NAMES, true)) {
+            return;
+        }
+
+        $linkedActions = $this->findActionsLinkedToCrudAction($crudDto->getActionsConfig(), $crudActionName, $request);
+        if ([] === $linkedActions) {
+            return;
+        }
+
+        foreach ($linkedActions as [$actionDto, $isEntityAction]) {
+            // use the same subject as when rendering the action (see ActionFactory)
+            $entityDto = $isEntityAction ? $adminContext->getEntity() : null;
+            if ($this->authorizationChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['crud' => $crudDto, 'action' => $actionDto, 'entity' => $entityDto])) {
+                return;
+            }
+        }
+
+        throw new ForbiddenActionException($adminContext);
+    }
+
+    /**
+     * The actions inside a group are typed by the group they belong to, not by themselves.
+     *
+     * @return list<array{ActionDto, bool}>
+     */
+    private function findActionsLinkedToCrudAction(ActionConfigDto $actionConfigDto, string $crudActionName, Request $request): array
+    {
+        $actionsPerPage = $actionConfigDto->getActions();
+        $actionItems = $actionsPerPage instanceof ActionCollection ? $actionsPerPage->all() : array_merge(...array_values(array_map(array_values(...), $actionsPerPage)));
+
+        $linkedActions = [];
+        foreach ($actionItems as $actionItem) {
+            $actionDtos = $actionItem instanceof ActionGroupDto ? array_filter([$actionItem->getMainAction(), ...$actionItem->getActions()]) : [$actionItem];
+            foreach ($actionDtos as $actionDto) {
+                if ($crudActionName === $actionDto->getCrudActionName() || (null !== $actionDto->getRouteName() && $this->isRouteOfCurrentRequest($actionDto->getRouteName(), $request))) {
+                    $linkedActions[] = [$actionDto, $actionItem->isEntityAction()];
+                }
+            }
+        }
+
+        return $linkedActions;
+    }
+
+    /**
+     * The route name of an action can be an alias of the current route, so routes are compared
+     * by the URL they generate with the parameters of the current request instead of by name.
+     */
+    private function isRouteOfCurrentRequest(string $routeName, Request $request): bool
+    {
+        $currentRouteName = $request->attributes->get('_route');
+        if (null === $currentRouteName || $routeName === $currentRouteName) {
+            return $routeName === $currentRouteName;
+        }
+
+        $currentRouteParams = $request->attributes->get('_route_params', []);
+
+        try {
+            return $this->urlGenerator->generate($routeName, $currentRouteParams) === $this->urlGenerator->generate($currentRouteName, $currentRouteParams);
+        } catch (RouteNotFoundException|MissingMandatoryParametersException|InvalidParameterException) {
+            // the action route doesn't exist or needs other parameters, so it can't be the current route
+            return false;
+        }
     }
 
     /**

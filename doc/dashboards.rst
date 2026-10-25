@@ -1089,10 +1089,10 @@ Text Direction
 ~~~~~~~~~~~~~~
 
 The backend uses the same language configured in the Symfony application.
-When the locale is Arabic (``ar``), Persian (``fa``) or Hebrew (``he``), the
-HTML text direction is set to ``rtl`` (right-to-left) automatically. Otherwise,
-the text is displayed as ``ltr`` (left-to-right), but you can configure this
-value explicitly::
+When the locale is Arabic (``ar``), Central Kurdish (``ckb``), Persian
+(``fa``) or Hebrew (``he``), the HTML text direction is set to ``rtl``
+(right-to-left) automatically. Otherwise, the text is displayed as ``ltr``
+(left-to-right), but you can configure this value explicitly::
 
     #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
     class DashboardController extends AbstractDashboardController

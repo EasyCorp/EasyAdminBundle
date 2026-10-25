@@ -183,8 +183,9 @@ final readonly class AdminContextFactory
         $locale = $request->getLocale();
 
         $configuredTextDirection = $dashboardDto->getTextDirection();
-        $localePrefix = strtolower(substr($locale, 0, 2));
-        $defaultTextDirection = \in_array($localePrefix, ['ar', 'fa', 'he'], true) ? TextDirection::RTL : TextDirection::LTR;
+        // compare the whole language code because some of them have three letters (e.g. 'ckb' in 'ckb_IQ')
+        $languageCode = strtolower(preg_split('/[_-]/', $locale, 2)[0]);
+        $defaultTextDirection = \in_array($languageCode, ['ar', 'ckb', 'fa', 'he'], true) ? TextDirection::RTL : TextDirection::LTR;
         $textDirection = $configuredTextDirection ?? $defaultTextDirection;
 
         $translationDomain = $dashboardDto->getTranslationDomain();

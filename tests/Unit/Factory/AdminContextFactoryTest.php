@@ -67,6 +67,10 @@ class AdminContextFactoryTest extends KernelTestCase
         yield 'arabic is rtl' => ['ar', 'rtl'];
         yield 'hebrew is rtl' => ['he', 'rtl'];
         yield 'persian is rtl' => ['fa', 'rtl'];
+        yield 'central kurdish is rtl' => ['ckb', 'rtl'];
+        yield 'central kurdish with region is rtl' => ['ckb_IQ', 'rtl'];
+        yield 'arabic with region is rtl' => ['ar_EG', 'rtl'];
+        yield 'mapuche is ltr although its code starts with "ar"' => ['arn', 'ltr'];
     }
 
     public function testCreateSetsRequestContext(): void

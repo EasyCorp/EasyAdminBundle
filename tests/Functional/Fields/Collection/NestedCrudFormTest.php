@@ -2,15 +2,19 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Collection;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\BlogPostNestedCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\UserWithNestedBlogPostsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\UserWithNullCreateEntityBlogPostsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\UserWithSideEffectBlogPostsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\NestedCrudForm\UserWithTwoLevelNestedBlogPostsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -80,12 +84,116 @@ class NestedCrudFormTest extends AbstractCrudTestCase
     }
 
     /**
+     * Regression for #7721: a prototype must not be included in an existing collection
+     * merely because its factory synchronizes the bidirectional relation.
+     */
+    public function testEditDoesNotAddPrototypeToManagedCollection(): void
+    {
+        $user = $this->createUserWithBlogPosts();
+        static::assertCount(2, $user->getBlogPosts());
+        $callsBefore = BlogPostNestedCrudController::$createEntityCallCount;
+
+        $crawler = $this->client->request('GET', $this->generateEditFormUrl(
+            $user->getId(),
+            controllerFqcn: UserWithSideEffectBlogPostsCrudController::class,
+        ));
+        static::assertResponseIsSuccessful();
+
+        $html = $crawler->html();
+        static::assertStringContainsString('Blog post 1', $html);
+        static::assertStringContainsString('Blog post 2', $html);
+        static::assertCount(2, $user->getBlogPosts(), 'Viewing EDIT must not add a prototype to a managed collection.');
+        static::assertSame($callsBefore, BlogPostNestedCrudController::$createEntityCallCount,
+            'Viewing EDIT must not invoke the nested createEntity() at all.');
+    }
+
+    /**
+     * Saving unchanged entries must not persist a phantom entry either.
+     */
+    public function testSavingEditWithoutAddedItemsDoesNotCreateExtraEntries(): void
+    {
+        $user = $this->createUserWithBlogPosts();
+        $userId = $user->getId();
+        $crawler = $this->client->request('GET', $this->generateEditFormUrl(
+            $userId,
+            controllerFqcn: UserWithSideEffectBlogPostsCrudController::class,
+        ));
+        static::assertResponseIsSuccessful();
+
+        $form = $crawler->filter('form[name="User"]')->form();
+        $this->client->request($form->getMethod(), $form->getUri(), $form->getPhpValues());
+        static::assertResponseIsSuccessful();
+
+        $this->entityManager->clear();
+        $savedUser = $this->entityManager->getRepository(User::class)->find($userId);
+        static::assertNotNull($savedUser);
+        static::assertCount(2, $savedUser->getBlogPosts());
+    }
+
+    /**
+     * Adding an entry must still invoke the factory and keep its field defaults.
+     */
+    public function testAddedEntryRetainsCreateEntityDefaults(): void
+    {
+        $user = $this->createUserWithBlogPosts();
+        $userId = $user->getId();
+        $crawler = $this->client->request('GET', $this->generateEditFormUrl(
+            $userId,
+            controllerFqcn: UserWithSideEffectBlogPostsCrudController::class,
+        ));
+        static::assertResponseIsSuccessful();
+        $form = $crawler->filter('form[name="User"]')->form();
+        $values = $form->getPhpValues();
+        $values['User']['blogPosts'][] = ['title' => 'Added in regression test'];
+
+        $this->client->request($form->getMethod(), $form->getUri(), $values);
+        static::assertResponseIsSuccessful();
+
+        $this->entityManager->clear();
+        $savedUser = $this->entityManager->getRepository(User::class)->find($userId);
+        static::assertNotNull($savedUser);
+        static::assertCount(3, $savedUser->getBlogPosts());
+        $savedPost = $this->entityManager->getRepository(BlogPost::class)->findOneBy(['title' => 'Added in regression test']);
+        static::assertNotNull($savedPost);
+        static::assertSame('new-blog-post', $savedPost->getSlug());
+        static::assertSame('New blog post content', $savedPost->getContent());
+    }
+
+    /**
+     * The requested nested collection may belong to a parent entry added in JavaScript.
+     * It exists only inside the outer prototype, not in the server-rendered entries.
+     */
+    public function testSecondLevelPrototypeIsRenderedInsideParentPrototype(): void
+    {
+        $crawler = $this->client->request('GET', $this->getCrudUrl(
+            Action::NEW,
+            options: ['__ea_collection_prototype' => 'categories'],
+            controllerFqcn: UserWithTwoLevelNestedBlogPostsCrudController::class,
+        ));
+        static::assertResponseIsSuccessful();
+        $outerPrototype = $crawler->filter('[data-ea-collection-form-id="User_blogPosts"]')->attr('data-prototype');
+        static::assertNotNull($outerPrototype);
+        $inner = new Crawler($outerPrototype);
+        $categoryCollection = $inner->filter('[data-ea-collection-prototype-field="categories"]');
+        static::assertCount(1, $categoryCollection);
+        static::assertStringContainsString('__blogPostsname__', $categoryCollection->attr('data-ea-collection-form-id'));
+        static::assertSame('false', $categoryCollection->attr('data-ea-lazy-prototype'));
+        static::assertNotEmpty($categoryCollection->attr('data-prototype'));
+    }
+
+    /**
      * Tests that the embedded CRUD controller's createEntity() override shapes the
      * prototype HTML, so users see their defaults in the rendered form (see #6991).
      */
     public function testNestedCreateEntityShapesPrototypeHtml(): void
     {
+        // First load does not create any entity just to render a prototype.
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
+        static::assertResponseIsSuccessful();
+        static::assertSame('true', $crawler->filter('[data-ea-collection-prototype-field="blogPosts"]')->attr('data-ea-lazy-prototype'));
+
+        // The Add button requests the prototype through the existing admin page.
+        $crawler = $this->client->request('GET', $this->getCrudUrl(Action::NEW, options: ['__ea_collection_prototype' => 'blogPosts']));
         static::assertResponseIsSuccessful();
 
         $prototype = $crawler->filter('[data-prototype]');

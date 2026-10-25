@@ -1,6 +1,8 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{# @var action \EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto #}
-{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% types {
+    action: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\ActionDto',
+    entity?: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto',
+    isIncludedInDropdown?: 'bool',
+} %}
 
 <twig:ea:Button
     variant="{{ action.variant }}"

@@ -1,4 +1,13 @@
-{# @var paginator \EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator #}
+{% types {
+    pageName: 'string',
+    templateName: 'string',
+    entities: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\EntityCollection',
+    paginator: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Orm\\EntityPaginator',
+    global_actions: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\ActionCollection',
+    batch_actions: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\ActionCollection',
+    filters: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\FilterCollection',
+    render_detailed_pagination?: 'bool',
+} %}
 {# when results are hidden because of missing permissions, 'render_detailed_pagination' is FALSE
    and both the results counter and the page numbers are hidden #}
 <twig:ea:Pagination

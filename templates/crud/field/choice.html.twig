@@ -1,6 +1,7 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
-{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
-{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% types {
+    field: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\FieldDto',
+    entity: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto',
+} %}
 {% if field.formattedValue is iterable and field.formattedValue.isRenderedAsBadge %}
     {%- for choice in field.formattedValue -%}
         <twig:ea:Badge color="{{ choice.variant }}">{{ choice.message|trans|raw }}</twig:ea:Badge>

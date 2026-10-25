@@ -1,4 +1,4 @@
-{# @var assets \EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto[] #}
+{% types {assets: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\AssetDto[]'} %}
 {% for js_asset in assets %}
     {% if js_asset.preload %}
         {% guard function preload %}

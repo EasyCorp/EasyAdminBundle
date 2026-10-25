@@ -1,3 +1,12 @@
+{% types {
+    pageName: 'string',
+    templateName: 'string',
+    entities: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\EntityCollection',
+    paginator: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Orm\\EntityPaginator',
+    global_actions: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\ActionCollection',
+    batch_actions: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\ActionCollection',
+    filters: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Collection\\FilterCollection',
+} %}
 <twig:ea:Modal id="modal-filters" size="lg" headerClass="justify-content-between" bodyClass="p-0">
     <twig:block name="header">
         <twig:ea:Button type="button" size="sm" icon="internal:xmark" data-bs-dismiss="modal" id="modal-clear-button" formtarget="_self">

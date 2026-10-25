@@ -1,4 +1,3 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContext #}
 {% set ea = ea() %}
 {% trans_default_domain null != ea ? ea.i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}
 

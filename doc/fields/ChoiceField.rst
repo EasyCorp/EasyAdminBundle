@@ -187,6 +187,19 @@ add them explicitly::
     // values via Doctrine; it's equivalent to calling: ->setChoices(BlogPostStatus::cases())
     yield ChoiceField::new('status');
 
+If the property isn't mapped by Doctrine (or Doctrine doesn't know about its
+enum), define the enum class with the ``class`` form type option. EasyAdmin
+uses it to get all the possible values of the enum::
+
+    yield ChoiceField::new('status')
+        ->setFormTypeOption('class', BlogPostStatus::class);
+
+When the form type option and the Doctrine metadata define different enums,
+the ``class`` form type option is used.
+
+If you pass the enum cases with ``setChoices()``, you don't need to define the
+``class`` option, because EasyAdmin gets the enum class from the choices.
+
 To customize the values displayed for each enum case, implement the ``TranslatableInterface``
 in your enum class. This is `recommended in the Symfony Docs`_ even if your application
 is not translated into any language::

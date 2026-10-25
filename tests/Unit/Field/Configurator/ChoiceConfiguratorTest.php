@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Fixtures\ChoiceField\Priori
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Fixtures\ChoiceField\StatusBackedEnum;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Fixtures\ChoiceField\TranslatableStatusBackedEnum;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 
 class ChoiceConfiguratorTest extends AbstractFieldTestCase
 {
@@ -106,6 +107,52 @@ class ChoiceConfiguratorTest extends AbstractFieldTestCase
         }
 
         $this->assertSame($this->configure($field)->getFormTypeOption('choices'), $expected);
+    }
+
+    public function testEnumTypeChoicesFromClassFormOption(): void
+    {
+        $field = ChoiceField::new(self::PROPERTY_NAME);
+        $field->setFormTypeOption('class', StatusBackedEnum::class);
+
+        $formChoices = array_combine(
+            array_column(StatusBackedEnum::cases(), 'name'),
+            StatusBackedEnum::cases(),
+        );
+
+        $this->assertSame($formChoices, $this->configure($field)->getFormTypeOption('choices'));
+    }
+
+    public function testTranslatableEnumTypeChoicesFromClassFormOption(): void
+    {
+        $field = ChoiceField::new(self::PROPERTY_NAME);
+        $field->setFormTypeOption('class', TranslatableStatusBackedEnum::class);
+
+        $this->assertSame(TranslatableStatusBackedEnum::cases(), $this->configure($field)->getFormTypeOption('choices'));
+    }
+
+    public function testClassFormOptionTakesPrecedenceOverDoctrineEnumType(): void
+    {
+        $field = ChoiceField::new(self::PROPERTY_NAME);
+        $field->setFormTypeOption('class', PriorityUnitEnum::class);
+        $field->getAsDto()->setDoctrineMetadata(['enumType' => StatusBackedEnum::class]);
+
+        $formChoices = array_combine(
+            array_column(PriorityUnitEnum::cases(), 'name'),
+            PriorityUnitEnum::cases(),
+        );
+
+        $this->assertSame($formChoices, $this->configure($field)->getFormTypeOption('choices'));
+    }
+
+    public function testEnumClassIsInferredFromChoicesWhenNotMapped(): void
+    {
+        $field = ChoiceField::new(self::PROPERTY_NAME);
+        $field->setChoices(PriorityUnitEnum::cases());
+
+        $fieldDto = $this->configure($field);
+
+        $this->assertSame(EnumType::class, $fieldDto->getFormType());
+        $this->assertSame(PriorityUnitEnum::class, $fieldDto->getFormTypeOption('class'));
     }
 
     public static function fieldTypes(): iterable

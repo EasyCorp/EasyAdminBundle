@@ -47,10 +47,10 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         }, $choices));
         $allChoicesAreEnums = false === \in_array(false, $elementIsEnum, true);
 
-        // determine the enum type class from the form type option first,
-        // falling back to the Doctrine metadata when necessary (Doctrine supports only BackedEnum as enumType)
-        $enumTypeClass = enum_exists((string) $field->getFormTypeOption('class'))
-            ? $field->getFormTypeOption('class')
+        // Doctrine metadata only covers mapped properties with a BackedEnum
+        $classFormOption = $field->getFormTypeOption('class');
+        $enumTypeClass = \is_string($classFormOption) && enum_exists($classFormOption)
+            ? $classFormOption
             : $field->getDoctrineMetadata()->get('enumType');
 
         // if no choices are passed to the field, check if it's related to an Enum;
@@ -78,7 +78,7 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             if (ChoiceType::class === $field->getFormType()) {
                 $field->setFormType(EnumType::class);
             }
-            $field->setFormTypeOptionIfNotSet('class', $enumTypeClass);
+            $field->setFormTypeOptionIfNotSet('class', $enumTypeClass ?? $choices[array_key_first($choices)]::class);
         }
 
         if ($areChoicesTranslatable && !$choicesSupportTranslatableInterface) {

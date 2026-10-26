@@ -4,7 +4,7 @@
 } %}
 {# this is a bit ugly, but Twig doesn't have a 'is numeric' test #}
 {% if field.formattedValue matches '/^\\d+$/' %}
-    <twig:ea:Badge color="secondary">{{ field.formattedValue }}</twig:ea:Badge>
+    <twig:ea:Badge color="secondary" variant="{{ field.customOptions.get('badgeVariant') }}">{{ field.formattedValue }}</twig:ea:Badge>
 {% else %}
     {{ field.formattedValue }}
 {% endif %}

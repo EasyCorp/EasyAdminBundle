@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\BadgeVariant;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -26,6 +27,7 @@ final class CollectionField implements FieldInterface
     public const OPTION_ENTRY_CRUD_NEW_PAGE_NAME = 'entryCrudNewPageName';
     public const OPTION_ENTRY_CRUD_EDIT_PAGE_NAME = 'entryCrudEditPageName';
     public const OPTION_MAX_LENGTH = 'maxLength';
+    public const OPTION_BADGE_VARIANT = 'badgeVariant';
 
     public static function new(string $propertyName, TranslatableInterface|string|bool|null $label = null): self
     {
@@ -48,7 +50,8 @@ final class CollectionField implements FieldInterface
             ->setCustomOption(self::OPTION_ENTRY_CRUD_CONTROLLER_FQCN, null)
             ->setCustomOption(self::OPTION_ENTRY_CRUD_NEW_PAGE_NAME, null)
             ->setCustomOption(self::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME, null)
-            ->setCustomOption(self::OPTION_MAX_LENGTH, null);
+            ->setCustomOption(self::OPTION_MAX_LENGTH, null)
+            ->setCustomOption(self::OPTION_BADGE_VARIANT, null);
     }
 
     public function allowAdd(bool $allow = true): self
@@ -113,6 +116,18 @@ final class CollectionField implements FieldInterface
         $this->setCustomOption(self::OPTION_ENTRY_CRUD_CONTROLLER_FQCN, $crudControllerFqcn);
         $this->setCustomOption(self::OPTION_ENTRY_CRUD_NEW_PAGE_NAME, $crudNewPageName);
         $this->setCustomOption(self::OPTION_ENTRY_CRUD_EDIT_PAGE_NAME, $crudEditPageName);
+
+        return $this;
+    }
+
+    /**
+     * Sets the visual style of the badge that displays the number of items in the collection.
+     * Use one of these values: 'light', 'solid', 'outline' or 'dot'. By default,
+     * it uses the badge variant configured with Crud::setBadgeVariant() ('light' if not set).
+     */
+    public function setBadgeVariant(string|BadgeVariant $variant): self
+    {
+        $this->setCustomOption(self::OPTION_BADGE_VARIANT, BadgeVariant::fromStyle($variant)->value);
 
         return $this;
     }

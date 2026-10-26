@@ -101,4 +101,19 @@ the ``danger`` (red) buttons::
 
     yield BooleanField::new('...')->renderAsDangerSwitch();
 
+``setBadgeVariant``
+~~~~~~~~~~~~~~~~~~~
+
+When the field is not rendered as a switch, its values are displayed as badges.
+Use this option to change the visual style of those badges.
+
+By default, it uses the badge variant configured with the ``setBadgeVariant()``
+method of the :ref:`CRUD design options <crud-design-options>` (``light`` if
+you don't configure it). The other values are ``solid``, ``outline`` and ``dot``.
+
+This option only changes the badges of this field, not the badges of other
+fields::
+
+    yield BooleanField::new('...')->renderAsSwitch(false)->setBadgeVariant('dot');
+
 .. _`CheckboxType`: https://symfony.com/doc/current/reference/forms/types/checkbox.html

@@ -206,7 +206,7 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
   `renderAsBadges(['draft' => 'warning', 'published' => 'success'])` (types:
   success, warning, danger, info, primary, secondary, light, dark),
   `renderExpanded()`, `allowMultipleChoices()`. Its `autocomplete()` takes no
-  arguments. <!-- src/Field/ChoiceField.php::setChoices; src/Field/ChoiceField.php::VALID_BADGE_TYPES; src/Field/ChoiceField.php::autocomplete -->
+  arguments. `setBadgeVariant('dot')` overrides `Crud::setBadgeVariant()` for this field only (also in Boolean, Association, Collection, Currency, Language, Locale fields). <!-- src/Field/ChoiceField.php::setChoices; src/Field/ChoiceField.php::VALID_BADGE_TYPES; src/Field/ChoiceField.php::autocomplete; src/Field/ChoiceField.php::setBadgeVariant; src/Field/BooleanField.php::setBadgeVariant -->
 - `AssociationField`: `autocomplete()` requires a CRUD controller for the
   related entity; `setCrudController(CategoryCrudController::class)`;
   `setQueryBuilder(fn (QueryBuilder $qb) => $qb->andWhere('entity.active = true'))`

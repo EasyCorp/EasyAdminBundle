@@ -189,6 +189,9 @@ When a badge doesn't set its variant, it uses the one configured with the
 Call that method in your dashboard to change the style of all the badges of
 the backend, or in a CRUD controller to change only the badges of that
 controller.
+The fields that display their values as badges (e.g. ``ChoiceField`` with
+the ``renderAsBadges`` option) also define a ``setBadgeVariant()`` method to
+change only the badges of that field.
 
 Add optional leading and/or trailing icons with the ``icon`` and ``endIcon``
 props, choose the size with ``size`` (``sm``, ``md`` or ``lg``) and create

@@ -3,7 +3,7 @@
     entity: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto',
 } %}
 {% if 'toMany' == field.customOptions.get('associationType') %}
-    <twig:ea:Badge color="secondary">{{ field.formattedValue }}</twig:ea:Badge>
+    <twig:ea:Badge color="secondary" variant="{{ field.customOptions.get('badgeVariant') }}">{{ field.formattedValue }}</twig:ea:Badge>
 {% else %}
     {% if field.customOptions.get('relatedUrl') is not null %}
         <a href="{{ field.customOptions.get('relatedUrl') }}">{{ field.formattedValue }}</a>

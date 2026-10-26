@@ -126,6 +126,22 @@ page load::
 
     yield CollectionField::new('...')->renderExpanded();
 
+``setBadgeVariant``
+~~~~~~~~~~~~~~~~~~~
+
+When this field displays the number of items in the collection instead of the
+items themselves, that number is displayed as a badge. Use this option to
+change the visual style of that badge.
+
+By default, it uses the badge variant configured with the ``setBadgeVariant()``
+method of the :ref:`CRUD design options <crud-design-options>` (``light`` if
+you don't configure it). The other values are ``solid``, ``outline`` and ``dot``.
+
+This option only changes the badges of this field, not the badges of other
+fields::
+
+    yield CollectionField::new('...')->setBadgeVariant('dot');
+
 ``setEntryIsComplex``
 ~~~~~~~~~~~~~~~~~~~~~
 

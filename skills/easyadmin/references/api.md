@@ -693,6 +693,7 @@ Also accepts every FieldTrait method (see [Field\FieldTrait](#fieldfieldtrait)).
 const OPTION_AUTOCOMPLETE = 'autocomplete'
 const OPTION_AUTOCOMPLETE_CALLBACK = 'autocompleteCallback'
 const OPTION_AUTOCOMPLETE_TEMPLATE = 'autocompleteTemplate'
+const OPTION_BADGE_VARIANT = 'badgeVariant'
 const OPTION_EMBEDDED_CRUD_FORM_CONTROLLER = 'crudControllerFqcn'
 const OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME = 'crudEditPageName'
 const OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME = 'crudNewPageName'
@@ -710,6 +711,7 @@ autocomplete(bool $enable = true, ?callable $callback = null, ?string $template 
 renderAsEmbeddedForm(?string $crudControllerFqcn = null, ?string $crudNewPageName = null, ?string $crudEditPageName = null): self
 renderAsHtml(bool $asHtml = true): self
 renderAsNativeWidget(bool $asNative = true): self
+setBadgeVariant(BadgeVariant|string $variant): self
 setCrudController(string $crudControllerFqcn): self
 setPreferredChoices(array|callable $preferredChoices): self
 setQueryBuilder(Closure $queryBuilderCallable): self
@@ -737,6 +739,7 @@ Also accepts every FieldTrait method (see [Field\FieldTrait](#fieldfieldtrait)).
 ## Field\BooleanField
 
 ```
+const OPTION_BADGE_VARIANT = 'badgeVariant'
 const OPTION_HIDE_VALUE_WHEN_FALSE = 'hideValueWhenFalse'
 const OPTION_HIDE_VALUE_WHEN_TRUE = 'hideValueWhenTrue'
 const OPTION_RENDER_AS_SWITCH = 'renderAsSwitch'
@@ -750,6 +753,7 @@ renderAsDangerSwitch(): self
 renderAsSuccessSwitch(): self
 renderAsSwitch(bool $isASwitch = true): self
 renderAsWarningSwitch(): self
+setBadgeVariant(BadgeVariant|string $variant): self
 ```
 
 Also accepts every FieldTrait method (see [Field\FieldTrait](#fieldfieldtrait)).
@@ -759,6 +763,7 @@ Also accepts every FieldTrait method (see [Field\FieldTrait](#fieldfieldtrait)).
 ```
 const OPTION_ALLOW_MULTIPLE_CHOICES = 'allowMultipleChoices'
 const OPTION_AUTOCOMPLETE = 'autocomplete'
+const OPTION_BADGE_VARIANT = 'badgeVariant'
 const OPTION_CHOICES = 'choices'
 const OPTION_ESCAPE_HTML_CONTENTS = 'escapeHtml'
 const OPTION_PREFERRED_CHOICES = 'preferredChoices'
@@ -778,6 +783,7 @@ escapeHtml(bool $escape = true): self
 renderAsBadges(array|bool|callable $badgeSelector = true): self
 renderAsNativeWidget(bool $asNative = true): self
 renderExpanded(bool $expanded = true): self
+setBadgeVariant(BadgeVariant|string $variant): self
 setChoices(array|callable $choiceGenerator): self
 setPreferredChoices(array|callable $preferredChoices): self
 setTranslatableChoices(array|callable $choiceGenerator): self
@@ -810,6 +816,7 @@ Also accepts every FieldTrait method (see [Field\FieldTrait](#fieldfieldtrait)).
 ```
 const OPTION_ALLOW_ADD = 'allowAdd'
 const OPTION_ALLOW_DELETE = 'allowDelete'
+const OPTION_BADGE_VARIANT = 'badgeVariant'
 const OPTION_ENTRY_CRUD_CONTROLLER_FQCN = 'entryCrudControllerFqcn'
 const OPTION_ENTRY_CRUD_EDIT_PAGE_NAME = 'entryCrudEditPageName'
 const OPTION_ENTRY_CRUD_NEW_PAGE_NAME = 'entryCrudNewPageName'
@@ -826,6 +833,7 @@ static new(string $propertyName, TranslatableInterface|bool|string|null $label =
 allowAdd(bool $allow = true): self
 allowDelete(bool $allow = true): self
 renderExpanded(bool $renderExpanded = true): self
+setBadgeVariant(BadgeVariant|string $variant): self
 setEntryIsComplex(bool $isComplex = true): self
 setEntryToStringMethod(callable|string $toStringMethod): self
 setEntryType(string $formTypeFqcn): self
@@ -877,12 +885,14 @@ Also accepts every FieldTrait method (see [Field\FieldTrait](#fieldfieldtrait)).
 
 ```
 const CURRENCY_NONE = 'XXX'
+const OPTION_BADGE_VARIANT = 'badgeVariant'
 const OPTION_SHOW_CODE = 'showCode'
 const OPTION_SHOW_NAME = 'showName'
 const OPTION_SHOW_SYMBOL = 'showSymbol'
 
 static new(string $propertyName, TranslatableInterface|bool|string|null $label = null): self
 
+setBadgeVariant(BadgeVariant|string $variant): self
 showCode(bool $isShown = true): self
 showName(bool $isShown = true): self
 showSymbol(bool $isShown = true): self
@@ -1152,6 +1162,7 @@ Also accepts every FieldTrait method (see [Field\FieldTrait](#fieldfieldtrait)).
 ```
 const FORMAT_ISO_639_ALPHA2 = 'iso639Alpha2'
 const FORMAT_ISO_639_ALPHA3 = 'iso639Alpha3'
+const OPTION_BADGE_VARIANT = 'badgeVariant'
 const OPTION_LANGUAGE_CODES_TO_KEEP = 'languageCodesToKeep'
 const OPTION_LANGUAGE_CODES_TO_REMOVE = 'languageCodesToRemove'
 const OPTION_LANGUAGE_CODE_FORMAT = 'languageCodeFormat'
@@ -1162,6 +1173,7 @@ static new(string $propertyName, TranslatableInterface|bool|string|null $label =
 
 includeOnly(array $countryCodesToKeep): self
 remove(array $countryCodesToRemove): self
+setBadgeVariant(BadgeVariant|string $variant): self
 showCode(bool $isShown = true): self
 showName(bool $isShown = true): self
 useAlpha3Codes(bool $useAlpha3 = true): self
@@ -1172,6 +1184,7 @@ Also accepts every FieldTrait method (see [Field\FieldTrait](#fieldfieldtrait)).
 ## Field\LocaleField
 
 ```
+const OPTION_BADGE_VARIANT = 'badgeVariant'
 const OPTION_LOCALE_CODES_TO_KEEP = 'localeCodesToKeep'
 const OPTION_LOCALE_CODES_TO_REMOVE = 'localeCodesToRemove'
 const OPTION_SHOW_CODE = 'showCode'
@@ -1181,6 +1194,7 @@ static new(string $propertyName, TranslatableInterface|bool|string|null $label =
 
 includeOnly(array $countryCodesToKeep): self
 remove(array $countryCodesToRemove): self
+setBadgeVariant(BadgeVariant|string $variant): self
 showCode(bool $isShown = true): self
 showName(bool $isShown = true): self
 ```

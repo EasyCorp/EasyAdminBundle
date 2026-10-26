@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\BadgeVariant;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -39,6 +40,7 @@ final class AssociationField implements FieldInterface
     public const OPTION_SORT_PROPERTY = 'sortProperty';
     public const OPTION_ESCAPE_HTML_CONTENTS = 'escapeHtml';
     public const OPTION_PREFERRED_CHOICES = 'preferredChoices';
+    public const OPTION_BADGE_VARIANT = 'badgeVariant';
 
     public static function new(string $propertyName, TranslatableInterface|string|bool|null $label = null): self
     {
@@ -61,7 +63,8 @@ final class AssociationField implements FieldInterface
             ->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_NEW_PAGE_NAME, null)
             ->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME, null)
             ->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, true)
-            ->setCustomOption(self::OPTION_PREFERRED_CHOICES, null);
+            ->setCustomOption(self::OPTION_PREFERRED_CHOICES, null)
+            ->setCustomOption(self::OPTION_BADGE_VARIANT, null);
     }
 
     public function autocomplete(bool $enable = true, ?callable $callback = null, ?string $template = null, bool $renderAsHtml = false): self
@@ -149,6 +152,18 @@ final class AssociationField implements FieldInterface
     public function setPreferredChoices(array|callable $preferredChoices): self
     {
         $this->setCustomOption(self::OPTION_PREFERRED_CHOICES, $preferredChoices);
+
+        return $this;
+    }
+
+    /**
+     * Sets the visual style of the badge that displays the number of related entities in to-many associations.
+     * Use one of these values: 'light', 'solid', 'outline' or 'dot'. By default,
+     * it uses the badge variant configured with Crud::setBadgeVariant() ('light' if not set).
+     */
+    public function setBadgeVariant(string|BadgeVariant $variant): self
+    {
+        $this->setCustomOption(self::OPTION_BADGE_VARIANT, BadgeVariant::fromStyle($variant)->value);
 
         return $this;
     }

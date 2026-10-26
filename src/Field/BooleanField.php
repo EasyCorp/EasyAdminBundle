@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\BadgeVariant;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -19,6 +20,7 @@ final class BooleanField implements FieldInterface
     public const OPTION_SWITCH_VARIANT = 'switchVariant';
     public const OPTION_HIDE_VALUE_WHEN_TRUE = 'hideValueWhenTrue';
     public const OPTION_HIDE_VALUE_WHEN_FALSE = 'hideValueWhenFalse';
+    public const OPTION_BADGE_VARIANT = 'badgeVariant';
     /** @internal */
     public const OPTION_TOGGLE_URL = 'toggleUrl';
     /** @internal */
@@ -36,7 +38,8 @@ final class BooleanField implements FieldInterface
             ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-boolean.js')->onlyOnIndex())
             ->setCustomOption(self::OPTION_RENDER_AS_SWITCH, true)
             ->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_TRUE, false)
-            ->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_FALSE, false);
+            ->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_FALSE, false)
+            ->setCustomOption(self::OPTION_BADGE_VARIANT, null);
     }
 
     public function renderAsSwitch(bool $isASwitch = true): self
@@ -89,6 +92,18 @@ final class BooleanField implements FieldInterface
     public function hideValueWhenFalse(bool $hide = true): self
     {
         $this->setCustomOption(self::OPTION_HIDE_VALUE_WHEN_FALSE, $hide);
+
+        return $this;
+    }
+
+    /**
+     * Sets the visual style of the badges that display the true/false values (when the field is not rendered as a switch).
+     * Use one of these values: 'light', 'solid', 'outline' or 'dot'. By default,
+     * it uses the badge variant configured with Crud::setBadgeVariant() ('light' if not set).
+     */
+    public function setBadgeVariant(string|BadgeVariant $variant): self
+    {
+        $this->setCustomOption(self::OPTION_BADGE_VARIANT, BadgeVariant::fromStyle($variant)->value);
 
         return $this;
     }

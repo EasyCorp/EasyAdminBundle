@@ -237,6 +237,22 @@ option to not escape those contents::
 
     yield AssociationField::new('...')->renderAsHtml();
 
+``setBadgeVariant``
+~~~~~~~~~~~~~~~~~~~
+
+In read-only pages (``index`` and ``detail``), to-many associations display
+the number of related items as a badge. Use this option to change the visual
+style of that badge.
+
+By default, it uses the badge variant configured with the ``setBadgeVariant()``
+method of the :ref:`CRUD design options <crud-design-options>` (``light`` if
+you don't configure it). The other values are ``solid``, ``outline`` and ``dot``.
+
+This option only changes the badges of this field, not the badges of other
+fields::
+
+    yield AssociationField::new('...')->setBadgeVariant('dot');
+
 ``setCrudController``
 ~~~~~~~~~~~~~~~~~~~~~
 

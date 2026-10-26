@@ -14,7 +14,7 @@
         ) %}
 
     {% if not badge_is_hidden %}
-        <twig:ea:Badge color="{{ field.value == true ? 'boolean-true' : 'boolean-false' }}">
+        <twig:ea:Badge color="{{ field.value == true ? 'boolean-true' : 'boolean-false' }}" variant="{{ field.customOptions.get('badgeVariant') }}">
             {{ (field.value == true ? 'label.true' : 'label.false')|trans(domain: 'EasyAdminBundle') }}
         </twig:ea:Badge>
     {% endif %}

@@ -139,11 +139,31 @@ jobs:
                       symfony_version: "8.1.*"
                       stability: "stable"
                       allow_failure: false
-                    # Upcoming Symfony version
+                    # Upcoming Symfony version. Only Symfony comes from dev branches (--prefer-stable)
+                    # because dev branches of other packages (e.g. Doctrine) trigger deprecations
+                    # between themselves that EasyAdmin can't fix
                     - os: ubuntu-latest
                       php_version: "8.5"
                       symfony_version: "8.2.*@dev"
+                      composer_args: "--prefer-stable"
                       stability: "dev"
+                      allow_failure: false
+                    # Upcoming PHP versions (nightly builds) on the latest stable Symfony. Some packages
+                    # don't allow PHP versions that aren't released yet, so ignore that requirement.
+                    # The new PHP versions trigger deprecations in third-party packages, so the
+                    # blocking job doesn't fail on them; the one allowed to fail reports them
+                    - os: ubuntu-latest
+                      php_version: "8.6"
+                      symfony_version: "8.1.*"
+                      composer_args: "--ignore-platform-req=php+"
+                      stability: "stable"
+                      phpunit_args: "--do-not-fail-on-deprecation"
+                      allow_failure: false
+                    - os: ubuntu-latest
+                      php_version: "8.7"
+                      symfony_version: "8.1.*"
+                      composer_args: "--ignore-platform-req=php+"
+                      stability: "stable"
                       allow_failure: true
         runs-on: ${{ matrix.os }}
         steps:
@@ -151,6 +171,9 @@ jobs:
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
+              # jobs allowed to fail must not fail here either (e.g. a broken PHP nightly build);
+              # the test step fails later and reports it as a warning
+              continue-on-error: ${{ matrix.allow_failure }}
               with:
                   php-version: ${{ matrix.php_version }}
                   coverage: none
@@ -192,6 +215,7 @@ jobs:
                   composer config audit.block-insecure false
 
             - name: Install dependencies
+              continue-on-error: ${{ matrix.allow_failure }}
               run: |
                   composer update --no-interaction --no-progress --prefer-dist ${{ matrix.composer_args }}
 

@@ -90,6 +90,49 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
         return $this;
     }
 
+    /**
+     * Applies a filter to the generated URL, using the same values as the filters form:
+     * $comparison is one of the ComparisonType constants (omit it for the filters that
+     * don't compare values, such as BooleanFilter and NullFilter) and $value2 is the upper
+     * value of the ComparisonType::BETWEEN comparison. The other filters of the URL are kept,
+     * and a filter previously applied to the same property is replaced.
+     *
+     * Note: this method is not part of AdminUrlGeneratorInterface yet (to avoid a BC break);
+     * it will be added to the interface in the next major version of EasyAdmin.
+     */
+    public function setFilter(string $propertyName, mixed $value, ?string $comparison = null, mixed $value2 = null): self
+    {
+        $filters = $this->getFilters();
+        $filters[$propertyName] = array_filter(
+            ['comparison' => $comparison, 'value' => $value, 'value2' => $value2],
+            static fn (mixed $filterValue, string $key): bool => 'value' === $key || null !== $filterValue,
+            \ARRAY_FILTER_USE_BOTH
+        );
+        $this->setRouteParameter(EA::FILTERS, $filters);
+
+        return $this;
+    }
+
+    /**
+     * Removes the filter applied to the given property, keeping the other filters of the URL.
+     *
+     * Note: this method is not part of AdminUrlGeneratorInterface yet (to avoid a BC break);
+     * it will be added to the interface in the next major version of EasyAdmin.
+     */
+    public function unsetFilter(string $propertyName): self
+    {
+        $filters = $this->getFilters();
+        unset($filters[$propertyName]);
+
+        if ([] === $filters) {
+            $this->unsetRouteParameter(EA::FILTERS);
+        } else {
+            $this->setRouteParameter(EA::FILTERS, $filters);
+        }
+
+        return $this;
+    }
+
     public function get(string $paramName): mixed
     {
         if (false === $this->isInitialized) {
@@ -267,6 +310,16 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
         }
 
         $this->routeParameters[$parameterName] = $parameterValue;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getFilters(): array
+    {
+        $filters = $this->get(EA::FILTERS);
+
+        return \is_array($filters) ? $filters : [];
     }
 
     private function unsetRouteParameter(string $parameterName): void

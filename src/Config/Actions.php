@@ -149,6 +149,13 @@ final class Actions
         return $this;
     }
 
+    public function disableUndisplayedActions(bool $disable = true): self
+    {
+        $this->dto->setDisableUndisplayedActions($disable);
+
+        return $this;
+    }
+
     public function getAsDto(?string $pageName): ActionConfigDto
     {
         $this->dto->setPageName($pageName);

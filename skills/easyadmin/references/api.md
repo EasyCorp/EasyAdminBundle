@@ -206,6 +206,7 @@ add(string $pageName, Action|ActionGroup|string $actionNameOrObject): self
 addBatchAction(Action|string $actionNameOrObject): self
 disable(string ...$disabledActionNames): self
 disableAutomaticOrdering(bool $disable = true): self
+disableUndisplayedActions(bool $disable = true): self
 getAsDto(?string $pageName): ActionConfigDto
 remove(string $pageName, string $actionName): self
 reorder(string $pageName, array $orderedActionNames): self

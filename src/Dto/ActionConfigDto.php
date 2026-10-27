@@ -26,6 +26,7 @@ final class ActionConfigDto
     /** @var array<string, string|Expression> */
     private array $actionPermissions = [];
     private bool $useAutomaticOrdering = true;
+    private bool $disableUndisplayedActions = false;
 
     public function __construct()
     {
@@ -148,5 +149,15 @@ final class ActionConfigDto
     public function setUseAutomaticOrdering(bool $useAutomaticOrdering): void
     {
         $this->useAutomaticOrdering = $useAutomaticOrdering;
+    }
+
+    public function getDisableUndisplayedActions(): bool
+    {
+        return $this->disableUndisplayedActions;
+    }
+
+    public function setDisableUndisplayedActions(bool $disableUndisplayedActions): void
+    {
+        $this->disableUndisplayedActions = $disableUndisplayedActions;
     }
 }

@@ -581,6 +581,7 @@ final readonly class ActionFactory
         $actions = $crudController->configureActions($defaultActionConfig);
 
         $this->applyExtensions($actions, $context);
+        $this->disableUndisplayedActions($actions);
 
         return $actions->getAsDto($pageName);
     }
@@ -598,5 +599,40 @@ final readonly class ActionFactory
 
             $extension->extend($actions, $context);
         }
+    }
+
+    /**
+     * Disables the built-in actions that are not displayed on any page and have
+     * no explicit permission, so they can't be run by modifying the URL either.
+     */
+    private function disableUndisplayedActions(Actions $actions): void
+    {
+        $actionConfig = $actions->getAsDto(null);
+        if (!$actionConfig->getDisableUndisplayedActions()) {
+            return;
+        }
+
+        $keptActionNames = array_keys($actionConfig->getActionPermissions());
+        foreach ($actionConfig->getActions() as $pageActions) {
+            foreach ($pageActions as $item) {
+                $itemActions = $item instanceof ActionGroupDto ? [$item->getMainAction(), ...$item->getActions()] : [$item];
+                foreach ($itemActions as $action) {
+                    // the form buttons of the 'edit' and 'new' pages run those same actions
+                    if (null === $action || \in_array($action->getName(), [Action::SAVE_AND_ADD_ANOTHER, Action::SAVE_AND_CONTINUE, Action::SAVE_AND_RETURN], true)) {
+                        continue;
+                    }
+
+                    $keptActionNames[] = $action->getName();
+                    $keptActionNames[] = $action->getCrudActionName();
+                }
+            }
+        }
+
+        // the 'batch delete' action runs the 'delete' action for each entity
+        if (\in_array(Action::BATCH_DELETE, $keptActionNames, true)) {
+            $keptActionNames[] = Action::DELETE;
+        }
+
+        $actions->disable(...array_diff([Action::DELETE, Action::EDIT, Action::NEW], $keptActionNames));
     }
 }

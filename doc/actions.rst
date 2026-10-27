@@ -327,6 +327,29 @@ Actions are disabled globally, so you cannot disable them per page::
     batch action automatically. The opposite doesn't happen: disabling
     ``Action::BATCH_DELETE`` keeps the regular ``delete`` action enabled.
 
+Removed actions can also be disabled automatically. Call the
+``disableUndisplayedActions()`` method in the ``configureActions()`` method of
+your dashboard to apply it to all CRUD controllers, or in a single CRUD
+controller to apply it only there. Then, the built-in ``new``, ``edit`` and
+``delete`` actions are disabled when they are not displayed on any page::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+
+    // in your dashboard controller
+    public function configureActions(): Actions
+    {
+        return parent::configureActions()
+            ->disableUndisplayedActions()
+        ;
+    }
+
+An action stays enabled when it's displayed on any page (also by a custom
+action that runs it with ``linkToCrudAction()``) or when it has a permission
+defined with the ``setPermission()`` method. Define a permission for the
+actions that are only linked from other pages, such as the ``edit`` action of
+a CRUD controller that is linked from another CRUD controller. To turn this
+option off in a CRUD controller, call ``disableUndisplayedActions(false)``.
+
 Restricting Actions
 -------------------
 

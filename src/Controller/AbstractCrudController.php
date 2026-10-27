@@ -61,6 +61,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -271,7 +272,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $editForm = $this->createEditForm($context->getEntity(), $context->getCrud()->getEditFormOptions(), $context);
-        $editForm->handleRequest($context->getRequest());
+        $this->handleFormRequest($editForm, $context->getRequest());
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->processUploadedFiles($editForm);
 
@@ -333,7 +334,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->container->get(ActionFactory::class)->processEntityActions($context->getEntity(), $context->getCrud()->getActionsConfig());
 
         $newForm = $this->createNewForm($context->getEntity(), $context->getCrud()->getNewFormOptions(), $context);
-        $newForm->handleRequest($context->getRequest());
+        $this->handleFormRequest($newForm, $context->getRequest());
 
         /** @var TEntity|null $entityInstance */
         $entityInstance = $newForm->getData();
@@ -829,5 +830,23 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         return $fieldAssetsDto;
+    }
+
+    private function handleFormRequest(FormInterface $form, Request $request): void
+    {
+        $form->handleRequest($request);
+
+        // browsers don't send disabled fields nor unchecked checkboxes, so a form without a CSRF token
+        // and only those fields posts nothing under its name and Symfony doesn't consider it submitted;
+        // the button that saves the form is outside of it, so use it to detect the submission (see #7819)
+        if ($form->isSubmitted() || $request->getMethod() !== $form->getConfig()->getMethod()) {
+            return;
+        }
+
+        if (null === ($request->request->all()['ea']['newForm']['btn'] ?? null)) {
+            return;
+        }
+
+        $form->submit([], 'PATCH' !== $request->getMethod());
     }
 }

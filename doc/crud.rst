@@ -776,7 +776,7 @@ saving the changes::
 
     protected function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
     {
-        $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'];
+        $submitButtonName = $context->getRequest()->request->all()['ea']['newForm']['btn'] ?? null;
 
         if ('saveAndViewDetail' === $submitButtonName) {
             return $this->redirectToRoute('admin_product_detail', [

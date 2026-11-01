@@ -193,6 +193,8 @@ class IntlFormatterTest extends TestCase
 
     private function normalizeWhiteSpaces(string $string): string
     {
+        // no-break space and narrow no-break space; str_replace() because the replace() of
+        // some symfony/string versions corrupts a string when it replaces a multibyte character
         return str_replace(["\u{A0}", "\u{202F}"], ' ', $string);
     }
 }

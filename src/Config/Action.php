@@ -324,11 +324,13 @@ final class Action implements \Stringable
      * By default, actions are executed immediately when clicked.
      * Set to true to show a confirmation modal with a generic message.
      * Set to a string (or TranslatableInterface) to show a custom confirmation message.
+     * Set to a closure to decide it per entity: it receives the entity instance (no
+     * argument for global actions) and returns any of the previous values.
      * The message can use placeholders: %action_name%, %entity_name%, and %entity_id%.
      * Optionally, set a custom label for the confirmation button.
      */
     public function askConfirmation(
-        bool|string|TranslatableInterface $confirmation = true,
+        bool|string|TranslatableInterface|\Closure $confirmation = true,
         string|TranslatableInterface|null $buttonLabel = null,
     ): self {
         $this->dto->setConfirmationMessage($confirmation);

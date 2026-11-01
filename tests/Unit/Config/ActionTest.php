@@ -207,6 +207,17 @@ class ActionTest extends TestCase
         $this->assertSame($translatableMessage, $actionConfig->getAsDto()->getConfirmationMessage());
     }
 
+    public function testAskConfirmationWithClosure(): void
+    {
+        $closure = static fn (object $entity) => sprintf('Archive %s?', $entity);
+        $actionConfig = Action::new('archive')
+            ->linkToCrudAction('archive')
+            ->askConfirmation($closure, 'Archive');
+
+        $this->assertSame($closure, $actionConfig->getAsDto()->getConfirmationMessage());
+        $this->assertSame('Archive', $actionConfig->getAsDto()->getConfirmationButtonLabel());
+    }
+
     public function testAskConfirmationWithCustomButtonLabel(): void
     {
         $actionConfig = Action::new('publish')

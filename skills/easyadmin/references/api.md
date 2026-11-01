@@ -151,7 +151,7 @@ asPrimaryAction(bool $asPrimaryAction = true): self
 asSuccessAction(bool $asSuccessAction = true): self
 asTextLink(bool $asTextLink = true): self
 asWarningAction(bool $asWarningAction = true): self
-askConfirmation(TranslatableInterface|bool|string $confirmation = true, TranslatableInterface|string|null $buttonLabel = null): self
+askConfirmation(Closure|TranslatableInterface|bool|string $confirmation = true, TranslatableInterface|string|null $buttonLabel = null): self
 createAsBatchAction(): self
 createAsGlobalAction(): self
 displayIf(callable $callable): self

@@ -269,6 +269,23 @@ For translatable messages, pass a ``TranslatableInterface`` object::
         ->linkToCrudAction('archive')
         ->askConfirmation(t('action.archive.confirm'));
 
+To decide the confirmation per entity, pass a closure. It receives the entity
+instance (global actions receive no argument) and returns ``true`` (to show the
+generic message), ``false`` (to execute the action without confirmation), a
+string or a ``TranslatableInterface`` object::
+
+    use App\Entity\Post;
+
+    $archiveAction = Action::new('archive', 'Archive')
+        ->linkToCrudAction('archive')
+        ->askConfirmation(static fn (Post $post) => $post->isPublished()
+            ? sprintf('Visitors will not see "%s" anymore.', $post->getTitle())
+            : false
+        );
+
+The strings returned by the closure are translated and support the same
+placeholders as the other confirmation messages.
+
 You can also customize the confirmation button label by passing a second parameter::
 
     $publishAction = Action::new('publish', 'Publish')

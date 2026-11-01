@@ -3,10 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Default\Crud;
 
 use Doctrine\ORM\EntityRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Crud\DefaultCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
+use PHPUnit\Framework\Attributes\TestWith;
 
 /**
  * Tests for default new/create form behavior in EasyAdmin CRUD operations.
@@ -151,6 +153,27 @@ class NewTest extends AbstractCrudTestCase
         // follow redirect and verify we're on a success page (index or detail)
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
+    }
+
+    #[TestWith([Action::SAVE_AND_RETURN, Action::INDEX])]
+    #[TestWith([Action::SAVE_AND_ADD_ANOTHER, Action::NEW])]
+    #[TestWith([null, Action::INDEX])]
+    public function testRedirectAfterCreationDependsOnTheSubmitButton(?string $submitButtonName, string $expectedAction): void
+    {
+        $crawler = $this->client->request('GET', $this->generateNewFormUrl());
+        $form = $crawler->filter($this->getEntityFormSelector())->form();
+        $form[$this->getFormEntity().'[name]'] = 'Category A';
+
+        // a null button name submits the form without any submit button, like form.submit() in JavaScript
+        $formValues = $form->getPhpValues();
+        if (null !== $submitButtonName) {
+            $formValues['ea']['newForm']['btn'] = $submitButtonName;
+        }
+
+        $this->client->followRedirects(false);
+        $this->client->request($form->getMethod(), $form->getUri(), $formValues);
+
+        $this->assertResponseRedirects(Action::INDEX === $expectedAction ? $this->generateIndexUrl() : $this->generateNewFormUrl());
     }
 
     public function testFormValidationWithMissingRequiredField(): void

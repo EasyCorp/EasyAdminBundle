@@ -30,6 +30,11 @@ final class I18nContext
         return $this->templateRegistry->get($templateName);
     }
 
+    public function overrideTemplate(string $templateName, string $templatePath): void
+    {
+        $this->templateRegistry->setTemplate($templateName, $templatePath);
+    }
+
     /**
      * Creates an I18nContext instance suitable for testing.
      *

@@ -185,6 +185,16 @@ final class AdminContext implements AdminContextInterface
         return $this->i18nContext->getTemplatePath($templateName);
     }
 
+    /**
+     * Overrides a template for the rest of the current request, after the templates
+     * configured with Crud::overrideTemplate() and Crud::overrideTemplates() have been
+     * applied (e.g. to render a different layout depending on some request header).
+     */
+    public function overrideTemplate(string $templateName, string $templatePath): void
+    {
+        $this->i18nContext->overrideTemplate($templateName, $templatePath);
+    }
+
     public function isUseEntityTranslations(): bool
     {
         return $this->dashboardContext->getDashboardDto()->isUseEntityTranslations();

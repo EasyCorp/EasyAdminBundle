@@ -269,9 +269,16 @@ final readonly class ActionFactory
         }
 
         // handle action confirmation modals (including DELETE action when askConfirmation is enabled)
-        if ($actionDto->hasConfirmation()) {
-            $confirmationMessage = $actionDto->getConfirmationMessage();
+        $confirmationMessage = $actionDto->getConfirmationMessage();
+        if ($confirmationMessage instanceof \Closure) {
+            $confirmationMessage = \call_user_func_array($confirmationMessage, array_filter([$entityDto?->getInstance()], static fn ($item): bool => null !== $item));
 
+            if (!\is_bool($confirmationMessage) && !\is_string($confirmationMessage) && !$confirmationMessage instanceof TranslatableInterface) {
+                throw new \RuntimeException(sprintf('The closure used to define the confirmation of the "%s" action%s must return a boolean, a string or a %s instance but it returned a(n) "%s" value instead.', $actionDto->getName(), null !== $entityDto ? ' in the "'.$entityDto->getName().'" entity' : '', TranslatableInterface::class, get_debug_type($confirmationMessage)));
+            }
+        }
+
+        if (false !== $confirmationMessage) {
             $actionDto->addHtmlAttributes([
                 'data-bs-toggle' => 'modal',
                 'data-bs-target' => '#modal-action-confirmation',

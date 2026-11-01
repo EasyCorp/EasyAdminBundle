@@ -49,6 +49,11 @@ class ActionsCustomizationCrudController extends AbstractCrudController
 
         $action10 = Action::new('action10')->linkToCrudAction(Action::DETAIL)->askConfirmation();
         $action11 = Action::new('action11')->linkToCrudAction(Action::DETAIL)->askConfirmation('Visitors will not see this item anymore.');
+        $action12 = Action::new('action12')->linkToCrudAction(Action::DETAIL)->askConfirmation(static fn (Category $entity) => match ($entity->getName()) {
+            'Category 1' => 'Visitors will not see '.$entity->getName().' anymore.',
+            'Category 2' => true,
+            default => false,
+        });
 
         return $actions
             ->add(Crud::PAGE_INDEX, $action1)
@@ -62,6 +67,7 @@ class ActionsCustomizationCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $action9)
             ->add(Crud::PAGE_INDEX, $action10)
             ->add(Crud::PAGE_INDEX, $action11)
+            ->add(Crud::PAGE_INDEX, $action12)
             ->update(Crud::PAGE_DETAIL, Action::DELETE, static function (Action $action) {
                 return $action->askConfirmation('All the comments of this item will be deleted too.');
             })

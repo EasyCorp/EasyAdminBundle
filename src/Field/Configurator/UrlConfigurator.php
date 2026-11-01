@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
+use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Validator\Constraints\Url;
 use function Symfony\Component\String\u;
 
@@ -25,6 +26,11 @@ final class UrlConfigurator implements FieldConfiguratorInterface
      */
     private const DANGEROUS_SCHEMES = ['javascript', 'data', 'vbscript', 'file'];
 
+    public function __construct(
+        private readonly FormRegistryInterface $formRegistry,
+    ) {
+    }
+
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
         return UrlField::class === $field->getFieldFqcn();
@@ -33,7 +39,11 @@ final class UrlConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $field->setFormTypeOptionIfNotSet('attr.inputmode', 'url');
-        $field->setFormTypeOptionIfNotSet('default_protocol', $field->getCustomOption(UrlField::OPTION_DEFAULT_PROTOCOL));
+        // 'default_protocol' is an option of UrlType; the field can be rendered with
+        // another form type (e.g. TextType) which would reject this option
+        if ($this->formTypeDefinesOption($field->getFormType(), 'default_protocol')) {
+            $field->setFormTypeOptionIfNotSet('default_protocol', $field->getCustomOption(UrlField::OPTION_DEFAULT_PROTOCOL));
+        }
 
         $allowedProtocols = $field->getCustomOption(UrlField::OPTION_ALLOWED_PROTOCOLS);
         if (\is_array($allowedProtocols)) {
@@ -67,5 +77,14 @@ final class UrlConfigurator implements FieldConfiguratorInterface
         }
 
         $field->setFormattedValue($prettyUrl);
+    }
+
+    private function formTypeDefinesOption(?string $formTypeFqcn, string $optionName): bool
+    {
+        if (null === $formTypeFqcn) {
+            return false;
+        }
+
+        return $this->formRegistry->getType($formTypeFqcn)->getOptionsResolver()->isDefined($optionName);
     }
 }

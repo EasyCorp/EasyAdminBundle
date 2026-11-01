@@ -3,6 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\NestedAssociationResolverInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Translation\EntityTranslationIdGeneratorInterface;
@@ -11,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ResolvedPropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CommonPreConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\CompositeKeyCollectionTestEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTestCase;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Translation\TranslatableMessage;
@@ -64,6 +67,16 @@ class CommonPreConfiguratorTest extends AbstractFieldTestCase
         $field = Field::new('customer.orders');
 
         $this->assertFalse($this->configure($field)->isSortable());
+    }
+
+    public function testToManyAssociationWithCompositePrimaryKeyTargetIsNotRequired(): void
+    {
+        $fieldDto = Field::new('compositeKeyEntities')->getAsDto();
+        $entityDto = $this->createEntityDto(CompositeKeyCollectionTestEntity::class);
+
+        $this->configurator->configure($fieldDto, $entityDto, $this->getAdminContext(Crud::PAGE_EDIT, 'en', Action::EDIT));
+
+        $this->assertFalse($fieldDto->getFormTypeOption('required'));
     }
 
     /**

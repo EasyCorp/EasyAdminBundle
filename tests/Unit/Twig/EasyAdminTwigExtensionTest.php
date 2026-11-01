@@ -2,8 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Twig;
 
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Twig\Fixtures\ObjectWithVirtualIdProperty;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -40,6 +42,17 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
         }
 
         $this->assertStringNotContainsString("\0", $result, 'The string representation of a value must not contain the null character (which can happen when the original value is an anonymous class object)');
+    }
+
+    #[RequiresPhp('>= 8.4')]
+    public function testRepresentAsStringWithVirtualIdProperty(): void
+    {
+        $reflectedClass = new \ReflectionClass(EasyAdminTwigExtension::class);
+        $twigExtensionInstance = $reflectedClass->newInstanceWithoutConstructor();
+
+        $result = $twigExtensionInstance->representAsString(new ObjectWithVirtualIdProperty(1234));
+
+        $this->assertSame(ObjectWithVirtualIdProperty::class.' #virtual-1234', $result);
     }
 
     public function testRepresentAsStringException(): void
@@ -249,6 +262,48 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
                 return 1234;
             }
         }, '/class@anonymous.* #1234/', true];
+        // the identifier can also be a public property (e.g. with asymmetric visibility or property hooks)
+        yield [new class {
+            public int $id = 1234;
+        }, '/class@anonymous.* #1234/', true];
+        yield [new class {
+            public \Stringable $id;
+
+            public function __construct()
+            {
+                $this->id = new class implements \Stringable {
+                    public function __toString(): string
+                    {
+                        return '12-34';
+                    }
+                };
+            }
+        }, '/class@anonymous.* #12-34/', true];
+        // objects without an identifier that can be displayed use their object hash
+        yield [new class {
+            private int $id = 1234;
+        }, '/class@anonymous.* #[0-9a-f]{8}$/', true];
+        yield [new class {
+            public int $id;
+        }, '/class@anonymous.* #[0-9a-f]{8}$/', true];
+        yield [new class {
+            public ?int $id = null;
+        }, '/class@anonymous.* #[0-9a-f]{8}$/', true];
+        yield [new class {
+            public static int $id = 1234;
+        }, '/class@anonymous.* #[0-9a-f]{8}$/', true];
+        yield [new class {
+            public function getId()
+            {
+                return null;
+            }
+        }, '/class@anonymous.* #[0-9a-f]{8}$/', true];
+        yield [new class {
+            public function getId()
+            {
+                return new \stdClass();
+            }
+        }, '/class@anonymous.* #[0-9a-f]{8}$/', true];
 
         yield ['foo', 'foo bar', false, static fn ($value) => $value.' bar'];
         yield [new class {

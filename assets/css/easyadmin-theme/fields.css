@@ -142,15 +142,13 @@
     /* hides the default collapse marker */
     display: none;
 }
-.form-group.field-collection .accordion-button i {
-    transition: transform .2s ease-in-out;
-}
-.form-group.field-collection .accordion-button:not(.collapsed) i {
-    transform: rotate(90deg);
-}
 .form-group.field-collection .accordion-button .form-collection-item-collapse-marker {
     color: var(--form-collection-item-collapse-marker-color);
     margin: 0 8px 0 4px;
+    transition: transform .2s ease-in-out;
+}
+.form-group.field-collection .accordion-button:not(.collapsed) .form-collection-item-collapse-marker {
+    transform: rotate(90deg);
 }
 
 .form-group.field-collection .field-collection-add-button {

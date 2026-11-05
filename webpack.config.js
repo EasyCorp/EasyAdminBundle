@@ -17,6 +17,9 @@ Encore
                 {
                     // disabled to fix these issues: https://github.com/EasyCorp/EasyAdminBundle/pull/5171
                     svgo: false,
+                    // postcss-calc can't parse relative colors ('c * 0.8') or the 'cap' and 'lh' units;
+                    // it leaves those values unchanged but prints a warning for each one
+                    calc: false,
                 },
             ]
         };

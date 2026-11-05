@@ -65,6 +65,7 @@ return [
         'save' => 'Kaydet',
         'save_and_continue' => 'Kaydet ve düzenlemeye devam et',
         'toggle_dropdown' => 'Açılır menüyü değiştir',
+        'show_help' => 'Yardımın tamamını göster',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Otomatik',
         ],
         'locale' => 'Dil',
+    ],
+
+    'layout' => [
+        'collapse' => 'Daralt',
+        'expand' => 'Genişlet',
     ],
 
     'login_page' => [

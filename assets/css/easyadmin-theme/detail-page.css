@@ -20,9 +20,9 @@
     color: var(--form-label-color);
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-medium);
-    margin: 0 var(--ea-sp-8) 0 0;
+    margin: 0;
+    margin-inline-end: var(--ea-sp-8);
     padding: 0 0 1px 0;
-    text-align: right;
     inline-size: 130px;
 }
 .ea-detail .field-group .field-label:empty {
@@ -50,6 +50,9 @@
 }
 
 .ea-detail .field-group .field-value {
+    /* 'anywhere' instead of 'break-word' because only 'anywhere' stops a very long word from
+       making the row, and so the whole card, wider than its column */
+    overflow-wrap: anywhere;
     flex: 1;
     min-inline-size: 66%;
 }
@@ -58,23 +61,7 @@
 .ea-detail .field-group.field-text_editor .field-value {
     max-block-size: 350px;
     max-inline-size: 80ch;
+    /* fallback for Chrome < 135 and Safari < 26, which don't support overflow-block */
+    overflow-y: auto;
     overflow-block: auto;
-}
-
-/* for boolean fields, flip the label <-> value order because the label is
-   usually a medium-long string of text and the value is always tiny (YES/NO) */
-.ea-detail .field-group.field-boolean {
-    flex-direction: row-reverse;
-}
-.ea-detail .field-group.field-boolean .field-label {
-    flex: 1;
-    min-inline-size: 66%;
-    margin: 0 0 0 var(--ea-sp-8);
-    text-align: left;
-}
-.ea-detail .field-group.field-boolean .field-value {
-    flex: unset;
-    min-inline-size: 0;
-    text-align: right;
-    inline-size: 130px;
 }

@@ -1,24 +1,16 @@
 /* Images and lightbox
 /* ------------------------------------------------------------------------- */
-.detail .field-image .form-control {
-    background: transparent;
-    border: 0;
-    block-size: auto;
-    padding: 0;
-}
-
 .ea-detail .field-image .ea-lightbox-thumbnail {
     display: block;
     max-inline-size: 400px;
 }
 .ea-detail .field-image img {
-    border: var(--border-width) solid transparent;
     border-radius: var(--border-radius);
     max-block-size: 300px;
-    padding: var(--ea-sp-4);
 }
 .ea-detail .field-image img:hover {
-    border-color: var(--datalist-border-color);
+    outline: var(--border-width) solid var(--datalist-border-color);
+    outline-offset: var(--border-width);
 }
 
 .ea-lightbox-thumbnail img:hover {
@@ -29,12 +21,7 @@
     display: none;
 }
 
-.ea-lightbox img {
-    max-inline-size: 100%;
-    inline-size: 100%;
-}
-
-/* below, the contents of basiclightbox/dist/basicLightbox.min.css */
+/* based on basiclightbox/dist/basicLightbox.min.css, with some EasyAdmin tweaks */
 .basicLightbox {
     position: fixed;
     display: flex;
@@ -47,16 +34,18 @@
     background: color-mix(in srgb, var(--black) 80%, transparent);
     opacity: 0.01;
     transition: opacity var(--ea-duration-slower) var(--ea-ease-in-out);
-    z-index: 1000;
+    z-index: 10000;
     will-change: opacity;
 }
 .basicLightbox--visible {
     opacity: 1;
 }
 .basicLightbox__placeholder {
+    margin-inline: 5%;
+    max-block-size: 95%;
     max-inline-size: 100%;
     transform: scale(0.9);
-    transition: transform var(--ea-duration-slower) var(--ea-ease-in-out);
+    transition: opacity var(--ea-duration-slower) var(--ea-ease-in-out);
     z-index: 1;
     will-change: transform;
 }
@@ -65,10 +54,7 @@
 .basicLightbox__placeholder > video:first-child:last-child {
     display: block;
     position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    inset-block-end: 0;
-    inset-inline-start: 0;
+    inset: 0;
     margin: auto;
     max-inline-size: 95%;
     max-block-size: 95%;
@@ -91,18 +77,6 @@
 }
 .basicLightbox--visible .basicLightbox__placeholder {
     transform: scale(1);
-}
-
-.basicLightbox {
-    background: color-mix(in srgb, var(--black) 80%, transparent);
-    transition: opacity var(--ea-duration-slower) var(--ea-ease-in-out);
-    z-index: 10000;
-}
-.basicLightbox__placeholder {
-    margin-inline-start: 5%;
-    margin-inline-end: 5%;
-    max-block-size: 95%;
-    transition: opacity var(--ea-duration-slower) var(--ea-ease-in-out);
 }
 .basicLightbox__placeholder img {
     background: var(--white);

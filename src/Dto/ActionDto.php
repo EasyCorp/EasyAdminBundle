@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonColor;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonElement;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonStyle;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonType;
@@ -37,7 +38,8 @@ final class ActionDto
     private $displayCallable;
     private ButtonElement $htmlElement = ButtonElement::Button;
     private ButtonType $buttonType = ButtonType::Submit;
-    private ButtonVariant $variant = ButtonVariant::Default;
+    private ButtonColor $color = ButtonColor::Default;
+    private ?ButtonVariant $variant = null;
     private ButtonStyle $style = ButtonStyle::Solid;
     private bool|string|TranslatableInterface $confirmationMessage = false;
     private string|TranslatableInterface|null $displayableConfirmationMessage = null;
@@ -290,19 +292,82 @@ final class ActionDto
         $this->displayCallable = $displayCallable;
     }
 
+    /**
+     * @deprecated since EasyAdmin 5.9.0, use getColor() and getButtonVariant() instead
+     */
     public function getVariant(): ButtonVariant
     {
-        return $this->variant;
+        trigger_deprecation('easycorp/easyadmin-bundle', '5.9.0', 'The "%s()" method is deprecated, use "getColor()" and "getButtonVariant()" instead.', __METHOD__);
+
+        return $this->variant ?? ButtonVariant::from($this->color->value);
     }
 
+    /**
+     * Sets the style of the button. Passing a color (or null) is deprecated: use setColor() instead.
+     */
     public function setVariant(?ButtonVariant $variant): void
     {
-        $this->variant = $variant;
+        if (null !== $variant && !$variant->isColor()) {
+            $this->variant = $variant;
+
+            return;
+        }
+
+        trigger_deprecation('easycorp/easyadmin-bundle', '5.9.0', 'Passing a color or null to "%s()" is deprecated, use "setColor()" instead.', __METHOD__);
+
+        $this->variant = null;
+        $this->color = $variant?->asColor() ?? ButtonColor::Default;
+    }
+
+    public function setColor(ButtonColor $color): void
+    {
+        $this->color = $color;
+    }
+
+    /**
+     * The color configured for this action, without considering its CSS classes.
+     */
+    public function getConfiguredColor(): ButtonColor
+    {
+        return $this->color;
     }
 
     public function getStyle(): ButtonStyle
     {
         return $this->style;
+    }
+
+    /**
+     * The color of the button that renders this action.
+     */
+    public function getColor(): ButtonColor
+    {
+        if (ButtonColor::Default !== $this->color) {
+            return $this->color;
+        }
+
+        // actions styled with CSS classes (e.g. addCssClass('btn btn-primary')) instead of the
+        // asXxxAction() methods keep the color of those classes, as in previous versions
+        $cssClasses = $this->getCssClass().' '.$this->getAddedCssClass();
+        if (1 === preg_match('/(?:^|\s)btn-(?:outline-)?(primary|success|warning|danger|info)(?:\s|$)/', $cssClasses, $matches)) {
+            return ButtonColor::from($matches[1]);
+        }
+
+        return ButtonColor::Default;
+    }
+
+    /**
+     * The style of the button that renders this action: text actions are ghost buttons
+     * and the others use the default style of their color (e.g. primary actions are
+     * solid buttons and default actions are outline buttons).
+     */
+    public function getButtonVariant(): ButtonVariant
+    {
+        if (null !== $this->variant) {
+            return $this->variant;
+        }
+
+        return ButtonStyle::Text === $this->style ? ButtonVariant::Ghost : $this->getColor()->getDefaultVariant();
     }
 
     public function setStyle(?ButtonStyle $style): void
@@ -381,12 +446,12 @@ final class ActionDto
 
         $action->asTextLink(ButtonStyle::Text === $this->style);
 
-        $action->asPrimaryAction(ButtonVariant::Primary === $this->variant);
-        $action->asDefaultAction(ButtonVariant::Default === $this->variant);
-        $action->asSuccessAction(ButtonVariant::Success === $this->variant);
-        $action->asDangerAction(ButtonVariant::Danger === $this->variant);
-        $action->asWarningAction(ButtonVariant::Warning === $this->variant);
-        $action->asInfoAction(ButtonVariant::Info === $this->variant);
+        $action->asPrimaryAction(ButtonColor::Primary === $this->color);
+        $action->asDefaultAction(ButtonColor::Default === $this->color);
+        $action->asSuccessAction(ButtonColor::Success === $this->color);
+        $action->asDangerAction(ButtonColor::Danger === $this->color);
+        $action->asWarningAction(ButtonColor::Warning === $this->color);
+        $action->asInfoAction(ButtonColor::Info === $this->color);
 
         if (null !== $this->crudActionName) {
             $action->linkToCrudAction($this->crudActionName);

@@ -36,10 +36,9 @@ const EaCollectionProperty = {
     handleAddButton: (addButton, collection) => {
         addButton.addEventListener('click', function () {
             const isArrayCollection = collection.classList.contains('field-array');
-            // Use a counter to avoid having the same index more than once
+            // a counter instead of the number of items, so removing items doesn't reuse indexes
             let numItems = Number.parseInt(collection.dataset.numItems);
 
-            // Remove the 'Empty Collection' badge, if present
             const emptyCollectionBadge = this.parentElement.querySelector('.collection-empty');
             if (null !== emptyCollectionBadge) {
                 emptyCollectionBadge.outerHTML = isArrayCollection
@@ -63,7 +62,7 @@ const EaCollectionProperty = {
 
             collectionItemsWrapper.insertAdjacentHTML('beforeend', newItemHtml);
 
-            // Execute JS scripts embedded in prototype
+            // the <script> elements inserted with insertAdjacentHTML() don't run
             const collectionItems = collectionItemsWrapper.querySelectorAll('.field-collection-item');
             const lastElement = collectionItems[collectionItems.length - 1];
             lastElement.querySelectorAll('script').forEach((script) => eval(script.innerHTML));
@@ -100,11 +99,6 @@ const EaCollectionProperty = {
             return;
         }
         firstElement.classList.add('field-collection-item-first');
-
-        const lastElement = collectionItems[collectionItems.length - 1];
-        if (undefined === lastElement) {
-            return;
-        }
-        lastElement.classList.add('field-collection-item-last');
+        collectionItems[collectionItems.length - 1].classList.add('field-collection-item-last');
     },
 };

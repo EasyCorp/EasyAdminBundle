@@ -65,6 +65,7 @@ return [
         'save' => 'Zapisz',
         'save_and_continue' => 'Zapisz i kontynuuj',
         'toggle_dropdown' => 'Przełącz menu rozwijane',
+        'show_help' => 'Pokaż całą pomoc',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automatyczny',
         ],
         'locale' => 'Język',
+    ],
+
+    'layout' => [
+        'collapse' => 'Zwiń',
+        'expand' => 'Rozwiń',
     ],
 
     'login_page' => [

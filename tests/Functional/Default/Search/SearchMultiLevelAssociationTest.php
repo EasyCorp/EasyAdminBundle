@@ -50,6 +50,15 @@ class SearchMultiLevelAssociationTest extends AbstractCrudTestCase
         static::assertIndexFullEntityCount($expectedResultCount);
     }
 
+    public function testAssociationColumnIsSearchableWhenSearchingInItsProperties(): void
+    {
+        $crawler = $this->client->request('GET', $this->generateIndexUrl('Alpha'));
+
+        static::assertCount(0, $crawler->filter('.datagrid tbody td.searchable[data-column="title"]'));
+        static::assertCount(2, $crawler->filter('.datagrid tbody td.searchable[data-column="publisher"]'));
+        static::assertCount(1, $crawler->filter('.datagrid thead th.searchable[data-column="publisher"]'));
+    }
+
     /**
      * @return iterable<string, array{string, int}>
      */

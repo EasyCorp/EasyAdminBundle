@@ -1,4 +1,4 @@
-<span {{- attributes.defaults({class: 'country-flag-wrapper'}) }}>
+<span {{- attributes.defaults({class: 'country-flag-wrapper' ~ (this.showName ? ' country-flag-with-name')}) }}>
     {%- if this.flagExists -%}
         {{- this.getFlagAsSvg|raw -}}
     {%- else -%}

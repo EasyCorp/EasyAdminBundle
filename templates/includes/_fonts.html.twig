@@ -1,0 +1,15 @@
+{# @var theme \EasyCorp\Bundle\EasyAdminBundle\Dto\ThemeDto|null #}
+{# @var asset_package string #}
+{% set font_preload_paths = theme is not null ? theme.fontPreloadPaths : [constant('EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\ThemeDto::DEFAULT_FONT_PRELOAD_PATH')] %}
+{% set remote_font_stylesheet_url = theme is not null ? theme.remoteFontStylesheetUrl : null %}
+{% if remote_font_stylesheet_url is not null %}
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+{% endif %}
+{# 'crossorigin' is required even for fonts served by the same host; otherwise
+   browsers ignore the preloaded file and download the font again #}
+{% for font_preload_path in font_preload_paths %}
+    <link rel="preload" href="{{ asset(font_preload_path, asset_package) }}" as="font" type="font/woff2" crossorigin>
+{% endfor %}
+{% if remote_font_stylesheet_url is not null %}
+    <link rel="stylesheet" href="{{ remote_font_stylesheet_url }}"{% guard function csp_nonce %} nonce="{{ csp_nonce('style') }}"{% endguard %}>
+{% endif %}

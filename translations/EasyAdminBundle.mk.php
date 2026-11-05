@@ -65,6 +65,7 @@ return [
         'save' => 'Зачувај ги промените',
         'save_and_continue' => 'Зачувај и продолжи со уредување',
         'toggle_dropdown' => 'Префрли паѓачко мени',
+        'show_help' => 'Прикажи ја целата помош',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Автоматски',
         ],
         'locale' => 'Јазик',
+    ],
+
+    'layout' => [
+        'collapse' => 'Собери',
+        'expand' => 'Прошири',
     ],
 
     'login_page' => [

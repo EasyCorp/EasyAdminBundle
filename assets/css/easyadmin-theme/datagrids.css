@@ -1,6 +1,15 @@
 /* Datagrid tables (used in the INDEX page)
 /* ------------------------------------------------------------------------- */
 
+/* tables with many columns or long values scroll here instead of moving the whole page. The
+   dropdowns inside the table use a 'fixed' position to not be clipped by this element. The
+   relative position also clips the absolutely positioned elements of the table, such as
+   '.visually-hidden' texts, which would otherwise keep the page wider than the screen */
+.datagrid-scroll {
+    overflow-x: auto;
+    position: relative;
+}
+
 table.datagrid {
     border-collapse: collapse;
     border-spacing: 0;
@@ -8,8 +17,7 @@ table.datagrid {
     margin-block-end: 0;
     inline-size: 100%;
 }
-table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions,
-table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dropdown {
+table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions {
     min-inline-size: 50px;
 }
 @media (max-width: 767px) {
@@ -52,15 +60,9 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.batch-actions-selector:before {
         display: none;
     }
-    table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions,
-    table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dropdown {
+    table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions {
         padding: var(--ea-sp-4);
     }
-    table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dropdown:before {
-        display: none;
-    }
-    /* the small-screen left-alignment of table.datagrid td contents lives in
-       vendor-overrides.css because it must defeat Bootstrap's '!important' utilities */
     table.datagrid:not(.datagrid-empty) td::before {
         content: attr(data-label);
         color: var(--responsive-table-label-color);
@@ -82,58 +84,50 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     table.datagrid:not(.datagrid-empty) td.field-boolean::before {
         color: var(--table-cell-color);
         font-weight: var(--font-weight-normal);
-        inset-inline-start: 0;
-        /* needed to truncate text when the switch label is too long */
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
     }
     table.datagrid:not(.datagrid-empty) td.actions::before {
-        /* needed to make actions clickable when they are shown inlined */
+        /* it would cover the inline actions and make them unclickable */
         display: none;
     }
 }
 .datagrid thead th {
     border: 0;
-    box-shadow: inset 0 -2px 0 var(--table-cell-border-color);
+    box-shadow: inset 0 1px 0 var(--table-cell-border-color), inset 0 -1px 0 var(--table-cell-border-color);
     padding: 0;
 }
 .datagrid thead a,
 .datagrid thead span:not(.icon) {
     color: var(--table-thead-color);
     display: block;
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
     line-height: var(--line-height-snug);
-    padding: var(--ea-sp-6) var(--ea-sp-4);
+    padding: var(--ea-sp-4);
     white-space: nowrap;
 }
 .datagrid td {
     box-shadow: inset 0 1px 0 var(--table-cell-border-color);
-    padding: var(--ea-sp-4);
+    padding: var(--ea-sp-5) var(--ea-sp-4);
     line-height: var(--line-height-normal);
 }
 .datagrid tbody {
     box-shadow: 0 1px 0 var(--table-cell-border-color);
 }
-@media (min-width: 992px) {
+@media (min-width: 768px) {
     .datagrid thead + tbody tr:first-child td {
         box-shadow: none;
     }
 }
+.datagrid td:is(.field-id, .field-integer, .field-number, .field-money, .field-percent) {
+    font-variant-numeric: tabular-nums;
+}
 .datagrid td.field-avatar {
     padding: var(--ea-sp-2) var(--ea-sp-4);
-}
-.datagrid thead .sorted a,
-.datagrid thead .sorted span {
-    font-weight: var(--font-weight-bold);
 }
 .datagrid thead i,
 .datagrid thead .icon {
     color: var(--table-thead-marker-color);
     margin-inline-start: var(--ea-sp-1);
-}
-.datagrid thead .sorted {
-    box-shadow: inset 0 -2px 0 var(--color-primary);
 }
 .datagrid thead .sorted a,
 .datagrid thead .sorted span {
@@ -166,7 +160,6 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     background: transparent;
 }
 
-/* clickable rows for default row action */
 .datagrid tr.ea-clickable-row,
 .datagrid tr[data-default-action-url] {
     cursor: pointer;
@@ -215,13 +208,6 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     background: var(--dropdown-item-warning-bg);
     color: var(--dropdown-item-warning-color);
 }
-.datagrid td.actions .dropdown-item-variant-danger:hover,
-.page-actions .dropdown-item-variant-danger:hover {
-    --dropdown-icon-color: var(--dropdown-item-danger-color);
-
-    background: var(--dropdown-item-danger-bg);
-    color: var(--dropdown-item-danger-color);
-}
 
 @media (min-width: 992px) {
     .datagrid td.actions-as-dropdown {
@@ -239,22 +225,19 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     border-color: var(--dropdown-toggle-hover-border-color);
 }
 
-.datagrid tr:hover .dropdown-toggle:focus,
-.datagrid tr:hover .dropdown-toggle:active,
-.datagrid tr:hover .dropdown-toggle:active:focus,
-.datagrid .dropdown-toggle:focus,
-.datagrid .dropdown-toggle:active,
-.datagrid .dropdown-toggle:active:focus,
-.datagrid tr:hover .dropdown-toggle.show,
-.datagrid tr .dropdown-toggle.show,
-.datagrid .dropdown-toggle.show {
+.datagrid .dropdown-toggle:is(:focus, :active, .show) {
     border-color: var(--dropdown-toggle-hover-border-color);
-    box-shadow: var(--button-active-shadow);
+    box-shadow: none;
     outline: none;
+}
+.datagrid tr .dropdown-actions > .dropdown-toggle:focus-visible {
+    outline: var(--ea-focus-ring-width) solid var(--button-focus-outline-color);
+    outline-offset: var(--button-focus-outline-offset);
 }
 
 .datagrid .dropdown-actions {
     display: inline-block;
+    vertical-align: middle;
 }
 .datagrid .dropdown-actions > .dropdown-toggle {
     border: var(--border-width) solid transparent;
@@ -265,8 +248,10 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     overflow: visible;
 }
 
+/* flex, so the icon doesn't create a line box (which is taller than the SVG and places it
+   at the bottom instead of the middle) */
 .datagrid .dropdown-actions > .dropdown-toggle .icon {
-    display: block;
+    display: flex;
     font-size: var(--icon-size-md);
     inline-size: unset;
 }
@@ -275,69 +260,38 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     z-index: var(--zindex-900);
 }
 
-/* Nested dropdown menus (action groups) - always open to the left for better UX */
-.datagrid .dropdown-actions .dropdown-menu .dropstart {
-    position: relative;
-}
-
-/* Position nested dropdown menu to the left */
-.datagrid .dropdown-actions .dropdown-menu .dropstart > .dropdown-menu {
-    inset-block-start: 0;
-    inset-inline-end: 100%;
-    inset-inline-start: auto;
-    margin-block-end: 0;
-    margin-block-start: 0;
-    margin-inline-end: var(--ea-sp-8);
-    margin-inline-start: 0;
-}
-
-/* Submenus without toggle-split */
-.datagrid .dropdown-actions .dropdown-menu .dropstart:not(:has(.dropdown-toggle-split)):hover > .dropdown-menu,
-.datagrid
-    .dropdown-actions
-    .dropdown-menu
-    .dropstart:not(:has(.dropdown-toggle-split))
-    > .dropdown-toggle:focus
-    .dropdown-menu,
-.datagrid .dropdown-actions .dropdown-menu .dropstart:not(:has(.dropdown-toggle-split)) > .dropdown-menu:hover,
-/* Submenus with toggle-split */
-    .datagrid
-    .dropdown-actions
-    .dropdown-menu
-    .dropstart:has(.dropdown-toggle-split:hover)
-    > .dropdown-menu,
-.datagrid .dropdown-actions .dropdown-menu .dropstart:has(.dropdown-toggle-split) > .dropdown-menu:hover {
-    display: block;
-}
-
-/* Split button submenu styling */
-.datagrid .dropdown-actions .dropdown-menu .dropstart .dropdown-toggle-split {
-    padding-inline-start: var(--ea-sp-4);
-    padding-inline-end: var(--ea-sp-4);
-    position: absolute;
-    inset-inline-start: calc(-1 * var(--ea-sp-12));
-}
-.datagrid .dropdown-actions .dropdown-menu .dropstart .dropdown-toggle-split:before {
-    display: none;
-}
-
 .datagrid .ea-lightbox-thumbnail img {
     background: var(--white);
-    border: var(--border-width) solid transparent;
     border-radius: var(--border-radius);
     max-block-size: 50px;
     max-inline-size: 100px;
-    padding: var(--ea-sp-1) var(--ea-sp-2);
 }
 .datagrid tr:hover .ea-lightbox-thumbnail img {
-    border-color: var(--border-color);
+    outline: var(--border-width) solid var(--border-color);
+    outline-offset: var(--border-width);
 }
 
+/* the background of the highlight reaches past the text, and browsers paint inline elements in
+   order: it would cover the previous letter, but not the next one. The negative z-index paints
+   it below all the letters, and 'isolation' keeps it above the background of its parent */
+.datagrid :has(> mark) {
+    isolation: isolate;
+}
 .datagrid mark {
-    border-radius: var(--border-radius-none);
+    position: relative;
+    z-index: -1;
     background: var(--highlight-bg);
+    border-radius: var(--border-radius);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
     color: var(--highlight-color);
-    padding: 0;
+    margin-inline: calc(-1 * var(--ea-sp-1));
+    padding: 0 var(--ea-sp-1);
+    /* longhands because Safari only supports the color and thickness in the prefixed shorthand */
+    text-decoration-color: var(--highlight-underline-color);
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--ea-sp-1);
+    text-underline-offset: var(--ea-sp-3);
 }
 
 .datagrid .header-for-field-boolean {
@@ -346,12 +300,10 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
 .datagrid .field-boolean {
     text-align: center;
 }
-.datagrid .field-boolean.has-switch {
+.datagrid td.field-boolean.has-switch {
     padding: var(--ea-sp-3) var(--ea-sp-4);
 }
 
-/* the small-screen left-alignment of .field-country lives in vendor-overrides.css
-   because it must defeat Bootstrap's '!important' utilities */
 .datagrid .form-check {
     margin-block-end: 0;
     min-block-size: 15px;
@@ -375,11 +327,6 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
 }
 .datagrid .empty-row td:nth-child(2) {
     display: none;
-}
-@media (min-width: 992px) {
-    .datagrid .empty-row td:nth-child(2) {
-        inline-size: 5%;
-    }
 }
 .datagrid .empty-row td:nth-child(3) {
     inline-size: 10%;
@@ -425,47 +372,6 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     padding: var(--ea-sp-1) var(--ea-sp-2);
 }
 
-.datagrid-header-tools {
-    display: flex;
-    padding: 0 0 var(--ea-sp-5);
-}
-.datagrid-header-tools .datagrid-search {
-    flex: 1;
-    max-inline-size: 480px;
-    margin-inline-end: var(--ea-sp-8);
-}
-.datagrid-header-tools .datagrid-search .form-group,
-.datagrid-header-tools .datagrid-search .form-group .form-widget {
-    flex: 1;
-    margin: 0;
-    padding: 0;
-}
-
-.datagrid-header-tools .datagrid-search input[type="search"].form-control {
-    background-color: var(--white);
-    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path fill="%23aaa" d="M1216 832q0-185-131.5-316.5t-316.5-131.5-316.5 131.5-131.5 316.5 131.5 316.5 316.5 131.5 316.5-131.5 131.5-316.5zm512 832q0 52-38 90t-90 38q-54 0-90-38l-343-342q-179 124-399 124-143 0-273.5-55.5t-225-150-150-225-55.5-273.5 55.5-273.5 150-225 225-150 273.5-55.5 273.5 55.5 225 150 150 225 55.5 273.5q0 220-124 399l343 343q37 37 37 90z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: 13px 13px;
-    background-position: 10px 8px;
-    padding: 0 var(--ea-sp-16);
-    min-inline-size: 100%;
-}
-
-.datagrid-header-tools .datagrid-search .form-widget {
-    position: relative;
-}
-.datagrid-header-tools .datagrid-search a.action-search-reset {
-    color: var(--gray-500);
-    padding: var(--ea-sp-2) var(--ea-sp-4);
-    position: absolute;
-    inset-inline-end: 1px;
-    inset-block-start: 1px;
-    text-decoration: none;
-}
-.datagrid-header-tools .datagrid-search a.action-search-reset:hover {
-    color: var(--gray-700);
-}
-
 #modal-filters .modal-dialog {
     max-inline-size: 400px;
 }
@@ -473,8 +379,6 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     background: var(--modal-bg);
     border: var(--border-width) solid var(--modal-border-color);
     border-radius: var(--border-radius-xl);
-    /* the filters layout manages its own spacing, so opt out of the modal
-       component's default content padding/gap and render the sections flush */
     padding: 0;
     gap: 0;
 }
@@ -514,6 +418,10 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     display: flex;
     padding: var(--ea-sp-5) 0;
 }
+.filter-heading .form-check-input {
+    flex-shrink: 0;
+    margin: 0;
+}
 .filter-heading a {
     color: var(--link-color);
     cursor: pointer;
@@ -521,7 +429,8 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     margin-inline-start: var(--ea-sp-4);
 }
 .filter-content {
-    margin: calc(-1 * var(--ea-sp-2)) 0 0 var(--ea-sp-8);
+    margin: calc(-1 * var(--ea-sp-2)) 0 0;
+    margin-inline-start: var(--ea-sp-8);
     padding: 0 0 var(--ea-sp-5);
 }
 .filter-content .form-group,
@@ -542,7 +451,6 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
 .filter-content .form-check.form-check-inline {
     margin-block-start: 0;
 }
-/* needed to hide the visual marker in the labels of required fields */
 .filter-content .form-group label.required:after {
     content: none;
 }

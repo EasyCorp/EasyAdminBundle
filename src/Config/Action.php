@@ -4,10 +4,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Generator\LabelGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonColor;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonElement;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonStyle;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonType;
-use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -234,7 +234,7 @@ final class Action implements \Stringable
     public function asDefaultAction(bool $asDefaultAction = true): self
     {
         if ($asDefaultAction) {
-            $this->dto->setVariant(ButtonVariant::Default);
+            $this->dto->setColor(ButtonColor::Default);
         }
 
         return $this;
@@ -247,7 +247,7 @@ final class Action implements \Stringable
     public function asPrimaryAction(bool $asPrimaryAction = true): self
     {
         if ($asPrimaryAction) {
-            $this->dto->setVariant(ButtonVariant::Primary);
+            $this->dto->setColor(ButtonColor::Primary);
         }
 
         return $this;
@@ -260,7 +260,7 @@ final class Action implements \Stringable
     public function asSuccessAction(bool $asSuccessAction = true): self
     {
         if ($asSuccessAction) {
-            $this->dto->setVariant(ButtonVariant::Success);
+            $this->dto->setColor(ButtonColor::Success);
         }
 
         return $this;
@@ -273,7 +273,7 @@ final class Action implements \Stringable
     public function asWarningAction(bool $asWarningAction = true): self
     {
         if ($asWarningAction) {
-            $this->dto->setVariant(ButtonVariant::Warning);
+            $this->dto->setColor(ButtonColor::Warning);
         }
 
         return $this;
@@ -287,7 +287,7 @@ final class Action implements \Stringable
     public function asDangerAction(bool $asDangerAction = true): self
     {
         if ($asDangerAction) {
-            $this->dto->setVariant(ButtonVariant::Danger);
+            $this->dto->setColor(ButtonColor::Danger);
         }
 
         return $this;
@@ -300,7 +300,7 @@ final class Action implements \Stringable
     public function asInfoAction(bool $asInfoAction = true): self
     {
         if ($asInfoAction) {
-            $this->dto->setVariant(ButtonVariant::Info);
+            $this->dto->setColor(ButtonColor::Info);
         }
 
         return $this;

@@ -14,8 +14,8 @@ Table of Contents
 
 * :doc:`Dashboards </dashboards>` (main menu, user menu, admin context, translations)
 * :doc:`CRUD controllers </crud>` (entities, pagination, search, sorting, forms)
-* :doc:`Design </design>` (customization, templates, custom CSS/JS assets, Bootstrap
-  theming, CSS variables)
+* :doc:`Design </design>` (theme colors and fonts, UI Kit, CSS variables, recipes,
+  custom pages, templates, custom CSS/JS assets)
 * :doc:`Fields </fields>` (field configurators, custom fields, form columns, tabs
   and fieldsets)
 * :doc:`Filters </filters>` (custom filters, filtering unmapped properties)

@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\Font;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\GrayScale;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Theme;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -36,7 +37,8 @@ class ThemeTestDashboardController extends AbstractDashboardController
                 ->primaryColor('#15803d', dark: 'oklch(0.6 0.2 150)')
                 ->radius('lg')
                 ->spacing('5px')
-                ->grays(GrayScale::ZINC, dark: GrayScale::STONE));
+                ->grays(GrayScale::ZINC, dark: GrayScale::STONE)
+                ->font(base: Font::Inter, monospace: Font::JetBrainsMono));
     }
 
     public function configureAssets(): Assets

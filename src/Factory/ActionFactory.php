@@ -22,8 +22,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonColor;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonStyle;
-use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -66,17 +66,7 @@ final readonly class ActionFactory
                     continue;
                 }
 
-                // if CSS class hasn't been overridden, apply the default ones
-                if ('' === $item->getCssClass()) {
-                    $defaultCssClass = 'action-'.$item->getName();
-                    $item->setCssClass($defaultCssClass);
-                }
-
-                // these are the additional custom CSS classes defined via addCssClass()
-                // which are always appended to the CSS classes (default ones or custom ones)
-                if ('' !== $addedCssClass = $item->getAddedCssClass()) {
-                    $item->setCssClass($item->getCssClass().' '.$addedCssClass);
-                }
+                $this->applyCssClasses($item);
 
                 $processedItems[$item->getName()] = $this->processAction($currentPage, $item, $entityDto);
             } elseif ($item instanceof ActionGroupDto) {
@@ -187,16 +177,7 @@ final readonly class ActionFactory
                     throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $item->getName(), $currentPage));
                 }
 
-                // if CSS class hasn't been overridden, apply the default ones
-                if ('' === $item->getCssClass()) {
-                    $item->setCssClass('action-'.$item->getName());
-                }
-
-                // these are the additional custom CSS classes defined via addCssClass()
-                // which are always appended to the CSS classes (default ones or custom ones)
-                if ('' !== $addedCssClass = $item->getAddedCssClass()) {
-                    $item->setCssClass($item->getCssClass().' '.$addedCssClass);
-                }
+                $this->applyCssClasses($item);
 
                 $processedItems[$item->getName()] = $this->processAction($currentPage, $item);
             } elseif ($item instanceof ActionGroupDto) {
@@ -243,6 +224,20 @@ final readonly class ActionFactory
         return $this->processGlobalActions($actionConfigDto);
     }
 
+    private function applyCssClasses(ActionDto $actionDto): void
+    {
+        // if CSS class hasn't been overridden, apply the default ones
+        if ('' === $actionDto->getCssClass()) {
+            $actionDto->setCssClass('action-'.$actionDto->getName());
+        }
+
+        // these are the additional custom CSS classes defined via addCssClass()
+        // which are always appended to the CSS classes (default ones or custom ones)
+        if ('' !== $addedCssClass = $actionDto->getAddedCssClass()) {
+            $actionDto->setCssClass($actionDto->getCssClass().' '.$addedCssClass);
+        }
+    }
+
     private function processAction(string $pageName, ActionDto $actionDto, ?EntityDto $entityDto = null): ActionDto
     {
         $adminContext = $this->adminContextProvider->getContext();
@@ -281,7 +276,7 @@ final readonly class ActionFactory
                 'data-bs-toggle' => 'modal',
                 'data-bs-target' => '#modal-action-confirmation',
                 'data-action-confirmation' => 'true',
-                'data-action-variant' => $actionDto->getVariant()->value,
+                'data-action-variant' => $actionDto->getColor()->value,
             ]);
 
             // the DELETE action shows a dedicated title and description by default; a
@@ -341,7 +336,7 @@ final readonly class ActionFactory
                 $batchActionAttributes['data-bs-toggle'] = 'modal';
                 $batchActionAttributes['data-bs-target'] = '#modal-batch-action';
                 // so the modal confirmation button can mirror the variant/color of the action that opened it
-                $batchActionAttributes['data-action-variant'] = $actionDto->getVariant()->value;
+                $batchActionAttributes['data-action-variant'] = $actionDto->getColor()->value;
 
                 // if the confirmation config is not a boolean, it's a string or TranslatableInterface with the custom confirmation message
                 if (true !== $confirmationConfig) {
@@ -502,14 +497,14 @@ final readonly class ActionFactory
     {
         $baseWeight = ButtonStyle::Solid === $item->getStyle() ? 1000 : 0;
 
-        $variant = $item->getVariant();
-        $variantWeight = match ($variant) {
-            ButtonVariant::Primary => 100,
-            ButtonVariant::Default => 90,
-            ButtonVariant::Success => 80,
-            ButtonVariant::Info => 75,
-            ButtonVariant::Warning => 70,
-            ButtonVariant::Danger => 60,
+        // not the color inferred from the CSS classes, so they don't change the order of actions
+        $variantWeight = match ($item->getConfiguredColor()) {
+            ButtonColor::Primary => 100,
+            ButtonColor::Default => 90,
+            ButtonColor::Success => 80,
+            ButtonColor::Info => 75,
+            ButtonColor::Warning => 70,
+            ButtonColor::Danger => 60,
         };
 
         return $baseWeight + $variantWeight;
@@ -518,6 +513,7 @@ final readonly class ActionFactory
     private function processActionGroup(string $pageName, ActionGroupDto $groupDto, ?EntityDto $entityDto = null): ActionGroupDto
     {
         if (null !== $mainAction = $groupDto->getMainAction()) {
+            $this->applyCssClasses($mainAction);
             $processedMainAction = $this->processAction($pageName, $mainAction, $entityDto);
             $groupDto->setMainAction($processedMainAction);
         }
@@ -533,6 +529,7 @@ final readonly class ActionFactory
                     continue;
                 }
 
+                $this->applyCssClasses($item);
                 $processedAction = $this->processAction($pageName, $item, $entityDto);
                 $processedActions[] = $processedAction;
             } else {

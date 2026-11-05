@@ -361,6 +361,26 @@ class ActionGroupsTest extends AbstractCrudTestCase
         }
     }
 
+    public function testDefaultCssClassesOfActionsInActionGroups(): void
+    {
+        $entity = CategoryFactory::createOne(['active' => true]);
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        $splitDropdown = $crawler->filter('.action-group[data-action-group-name="group2global"]');
+        static::assertCount(1, $splitDropdown->filter('.action-main_action[data-action-group-name-main-action]'), 'The main action should have the default CSS class');
+        static::assertStringNotContainsString('action-main_action', $splitDropdown->filter('button.dropdown-toggle-split')->attr('class'), 'The split toggle should not have the default CSS class of the main action');
+        static::assertCount(1, $splitDropdown->filter('.dropdown-menu .dropdown-item.action-action1'), 'Group items should have the default CSS class');
+        static::assertCount(1, $splitDropdown->filter('.dropdown-menu .dropdown-item.action-action2'));
+
+        $entityRow = $crawler->filter(sprintf('table.datagrid tbody tr[data-id="%d"]', $entity->getId()));
+        $entitySplitSubmenu = $entityRow->filter('.dropdown-submenu')->reduce(static fn ($node) => $node->filter('.dropdown-toggle-split')->count() > 0);
+        static::assertCount(1, $entitySplitSubmenu->filter('.dropdown-item.action-main_action'), 'The main action of entity groups should have the default CSS class');
+        static::assertCount(1, $entitySplitSubmenu->filter('.dropdown-menu .dropdown-item.action-action1'), 'Entity group items should have the default CSS class');
+
+        $mixedDropdown = $crawler->filter('.action-group[data-action-group-name="group4global "]');
+        static::assertCount(1, $mixedDropdown->filter('.dropdown-menu .dropdown-item.action-button_action.btn-primary'));
+    }
+
     public function testActionGroupsHtmlStructure(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
@@ -375,6 +395,7 @@ class ActionGroupsTest extends AbstractCrudTestCase
         $regularDropdown = $regularDropdowns->first();
         static::assertCount(1, $regularDropdown->filter('button.dropdown-toggle'));
         static::assertSame('dropdown', $regularDropdown->filter('button.dropdown-toggle')->attr('data-bs-toggle'));
+        static::assertSame('true', $regularDropdown->filter('button.dropdown-toggle')->attr('aria-haspopup'));
         static::assertCount(1, $regularDropdown->filter('.dropdown-menu'));
 
         // test split button structure
@@ -387,6 +408,7 @@ class ActionGroupsTest extends AbstractCrudTestCase
         $splitDropdown = $splitDropdowns->first();
         static::assertGreaterThan(0, $splitDropdown->filter('[data-action-group-name-main-action]')->count()); // Main action
         static::assertCount(1, $splitDropdown->filter('button.dropdown-toggle-split')); // Dropdown toggle
+        static::assertSame('true', $splitDropdown->filter('button.dropdown-toggle-split')->attr('aria-haspopup'));
         static::assertCount(1, $splitDropdown->filter('.dropdown-menu'));
     }
 

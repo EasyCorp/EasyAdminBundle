@@ -1,6 +1,5 @@
 /* Modals: shadcn alert-dialog look on top of Bootstrap's markup + JS */
 
-/* Backdrop: no solid black overlay, just a slight blur over the page */
 .modal-backdrop {
     --bs-backdrop-bg: transparent;
     --bs-backdrop-opacity: 1;
@@ -9,25 +8,27 @@
     -webkit-backdrop-filter: blur(4px);
     transition: opacity var(--ea-duration-fast) var(--ea-ease-in-out);
 }
+.modal-backdrop.ea-sidebar-backdrop {
+    transition: opacity var(--ea-duration-drawer-open) var(--ea-ease-drawer-backdrop);
+}
+.modal-backdrop.ea-sidebar-backdrop:not(.show) {
+    pointer-events: none;
+    transition-duration: var(--ea-duration-drawer-close);
+}
+@media (prefers-reduced-motion: reduce) {
+    .modal-backdrop.ea-sidebar-backdrop {
+        transition: none;
+    }
+}
 
-/* Always center the dialog vertically and horizontally on screen.
-   The max-width cap (applied at every viewport, not just ≥576px like Bootstrap's
-   default) makes wider sizes shrink to fit small screens so they never overflow. */
 .modal-dialog {
     display: flex;
     align-items: center;
     min-block-size: calc(100% - var(--bs-modal-margin) * 2);
     max-inline-size: min(var(--bs-modal-width), calc(100% - var(--bs-modal-margin) * 2));
-    /* center horizontally at every viewport: Bootstrap only auto-centers at ≥576px,
-       but our max-width cap applies below that too, so without this the dialog would
-       be left-aligned on small/medium screens. */
     margin-inline: auto;
 }
 
-/* Width scale (shadcn-inspired). The default (380px, set in variables-theme.css)
-   is intentionally narrow so simple confirmation dialogs don't look empty; opt into
-   wider modals with size="lg"/"xl". EA-namespaced class names avoid colliding with
-   Bootstrap's own .modal-sm/.modal-lg. */
 .modal-dialog-sm {
     --bs-modal-width: 320px;
 }
@@ -38,9 +39,6 @@
     --bs-modal-width: 800px;
 }
 
-/* Appear/disappear in place with a quick fade + zoom (shadcn) instead of sliding from the top.
-   Bootstrap only fades the backdrop, so we add opacity to the dialog here. Closing reuses the
-   .fade state (opacity 0 + scale .95), so fade-out + zoom-out come for free. */
 .modal.fade .modal-dialog {
     transform: scale(0.95);
     opacity: 0;
@@ -57,25 +55,19 @@
     }
 }
 
-/* Lay out the sections (header/body/footer) on a grid with a consistent gap, like
-   shadcn's alert-dialog content (`grid gap-4 p-4`). The padding lives here and the
-   sections below drop their own padding, so the spacing between sections is a single
-   16px grid gap instead of per-section padding. */
 .modal-content {
     display: grid;
     gap: var(--ea-sp-12);
+    /* the default column grows with its contents, so wide contents such as
+       long lines of code would overflow the modal window */
+    grid-template-columns: minmax(0, 1fr);
     padding: var(--ea-sp-8);
     border-color: var(--modal-border-color);
-    /* Bootstrap's dist CSS is built with $enable-shadows: false, so its modal
-       box-shadow rule is never emitted (the --bs-modal-box-shadow var is defined
-       but unused). Apply it explicitly so the modal keeps its elevation. */
+    /* Bootstrap's dist CSS is built with $enable-shadows: false, so it defines
+       --bs-modal-box-shadow but never applies it */
     box-shadow: var(--bs-modal-box-shadow);
 }
 
-/* Header: seamless (no background, no separating border) with a shadcn-style heading.
-   The modal window keeps its rounded corners on every side even without a header,
-   because the body/footer have no background of their own and let the rounded
-   .modal-content background show through. */
 .modal-header {
     background: transparent;
     border: 0;
@@ -87,19 +79,16 @@
     font-weight: var(--font-weight-medium);
 }
 
-/* The Modal component always wraps the body block in .modal-body-content, which
-   stacks its children on a grid so ANY block content (headings, paragraphs, lists, …)
-   is separated by one consistent gap. */
 .modal-body {
     padding: 0;
 }
-.modal-body h4 {
+.modal-body-content > h4 {
     color: var(--text-color);
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-medium);
     line-height: var(--line-height-normal);
 }
-.modal-body p {
+.modal-body-content > p {
     color: var(--text-muted);
 }
 /* the main text of a modal without a title (e.g. a custom confirmation message) */
@@ -109,14 +98,12 @@
 .modal-body-content {
     display: grid;
     gap: var(--ea-sp-3);
+    grid-template-columns: minmax(0, 1fr);
 }
-/* let the grid gap be the only separator, whatever the children are */
 .modal-body-content > * {
     margin-block: 0;
 }
 
-/* Optional leading/top icon for confirmation-style modals (shadcn): a soft tinted
-   rounded square shown next to (icon) or above (topIcon) the body content. */
 .modal-icon {
     display: inline-flex;
     align-items: center;
@@ -137,14 +124,12 @@
     block-size: 1em;
 }
 
-/* `icon`: icon top-left, body content beside it */
 .modal-body--icon {
     display: flex;
     align-items: flex-start;
     gap: var(--ea-sp-8);
 }
 
-/* `topIcon`: larger icon stacked above the body content */
 .modal-body--top-icon {
     display: flex;
     flex-direction: column;
@@ -158,14 +143,12 @@
     font-size: var(--icon-size-lg);
 }
 
-/* Seamless footer: no background, no separating border, right-aligned buttons. */
 .modal-footer {
     background: transparent;
     border-block-start: 0;
     padding: 0;
 }
 
-/* Stack footer buttons (reversed, full-width) on narrow screens, like shadcn. */
 @media (max-width: 575.98px) {
     .modal-footer {
         flex-direction: column-reverse;

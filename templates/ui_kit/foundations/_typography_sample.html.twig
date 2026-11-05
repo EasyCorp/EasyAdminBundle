@@ -1,0 +1,116 @@
+<h1>Shipping and returns policy</h1>
+
+<p class="lead">This guide explains how orders are packed, shipped and returned. Read it before answering any customer question about deliveries.</p>
+
+<p>Orders placed before <strong>2 PM</strong> on a working day are shipped the same day. Orders placed later, or during the weekend, are shipped the next working day. You can see the shipping status of each order in the <a href="#">orders list</a>, and customers receive an email with the <em>tracking number</em> as soon as the carrier picks up the parcel.</p>
+
+<h2>Shipping methods</h2>
+
+<p>Customers choose the shipping method when they pay. The price depends on the weight of the parcel and on the destination, and it's calculated by the <abbr title="Application Programming Interface">API</abbr> of each carrier. Some methods are <mark>only available in the mainland</mark>, and the <del>overnight</del> <ins>express</ins> method replaced the old one in March.</p>
+
+<ul>
+    <li>Standard shipping: 3 to 5 working days.</li>
+    <li>Express shipping: 1 to 2 working days.
+        <ul>
+            <li>Not available for parcels heavier than 30 kg.</li>
+            <li>Not available for islands.</li>
+        </ul>
+    </li>
+    <li>Pickup point: the customer collects the parcel in a store of the network.</li>
+</ul>
+
+<h3>Packing an order</h3>
+
+<p>Follow these steps for every order, in this exact order:</p>
+
+<ol>
+    <li>Print the packing slip from the order page.</li>
+    <li>Check that every product of the slip is in the box.</li>
+    <li>
+        <p>Weigh the box and enter its weight in the order.</p>
+        <p>The shipping label can't be printed until the weight is set.</p>
+    </li>
+    <li>Print the shipping label and stick it on the top of the box.</li>
+</ol>
+
+<h4>Fragile products</h4>
+
+<p>Wrap glass and ceramic products in two layers of bubble wrap. Mark the box as fragile with the <code>fragile</code> tag, so the carrier handles it with care<sup><a href="#ui-kit-typography-note-1">1</a></sup>.</p>
+
+<h5>Packing materials</h5>
+
+<p>Boxes, tape and bubble wrap are stored in the second room of the warehouse.</p>
+
+<h6>Last updated</h6>
+
+<p>This policy was reviewed on May 12 by the logistics team.</p>
+
+<h2>Returns</h2>
+
+<blockquote>
+    <p>Customers can return any product within 30 days, for any reason and with no extra cost.</p>
+</blockquote>
+
+<p>When a parcel arrives back at the warehouse, open the order and press <kbd><kbd>Ctrl</kbd> + <kbd>R</kbd></kbd> to register the return. The refund is sent automatically when the return is approved.</p>
+
+<dl>
+    <dt>Approved return</dt>
+    <dd>The product is in perfect condition and goes back to the stock.</dd>
+    <dt>Rejected return</dt>
+    <dd>The product is damaged or incomplete. Contact the customer before rejecting it.</dd>
+</dl>
+
+<h3>Refunds</h3>
+
+<p>Refunds use the same payment method of the order. This table shows how long each method takes:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Payment method</th>
+            <th>Refund time</th>
+            <th align="right">Fee</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Credit card</td>
+            <td>3 to 5 working days</td>
+            <td align="right">0.00</td>
+        </tr>
+        <tr>
+            <td>Bank transfer</td>
+            <td>1 to 2 working days</td>
+            <td align="right">1.50</td>
+        </tr>
+        <tr>
+            <td>Gift card</td>
+            <td>Immediate</td>
+            <td align="right">0.00</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>Developers can trigger a refund from the console:</p>
+
+<pre><code>$ php bin/console app:refund 1024 --amount=49.90 --notify-customer</code></pre>
+
+<figure>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 1'%3E%3Crect width='3' height='1' fill='%23a3a3a3' fill-opacity='.25'/%3E%3C/svg%3E" width="600" height="200" alt="A diagram of the return process">
+    <figcaption>The return process, from the request of the customer to the refund.</figcaption>
+</figure>
+
+<details>
+    <summary>What happens with returns from other countries?</summary>
+    <p>They follow the same process, but the customer pays the shipping cost of the return.</p>
+</details>
+
+<hr>
+
+<p>Questions about this policy? Write to the logistics team.</p>
+
+<section class="footnotes">
+    <ol>
+        <li id="ui-kit-typography-note-1">Carriers charge extra for fragile parcels in some destinations.</li>
+    </ol>
+</section>

@@ -65,6 +65,7 @@ return [
         'save' => 'Spremi promjene',
         'save_and_continue' => 'Spremi i nastavi uređivanje',
         'toggle_dropdown' => 'Prebaci padajući izbornik',
+        'show_help' => 'Prikaži cijelu pomoć',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automatski',
         ],
         'locale' => 'Jezik',
+    ],
+
+    'layout' => [
+        'collapse' => 'Sažmi',
+        'expand' => 'Proširi',
     ],
 
     'login_page' => [

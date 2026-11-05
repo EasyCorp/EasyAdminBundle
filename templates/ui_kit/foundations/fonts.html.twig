@@ -1,0 +1,94 @@
+{% types {font_options: 'array'} %}
+{% extends '@EasyAdmin/ui_kit/foundation.html.twig' %}
+
+{% block main %}
+    <p class="ea-ui-kit-text-balance">EasyAdmin includes several fonts, served by your own application. Select one to preview it in this page. All of them are tuned to look equally big and bold.</p>
+
+    {{ include('@EasyAdmin/ui_kit/foundations/_theme_picker.html.twig', {theme_options: font_options, name: 'fonts', label: 'Font'}) }}
+    {{ include('@EasyAdmin/ui_kit/foundations/_theme_code.html.twig') }}
+
+    <h2>Interface</h2>
+    <div class="ea-ui-kit-preview ea-ui-kit-preview-standalone ea-not-prose">
+        <div class="table-responsive">
+            <table class="table datagrid">
+                <thead>
+                    <tr>
+                        <th scope="col"><span>Order</span></th>
+                        <th scope="col"><span>Customer</span></th>
+                        <th scope="col"><span>Email</span></th>
+                        <th scope="col"><span>Date</span></th>
+                        <th scope="col" class="text-end"><span>Total</span></th>
+                        <th scope="col"><span>Status</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in [
+                        ['#10248', 'Olivia Martin', 'olivia.martin@example.com', 'Mar 3, 2026', '1,999.00', 'success', 'Paid'],
+                        ['#10247', 'Jackson Lee', 'jackson.lee@example.com', 'Mar 2, 2026', '39.00', 'warning', 'Pending'],
+                        ['#10246', 'Isabella Nguyen', 'isabella.nguyen@example.com', 'Feb 28, 2026', '299.50', 'success', 'Paid'],
+                        ['#10245', 'William Kim', 'will@example.com', 'Feb 27, 2026', '99.00', 'danger', 'Refunded'],
+                    ] %}
+                        <tr>
+                            <td class="field-id">{{ order[0] }}</td>
+                            <td>{{ order[1] }}</td>
+                            <td>{{ order[2] }}</td>
+                            <td>{{ order[3] }}</td>
+                            <td class="field-money text-end">{{ order[4] }}</td>
+                            <td><twig:ea:Badge color="{{ order[5] }}">{{ order[6] }}</twig:ea:Badge></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <label class="form-label" for="ea-ui-kit-fonts-name">Product name</label>
+                <input class="form-control" type="text" id="ea-ui-kit-fonts-name" value="Wireless headphones">
+                <div class="form-text">The name displayed in the store and in the invoices.</div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="ea-ui-kit-fonts-price">Price</label>
+                <input class="form-control" type="text" id="ea-ui-kit-fonts-price" value="1,234.56">
+                <div class="form-text">Prices include taxes.</div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Contents</h2>
+    <div class="ea-ui-kit-text-columns">
+        <h3>Universal Declaration of Human Rights</h3>
+
+        <h4>Preamble</h4>
+        <p>Whereas recognition of the inherent dignity and of the equal and inalienable rights of all members of the human family is the foundation of freedom, justice and peace in the world,</p>
+        <p>Whereas disregard and contempt for human rights have resulted in barbarous acts which have outraged the conscience of mankind, and the advent of a world in which human beings shall enjoy freedom of speech and belief and freedom from fear and want has been proclaimed as the highest aspiration of the common people,</p>
+        <p>Whereas it is essential, if man is not to be compelled to have recourse, as a last resort, to rebellion against tyranny and oppression, that human rights should be protected by the rule of law,</p>
+
+        <h4>Article 1</h4>
+        <p>All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.</p>
+
+        <h4>Article 2</h4>
+        <p>Everyone is entitled to all the rights and freedoms set forth in this Declaration, without distinction of any kind, such as race, colour, sex, language, religion, political or other opinion, national or social origin, property, birth or other status.</p>
+        <p>Furthermore, no distinction shall be made on the basis of the political, jurisdictional or international status of the country or territory to which a person belongs, whether it be independent, trust, non-self-governing or under any other limitation of sovereignty.</p>
+
+        <h4>Article 3</h4>
+        <p>Everyone has the right to life, liberty and security of person.</p>
+
+        <h4>Article 4</h4>
+        <p>No one shall be held in slavery or servitude; slavery and the slave trade shall be prohibited in all their forms.</p>
+
+        <h4>Article 5</h4>
+        <p>No one shall be subjected to torture or to cruel, inhuman or degrading treatment or punishment.</p>
+
+        <h4>Article 6</h4>
+        <p>Everyone has the right to recognition everywhere as a person before the law.</p>
+
+        <h4>Article 7</h4>
+        <p>All are equal before the law and are entitled without any discrimination to equal protection of the law. All are entitled to equal protection against any discrimination in violation of this Declaration and against any incitement to such discrimination.</p>
+    </div>
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+    {{ include('@EasyAdmin/ui_kit/foundations/_theme_picker_script.html.twig') }}
+{% endblock %}

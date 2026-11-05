@@ -1,10 +1,13 @@
 {% props
     ## bool Whether some items of the list open a submenu (`ItemGroup` sub-components).
     hasSubmenus = false,
+    ## 'start'|'end' The edge of the button that the menu is aligned to: 'start' opens the menu towards the end side (e.g. to the right) and 'end' towards the start side. If there's no room, the menu opens to the other side.
+    align = 'start',
 %}
 
 {% set css_class = html_classes(
-    'dropdown-menu dropdown-menu-end',
+    'dropdown-menu',
+    'end' == align ? 'dropdown-menu-end',
     hasSubmenus ? 'dropdown-has-submenus',
 ) %}
 

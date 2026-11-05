@@ -65,6 +65,7 @@ return [
         'save' => 'Sauvegarder les modifications',
         'save_and_continue' => 'Sauvegarder et modifier',
         'toggle_dropdown' => 'Basculer le menu déroulant',
+        'show_help' => 'Afficher toute l\'aide',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automatique',
         ],
         'locale' => 'Langue',
+    ],
+
+    'layout' => [
+        'collapse' => 'Réduire',
+        'expand' => 'Développer',
     ],
 
     'login_page' => [

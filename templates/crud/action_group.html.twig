@@ -8,9 +8,10 @@
 <div class="btn-group action-group" {% for name, value in group.htmlAttributes %}{{ name }}="{{ (value.trans is defined ? value|trans : value)|e('html') }}" {% endfor %}>
     {% if has_main_action %} {# render as a split button (main button with action + dropdown toggle) #}
         <twig:ea:Button
-            variant="{{ group.variant }}"
+            color="{{ group.color }}"
+            variant="{{ group.buttonVariant }}"
             htmlElement="{{ main_action.htmlElement }}"
-            class="{{ main_action.cssClass }} {{ main_action.addedCssClass }}"
+            class="{{ main_action.cssClass }}"
             href="{{ main_action.htmlElement.isLink ? main_action.linkUrl : null }}"
             action="{{ main_action.htmlElement.isForm ? main_action.linkUrl : null }}"
             method="{{ main_action.htmlElement.isForm ? 'POST' : null }}"
@@ -21,12 +22,18 @@
             {%- if main_action_label is not same as(false) -%}{{ main_action_label|raw }}{%- endif -%}
         </twig:ea:Button>
 
+        {# the toggle mirrors the custom CSS classes of the main action (e.g. to match its size),
+           but not its default 'action-{name}' class, which must only identify the main button #}
+        {% set toggle_css_class = main_action.cssClass|split(' ')|filter(css_class => css_class != 'action-' ~ main_action.name)|join(' ') %}
         <twig:ea:Button
-                variant="{{ group.variant }}"
+                color="{{ group.color }}"
+            variant="{{ group.buttonVariant }}"
                 htmlElement="button"
                 type="button"
-                class="{{ main_action.cssClass }} {{ main_action.addedCssClass }} dropdown-toggle dropdown-toggle-split"
+                class="{{ toggle_css_class }} dropdown-toggle dropdown-toggle-split"
                 data-bs-toggle="dropdown"
+                data-bs-popper-config='{"strategy":"fixed"}'
+                aria-haspopup="true"
                 aria-expanded="false"
                 label:class="visually-hidden"
         >
@@ -34,12 +41,15 @@
         </twig:ea:Button>
     {% else %} {# render as a single button that toggles the dropdown (no main action) #}
         <twig:ea:Button
-            variant="{{ group.variant }}"
+            color="{{ group.color }}"
+            variant="{{ group.buttonVariant }}"
             class="{{ group.cssClass }} {{ group.addedCssClass }} dropdown-toggle"
             htmlElement="button"
             type="button"
             icon="{{ group.icon }}"
             data-bs-toggle="dropdown"
+            data-bs-popper-config='{"strategy":"fixed"}'
+            aria-haspopup="true"
             aria-expanded="false"
         >
             {% set group_label = group.label|trans %}
@@ -47,7 +57,7 @@
         </twig:ea:Button>
     {% endif %}
 
-    <twig:ea:ActionMenu:ActionList class="dropdown-menu">
+    <twig:ea:ActionMenu:ActionList class="dropdown-menu" align="{{ has_main_action ? 'end' : 'start' }}">
         {% for item in group.items %}
             {% if item is iterable and item.type is defined %}
                 {% if item.type == 'divider' %}
@@ -59,11 +69,10 @@
             {% else %}
                 {# item is an ActionDto #}
                 <twig:ea:ActionMenu:ActionList:Item
-                    label="{{ item.label|trans }}" icon="{{ item.icon }}" class="{{ item.cssClass }} dropdown-item-variant-{{ item.variant.value }}"
+                    label="{{ item.label|trans }}" icon="{{ item.icon }}" class="{{ item.cssClass }} dropdown-item-variant-{{ item.color.value }}"
                     htmlAttributes="{{ item.htmlAttributes|ea_html_attrs }}"
                     renderAsForm="{{ item.isRenderedAsForm }}"
                     url="{{ item.linkUrl }}" renderLabelRaw="true"
-                    showBlankIcons="{{ group.hasAnyActionWithIcon }}"
                 />
             {% endif %}
         {% endfor %}

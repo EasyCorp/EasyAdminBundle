@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\UiKit;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\GrayScale;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\ThemeColor;
 use EasyCorp\Bundle\EasyAdminBundle\UiKit\ComponentDocumentationReader;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -226,6 +228,86 @@ class UiKitTest extends WebTestCase
     {
         $client = static::createClient();
         $client->request('GET', '/admin/_ea_ui_kit/components/this_component_does_not_exist');
+
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testIndexListsTheFoundations(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/_ea_ui_kit');
+
+        $this->assertSame('/admin/_ea_ui_kit/foundations/typography', $crawler->filter('#main ul a:contains("Typography")')->attr('href'));
+        $this->assertSame('/admin/_ea_ui_kit/foundations/colors', $crawler->filter('#main ul a:contains("Colors")')->attr('href'));
+        $this->assertSame('/admin/_ea_ui_kit/foundations/fonts', $crawler->filter('#main ul a:contains("Fonts")')->attr('href'));
+    }
+
+    public function testTypographyPageRendersTheSampleAndItsSource(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/_ea_ui_kit/foundations/typography');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('.content-header-title', 'Typography');
+        $preview = $crawler->filter('#ea-ui-kit-typography-preview');
+        foreach (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p.lead', 'ul ul', 'ol', 'dl', 'blockquote', 'table', 'pre', 'figure', 'details', 'hr', 'kbd', 'mark', '.footnotes'] as $selector) {
+            $this->assertGreaterThan(0, $preview->filter($selector)->count(), sprintf('The typography sample includes the "%s" element.', $selector));
+        }
+        $this->assertStringContainsString('<h1>Shipping and returns policy</h1>', $crawler->filter('#ea-ui-kit-typography-html .ea-ui-kit-source')->text());
+    }
+
+    public function testColorsPageOffersEveryGrayScaleAndPredefinedAccentColor(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/_ea_ui_kit/foundations/colors');
+
+        $this->assertResponseIsSuccessful();
+        $grays = $crawler->filter('[data-ea-ui-kit-theme-picker="grays"] .ea-ui-kit-theme-option');
+        $this->assertCount(1 + \count((new \ReflectionClass(GrayScale::class))->getConstants()), $grays);
+        $accentColors = $crawler->filter('[data-ea-ui-kit-theme-picker="accent-colors"] .ea-ui-kit-theme-option');
+        $this->assertCount(1 + \count(ThemeColor::cases()), $accentColors);
+        $this->assertSame('', $accentColors->eq(0)->attr('data-css'));
+
+        $zinc = $grays->reduce(static fn (Crawler $option) => 'Zinc' === trim($option->text()));
+        $this->assertSame('->grays(GrayScale::ZINC)', $zinc->attr('data-php'));
+        $this->assertStringContainsString(':root, .ea-dark-scheme { --gray-', $zinc->attr('data-css'));
+
+        $blue = $accentColors->reduce(static fn (Crawler $option) => 'Blue' === trim($option->text()));
+        $this->assertSame('->primaryColor(ThemeColor::Blue)', $blue->attr('data-php'));
+        $this->assertStringContainsString(':root, .ea-dark-scheme { --ea-primary: ', $blue->attr('data-css'));
+        $this->assertStringContainsString('.ea-dark-scheme { --ea-primary: ', $blue->attr('data-css'));
+
+        $this->assertSame(['Grays', 'Accent color', 'Index page', 'Form page'], $crawler->filter('.ea-ui-kit-caption')->each(static fn (Crawler $caption) => $caption->text()));
+        $mockups = $crawler->filter('.ea-ui-kit-mockup');
+        $this->assertCount(2, $mockups);
+        $mockups->each(function (Crawler $mockup) {
+            $this->assertCount(1, $mockup->filter('.btn-primary'));
+            $this->assertCount(1, $mockup->filter('.is-active [aria-current="page"]'));
+        });
+        $this->assertSame(
+            $mockups->eq(1)->filter('.form-tabs-tablist .nav-link')->each(static fn (Crawler $tab) => $tab->attr('href')),
+            $mockups->eq(1)->filter('.tab-content > .tab-pane')->each(static fn (Crawler $pane) => '#'.$pane->attr('id')),
+        );
+    }
+
+    public function testFontsPageOffersTheBundledFontsForText(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/_ea_ui_kit/foundations/fonts');
+
+        $this->assertResponseIsSuccessful();
+        $options = $crawler->filter('[data-ea-ui-kit-theme-picker] .ea-ui-kit-theme-option');
+        $this->assertSame(['Your theme', 'System', 'Inter', 'IBM Plex Sans', 'Rubik', 'Atkinson Hyperlegible Next'], $options->each(static fn (Crawler $option) => trim($option->text())));
+
+        $rubik = $options->eq(4);
+        $this->assertSame('->font(base: Font::Rubik)', $rubik->attr('data-php'));
+        $this->assertStringContainsString('--font-family-sans-serif: "Rubik Variable", "Rubik Variable Fallback", var(--font-family-system-sans-serif); --font-weight-normal: 390;', $rubik->attr('data-css'));
+    }
+
+    public function testUnknownFoundationReturnsNotFound(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/admin/_ea_ui_kit/foundations/this_foundation_does_not_exist');
 
         $this->assertResponseStatusCodeSame(404);
     }

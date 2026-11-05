@@ -11,7 +11,7 @@
     htmlAttributes = {},
     ## bool If true, the item will be rendered as a `<form>` element (and POST method) instead of an `<a>` (and GET method).
     renderAsForm = false,
-    ## bool Internal: if false, the blank icon will not be rendered when the item has no icon.
+    ## bool Internal: not used anymore (items without icon are aligned with CSS when other items of the menu have icons).
     showBlankIcons = true,
     ## bool|null null renders a regular item; true/false turns the item into a selectable one (radio/checkbox) that shows a trailing checkmark.
     selected = null,
@@ -41,8 +41,6 @@
     >
         {% if icon %}
             <twig:ea:Icon {{ ...attributes.nested('icon').defaults({name: icon}) }} />
-        {% elseif showBlankIcons %}
-            <twig:ea:Icon name="internal:blank" />
         {% endif %}
         {% if label is ea_is_not_empty %}<span {{ attributes.nested('label') }}>{{ renderLabelRaw ? label|raw : label }}</span>{% endif %}
         {% if is_selectable %}<span class="dropdown-item-trailing"><twig:ea:Icon name="internal:check" class="dropdown-item-check" /></span>{% endif %}

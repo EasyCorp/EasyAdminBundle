@@ -12,10 +12,13 @@
  --------------------------------------------------------------------------- */
 :root,
 .ea-dark-scheme {
-    --font-family-sans-serif:
+    --font-family-system-sans-serif:
         system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-family-monospace: "JetBrains Mono", ui-monospace, "Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas,
+    --font-family-system-monospace: ui-monospace, "Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas,
         "Liberation Mono", "Courier New", monospace;
+    --font-family-sans-serif: "Inter Variable", "Inter Variable Fallback", var(--font-family-system-sans-serif);
+    --font-family-monospace: "JetBrains Mono Variable", "JetBrains Mono", "JetBrains Mono Variable Fallback",
+        var(--font-family-system-monospace);
     --font-family-base: var(--font-family-sans-serif);
 
     --font-size-xs: 12px;
@@ -26,24 +29,29 @@
     --font-size-xxl: 24px;
     --font-size-xxxl: 28px;
 
-    --font-weight-normal: 400;
+    /* the weight of regular text; it's a bit more than 400 because, with the grayscale
+       antialiasing of macOS, the default font looks too thin at 400 (each font sets
+       its own normal, medium, semibold and bold weights so all of them look equally
+       bold, see ThemeDto) */
+    --font-weight-normal: 435;
+    /* all fonts (bundled, from Bunny Fonts and the system ones) are scaled so their
+       x-height is this ratio of the font size; then, they all look the same size at
+       the same font size (0.54 is a bit less than the x-height of Inter, the biggest
+       of the bundled fonts) */
+    --font-size-adjust: 0.54;
+    --font-feature-settings: normal;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
+    --heading-font-weight: var(--font-weight-semibold);
+    --heading-letter-spacing: -0.025em;
 
-    /* Icons are sized with font-size, because base.css renders them em-relative.
-       That makes icon size its own axis: it is not type, so it does not take a
-       --font-size-* step. Like the font scale, these are literal steps you
-       override individually rather than derive from a knob. */
     --icon-size-xxs: 10px; /* inside small controls: badge dismiss buttons */
     --icon-size-xs: 12px; /* inline with small text: badges */
     --icon-size-sm: 16px; /* inline with text: menu and dropdown items */
     --icon-size-md: 20px; /* standalone controls: toolbars, headers, toggles */
     --icon-size-lg: 24px; /* feature icons: modal headers, avatars */
 
-    /* Unitless on purpose, so they scale with the element's font-size. Some
-       elements instead pair a px line-height with a fixed block-size to center
-       a glyph; those are layout, not type, and stay as they are. */
     --line-height-none: 1;
     --line-height-tight: 1.25;
     --line-height-snug: 1.375;
@@ -90,15 +98,15 @@
     --sidebar-padding-right: var(--ea-sp-5);
     --sidebar-menu-items-padding-left: var(--ea-sp-3);
     --sidebar-menu-items-padding-right: var(--ea-sp-5);
-    --sidebar-menu-color: var(--gray-700);
-    --sidebar-menu-badge-bg: var(--ea-primary-soft);
+    --sidebar-menu-color: var(--gray-800);
+    --sidebar-menu-badge-bg: var(--gray-200);
     --sidebar-menu-badge-color: var(--gray-500);
-    --sidebar-menu-badge-active-bg: var(--color-primary);
+    --sidebar-menu-badge-active-bg: var(--ea-primary);
     --sidebar-menu-badge-active-color: var(--text-on-primary);
     --sidebar-menu-submenu-color: var(--gray-600);
     --sidebar-menu-header-color: var(--gray-400);
-    --sidebar-menu-icon-color: var(--gray-500);
-    --sidebar-menu-active-item-bg: var(--gray-200);
+    --sidebar-menu-icon-color: var(--gray-600);
+    --sidebar-menu-active-item-bg: color-mix(in oklab, var(--gray-200) 50%, var(--gray-100));
     --sidebar-menu-active-item-color: var(--color-primary);
     --sidebar-menu-hover-color: var(--color-primary);
     --sidebar-item-hover-bg: var(--gray-100);
@@ -107,15 +115,23 @@
     --sidebar-badge-dot-border-color: var(--badge-primary-color);
     --sidebar-tooltip-bg: var(--gray-900);
     --sidebar-tooltip-color: var(--white);
-    --resize-handler-width: 10px;
+    --main-content-gap: var(--ea-sp-4);
+    --main-content-border-color: var(--gray-200);
+    --main-content-border-radius: var(--border-radius-xl);
+    --resize-handler-width: 10px; /* deprecated: kept for backward compatibility, unused internally */
     --content-section-border-color: var(--gray-200);
-    --resize-handler-hover-bg: var(--ea-primary-strong);
-    --content-search-input-bg: var(--body-bg);
+    --resize-handler-hover-bg: var(--ea-primary-strong); /* deprecated: kept for backward compatibility, unused internally */
+    --layout-toggle-marker-color: var(--gray-400);
+    --layout-toggle-marker-hover-color: var(--gray-600);
+    --layout-toggle-label-bg: var(--gray-900);
+    --layout-toggle-label-color: var(--white);
+    --content-search-bg: var(--gray-100);
+    --content-search-input-bg: transparent;
     --content-search-icon-color: var(--gray-500);
-    --content-search-reset-button-bg: var(--gray-300);
-    --content-search-reset-button-color: var(--gray-600);
-    --content-search-reset-button-hover-bg: var(--gray-600);
-    --content-search-reset-button-hover-color: var(--gray-200);
+    --content-search-reset-button-bg: transparent;
+    --content-search-reset-button-color: var(--gray-500);
+    --content-search-reset-button-hover-bg: var(--gray-200);
+    --content-search-reset-button-hover-color: var(--gray-700);
     --content-top-border-color: var(--gray-200);
     --content-bg: var(--white);
     --content-padding-left: var(--ea-sp-8);
@@ -126,7 +142,7 @@
     --user-avatar-icon-bg: var(--gray-200);
     --user-avatar-icon-color: var(--gray-500);
     --user-name-color: var(--gray-500);
-    --user-menu-impersonated-link-color: var(--color-primary);
+    --user-menu-impersonated-link-color: var(--user-name-color);
     --popover-bg: var(--gray-100);
     --popover-border-color: var(--gray-300);
     --popover-color: var(--text-color);
@@ -136,41 +152,46 @@
     --dropdown-toggle-color: var(--gray-600);
     --dropdown-toggle-border-color: var(--gray-300);
     --dropdown-toggle-hover-border-color: var(--gray-400);
+    --content-help-expander-bg: var(--gray-200);
+    --content-help-expander-hover-bg: var(--gray-300);
     --dropdown-bg: var(--white);
-    --dropdown-color: var(--gray-600);
+    --dropdown-color: var(--text-color);
     --dropdown-border-color: var(--gray-200);
-    --dropdown-link-color: var(--gray-700);
+    --dropdown-ring-color: color-mix(in oklab, var(--black) 10%, transparent);
+    --dropdown-header-color: var(--text-muted);
+    --dropdown-link-color: var(--text-color);
     --dropdown-link-disabled-color: var(--text-tertiary-color);
     --dropdown-link-hover-bg: var(--gray-100);
-    --dropdown-icon-color: var(--gray-600);
+    --dropdown-icon-color: currentColor;
     --dropdown-settings-icon-color: var(--gray-400);
     --dropdown-settings-active-item-bg: var(--gray-100);
     --dropdown-settings-active-item-color: var(--color-primary);
     --dropdown-settings-active-item-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ea-primary) 50%, transparent);
     --dropdown-item-success-bg: var(--green-100);
     --dropdown-item-warning-bg: var(--yellow-100);
-    --dropdown-item-danger-bg: var(--red-100);
+    --dropdown-item-danger-bg: color-mix(in oklab, var(--red-600) 10%, transparent);
     --dropdown-item-success-color: var(--green-700);
     --dropdown-item-warning-color: var(--yellow-700);
     --dropdown-item-danger-color: var(--red-600);
     --datagrid-noresults-placeholder-bg: var(--gray-100);
     --datagrid-hidden-results-gradient-bg: var(--gray-50);
-    --table-thead-color: var(--gray-800);
-    --table-cell-color: var(--gray-600);
+    --table-thead-color: var(--gray-500);
+    --table-cell-color: var(--text-color);
     --table-thead-marker-color: var(--gray-400);
     --table-cell-border-color: var(--gray-200);
     --table-hover-cell-bg: var(--gray-50);
-    --table-selected-cell-bg: var(--gray-200);
-    --table-thead-sorted-color: var(--gray-900);
-    --table-thead-sorted-marker-color: var(--color-primary);
+    --table-selected-cell-bg: color-mix(in oklab, var(--gray-200) 50%, var(--gray-100));
+    --table-thead-sorted-color: var(--table-cell-color);
+    --table-thead-sorted-marker-color: var(--table-cell-color);
     --datalist-border-color: var(--gray-200);
     --datalist-label-color: var(--gray-500);
     --datalist-value-color: var(--gray-600);
     --pagination-color: var(--gray-600);
-    --pagination-hover-border-color: var(--gray-300);
+    --pagination-hover-bg: var(--gray-100);
+    --pagination-hover-border-color: var(--gray-300); /* deprecated: kept for backward compatibility, unused internally */
     --pagination-disabled-color: var(--gray-400);
-    --pagination-active-bg: var(--color-primary);
-    --pagination-active-color: var(--text-on-primary);
+    --pagination-active-bg: transparent;
+    --pagination-active-color: var(--text-color);
     --field-country-flag-border-color: var(--gray-200);
     --modal-bg: var(--white);
     --modal-border-color: var(--border-secondary-color);
@@ -181,32 +202,53 @@
     --modal-icon-bg: var(--gray-100);
     --modal-icon-color: var(--gray-700);
     --detail-label-tooltip-underline-color: var(--gray-400);
-    --form-label-color: var(--gray-800);
+    --form-label-color: var(--text-color);
+    --form-control-height: var(--ea-control-height);
+    --form-control-border-radius: var(--button-border-radius);
+    --form-control-padding-y: var(--ea-sp-2);
+    --form-control-padding-x: var(--ea-control-padding-x);
     --form-control-bg: var(--white);
-    --form-control-disabled-bg: var(--gray-200);
-    --form-control-disabled-color: var(--gray-600);
+    --form-control-disabled-bg: var(--form-control-bg);
+    --form-control-disabled-color: var(--form-input-text-color);
+    --form-control-disabled-opacity: 0.5;
     --form-input-border-color: var(--gray-300);
-    --form-input-error-legend-color: var(--red-600);
+    --form-input-focus-border-color: var(--gray-400);
+    --form-focus-ring-color: color-mix(in oklab, var(--gray-400) 50%, transparent);
+    --form-input-placeholder-color: var(--gray-400);
     --form-input-error-border-color: var(--red-600);
-    --form-input-hover-border-color: var(--gray-400);
-    --form-input-shadow: 0 1px 2px 0 var(--gray-50);
-    --form-input-hover-shadow: 0 0 0 var(--ea-focus-ring-width) var(--gray-100);
-    --form-input-error-shadow: 0 0 0 var(--ea-focus-ring-width) var(--red-100);
-    --form-input-text-color: var(--gray-700);
+    --form-input-error-ring-color: color-mix(in oklab, var(--red-600) 20%, transparent);
+    --form-input-error-legend-color: var(--form-label-color);
+    --form-input-text-color: var(--text-color);
     --form-input-group-text-bg: var(--form-control-bg);
     --form-input-group-text-border-color: var(--form-input-border-color);
     --form-input-addon-color: var(--gray-500);
-    --switch-bg: var(--gray-300);
+    --form-widget-icon-chevron: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>');
+    --form-widget-icon-x: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>');
+    --form-widget-icon-check: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>');
+    --form-widget-icon-search: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>');
+    /* the native <select> arrow is a background image, which can't use var(), so each scheme has its own */
+    --form-select-indicator: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='m6 9 6 6 6-6'/%3e%3c/svg%3e");
+    --form-tag-bg: var(--secondary-bg);
+    --form-tag-hover-bg: var(--gray-200);
+    /* deprecated: kept for backward compatibility; controls no longer have shadows
+       and the focus ring uses --form-focus-ring-color */
+    --form-input-hover-border-color: var(--form-input-focus-border-color);
+    --form-input-shadow: none;
+    --form-input-hover-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-focus-ring-color);
+    --form-input-error-shadow: none;
+    /* lighter grays make switches that are off look disabled */
+    --switch-bg: var(--gray-400);
     --switch-checked-bg: var(--ea-primary);
     --switch-thumb-bg: var(--white);
-    --switch-focus-ring: var(--ea-primary-ring);
+    --switch-checked-thumb-bg: var(--switch-thumb-bg);
+    --switch-focus-ring: var(--form-focus-ring-color);
     /* switch color variants reuse the button variant colors (these forward to
        scheme-aware tokens, so they resolve correctly in dark mode too) */
-    --switch-success-bg: var(--button-success-hover-bg);
-    --switch-warning-bg: var(--button-warning-hover-bg);
-    --switch-danger-bg: var(--button-danger-hover-bg);
+    --switch-success-bg: var(--button-success-tone);
+    --switch-warning-bg: var(--button-warning-tone);
+    --switch-danger-bg: var(--button-danger-tone);
     --form-type-check-input-border-color: var(--gray-400);
-    --form-type-check-input-box-shadow: 0 1px 2px 0 var(--gray-50);
+    --form-type-check-input-box-shadow: none; /* deprecated: kept for backward compatibility */
     --form-type-check-input-checked-bg: var(--ea-primary);
     --form-type-text-editor-toolbar-bg: var(--white);
     --form-type-text-editor-toolbar-button-color: var(--gray-600);
@@ -232,20 +274,26 @@
     --form-global-error-bg: var(--red-100);
     --form-global-error-color: var(--color-danger);
     --form-global-error-border: var(--border-width) solid transparent;
-    --form-help-color: var(--gray-600);
+    /* between gray-500 and gray-600: help messages are 13px, so gray-500 alone is barely AA on white */
+    --form-help-color: color-mix(in oklab, var(--gray-500) 50%, var(--gray-600));
     --form-help-error-color: var(--gray-800);
-    --form-help-active-color: var(--gray-800);
+    --form-help-active-color: var(--form-help-color); /* deprecated: help text no longer changes on focus */
     --form-tabs-border-color: var(--gray-200);
     --form-tabs-help-color: var(--gray-600);
     --form-tabs-item-hover-bg: var(--gray-100);
     --form-tabs-indicator-color: var(--ea-primary);
     --form-tabs-indicator-size: 2px;
-    --form-column-header-color: var(--gray-700);
-    --form-column-help-color: var(--gray-600);
+    --form-column-header-color: var(--text-color);
+    --form-column-help-color: var(--form-help-color);
     --form-column-icon-color: var(--gray-500);
-    --form-fieldset-header-color: var(--gray-700);
-    --form-fieldset-help-color: var(--gray-600);
-    --form-fieldset-border-color: var(--gray-200);
+    --form-fieldset-header-color: var(--text-color);
+    --form-fieldset-help-color: var(--form-help-color);
+    --form-fieldset-border-color: color-mix(in oklab, var(--gray-200) 70%, var(--gray-100));
+    --form-fieldset-frame-bg: color-mix(in oklab, var(--gray-100) 50%, transparent);
+    --form-fieldset-frame-hover-bg: var(--secondary-bg);
+    --form-fieldset-panel-bg: var(--content-bg);
+    --form-fieldset-panel-border-color: var(--form-fieldset-border-color);
+    --form-fieldset-panel-shadow: 0 1px 2px 0 color-mix(in srgb, var(--black) 5%, transparent);
     --form-fieldset-header-border-color: var(--gray-200);
     --form-fieldset-icon-color: var(--gray-500);
     --form-fieldset-collapse-marker-color: var(--gray-400);
@@ -253,15 +301,13 @@
     /* each badge color defines a tone (the solid background and the base of
        the light background and border), a text color for the light, outline
        and dot variants and a text color for the solid variant */
-    /* between the sm and md steps of the radius scale */
     --badge-border-radius: calc(var(--border-radius) * 1.5);
     --badge-tint-bg-amount: 10%;
     --badge-tint-border-amount: 15%;
     --badge-solid-amount: 100%;
     --badge-solid-mix-base: var(--black);
-    /* primary is a stronger tint than the other colors, so it doesn't look like the gray secondary color */
-    --badge-primary-tint-bg-amount: 13%;
-    --badge-primary-tint-border-amount: 25%;
+    --badge-primary-tint-bg-amount: 10%;
+    --badge-primary-tint-border-amount: 15%;
     /* yellow is very light, so its border needs more color to be visible on light surfaces */
     --badge-warning-tint-border-amount: 35%;
     /* the light color is almost white, so its border is invisible on white surfaces with the default amount */
@@ -270,9 +316,9 @@
     --badge-secondary-tone: var(--gray-500);
     --badge-secondary-color: var(--gray-700);
     --badge-secondary-solid-color: var(--white);
-    --badge-primary-tone: var(--ea-primary);
-    --badge-primary-color: var(--ea-primary-strong);
-    --badge-primary-solid-color: var(--ea-primary-foreground);
+    --badge-primary-tone: var(--blue-600);
+    --badge-primary-color: var(--blue-800);
+    --badge-primary-solid-color: var(--white);
     --badge-success-tone: var(--green-600);
     --badge-success-color: var(--text-green-600);
     --badge-success-solid-color: var(--white);
@@ -287,9 +333,8 @@
     --badge-danger-tone: var(--red-600);
     --badge-danger-color: var(--text-red-600);
     --badge-danger-solid-color: var(--white);
-    /* sky instead of blue, like alerts, so info doesn't compete with blue/indigo primary colors */
-    --badge-info-tone: var(--sky-600);
-    --badge-info-color: var(--sky-800);
+    --badge-info-tone: var(--cyan-600);
+    --badge-info-color: var(--cyan-800);
     --badge-info-solid-color: var(--white);
     --badge-light-tone: var(--gray-300);
     --badge-light-color: var(--gray-600);
@@ -300,11 +345,11 @@
     --badge-boolean-false-color: var(--gray-500);
     /* without the tinted background of the light variant, the outline and dot variants
        need brighter text colors so each color is still recognizable */
-    --badge-primary-outline-color: var(--ea-primary);
+    --badge-primary-outline-color: var(--blue-700);
     --badge-success-outline-color: var(--green-700);
     --badge-warning-outline-color: var(--yellow-700);
     --badge-danger-outline-color: var(--red-700);
-    --badge-info-outline-color: var(--sky-700);
+    --badge-info-outline-color: var(--cyan-700);
     --badge-secondary-bg: color-mix(in srgb, var(--badge-secondary-tone) var(--badge-tint-bg-amount), transparent);
     --badge-primary-bg: color-mix(in srgb, var(--badge-primary-tone) var(--badge-primary-tint-bg-amount), transparent);
     --badge-success-bg: color-mix(in srgb, var(--badge-success-tone) var(--badge-tint-bg-amount), transparent);
@@ -313,169 +358,158 @@
     --badge-info-bg: color-mix(in srgb, var(--badge-info-tone) var(--badge-tint-bg-amount), transparent);
     --badge-light-bg: color-mix(in srgb, var(--badge-light-tone) var(--badge-tint-bg-amount), transparent);
     --badge-dark-bg: color-mix(in srgb, var(--badge-dark-tone) var(--badge-tint-bg-amount), transparent);
-    --alert-primary-bg: var(--ea-primary-soft);
-    --alert-primary-color: var(--ea-primary-text);
-    --alert-primary-border-color: var(--ea-primary-muted);
-    --alert-secondary-bg: var(--gray-100);
-    --alert-secondary-color: var(--gray-800);
-    --alert-secondary-border-color: var(--gray-200);
-    --alert-success-bg: var(--emerald-100);
-    --alert-success-color: var(--emerald-900);
-    --alert-success-border-color: var(--emerald-200);
-    --alert-info-bg: var(--sky-100);
-    --alert-info-color: var(--sky-800);
-    --alert-info-border-color: var(--sky-200);
-    --alert-warning-bg: var(--orange-100);
-    --alert-warning-color: var(--orange-800);
-    --alert-warning-border-color: var(--orange-200);
-    --alert-danger-bg: var(--rose-100);
-    --alert-danger-color: var(--rose-800);
-    --alert-danger-border-color: var(--rose-200);
-    --alert-light-bg: var(--white);
-    --alert-light-color: var(--gray-800);
-    --alert-light-border-color: var(--gray-200);
-    --alert-dark-bg: var(--gray-800);
-    --alert-dark-color: var(--gray-50);
-    --alert-dark-border-color: var(--gray-500);
+    --alert-tint-border-amount: 30%;
+    --alert-warning-tint-border-amount: 60%;
+    --alert-primary-bg: var(--badge-primary-bg);
+    --alert-primary-color: var(--badge-primary-color);
+    --alert-primary-border-color: color-mix(
+        in srgb,
+        var(--badge-primary-tone) var(--alert-tint-border-amount),
+        transparent
+    );
+    --alert-secondary-bg: var(--badge-secondary-bg);
+    --alert-secondary-color: var(--badge-secondary-color);
+    --alert-secondary-border-color: color-mix(
+        in srgb,
+        var(--badge-secondary-tone) var(--alert-tint-border-amount),
+        transparent
+    );
+    --alert-success-bg: var(--badge-success-bg);
+    --alert-success-color: var(--badge-success-color);
+    --alert-success-border-color: color-mix(
+        in srgb,
+        var(--badge-success-tone) var(--alert-tint-border-amount),
+        transparent
+    );
+    --alert-info-bg: var(--badge-info-bg);
+    --alert-info-color: var(--badge-info-color);
+    --alert-info-border-color: color-mix(in srgb, var(--badge-info-tone) var(--alert-tint-border-amount), transparent);
+    --alert-warning-bg: var(--badge-warning-bg);
+    --alert-warning-color: var(--badge-warning-color);
+    --alert-warning-border-color: color-mix(
+        in srgb,
+        var(--badge-warning-tone) var(--alert-warning-tint-border-amount),
+        transparent
+    );
+    --alert-danger-bg: var(--badge-danger-bg);
+    --alert-danger-color: var(--badge-danger-color);
+    --alert-danger-border-color: color-mix(
+        in srgb,
+        var(--badge-danger-tone) var(--alert-tint-border-amount),
+        transparent
+    );
+    --alert-light-bg: var(--badge-light-bg);
+    --alert-light-color: var(--badge-light-color);
+    --alert-light-border-color: color-mix(in srgb, var(--badge-light-tone) var(--alert-tint-border-amount), transparent);
+    --alert-dark-bg: var(--badge-dark-bg);
+    --alert-dark-color: var(--badge-dark-color);
+    --alert-dark-border-color: color-mix(in srgb, var(--badge-dark-tone) var(--alert-tint-border-amount), transparent);
 
     --button-padding-y-sm: 0;
-    --button-padding-x-sm: var(--ea-sp-5);
+    --button-padding-x-sm: var(--ea-control-padding-x);
     --button-padding-y-md: 0;
-    --button-padding-x-md: var(--ea-sp-6);
+    --button-padding-x-md: var(--ea-control-padding-x);
     /* vertical padding is 0 for every size: the height comes from --button-height, so large
        buttons are taller but not inflated by padding */
     --button-padding-y-lg: 0;
-    --button-padding-x-lg: var(--ea-sp-8);
+    --button-padding-x-lg: var(--ea-control-padding-x-lg);
     --button-font-size-sm: var(--font-size-xs);
     --button-font-size-md: var(--font-size-base);
     /* large buttons are taller than medium ones but keep the same font size (like shadcn) */
     --button-font-size-lg: var(--font-size-base);
     --button-line-height: var(--line-height-normal);
-    --button-border-radius: var(--border-radius-lg);
+    --button-border-radius: calc(var(--border-radius-lg) * 1.25);
+    --button-border-radius-sm: var(--border-radius-lg);
 
     --button-disabled-opacity: 0.5;
 
     --button-focus-outline-color: var(--ea-primary-strong);
+    --button-focus-outline-offset: -2px;
 
-    /* the button variant colors are deliberate literals taken from GitHub's Primer
-       design system; mapping them to the nearest palette tokens was tried and looked
-       worse, so don't "clean them up" */
-    --button-primary-box-shadow: 0px 1px 1px 0px #1f23280f, 0px 1px 3px 0px #1f23280f;
-    --button-primary-bg: linear-gradient(
-        to bottom,
-        color-mix(in oklab, var(--ea-primary) 96%, var(--white)),
-        var(--ea-primary)
+    /* each button color defines the same values, which the button variants (solid, outline,
+       light, ghost and link) combine in buttons.css:
+       -tone: the fill of solid buttons; -solid-color: the text on that fill;
+       -color: the text of light buttons; -outline-color: the text of outline, ghost and link buttons;
+       -light-bg and -light-hover-bg: the tinted background of light buttons (also used on hover
+       by outline and ghost buttons); -outline-border-color: the border of outline buttons */
+    --button-default-tone: var(--gray-900);
+    --button-default-solid-color: var(--white);
+    --button-default-color: var(--text-color);
+    --button-default-outline-color: var(--text-color);
+    --button-default-light-bg: var(--gray-100);
+    --button-default-light-hover-bg: var(--gray-200);
+    --button-default-outline-border-color: var(--gray-300);
+    --button-default-outline-bg: var(--body-bg);
+    --button-default-outline-icon-color: var(--text-muted);
+
+    --button-primary-tone: var(--ea-primary);
+    --button-primary-solid-color: var(--ea-primary-foreground);
+    --button-primary-color: var(--ea-primary-on-surface);
+    --button-primary-outline-color: var(--ea-primary-on-surface);
+    --button-primary-light-bg: color-mix(in oklab, var(--ea-primary) 10%, transparent);
+    --button-primary-light-hover-bg: color-mix(in oklab, var(--ea-primary) 16%, transparent);
+    --button-primary-outline-border-color: color-mix(in oklab, var(--ea-primary) 45%, transparent);
+
+    --button-success-tone: oklch(
+        from color-mix(in oklab, var(--badge-success-solid-tone) var(--badge-solid-amount), var(--body-bg)) l
+            calc(c * 0.8) h
     );
-    --button-primary-color: var(--text-on-primary);
-    --button-primary-icon-color: inherit;
-    --button-primary-border-color: #1f232826;
-    --button-primary-hover-bg: linear-gradient(
-        to bottom,
-        var(--ea-primary),
-        color-mix(in oklab, var(--ea-primary) 94%, var(--black))
+    --button-success-solid-color: var(--badge-success-solid-color);
+    --button-success-color: var(--badge-success-color);
+    --button-success-outline-color: var(--badge-success-outline-color);
+    --button-success-light-bg: color-mix(in srgb, var(--badge-success-tone) var(--badge-tint-bg-amount), transparent);
+    --button-success-light-hover-bg: color-mix(
+        in srgb,
+        var(--badge-success-tone) calc(var(--badge-tint-bg-amount) + 7%),
+        transparent
     );
-    --button-primary-hover-color: var(--text-on-primary);
-    --button-primary-hover-border-color: #1f232826;
-    --button-primary-active-box-shadow: inset 0 1px 0 0 #002d114d;
-    --button-primary-active-bg: linear-gradient(
-        to bottom,
-        color-mix(in oklab, var(--ea-primary) 94%, var(--black)),
-        color-mix(in oklab, var(--ea-primary) 88%, var(--black))
+    --button-success-outline-border-color: color-mix(in srgb, var(--badge-success-tone) 40%, transparent);
+
+    --button-warning-tone: oklch(
+        from color-mix(in oklab, var(--badge-warning-solid-tone) var(--badge-solid-amount), var(--body-bg)) l
+            calc(c * 0.8) h
     );
-    --button-primary-active-color: var(--text-on-primary);
-    --button-primary-active-border-color: #1f232826;
+    --button-warning-solid-color: var(--badge-warning-solid-color);
+    --button-warning-color: var(--badge-warning-color);
+    --button-warning-outline-color: var(--badge-warning-outline-color);
+    --button-warning-light-bg: color-mix(in srgb, var(--badge-warning-tone) var(--badge-tint-bg-amount), transparent);
+    --button-warning-light-hover-bg: color-mix(
+        in srgb,
+        var(--badge-warning-tone) calc(var(--badge-tint-bg-amount) + 7%),
+        transparent
+    );
+    --button-warning-outline-border-color: color-mix(in srgb, var(--badge-warning-tone) 55%, transparent);
 
-    --button-secondary-box-shadow: 0 1px 0 0 #1f23280a;
-    --button-secondary-bg: linear-gradient(to bottom, #fafdff, #f6f8fa);
-    --button-secondary-color: var(--text-primary-color);
-    --button-secondary-icon-color: var(--gray-700);
-    --button-secondary-border-color: var(--gray-300);
-    --button-secondary-hover-bg: linear-gradient(to bottom, #f6f8fa, #eff2f5);
-    --button-secondary-hover-color: var(--text-primary-color);
-    --button-secondary-hover-border-color: var(--gray-300);
-    --button-secondary-active-box-shadow: inset 0 1px 0 0 #dee6ed;
-    --button-secondary-active-bg: linear-gradient(to bottom, #eff2f5, #e6eaef);
-    --button-secondary-active-color: var(--text-primary-color);
-    --button-secondary-active-border-color: var(--gray-300);
+    --button-danger-tone: oklch(
+        from color-mix(in oklab, var(--badge-danger-tone) var(--badge-solid-amount), var(--body-bg)) l calc(c * 0.8) h
+    );
+    --button-danger-solid-color: var(--badge-danger-solid-color);
+    --button-danger-color: var(--badge-danger-color);
+    --button-danger-outline-color: var(--badge-danger-outline-color);
+    --button-danger-light-bg: color-mix(in srgb, var(--badge-danger-tone) var(--badge-tint-bg-amount), transparent);
+    --button-danger-light-hover-bg: color-mix(
+        in srgb,
+        var(--badge-danger-tone) calc(var(--badge-tint-bg-amount) + 7%),
+        transparent
+    );
+    --button-danger-outline-border-color: color-mix(in srgb, var(--badge-danger-tone) 40%, transparent);
 
-    --button-success-box-shadow: 0 1px 0 0 #1f23280a;
-    --button-success-bg: linear-gradient(to bottom, var(--white), #f6f8fa);
-    --button-success-color: #1f883d;
-    --button-success-icon-color: inherit;
-    --button-success-border-color: #1f232826;
-    --button-success-hover-bg: #1f883d;
-    --button-success-hover-color: var(--white);
-    --button-success-hover-border-color: #1f232826;
-    --button-success-active-box-shadow: inset 0px 1px 0px 0px #002d114d;
-    --button-success-active-bg: #197935;
-    --button-success-active-color: var(--white);
-    --button-success-active-border-color: #1f232826;
+    --button-info-tone: oklch(
+        from color-mix(in oklab, var(--badge-info-tone) var(--badge-solid-amount), var(--body-bg)) l calc(c * 0.8) h
+    );
+    --button-info-solid-color: var(--badge-info-solid-color);
+    --button-info-color: var(--badge-info-color);
+    --button-info-outline-color: var(--badge-info-outline-color);
+    --button-info-light-bg: color-mix(in srgb, var(--badge-info-tone) var(--badge-tint-bg-amount), transparent);
+    --button-info-light-hover-bg: color-mix(
+        in srgb,
+        var(--badge-info-tone) calc(var(--badge-tint-bg-amount) + 7%),
+        transparent
+    );
+    --button-info-outline-border-color: color-mix(in srgb, var(--badge-info-tone) 40%, transparent);
 
-    --button-warning-box-shadow: 0 1px 0 0 #1f23280a;
-    --button-warning-bg: linear-gradient(to bottom, var(--white), #f6f8fa);
-    --button-warning-color: #a67a00;
-    --button-warning-icon-color: inherit;
-    --button-warning-border-color: #1f232826;
-    --button-warning-hover-bg: #b88700;
-    --button-warning-hover-color: var(--white);
-    --button-warning-hover-border-color: #1f232826;
-    --button-warning-active-box-shadow: inset 0px 1px 0px 0px #2d24004d;
-    --button-warning-active-bg: #b88700;
-    --button-warning-active-color: var(--white);
-    --button-warning-active-border-color: #2d24004d;
-
-    --button-danger-box-shadow: 0 1px 0 0 #1f23280a;
-    --button-danger-bg: linear-gradient(to bottom, var(--white), #f6f8fa);
-    --button-danger-color: #d1242f;
-    --button-danger-icon-color: inherit;
-    --button-danger-border-color: var(--gray-300);
-    --button-danger-hover-bg: #cf222e;
-    --button-danger-hover-color: var(--white);
-    --button-danger-hover-border-color: #1f23280a;
-    --button-danger-active-box-shadow: inset 0 1px 0 0 #4c001433;
-    --button-danger-active-bg: #a40e26;
-    --button-danger-active-color: var(--white);
-    --button-danger-active-border-color: #1f23280a;
-
-    --button-info-box-shadow: 0 1px 0 0 #1f23280a;
-    --button-info-bg: linear-gradient(to bottom, var(--white), #f6f8fa);
-    --button-info-color: #0969da;
-    --button-info-icon-color: inherit;
-    --button-info-border-color: #1f232826;
-    --button-info-hover-bg: #0969da;
-    --button-info-hover-color: var(--white);
-    --button-info-hover-border-color: #1f232826;
-    --button-info-active-box-shadow: inset 0 1px 0 0 #001a4d33;
-    --button-info-active-bg: #0860c9;
-    --button-info-active-color: var(--white);
-    --button-info-active-border-color: #1f232826;
-
-    /* accent (text + border) of .btn-outline-primary; the primary tokens can't be reused
-       because --button-primary-color is the white text painted over the solid background */
-    --button-outline-primary-color: var(--color-primary);
-
-    --button-invisible-box-shadow: none;
-    --button-invisible-bg: transparent;
-    --button-invisible-color: inherit;
-    --button-invisible-icon-color: inherit;
-    --button-invisible-border-color: transparent;
-    --button-invisible-hover-bg: color-mix(in srgb, var(--black) 15%, transparent);
-    --button-invisible-hover-color: inherit;
-    --button-invisible-hover-border-color: transparent;
-    --button-invisible-active-bg: color-mix(in srgb, var(--black) 15%, transparent);
-    --button-invisible-active-color: inherit;
-    --button-invisible-active-box-shadow: none;
-    --button-invisible-active-border-color: transparent;
-
-    --button-invisible-danger-color: #cf222e;
-    --button-invisible-danger-hover-color: #cf222e;
-    --button-invisible-danger-hover-icon-color: inherit;
-    --button-invisible-danger-hover-hover-bg: #ffebe9;
-    --button-invisible-danger-active-color: #a40e26;
-    --button-invisible-danger-hover-active-bg: #ffdad6;
-
-    --text-color: var(--gray-800);
-    --text-color-rgb: 38, 38, 38;
+    --text-color: var(--gray-950);
+    --text-color-rgb: 10, 10, 10;
     --text-color-light: var(--gray-400);
     --text-color-dark: var(--blue-gray-800); /* deprecated: kept for backward compatibility, unused internally */
     --box-shadow-lg: var(--shadow-lg);
@@ -499,7 +533,7 @@
     --page-login-form-bg: var(--white);
     --page-login-form-control-bg: var(--form-control-bg);
     --page-login-form-control-border-color: var(--form-input-border-color);
-    --page-login-form-control-button-bg: var(--button-primary-bg);
+    --page-login-form-control-button-bg: var(--button-primary-tone);
 
     --zindex-700: 777;
     --zindex-800: 888;
@@ -513,26 +547,49 @@
     --text-red-600: hsl(338, 71%, 37%);
     --text-yellow-600: hsl(20, 94%, 30%);
 
-    --color-primary: var(--ea-primary);
+    --color-primary: var(--ea-primary-on-surface);
     --color-success: var(--emerald-600);
-    --color-info: var(--sky-600);
+    --color-info: var(--cyan-600);
     --color-warning: var(--amber-600);
     --color-danger: #cf222e; /* GitHub red, matches the danger button */
     --color-danger-rgb: 207, 34, 46; /* keep in sync with --color-danger */
 
-    --highlight-bg: var(--yellow-300);
+    --highlight-bg: var(--amber-200);
     --highlight-color: var(--text-color);
+    --highlight-underline-color: transparent;
 
     --text-on-primary: var(--ea-primary-foreground);
     --text-muted: var(--gray-500);
 
-    --link-color: var(--ea-primary);
+    --link-color: var(--text-color);
     --link-color-rgb: 92, 112, 214; /* deprecated: kept for backward compatibility, unused internally */
-    --link-hover-color: color-mix(in oklab, var(--ea-primary) 60%, var(--white));
+    --link-font-weight: var(--font-weight-normal);
+    --link-hover-color: var(--text-color);
     --link-hover-color-rgb: 153, 166, 230; /* deprecated: kept for backward compatibility, unused internally */
     --link-hover-decoration: none;
+    --link-underline-color: var(--gray-300);
+    --link-hover-underline-color: currentColor;
     --link-danger-color: var(--red-600);
     --link-danger-hover-color: var(--red-500);
+
+    --prose-color: var(--text-color);
+    --prose-heading-color: var(--text-color);
+    --prose-lead-color: var(--text-muted);
+    --prose-link-color: var(--blue-700);
+    --prose-link-underline-color: var(--link-underline-color);
+    --prose-bold-color: currentColor;
+    --prose-counter-color: var(--text-muted);
+    --prose-bullet-color: var(--gray-400);
+    --prose-caption-color: var(--text-muted);
+    --prose-quote-color: var(--text-muted);
+    --prose-rule-color: var(--border-color);
+    --prose-th-border-color: var(--gray-300);
+    --prose-code-color: currentColor;
+    --prose-code-bg: color-mix(in oklab, currentColor 6%, transparent);
+    --prose-pre-color: var(--form-type-text-editor-content-pre-color);
+    --prose-pre-bg: var(--form-type-text-editor-content-pre-bg);
+    --prose-kbd-color: var(--text-color);
+    --prose-mark-bg: color-mix(in oklab, var(--yellow-300) 50%, transparent);
 
     /* the --border-radius-* scale is defined in design-tokens.css, derived from --ea-radius */
     --border-width: 1px;
@@ -566,13 +623,13 @@
         color-mix(in srgb, var(--black) 30%, transparent);
     --shadow-xl: 0 20px 25px -5px color-mix(in srgb, var(--black) 40%, transparent), 0 8px 10px -6px
         color-mix(in srgb, var(--black) 40%, transparent);
-    --body-bg: var(--gray-950);
+    --body-bg: var(--gray-900);
     --responsive-header-bg: var(--gray-800);
     --responsive-header-border-color: var(--gray-600);
     --responsive-header-logo-color: var(--gray-300);
     --responsive-table-label-color: var(--gray-500);
     --responsive-table-row-border-color: var(--gray-700);
-    --sidebar-bg: var(--gray-900);
+    --sidebar-bg: var(--gray-950);
     --sidebar-border-color: var(--gray-800);
     --sidebar-logo-color: var(--gray-200);
     --sidebar-menu-color: var(--gray-300);
@@ -582,22 +639,28 @@
     --sidebar-menu-badge-active-color: var(--text-on-primary);
     --sidebar-menu-submenu-color: var(--gray-400);
     --sidebar-menu-header-color: var(--gray-400);
-    --sidebar-menu-icon-color: var(--gray-400);
-    --sidebar-menu-active-item-bg: var(--gray-300);
-    --sidebar-menu-active-item-color: var(--gray-950);
+    --sidebar-menu-icon-color: color-mix(in oklab, var(--gray-300) 50%, var(--gray-400));
+    --sidebar-menu-active-item-bg: var(--gray-800);
+    --sidebar-menu-active-item-color: var(--color-primary);
     --sidebar-menu-hover-color: var(--ea-primary-text);
-    --sidebar-item-hover-bg: var(--gray-800);
+    --sidebar-item-hover-bg: var(--gray-900);
     --sidebar-item-icon-tile-hover-bg: var(--gray-700);
-    --sidebar-badge-dot-bg: var(--indigo-400);
-    --sidebar-badge-dot-border-color: var(--indigo-400);
+    --sidebar-badge-dot-bg: var(--blue-400);
+    --sidebar-badge-dot-border-color: var(--blue-400);
     --sidebar-tooltip-bg: var(--gray-200);
     --sidebar-tooltip-color: var(--gray-900);
-    --resize-handler-hover-bg: var(--ea-primary-strong);
+    --main-content-border-color: var(--gray-800);
+    --resize-handler-hover-bg: var(--ea-primary-strong); /* deprecated: kept for backward compatibility, unused internally */
+    --layout-toggle-marker-color: var(--gray-600);
+    --layout-toggle-marker-hover-color: var(--gray-400);
+    --layout-toggle-label-bg: var(--gray-100);
+    --layout-toggle-label-color: var(--gray-900);
     --content-section-border-color: var(--gray-700);
-    --content-search-input-bg: var(--body-bg);
+    --content-search-bg: var(--gray-800);
+    --content-search-input-bg: transparent;
     --content-search-icon-color: var(--gray-500);
-    --content-search-reset-button-bg: var(--gray-800);
-    --content-search-reset-button-color: var(--gray-300);
+    --content-search-reset-button-bg: transparent;
+    --content-search-reset-button-color: var(--gray-400);
     --content-search-reset-button-hover-bg: var(--gray-700);
     --content-search-reset-button-hover-color: var(--gray-200);
     --content-top-border-color: var(--gray-700);
@@ -605,7 +668,7 @@
     --user-avatar-icon-bg: var(--gray-700);
     --user-avatar-icon-color: var(--gray-400);
     --user-name-color: var(--gray-400);
-    --user-menu-impersonated-link-color: var(--color-primary);
+    --user-menu-impersonated-link-color: var(--user-name-color);
     --popover-bg: var(--gray-900);
     --popover-border-color: var(--gray-700);
     --popover-color: var(--text-color);
@@ -615,40 +678,44 @@
     --dropdown-toggle-color: var(--gray-200);
     --dropdown-toggle-border-color: var(--gray-700);
     --dropdown-toggle-hover-border-color: var(--gray-600);
+    --content-help-expander-bg: var(--gray-700);
+    --content-help-expander-hover-bg: var(--gray-600);
     --dropdown-bg: var(--gray-900);
-    --dropdown-color: var(--gray-300);
+    --dropdown-color: var(--text-color);
     --dropdown-border-color: var(--gray-700);
-    --dropdown-link-color: var(--gray-300);
+    --dropdown-ring-color: color-mix(in oklab, var(--white) 10%, transparent);
+    --dropdown-header-color: var(--text-muted);
+    --dropdown-link-color: var(--text-color);
     --dropdown-link-disabled-color: var(--text-tertiary-color);
-    --dropdown-link-hover-bg: var(--gray-800);
-    --dropdown-icon-color: var(--gray-400);
+    --dropdown-link-hover-bg: var(--gray-700);
+    --dropdown-icon-color: currentColor;
     --dropdown-settings-icon-color: var(--gray-500);
     --dropdown-settings-active-item-bg: var(--gray-950);
     --dropdown-settings-active-item-color: var(--color-primary);
     --dropdown-settings-active-item-shadow: inset 0 0 0 1px var(--gray-800);
     --dropdown-item-success-bg: color-mix(in srgb, var(--green-600) 15%, transparent);
     --dropdown-item-warning-bg: color-mix(in srgb, var(--yellow-600) 15%, transparent);
-    --dropdown-item-danger-bg: color-mix(in srgb, var(--red-500) 10%, transparent);
+    --dropdown-item-danger-bg: color-mix(in oklab, var(--red-400) 20%, transparent);
     --dropdown-item-success-color: var(--green-500);
     --dropdown-item-warning-color: var(--yellow-600);
     --dropdown-item-danger-color: var(--red-400);
     --datagrid-noresults-placeholder-bg: var(--gray-700);
     --datagrid-hidden-results-gradient-bg: var(--gray-700);
-    --table-thead-color: var(--gray-200);
-    --table-cell-color: var(--gray-300);
+    --table-thead-color: var(--gray-400);
     --table-thead-marker-color: var(--gray-500);
     --table-cell-border-color: var(--gray-800);
-    --table-hover-cell-bg: var(--gray-900);
+    --table-hover-cell-bg: color-mix(in oklab, var(--gray-800) 50%, var(--gray-900));
     --table-selected-cell-bg: var(--gray-800);
-    --table-thead-sorted-color: var(--color-primary);
-    --table-thead-sorted-marker-color: var(--color-primary);
+    --table-thead-sorted-color: var(--table-cell-color);
+    --table-thead-sorted-marker-color: var(--table-cell-color);
     --datalist-border-color: var(--gray-600);
     --datalist-label-color: var(--gray-400);
     --datalist-value-color: var(--gray-300);
     --pagination-color: var(--gray-400);
-    --pagination-hover-border-color: var(--gray-600);
-    --pagination-active-bg: var(--ea-primary);
-    --pagination-active-color: var(--text-on-primary);
+    --pagination-hover-bg: var(--gray-800);
+    --pagination-hover-border-color: var(--gray-600); /* deprecated: kept for backward compatibility, unused internally */
+    --pagination-active-bg: transparent;
+    --pagination-active-color: var(--text-color);
     --field-country-flag-border-color: var(--gray-600);
     --modal-bg: var(--gray-800);
     --modal-border-color: var(--border-secondary-color);
@@ -660,27 +727,35 @@
     --modal-icon-color: var(--gray-300);
     --pagination-disabled-color: var(--gray-600);
     --detail-label-tooltip-underline-color: var(--gray-500);
-    --form-label-color: var(--gray-300);
-    --form-control-bg: var(--gray-900);
-    --form-control-disabled-bg: var(--gray-900);
-    --form-control-disabled-color: var(--gray-500);
-    --form-input-border-color: var(--gray-700);
-    --form-input-error-legend-color: var(--red-500);
-    --form-input-error-border-color: var(--red-500);
-    --form-input-hover-border-color: var(--gray-500);
-    --form-input-shadow: none;
-    --form-input-hover-shadow: none;
-    --form-input-error-shadow: 0 0 0 var(--ea-focus-ring-width) var(--red-900);
-    --form-input-text-color: var(--gray-200);
+    --form-control-bg: color-mix(in oklab, var(--white) 4%, transparent);
+    --form-control-disabled-bg: var(--form-control-bg);
+    --form-control-disabled-color: var(--form-input-text-color);
+    --form-input-border-color: color-mix(in oklab, var(--white) 15%, transparent);
+    --form-input-focus-border-color: var(--gray-500);
+    --form-focus-ring-color: color-mix(in oklab, var(--gray-500) 50%, transparent);
+    /* the Bootstrap bridge is declared on :root, where this token has its light value */
+    --bs-focus-ring-color: var(--form-focus-ring-color);
+    --form-input-placeholder-color: var(--gray-500);
+    --form-input-error-border-color: color-mix(in oklab, var(--red-500) 70%, transparent);
+    --form-input-error-ring-color: color-mix(in oklab, var(--red-500) 40%, transparent);
     --form-input-group-text-bg: var(--gray-800);
-    --form-input-group-text-border-color: var(--gray-600);
+    --form-input-group-text-border-color: var(--form-input-border-color);
     --form-input-addon-color: var(--gray-400);
-    --switch-bg: var(--gray-600);
+    --form-select-indicator: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a3a3a3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='m6 9 6 6 6-6'/%3e%3c/svg%3e");
+    --form-tag-bg: var(--secondary-bg);
+    --form-tag-hover-bg: var(--gray-700);
+    --form-input-error-legend-color: var(--form-label-color);
+    --form-input-hover-border-color: var(--form-input-focus-border-color);
+    --form-input-shadow: none;
+    --form-input-hover-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-focus-ring-color);
+    --form-input-error-shadow: none;
+    --switch-bg: color-mix(in oklab, var(--gray-500) 70%, var(--gray-600));
     --switch-checked-bg: var(--ea-primary);
     --switch-thumb-bg: var(--gray-300);
-    --switch-focus-ring: var(--ea-primary-ring);
-    --form-type-check-input-border-color: var(--gray-400);
-    --form-type-check-input-box-shadow: 0 1px 2px 0 var(--gray-800);
+    --switch-checked-thumb-bg: var(--ea-primary-foreground);
+    --switch-focus-ring: var(--form-focus-ring-color);
+    --form-type-check-input-border-color: color-mix(in oklab, var(--white) 25%, transparent);
+    --form-type-check-input-box-shadow: none;
     --form-type-check-input-checked-bg: var(--ea-primary);
     --form-type-text-editor-toolbar-bg: var(--gray-800);
     --form-type-text-editor-toolbar-button-color: var(--gray-400);
@@ -706,21 +781,26 @@
     --form-global-error-bg: transparent;
     --form-global-error-color: var(--red-400);
     --form-global-error-border: var(--border-width) solid var(--red-400);
-    --form-help-color: var(--gray-500);
+    --form-help-color: var(--gray-400);
     --form-help-error-color: var(--gray-200);
-    --form-help-active-color: var(--gray-300);
+    --form-help-active-color: var(--form-help-color);
     --form-tabs-border-color: var(--gray-600);
     --form-tabs-help-color: var(--gray-500);
     --form-tabs-item-hover-bg: var(--gray-800);
     /* --ea-primary is too dark against the dark background (~3:1); the lightened
        primary keeps the indicator tied to the configurable accent color */
     --form-tabs-indicator-color: var(--ea-primary-text);
-    --form-column-header-color: var(--gray-300);
-    --form-column-help-color: var(--gray-500);
+    --form-column-header-color: var(--text-color);
+    --form-column-help-color: var(--form-help-color);
     --form-column-icon-color: var(--gray-400);
-    --form-fieldset-header-color: var(--gray-300);
-    --form-fieldset-help-color: var(--gray-500);
-    --form-fieldset-border-color: var(--gray-700);
+    --form-fieldset-header-color: var(--text-color);
+    --form-fieldset-help-color: var(--form-help-color);
+    --form-fieldset-border-color: color-mix(in oklab, var(--gray-800) 60%, var(--gray-700));
+    --form-fieldset-frame-bg: color-mix(in oklab, var(--gray-900) 50%, var(--gray-800));
+    --form-fieldset-frame-hover-bg: var(--gray-800);
+    --form-fieldset-panel-bg: var(--body-bg);
+    --form-fieldset-panel-border-color: var(--form-fieldset-border-color);
+    --form-fieldset-panel-shadow: none;
     --form-fieldset-header-border-color: var(--gray-600);
     --form-fieldset-icon-color: var(--gray-400);
     --form-fieldset-collapse-marker-color: var(--gray-500);
@@ -730,20 +810,19 @@
     /* solid colors are toned down on dark surfaces, where full-intensity colors look too bright */
     --badge-solid-amount: 80%;
     --badge-primary-tint-bg-amount: 15%;
-    /* the primary color is usually dark, so on dark surfaces its border needs more color */
-    --badge-primary-tint-border-amount: 50%;
+    --badge-primary-tint-border-amount: 25%;
     --badge-warning-tint-border-amount: 25%;
     --badge-warning-solid-tone: var(--badge-warning-tone);
     --badge-success-solid-tone: var(--badge-success-tone);
     --badge-dark-solid-tone: var(--gray-700);
     --badge-light-tint-border-amount: 25%;
-    --badge-primary-color: color-mix(in oklab, var(--ea-primary) 40%, var(--ea-primary-contrast-base));
+    --badge-primary-color: var(--blue-300);
     --badge-outline-border-color: var(--gray-700);
     --badge-secondary-tone: var(--gray-500);
     --badge-secondary-color: var(--gray-200);
     /* pure white text on solid badges is too bright on dark surfaces */
     --badge-secondary-solid-color: var(--gray-100);
-    --badge-primary-solid-color: color-mix(in oklab, var(--ea-primary-foreground) 90%, var(--ea-primary));
+    --badge-primary-solid-color: var(--gray-100);
     --badge-success-solid-color: var(--gray-100);
     --badge-danger-solid-color: var(--gray-100);
     --badge-info-solid-color: var(--gray-100);
@@ -752,7 +831,7 @@
     --badge-warning-color: var(--yellow-400);
     /* between red-300 (too little contrast) and red-200 (looks pink instead of red) */
     --badge-danger-color: color-mix(in oklab, var(--red-300) 50%, var(--red-200));
-    --badge-info-color: var(--sky-300);
+    --badge-info-color: var(--cyan-300);
     --badge-light-tone: var(--gray-300);
     --badge-light-color: var(--gray-200);
     /* black is invisible as a tint or border on dark surfaces */
@@ -765,149 +844,27 @@
     --badge-warning-outline-color: var(--badge-warning-color);
     --badge-danger-outline-color: var(--badge-danger-color);
     --badge-info-outline-color: var(--badge-info-color);
-    --alert-primary-bg: var(--ea-primary-soft);
-    --alert-primary-color: var(--ea-primary-text);
-    --alert-primary-border-color: var(--ea-primary-muted);
-    --alert-secondary-bg: var(--gray-700);
-    --alert-secondary-color: var(--gray-300);
-    --alert-secondary-border-color: var(--gray-600);
-    --alert-success-bg: var(--emerald-800);
-    --alert-success-color: var(--emerald-100);
-    --alert-success-border-color: var(--emerald-700);
-    --alert-info-bg: var(--sky-800);
-    --alert-info-color: var(--sky-100);
-    --alert-info-border-color: var(--sky-700);
-    --alert-warning-bg: var(--orange-800);
-    --alert-warning-color: var(--orange-100);
-    --alert-warning-border-color: var(--orange-700);
-    --alert-danger-bg: var(--red-800);
-    --alert-danger-color: var(--red-100);
-    --alert-danger-border-color: var(--red-700);
-    --alert-light-bg: var(--gray-300);
-    --alert-light-color: var(--gray-800);
-    --alert-light-border-color: var(--gray-200);
-    --alert-dark-bg: var(--gray-900);
-    --alert-dark-color: var(--gray-200);
-    --alert-dark-border-color: var(--gray-700);
+    --alert-tint-border-amount: 35%;
+    --alert-warning-tint-border-amount: 25%;
 
     --button-focus-outline-color: var(--ea-primary-strong);
 
-    --button-primary-box-shadow: none;
-    --button-primary-bg: linear-gradient(
-        to bottom,
-        color-mix(in oklab, var(--ea-primary) 96%, var(--white)),
-        var(--ea-primary)
-    );
-    --button-primary-color: var(--text-on-primary);
-    --button-primary-icon-color: color-mix(in srgb, var(--text-on-primary) 85%, transparent);
-    --button-primary-border-color: color-mix(in srgb, var(--white) 15%, transparent);
-    --button-primary-hover-bg: linear-gradient(
-        to bottom,
-        color-mix(in oklab, var(--ea-primary) 92%, var(--white)),
-        color-mix(in oklab, var(--ea-primary) 96%, var(--white))
-    );
-    --button-primary-hover-color: var(--text-on-primary);
-    --button-primary-hover-border-color: color-mix(in srgb, var(--white) 15%, transparent);
-    --button-primary-active-box-shadow: none;
-    --button-primary-active-bg: color-mix(in oklab, var(--ea-primary) 88%, var(--white));
-    --button-primary-active-color: var(--text-on-primary);
-    --button-primary-active-border-color: color-mix(in srgb, var(--white) 15%, transparent);
+    --button-default-tone: var(--gray-100);
+    --button-default-solid-color: var(--gray-900);
+    --button-default-light-bg: color-mix(in oklab, var(--white) 8%, transparent);
+    --button-default-light-hover-bg: color-mix(in oklab, var(--white) 13%, transparent);
+    --button-default-outline-border-color: color-mix(in oklab, var(--white) 15%, transparent);
+    --button-default-outline-bg: color-mix(in oklab, var(--white) 4%, transparent);
 
-    --button-secondary-box-shadow: none;
-    --button-secondary-bg: #242424;
-    --button-secondary-color: var(--text-primary-color);
-    --button-secondary-icon-color: var(--text-muted);
-    --button-secondary-border-color: #3d3d3d;
-    --button-secondary-hover-bg: #2c2c2c;
-    --button-secondary-hover-color: var(--text-primary-color);
-    --button-secondary-hover-border-color: #3d3d3d;
-    --button-secondary-active-box-shadow: none;
-    --button-secondary-active-bg: #313131;
-    --button-secondary-active-color: var(--text-primary-color);
-    --button-secondary-active-border-color: #4d4d4d;
+    --button-primary-light-bg: color-mix(in oklab, var(--ea-primary) 18%, transparent);
+    --button-primary-light-hover-bg: color-mix(in oklab, var(--ea-primary) 26%, transparent);
 
-    --button-success-box-shadow: none;
-    --button-success-bg: #242424;
-    --button-success-color: #56d364;
-    --button-success-icon-color: inherit;
-    --button-success-border-color: #3d3d3d;
-    --button-success-hover-bg: #29903b;
-    --button-success-hover-color: var(--white);
-    --button-success-hover-border-color: color-mix(in srgb, var(--white) 15%, transparent);
-    --button-success-active-box-shadow: none;
-    --button-success-active-bg: #2e9a40;
-    --button-success-active-color: var(--white);
-    --button-success-active-border-color: color-mix(in srgb, var(--white) 15%, transparent);
-
-    --button-warning-box-shadow: 0 1px 0 0 #1f23280a;
-    --button-warning-bg: #242424;
-    --button-warning-color: #e3b341;
-    --button-warning-icon-color: inherit;
-    --button-warning-border-color: #3d3d3d;
-    --button-warning-hover-bg: #9e6a03;
-    --button-warning-hover-color: var(--white);
-    --button-warning-hover-border-color: color-mix(in srgb, var(--white) 15%, transparent);
-    --button-warning-active-box-shadow: none;
-    --button-warning-active-bg: #bb8009;
-    --button-warning-active-color: var(--white);
-    --button-warning-active-border-color: color-mix(in srgb, var(--white) 15%, transparent);
-
-    --button-danger-box-shadow: none;
-    --button-danger-bg: #242424;
-    --button-danger-color: #fa5e55;
-    --button-danger-icon-color: inherit;
-    --button-danger-border-color: #3d3d3d;
-    --button-danger-hover-bg: #b62324;
-    --button-danger-hover-color: var(--white);
-    --button-danger-hover-border-color: color-mix(in srgb, var(--white) 15%, transparent);
-    --button-danger-active-box-shadow: none;
-    --button-danger-active-bg: #da3633;
-    --button-danger-active-color: var(--white);
-    --button-danger-active-border-color: color-mix(in srgb, var(--white) 15%, transparent);
-
-    --button-info-box-shadow: none;
-    --button-info-bg: #242424;
-    --button-info-color: #79c0ff;
-    --button-info-icon-color: inherit;
-    --button-info-border-color: #3d3d3d;
-    --button-info-hover-bg: #1f6feb;
-    --button-info-hover-color: var(--white);
-    --button-info-hover-border-color: color-mix(in srgb, var(--white) 15%, transparent);
-    --button-info-active-box-shadow: none;
-    --button-info-active-bg: #388bfd;
-    --button-info-active-color: var(--white);
-    --button-info-active-border-color: color-mix(in srgb, var(--white) 15%, transparent);
-
-    /* in the dark scheme the primary button is royal blue, so the outline accent is blue too
-       (same as the dark link color) */
-    --button-outline-primary-color: var(--ea-primary-text);
-
-    --button-invisible-box-shadow: none;
-    --button-invisible-bg: transparent;
-    --button-invisible-color: inherit;
-    --button-invisible-icon-color: inherit;
-    --button-invisible-border-color: transparent;
-    --button-invisible-hover-bg: color-mix(in srgb, var(--white) 25%, transparent);
-    --button-invisible-hover-color: inherit;
-    --button-invisible-hover-border-color: transparent;
-    --button-invisible-active-bg: color-mix(in srgb, var(--white) 25%, transparent);
-    --button-invisible-active-color: inherit;
-    --button-invisible-active-box-shadow: none;
-    --button-invisible-active-border-color: transparent;
-
-    --button-invisible-danger-color: #fa5e55;
-    --button-invisible-danger-hover-color: var(--white);
-    --button-invisible-danger-hover-icon-color: inherit;
-    --button-invisible-danger-hover-hover-bg: #b62324;
-    --button-invisible-danger-active-color: var(--white);
-    --button-invisible-danger-hover-active-bg: #da3633;
-
-    --text-color: var(--gray-300);
-    --text-color-rgb: 212, 212, 212;
+    --text-color: var(--gray-200);
+    --text-color-rgb: 229, 229, 229;
     --text-color-light: var(--gray-400);
     --text-color-dark: var(--gray-200); /* deprecated: kept for backward compatibility, unused internally */
     --box-shadow-lg: var(--shadow-lg);
-    --content-panel-bg: var(--gray-900);
+    --content-panel-bg: color-mix(in oklab, var(--gray-800) 50%, var(--gray-900));
     --fieldset-bg: var(--blue-gray-50); /* deprecated: kept for backward compatibility, unused internally */
     --code-color: var(--orange-700);
     --code-editor-string-color: var(--blue-300);
@@ -927,7 +884,7 @@
     --page-login-form-bg: var(--gray-700);
     --page-login-form-control-bg: var(--gray-800);
     --page-login-form-control-border-color: var(--gray-600);
-    --page-login-form-control-button-bg: var(--button-primary-bg);
+    --page-login-form-control-button-bg: var(--button-primary-tone);
 
     /* hand-darkened literals kept as-is to preserve WCAG contrast on tinted backgrounds */
     --text-blue-600: hsl(206, 91%, 30%);
@@ -936,32 +893,34 @@
     --text-red-600: hsl(338, 71%, 37%);
     --text-yellow-600: hsl(20, 94%, 30%);
 
-    /* the accent used as text/icon color (sorted headers, applied-filter marks,
-       dropdown checks...). The raw --ea-primary fill is too dark to read on dark
-       surfaces, so route it through the --ea-primary-text recipe, which lightens
-       it (all the fill tokens consuming --color-primary are re-declared in this
-       block with their own per-scheme recipes, so they are not affected) */
     --color-primary: var(--ea-primary-text);
     --color-success: var(--emerald-600);
-    --color-info: var(--sky-600);
+    --color-info: var(--cyan-600);
     --color-warning: var(--amber-600);
     --color-danger: var(--red-500);
-    --color-danger-rgb: 239, 68, 68; /* keep in sync with --color-danger */
+    --color-danger-rgb: 251, 44, 54; /* keep in sync with --color-danger */
 
-    --highlight-bg: var(--yellow-300);
-    --highlight-color: var(--gray-900);
+    --highlight-bg: transparent;
+    --highlight-color: var(--yellow-300);
+    --highlight-underline-color: color-mix(in oklab, var(--yellow-400) 50%, transparent);
 
     --text-on-primary: var(--ea-primary-foreground);
-    --text-muted: var(--gray-500);
+    --text-muted: var(--gray-400);
 
-    --link-color: var(--ea-primary-text);
-    --link-hover-color: color-mix(in oklab, var(--ea-primary-text) 70%, var(--white));
+    --link-color: var(--text-color);
+    --link-hover-color: var(--text-color);
     --link-hover-decoration: none;
+    --link-underline-color: var(--gray-600);
+
+    --prose-link-color: var(--blue-300);
+    --prose-bullet-color: var(--gray-600);
+    --prose-th-border-color: var(--gray-700);
+    --prose-mark-bg: color-mix(in oklab, var(--yellow-500) 35%, transparent);
+    --prose-code-bg: color-mix(in oklab, currentColor 8%, transparent);
 
     --border-color: var(--gray-800);
 }
 
-/* Bootstrap variables */
 :root,
 [data-bs-theme="light"],
 [data-bs-theme="dark"] {
@@ -970,8 +929,10 @@
     --bs-body-color: var(--text-color);
     --bs-body-font-family: var(--font-family-base);
     --bs-body-font-size: var(--font-size-base);
-    --bs-body-font-weight: normal;
+    --bs-body-font-weight: var(--font-weight-normal);
     --bs-border-color: var(--border-color);
+    --bs-focus-ring-color: var(--form-focus-ring-color);
+    --bs-focus-ring-width: var(--ea-focus-ring-width);
     --bs-border-radius-lg: var(--border-radius-lg);
     --bs-border-radius-sm: var(--border-radius-sm);
     --bs-border-radius: var(--border-radius);
@@ -1013,6 +974,10 @@
 }
 .dropdown-menu {
     --bs-dropdown-font-size: var(--font-size-base);
+    --bs-dropdown-link-hover-bg: var(--dropdown-link-hover-bg);
+    --bs-dropdown-link-hover-color: var(--dropdown-link-color);
+    --bs-dropdown-link-active-bg: transparent;
+    --bs-dropdown-link-active-color: var(--dropdown-link-color);
 }
 .table {
     --bs-table-active-bg: var(--table-selected-cell-bg);
@@ -1024,18 +989,17 @@
     --bs-table-hover-color: var(--table-cell-color);
 }
 .pagination {
+    --bs-pagination-border-radius: var(--button-border-radius);
     --bs-pagination-padding-y: var(--ea-sp-2);
     --bs-pagination-padding-x: var(--ea-sp-5);
     --bs-pagination-color: var(--pagination-color);
-    --bs-pagination-line-height: var(--line-height-normal);
     --bs-pagination-bg: var(--body-bg);
     --bs-pagination-border-width: var(--border-width);
     --bs-pagination-border-color: transparent;
     --bs-pagination-focus-box-shadow: none;
-    --bs-pagination-focus-outline: 0;
     --bs-pagination-hover-color: var(--text-color);
     --bs-pagination-hover-bg: var(--body-bg);
-    --bs-pagination-hover-border-color: var(--pagination-hover-border-color);
+    --bs-pagination-hover-border-color: transparent;
     --bs-pagination-disabled-color: var(--text-muted);
     --bs-pagination-disabled-bg: var(--body-bg);
     --bs-pagination-disabled-border-color: transparent;
@@ -1064,12 +1028,9 @@
     --bs-modal-footer-border-width: var(--border-width);
 }
 .badge {
-    --bs-badge-padding-x: var(--ea-sp-2);
-    --bs-badge-padding-y: 1px;
     --bs-badge-font-size: var(--font-size-xs);
     --bs-badge-font-weight: var(--font-weight-medium);
     --bs-badge-color: var(--text-color);
-    --bs-badge-border-radius: var(--bs-border-radius);
 }
 .offcanvas,
 .offcanvas-xxl,
@@ -1082,9 +1043,8 @@
 }
 .alert {
     --bs-alert-padding-x: var(--ea-sp-8);
-    --bs-alert-padding-y: var(--ea-sp-8);
-    --bs-alert-margin-block-end: 0;
-    --bs-alert-border-radius: var(--border-radius-none);
+    --bs-alert-padding-y: var(--ea-sp-6);
+    --bs-alert-border-radius: var(--border-radius-xl);
     --bs-alert-link-color: inherit;
 }
 .row {
@@ -1095,4 +1055,24 @@
        because this rule would otherwise defeat them (they live in the 'vendor'
        layer and layer order trumps specificity) */
     --bs-gutter-x: var(--ea-sp-12);
+}
+
+/* relative color syntax needs Firefox 128+; without it, the tones above are invalid and solid
+   buttons lose their background, so use the fill without the chroma reduction */
+@supports not (color: oklch(from red l c h)) {
+    :root,
+    .ea-dark-scheme {
+        --button-success-tone: color-mix(
+            in oklab,
+            var(--badge-success-solid-tone) var(--badge-solid-amount),
+            var(--body-bg)
+        );
+        --button-warning-tone: color-mix(
+            in oklab,
+            var(--badge-warning-solid-tone) var(--badge-solid-amount),
+            var(--body-bg)
+        );
+        --button-danger-tone: color-mix(in oklab, var(--badge-danger-tone) var(--badge-solid-amount), var(--body-bg));
+        --button-info-tone: color-mix(in oklab, var(--badge-info-tone) var(--badge-solid-amount), var(--body-bg));
+    }
 }

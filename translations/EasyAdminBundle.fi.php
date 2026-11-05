@@ -65,6 +65,7 @@ return [
         'save' => 'Tallenna muutokset',
         'save_and_continue' => 'Tallenna ja jatka muokkaamista',
         'toggle_dropdown' => 'Vaihda pudotusvalikko',
+        'show_help' => 'Näytä koko ohje',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automaattinen',
         ],
         'locale' => 'Kieli',
+    ],
+
+    'layout' => [
+        'collapse' => 'Pienennä',
+        'expand' => 'Laajenna',
     ],
 
     'login_page' => [

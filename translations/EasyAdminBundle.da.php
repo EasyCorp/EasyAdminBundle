@@ -65,6 +65,7 @@ return [
         'save' => 'Gem ændringer',
         'save_and_continue' => 'Gem og fortsæt redigering',
         'toggle_dropdown' => 'Skift rullemenu',
+        'show_help' => 'Vis hele hjælpen',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automatisk',
         ],
         'locale' => 'Sprog',
+    ],
+
+    'layout' => [
+        'collapse' => 'Fold sammen',
+        'expand' => 'Fold ud',
     ],
 
     'login_page' => [

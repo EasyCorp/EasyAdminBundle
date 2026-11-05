@@ -1,4 +1,3 @@
-// any CSS you require will output into a single css file (app.css in this case)
 require('../css/app.css');
 
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
@@ -10,17 +9,9 @@ import { initTabs } from './tabs';
 // Provide Bootstrap variable globally to allow custom backend pages to use it
 window.bootstrap = bootstrap;
 
-// maps an action variant to its button CSS class; shared by the action and
-// batch action confirmation modals so their confirm button mirrors the
-// variant/color of the action that opened the modal
-const variantToClass = {
-    default: 'btn-secondary',
-    primary: 'btn-primary',
-    success: 'btn-success',
-    warning: 'btn-warning',
-    danger: 'btn-danger',
-};
-const allVariantClasses = Object.values(variantToClass);
+const buttonColorClasses = ['btn-secondary', 'btn-primary', 'btn-success', 'btn-warning', 'btn-danger', 'btn-info'];
+const confirmationButtonColorClass = (actionColor) =>
+    'danger' === (actionColor || 'danger') ? 'btn-danger' : 'btn-primary';
 
 document.addEventListener('DOMContentLoaded', () => {
     window.EasyAdminApp = new App();
@@ -48,6 +39,7 @@ class App {
         this.#createDefaultRowAction();
         this.#createPopovers();
         this.#createTooltips();
+        this.#createContentHelp();
         this.#createActionHandlers();
 
         document.addEventListener('ea.collection.item-added', () => this.#createAutoCompleteFields());
@@ -62,7 +54,6 @@ class App {
             return;
         }
 
-        // remove the hash only in the index page
         if (!document.querySelector('body').classList.contains('ea-index')) {
             return;
         }
@@ -74,12 +65,6 @@ class App {
     }
 
     #createSidebarSubmenus() {
-        // the expand/collapse animation is fully CSS-based (see sidebar.css); this only
-        // toggles the 'is-expanded' class, keeping a single submenu open at a time
-        // '.is-kept-open' submenus are always expanded: they don't toggle and the
-        // accordion never closes them
-        // the listener is delegated so it also works for sidebar items rendered outside
-        // the main menu (e.g. in custom pages) or added to the page after it loads
         const submenuItemSelector = '.ea-sidebar-item.has-submenu:not(.is-kept-open)';
         const submenuToggleSelector = ':scope > .ea-sidebar-item-link';
 
@@ -112,29 +97,57 @@ class App {
     }
 
     #createLayoutResizeControls() {
-        const sidebarResizerHandler = document.querySelector('#sidebar-resizer-handler');
-        if (null !== sidebarResizerHandler) {
-            sidebarResizerHandler.addEventListener('click', () => {
-                const oldValue = localStorage.getItem(this.#sidebarWidthLocalStorageKey) || 'normal';
-                const newValue = 'normal' === oldValue ? 'compact' : 'normal';
+        this.#createLayoutToggle(
+            '.ea-layout-toggle-sidebar',
+            this.#sidebarWidthLocalStorageKey,
+            'sidebar',
+            'compact',
+            false
+        );
+        this.#createLayoutToggle(
+            '.ea-layout-toggle-content',
+            this.#contentWidthLocalStorageKey,
+            'content',
+            'full',
+            true
+        );
+    }
 
-                document.querySelector('body').classList.remove(`ea-sidebar-width-${oldValue}`);
-                document.querySelector('body').classList.add(`ea-sidebar-width-${newValue}`);
-                localStorage.setItem(this.#sidebarWidthLocalStorageKey, newValue);
-            });
+    #createLayoutToggle(selector, localStorageKey, layoutPart, alternativeWidth, isAlternativeWidthExpanded) {
+        const toggle = document.querySelector(selector);
+        if (null === toggle) {
+            return;
         }
 
-        const contentResizerHandler = document.querySelector('#content-resizer-handler');
-        if (null !== contentResizerHandler) {
-            contentResizerHandler.addEventListener('click', () => {
-                const oldValue = localStorage.getItem(this.#contentWidthLocalStorageKey) || 'normal';
-                const newValue = 'normal' === oldValue ? 'full' : 'normal';
+        const isExpanded = () =>
+            document.body.classList.contains(`ea-${layoutPart}-width-${alternativeWidth}`) ===
+            isAlternativeWidthExpanded;
 
-                document.querySelector('body').classList.remove(`ea-content-width-${oldValue}`);
-                document.querySelector('body').classList.add(`ea-content-width-${newValue}`);
-                localStorage.setItem(this.#contentWidthLocalStorageKey, newValue);
-            });
-        }
+        const updateToggle = () => {
+            const label = isExpanded() ? toggle.dataset.eaCollapseLabel : toggle.dataset.eaExpandLabel;
+            toggle.setAttribute('aria-expanded', String(isExpanded()));
+            toggle.setAttribute('aria-label', label);
+            toggle.querySelector('.ea-layout-toggle-label').textContent = label;
+        };
+
+        // the initial width can come from the browser local storage (see page-layout.js)
+        // instead of the backend config used to render the toggle
+        updateToggle();
+
+        toggle.addEventListener('click', () => {
+            const oldValue = document.body.classList.contains(`ea-${layoutPart}-width-${alternativeWidth}`)
+                ? alternativeWidth
+                : 'normal';
+            const newValue = 'normal' === oldValue ? alternativeWidth : 'normal';
+
+            document.body.classList.add(`ea-${layoutPart}-transitions`);
+            document.body.classList.remove(`ea-${layoutPart}-width-${oldValue}`);
+            document.body.classList.add(`ea-${layoutPart}-width-${newValue}`);
+            if ('true' !== document.body.getAttribute(`data-ea-${layoutPart}-width-configured`)) {
+                localStorage.setItem(localStorageKey, newValue);
+            }
+            updateToggle();
+        });
     }
 
     #createNavigationToggler() {
@@ -167,9 +180,13 @@ class App {
             toggler.setAttribute('aria-expanded', 'true');
 
             modalBackdrop = document.createElement('div');
-            modalBackdrop.classList.add('modal-backdrop', 'fade', 'show');
+            modalBackdrop.classList.add('modal-backdrop', 'fade', 'ea-sidebar-backdrop');
             modalBackdrop.onclick = closeSidebar;
             document.body.appendChild(modalBackdrop);
+            // reading the layout makes the browser apply the transparent style first;
+            // otherwise 'show' would be applied at once and the backdrop wouldn't fade in
+            modalBackdrop.getBoundingClientRect();
+            modalBackdrop.classList.add('show');
 
             window.addEventListener('keydown', onKeyDown, true);
         };
@@ -179,7 +196,13 @@ class App {
             toggler.setAttribute('aria-expanded', 'false');
 
             if (modalBackdrop) {
-                modalBackdrop.remove();
+                const closingBackdrop = modalBackdrop;
+                closingBackdrop.classList.remove('show');
+                // getAnimations() is empty when there's no transition (e.g. reduced motion),
+                // so the backdrop is removed right away instead of waiting for 'transitionend'
+                Promise.allSettled(closingBackdrop.getAnimations().map((animation) => animation.finished)).then(() =>
+                    closingBackdrop.remove()
+                );
                 modalBackdrop = null;
             }
 
@@ -202,8 +225,7 @@ class App {
             return;
         }
 
-        // splits a string into tokens, taking into account quoted strings
-        // Example: 'foo "bar baz" qux' => ['foo', 'bar baz', 'qux']
+        // 'foo "bar baz" qux' => ['foo', 'bar baz', 'qux']
         const tokenizeString = (string) => {
             const regex = /"([^"\\]*(\\.[^"\\]*)*)"|\S+/g;
             const tokens = [];
@@ -221,7 +243,46 @@ class App {
 
         const elementsToHighlight = document.querySelectorAll('.datagrid [data-id] .searchable');
         const highlighter = new Mark(elementsToHighlight);
-        highlighter.mark(searchQueryTerms, { separateWordSearch: false });
+        highlighter.mark(searchQueryTerms, {
+            separateWordSearch: false,
+            done: () => this.#keepHighlightedTextTogether(elementsToHighlight),
+        });
+    }
+
+    // in flex and grid containers (e.g. badges) each piece of a highlighted text would become a
+    // separate item, adding the gap of the container between them and removing the spaces around them
+    #keepHighlightedTextTogether(highlightedElements) {
+        const containers = new Set();
+        for (const element of highlightedElements) {
+            for (const mark of element.querySelectorAll('mark')) {
+                containers.add(mark.parentElement);
+            }
+        }
+
+        const isTextPiece = (node) => Node.TEXT_NODE === node.nodeType || 'MARK' === node.nodeName;
+        for (const container of containers) {
+            const { display } = getComputedStyle(container);
+            if (!display.includes('flex') && !display.includes('grid')) {
+                continue;
+            }
+
+            for (const mark of container.querySelectorAll(':scope > mark')) {
+                if (mark.parentElement !== container) {
+                    continue;
+                }
+
+                let first = mark;
+                while (first.previousSibling && isTextPiece(first.previousSibling)) {
+                    first = first.previousSibling;
+                }
+
+                const wrapper = document.createElement('span');
+                container.insertBefore(wrapper, first);
+                while (wrapper.nextSibling && isTextPiece(wrapper.nextSibling)) {
+                    wrapper.append(wrapper.nextSibling);
+                }
+            }
+        }
     }
 
     #createSearchInputAutoSizing() {
@@ -311,6 +372,13 @@ class App {
             return;
         }
 
+        // templates that override the 'batch_actions' block may still hide it with 'd-none';
+        // remove it on page load because elements with 'display: none' can't be animated
+        document.querySelectorAll('.page-actions-stack .batch-actions.d-none').forEach((batchActions) => {
+            batchActions.classList.remove('d-none');
+            batchActions.inert = true;
+        });
+
         const rowCheckboxes = document.querySelectorAll('input[type="checkbox"].form-batch-checkbox');
         selectAllCheckbox.addEventListener('change', () => {
             rowCheckboxes.forEach((rowCheckbox) => {
@@ -363,14 +431,25 @@ class App {
                 }
 
                 const rowsAreSelected = 0 !== selectedRowCheckboxes.length;
-                const contentTitle = document.querySelector('.content-header-title > .title');
+                const pageActionsStack = content.querySelector('.page-actions-stack');
                 const filters = content.querySelector('.datagrid-filters');
                 const globalActions = content.querySelector('.global-actions');
                 const batchActions = content.querySelector('.batch-actions');
 
-                if (null !== contentTitle) {
-                    toggleVisibilityClasses(contentTitle, rowsAreSelected);
+                if (null !== pageActionsStack) {
+                    pageActionsStack.classList.toggle('rows-are-selected', rowsAreSelected);
+                    const defaultActions = pageActionsStack.querySelector('.page-actions-default');
+                    if (null !== defaultActions) {
+                        defaultActions.inert = rowsAreSelected;
+                    }
+                    if (null !== batchActions) {
+                        batchActions.inert = !rowsAreSelected;
+                    }
+
+                    return;
                 }
+
+                // templates that override the 'page_actions' block don't define the stack of actions
                 if (null !== filters) {
                     toggleVisibilityClasses(filters, rowsAreSelected);
                 }
@@ -385,7 +464,17 @@ class App {
 
         const modalTitle = document.querySelector('#batch-action-confirmation-title');
         const modalMessage = document.querySelector('#batch-action-confirmation-message');
+        const modalButton = document.querySelector('#modal-batch-action-button');
         const titleContentWithPlaceholders = modalTitle?.textContent;
+
+        // all batch actions share the modal; a listener added on each opening would also run
+        // the actions whose modal was cancelled before
+        let pendingBatchAction = null;
+        modalButton?.addEventListener('click', () => {
+            const batchAction = pendingBatchAction;
+            pendingBatchAction = null;
+            batchAction?.();
+        });
 
         document.querySelectorAll('[data-action-batch]').forEach((dataActionBatch) => {
             dataActionBatch.addEventListener('click', (event) => {
@@ -423,11 +512,9 @@ class App {
                     batchForm.submit();
                 };
 
-                // check if this batch action should skip confirmation
                 if (actionElement.hasAttribute('data-action-batch-no-confirm')) {
                     submitBatchAction();
                 } else {
-                    // show confirmation modal
                     const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
 
                     const replacePlaceholders = (template) =>
@@ -444,14 +531,12 @@ class App {
                         modalMessage.classList.toggle('d-none', null === customMessage);
                     }
 
-                    // apply to the modal button the same variant as the action that opened the modal
-                    const modalButton = document.querySelector('#modal-batch-action-button');
-                    const variant = actionElement.getAttribute('data-action-variant') || 'danger';
-                    const variantClass = variantToClass[variant] || 'btn-danger';
-                    modalButton.classList.remove(...allVariantClasses);
-                    modalButton.classList.add(variantClass);
+                    modalButton.classList.remove(...buttonColorClasses);
+                    modalButton.classList.add(
+                        confirmationButtonColorClass(actionElement.getAttribute('data-action-variant'))
+                    );
 
-                    modalButton.addEventListener('click', submitBatchAction, { once: true });
+                    pendingBatchAction = submitBatchAction;
                 }
             });
         });
@@ -470,7 +555,17 @@ class App {
         const modalContent = document.querySelector('#action-confirmation-content');
         const modalButton = document.querySelector('#modal-action-confirmation-button');
         const defaultTitleTemplate = modalTitle?.textContent;
-        const defaultButtonLabel = modalButton?.textContent;
+        const modalButtonLabel = modalButton?.querySelector('.btn-label') ?? modalButton;
+        const defaultButtonLabel = modalButtonLabel?.textContent;
+
+        // all actions share the modal; a listener added on each opening would also run the
+        // actions whose modal was cancelled before (e.g. deleting a different entity)
+        let pendingAction = null;
+        modalButton?.addEventListener('click', () => {
+            const action = pendingAction;
+            pendingAction = null;
+            action?.();
+        });
 
         document.querySelectorAll('[data-action-confirmation="true"]').forEach((actionElement) => {
             actionElement.addEventListener('click', (event) => {
@@ -500,50 +595,44 @@ class App {
                     showText(modalContent, actionElement.getAttribute('data-action-confirmation-content'));
                 }
 
-                // use custom button label if provided, otherwise use default
                 const customButtonLabel = actionElement.getAttribute('data-action-confirmation-button');
-                modalButton.textContent = customButtonLabel ?? defaultButtonLabel;
+                modalButtonLabel.textContent = customButtonLabel ?? defaultButtonLabel;
 
-                // apply to the modal button the same variant as the action that opened the modal
-                const variant = actionElement.getAttribute('data-action-variant') || 'danger';
-                const variantClass = variantToClass[variant] || 'btn-danger';
-                modalButton.classList.remove(...allVariantClasses);
-                modalButton.classList.add(variantClass);
-
-                modalButton.addEventListener(
-                    'click',
-                    () => {
-                        // Case 1: POST action with formaction (like DELETE with CSRF token)
-                        const formAction = actionElement.getAttribute('formaction');
-                        if (formAction) {
-                            const form = document.querySelector('#action-confirmation-form');
-                            form.setAttribute('action', formAction);
-                            form.submit();
-                            return;
-                        }
-
-                        // Case 2: dropdown action rendered as form (data-ea-action-form-id)
-                        const actionFormId = actionElement.getAttribute('data-ea-action-form-id');
-                        if (actionFormId) {
-                            document.getElementById(actionFormId).submit();
-                            return;
-                        }
-
-                        // Case 3: standalone button inside a <form> (renderAsForm)
-                        const parentForm = actionElement.closest('form');
-                        if (parentForm?.hasAttribute('action')) {
-                            parentForm.submit();
-                            return;
-                        }
-
-                        // Case 4: GET action with href
-                        const href = actionElement.getAttribute('href');
-                        if (href) {
-                            window.location.href = href;
-                        }
-                    },
-                    { once: true }
+                modalButton.classList.remove(...buttonColorClasses);
+                modalButton.classList.add(
+                    confirmationButtonColorClass(actionElement.getAttribute('data-action-variant'))
                 );
+
+                pendingAction = () => {
+                    // Case 1: POST action with formaction (like DELETE with CSRF token)
+                    const formAction = actionElement.getAttribute('formaction');
+                    if (formAction) {
+                        const form = document.querySelector('#action-confirmation-form');
+                        form.setAttribute('action', formAction);
+                        form.submit();
+                        return;
+                    }
+
+                    // Case 2: dropdown action rendered as form (data-ea-action-form-id)
+                    const actionFormId = actionElement.getAttribute('data-ea-action-form-id');
+                    if (actionFormId) {
+                        document.getElementById(actionFormId).submit();
+                        return;
+                    }
+
+                    // Case 3: standalone button inside a <form> (renderAsForm)
+                    const parentForm = actionElement.closest('form');
+                    if (parentForm?.hasAttribute('action')) {
+                        parentForm.submit();
+                        return;
+                    }
+
+                    // Case 4: GET action with href
+                    const href = actionElement.getAttribute('href');
+                    if (href) {
+                        window.location.href = href;
+                    }
+                };
             });
         });
     }
@@ -575,8 +664,8 @@ class App {
         ];
 
         const isInteractiveElement = (element) => {
-            // walk up the DOM tree to check if any ancestor is interactive
-            // this also handles elements with pointer-events: none whose clicks bubble to parents
+            // ancestors are checked too, because clicks on elements with 'pointer-events: none'
+            // target their parents
             let current = element;
             while (current && current !== document.body) {
                 if (interactiveSelectors.some((selector) => current.matches(selector))) {
@@ -593,10 +682,8 @@ class App {
             const link = document.createElement('a');
             link.href = url;
 
-            // middle-click or ctrl/cmd-click opens the row in a new tab, like a real link.
-            // Setting target="_blank" on the link (instead of using window.open()) opens the
-            // new tab as a regular link navigation, which isn't stopped by the popup blocker;
-            // Firefox blocks window.open() when it's called from a middle-click handler.
+            // middle-click or ctrl/cmd-click opens a new tab, like a real link; target="_blank"
+            // is used instead of window.open() because Firefox blocks the latter in middle-click handlers
             if (event && (event.metaKey || event.ctrlKey || 1 === event.button)) {
                 link.target = '_blank';
                 link.rel = 'noopener';
@@ -644,7 +731,6 @@ class App {
         };
 
         clickableRows.forEach((row) => {
-            // handle mouse clicks
             row.addEventListener(clickTrigger === 'double' ? 'dblclick' : 'click', (event) => {
                 if (isInteractiveElement(event.target)) {
                     return;
@@ -662,7 +748,6 @@ class App {
                 handleRowActivation(row, event);
             });
 
-            // handle middle-click (auxclick) to open the row in a new tab
             row.addEventListener('auxclick', (event) => {
                 if (1 !== event.button) {
                     return;
@@ -676,13 +761,11 @@ class App {
                 handleRowActivation(row, event);
             });
 
-            // handle keyboard navigation (Enter and Space)
             row.addEventListener('keydown', (event) => {
                 if ('Enter' !== event.key && ' ' !== event.key) {
                     return;
                 }
 
-                // don't activate if focus is on an interactive child element
                 if (isInteractiveElement(event.target) && event.target !== row) {
                     return;
                 }
@@ -703,6 +786,63 @@ class App {
         document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipElement) => {
             new bootstrap.Tooltip(tooltipElement);
         });
+    }
+
+    #createContentHelp() {
+        const help = document.querySelector('[data-ea-content-help]');
+        if (null === help) {
+            return;
+        }
+
+        const message = help.querySelector('.content-help-message');
+        const expander = help.querySelector('.content-help-expander');
+        const isCollapsed = () => 'collapsed' === help.dataset.state;
+        const updateExpander = () => {
+            if (isCollapsed()) {
+                expander.hidden = message.scrollHeight <= message.clientHeight + 1;
+            }
+        };
+
+        const expand = () => {
+            if (!isCollapsed()) {
+                return;
+            }
+
+            const initialHeight = message.getBoundingClientRect().height;
+            const expanderHadFocus = document.activeElement === expander;
+            help.dataset.state = 'expanded';
+            expander.setAttribute('aria-expanded', 'true');
+            expander.hidden = true;
+            if (expanderHadFocus) {
+                message.focus({ preventScroll: true });
+            }
+
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                return;
+            }
+
+            // 'height: auto' can't be transitioned in all browsers, so animate the measured heights
+            const finalHeight = message.getBoundingClientRect().height;
+            message.animate(
+                { blockSize: [`${initialHeight}px`, `${finalHeight}px`], overflow: ['hidden', 'hidden'] },
+                { duration: 200, easing: 'ease-out' }
+            );
+        };
+
+        expander.addEventListener('click', expand);
+        // links hidden after the first line can still be focused with the keyboard
+        message.addEventListener('focusin', (event) => {
+            if (
+                event.target !== message &&
+                event.target.getBoundingClientRect().top >= message.getBoundingClientRect().bottom
+            ) {
+                expand();
+            }
+        });
+
+        updateExpander();
+        new ResizeObserver(updateExpander).observe(help);
+        document.fonts.ready.then(updateExpander);
     }
 
     #createFilterToggles() {
@@ -755,8 +895,6 @@ class App {
     }
 
     #createActionHandlers() {
-        // handle form submissions via data attribute (replaces inline onclick handlers)
-        // skip elements with confirmation modals (handled by #createActionConfirmationModals)
         document.querySelectorAll('[data-ea-action-form-id]').forEach((element) => {
             element.addEventListener('click', (event) => {
                 if (element.hasAttribute('data-action-confirmation')) {
@@ -768,8 +906,6 @@ class App {
             });
         });
 
-        // handle navigation via data attribute (replaces inline onclick handlers)
-        // skip elements with confirmation modals (handled by #createActionConfirmationModals)
         document.querySelectorAll('[data-ea-action-url]').forEach((element) => {
             element.addEventListener('click', (event) => {
                 if (element.hasAttribute('data-action-confirmation')) {

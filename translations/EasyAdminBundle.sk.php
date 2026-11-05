@@ -65,6 +65,7 @@ return [
         'save' => 'Uložit',
         'save_and_continue' => 'Uložit a pokračovat',
         'toggle_dropdown' => 'Prepnúť rozbaľovaciu ponuku',
+        'show_help' => 'Zobraziť celú nápovedu',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automatický',
         ],
         'locale' => 'Jazyk',
+    ],
+
+    'layout' => [
+        'collapse' => 'Zbaliť',
+        'expand' => 'Rozbaliť',
     ],
 
     'login_page' => [

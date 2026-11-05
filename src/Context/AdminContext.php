@@ -136,6 +136,22 @@ final class AdminContext implements AdminContextInterface
         return $this->dashboardContext->getDashboardDto()->getSidebarWidth();
     }
 
+    /**
+     * @internal
+     */
+    public function isDashboardContentWidthConfigured(): bool
+    {
+        return $this->dashboardContext->getDashboardDto()->isContentWidthConfigured();
+    }
+
+    /**
+     * @internal
+     */
+    public function isDashboardSidebarWidthConfigured(): bool
+    {
+        return $this->dashboardContext->getDashboardDto()->isSidebarWidthConfigured();
+    }
+
     public function getDashboardHasDarkModeEnabled(): bool
     {
         return $this->dashboardContext->getDashboardDto()->isDarkModeEnabled();

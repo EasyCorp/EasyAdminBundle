@@ -222,6 +222,51 @@ badge:
 
     <twig:ea:Badge variant="outline"><twig:ea:Flag countryCode="JP"/> Japan</twig:ea:Badge>
 
+Button
+------
+
+Renders a button as a ``<button>``, ``<a>`` or ``<form>`` element, with an
+optional icon and a label:
+
+.. code-block:: twig
+
+    <twig:ea:Button type="button">Cancel</twig:ea:Button>
+
+    <twig:ea:Button color="primary" icon="fa-check">Save changes</twig:ea:Button>
+
+The ``color`` prop defines what the button means: ``default`` (a neutral gray,
+used when you don't set any color), ``primary`` (the primary color of your
+theme), ``success``, ``warning``, ``danger`` and ``info``. Any other value is
+added as a ``btn-{color}`` CSS class, so you can define your own colors.
+
+The ``variant`` prop defines the visual style of the button, and it works with
+every color:
+
+* ``solid``: a solid background. Use it for the main action of the page and
+  to confirm destructive actions;
+* ``outline``: only a border; the background is shown when hovering the button;
+* ``light``: a soft background of the button color, with no border;
+* ``ghost``: no background or border until you hover the button;
+* ``link``: only the text, which is underlined when hovering the button.
+
+When a button doesn't set its variant, it uses the one of its color: ``solid``
+for ``primary``, ``outline`` for ``default`` and ``light`` for the other colors:
+
+.. code-block:: twig
+
+    <twig:ea:Button color="danger" variant="solid">Delete forever</twig:ea:Button>
+
+    <twig:ea:Button color="danger" variant="ghost">Delete</twig:ea:Button>
+
+    <twig:ea:Button variant="ghost" icon="fa-xmark" aria-label="Close"/>
+
+Use ``htmlElement="a"`` and ``href`` to render a link that looks like a
+button, or ``htmlElement="form"`` with ``action`` and ``method`` to render the
+button inside its own form. Other props are ``size`` (``sm``, ``md`` or
+``lg``), ``withTrailingIcon`` (to display the icon after the label),
+``inactive`` (to disable the button) and ``isBlock`` (to take all the
+available width).
+
 Flag
 ----
 
@@ -288,6 +333,8 @@ and they work with every icon set:
     icons. Use the ``size`` prop instead to make your templates work with any
     icon set.
 
+.. _components-modal:
+
 Modal
 -----
 
@@ -298,12 +345,12 @@ that modal (e.g. ``target="#delete-modal"``). Inside the modal, use the
 
 .. code-block:: twig
 
-    <twig:ea:Modal:Trigger target="#delete-modal" variant="danger">Delete</twig:ea:Modal:Trigger>
+    <twig:ea:Modal:Trigger target="#delete-modal" color="danger">Delete</twig:ea:Modal:Trigger>
 
     <twig:ea:Modal id="delete-modal" title="Delete this item?" description="This action cannot be undone.">
         <twig:block name="footer">
             <twig:ea:Modal:Close>Cancel</twig:ea:Modal:Close>
-            <twig:ea:Button variant="danger" data-bs-dismiss="modal">Delete</twig:ea:Button>
+            <twig:ea:Button color="danger" variant="solid" data-bs-dismiss="modal">Delete</twig:ea:Button>
         </twig:block>
     </twig:ea:Modal>
 
@@ -328,6 +375,11 @@ custom CSS classes to each of those elements:
         </twig:block>
     </twig:ea:Modal>
 
+To use the :ref:`prose styles <design-prose>` in the modal contents, add
+the ``ea-prose`` CSS class to an element inside the ``body`` block. Don't add
+it with the ``bodyClass`` prop, because the modal body uses its own layout for
+the title, the description and the contents.
+
 For confirmation-style dialogs, display an icon at the top left of the window
 with the ``icon`` prop, or stacked on top of the contents with ``topIcon``:
 
@@ -336,7 +388,7 @@ with the ``icon`` prop, or stacked on top of the contents with ``topIcon``:
     <twig:ea:Modal id="warn-modal" topIcon="internal:circle-exclamation" title="Are you sure?">
         <twig:block name="footer">
             <twig:ea:Modal:Close>No</twig:ea:Modal:Close>
-            <twig:ea:Button variant="primary" data-bs-dismiss="modal">Yes</twig:ea:Button>
+            <twig:ea:Button color="primary" data-bs-dismiss="modal">Yes</twig:ea:Button>
         </twig:block>
     </twig:ea:Modal>
 
@@ -379,7 +431,7 @@ Several props toggle the elements displayed by the component:
 .. note::
 
     In templates rendered by EasyAdmin (e.g. when
-    :ref:`overriding the index page <index-page-listing>`) you can pass the
+    :ref:`overriding the index page <template-customization>`) you can pass the
     ``paginator`` object instead of all the above props:
     ``<twig:ea:Pagination paginator="{{ paginator }}"/>``. Both ways of configuring
     the component are mutually exclusive.
@@ -459,8 +511,11 @@ block in your dashboard templates.
 
 The sidebar supports two widths: the default one and a
 :ref:`compact mode <dashboard-configuration>` that only displays the item
-icons. Users switch between them by clicking on the sidebar edge, and the
-selected mode is persisted in the browser local storage. In compact mode,
+icons. Users switch between them with the button displayed in the middle of
+the sidebar edge (the main content width has a similar button on the other
+side of the page), and the selected mode is persisted in the browser local
+storage, unless you configure the mode with ``renderSidebarMinimized()``. In
+compact mode,
 hovering an item shows a tooltip with its label, hovering an item with a
 submenu shows the submenu as a flyout panel, and the footer is hidden
 (arbitrary contents can't fit in the icon rail).

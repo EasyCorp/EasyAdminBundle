@@ -65,6 +65,7 @@ return [
         'save' => 'Պահպանել',
         'save_and_continue' => 'Պահպանել և շարունակել',
         'toggle_dropdown' => 'Փոխարկել իջնող ընտրացանկը',
+        'show_help' => 'Ցույց տալ ամբողջ օգնությունը',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Ավտոմատ',
         ],
         'locale' => 'Լեզու',
+    ],
+
+    'layout' => [
+        'collapse' => 'Ծալել',
+        'expand' => 'Ընդլայնել',
     ],
 
     'login_page' => [

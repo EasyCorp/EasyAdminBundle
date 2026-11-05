@@ -1,0 +1,16 @@
+/* The backend typography for the parts of prose contents excluded with
+   '.ea-not-prose' or [data-ea-not-prose]. prose.css undoes its own styles on
+   them, but they would still inherit the text size, line height and color of
+   the prose container around them.
+
+   This file is loaded into the 'ea-defaults' layer, which loses to every other
+   layer, so these values only apply when no other style sets them: an excluded
+   <div> gets the default backend typography, while an excluded <pre> or <h2>
+   keeps its own font and size from Bootstrap and the theme */
+:where(.ea-prose) :where(.ea-not-prose, [data-ea-not-prose]) {
+    color: var(--text-color);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    overflow-wrap: normal;
+}

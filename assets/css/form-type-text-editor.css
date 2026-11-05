@@ -7,88 +7,121 @@
     .ea-text-editor-wrapper {
         background: var(--form-control-bg);
         border: var(--border-width) solid var(--form-input-border-color);
-        border-radius: var(--border-radius);
-        box-shadow: var(--form-input-shadow);
-        padding: var(--ea-sp-4);
+        border-radius: var(--form-control-border-radius);
+        transition: border-color var(--ea-duration-fast) var(--ea-ease-out), background-color var(--ea-duration-fast)
+            var(--ea-ease-out);
     }
-    .ea-text-editor-wrapper:focus,
     .ea-text-editor-wrapper:focus-within {
-        border-color: var(--form-input-hover-border-color);
-        box-shadow: var(--form-input-hover-shadow);
+        border-color: var(--form-input-focus-border-color);
+        box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-focus-ring-color);
         outline: 0;
     }
-    trix-toolbar {
+    .ea-text-editor-wrapper.has-error,
+    .has-error .ea-text-editor-wrapper {
+        border-color: var(--form-input-error-border-color);
+    }
+    .ea-text-editor-wrapper.has-error:focus-within,
+    .has-error .ea-text-editor-wrapper:focus-within {
+        border-color: var(--form-input-error-border-color);
+        box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-input-error-ring-color);
+    }
+    .ea-text-editor-wrapper trix-toolbar {
         background: var(--form-type-text-editor-toolbar-bg);
         border-block-end: var(--border-width) solid var(--form-input-border-color);
-        border-start-start-radius: var(--border-radius);
-        border-start-end-radius: var(--border-radius);
-        margin: calc(-1 * var(--ea-sp-4)) calc(-1 * var(--ea-sp-4)) var(--ea-sp-5);
-        padding: 0;
+        border-start-end-radius: calc(var(--form-control-border-radius) - var(--border-width));
+        border-start-start-radius: calc(var(--form-control-border-radius) - var(--border-width));
+        padding: var(--ea-sp-2);
     }
-    trix-toolbar .trix-button-row {
-        border-start-start-radius: var(--border-radius);
-        border-start-end-radius: var(--border-radius);
+    .ea-text-editor-wrapper trix-toolbar .trix-button-row {
+        flex-wrap: wrap;
+        gap: var(--ea-sp-2);
     }
-    trix-toolbar .trix-button-group {
+    .ea-text-editor-wrapper trix-toolbar .trix-button-group {
         border: 0;
-        margin-block-end: 0;
+        gap: var(--ea-sp-1);
+        margin: 0;
     }
-    trix-toolbar .trix-button {
+    .ea-text-editor-wrapper trix-toolbar .trix-button {
         border: 0;
+        border-radius: calc(var(--form-control-border-radius) - var(--ea-sp-2));
         color: var(--form-type-text-editor-toolbar-button-color);
         margin: 0;
     }
-    trix-toolbar .trix-button:not(:first-child) {
-        border-inline-start: 0;
-    }
-    trix-toolbar .trix-button:hover {
+    .ea-text-editor-wrapper trix-toolbar .trix-button:hover {
         background: var(--form-type-text-editor-toolbar-button-hover-color);
     }
-    trix-toolbar .trix-button.trix-active {
+    .ea-text-editor-wrapper trix-toolbar .trix-button.trix-active {
         background: var(--form-type-text-editor-toolbar-button-active-bg);
         color: var(--form-type-text-editor-toolbar-button-active-color);
     }
-    trix-toolbar .trix-button.trix-button--icon {
-        block-size: 32px;
-        inline-size: 32px;
+    .ea-text-editor-wrapper trix-toolbar .trix-button:focus-visible {
+        box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-focus-ring-color);
+        outline: 0;
     }
-    trix-toolbar .trix-button.trix-button--icon::before {
-        background-size: 22px;
-        background-position: center;
-        float: left;
-        block-size: 32px;
-        inline-size: 32px;
-        text-indent: -999em;
+    .ea-text-editor-wrapper trix-toolbar .trix-button.trix-button--icon {
+        block-size: calc(var(--form-control-height) - var(--ea-sp-2));
+        inline-size: calc(var(--form-control-height) - var(--ea-sp-2));
     }
-    .ea-dark-scheme trix-toolbar .trix-button.trix-button--icon::before {
+    /* the Trix icons have a lot of empty space inside their SVG, so they need the
+       toolbar icon size to look as big as the 16px icons of the rest of the backend */
+    .ea-text-editor-wrapper trix-toolbar .trix-button.trix-button--icon::before {
+        background-size: var(--icon-size-md);
+    }
+    .ea-dark-scheme .ea-text-editor-wrapper trix-toolbar .trix-button.trix-button--icon::before {
         filter: invert(1);
     }
-    trix-editor {
+    .ea-text-editor-wrapper trix-editor {
         border: 0;
-        padding: var(--ea-sp-2);
+        padding: var(--ea-sp-4) var(--form-control-padding-x);
     }
 
-    /* Trix natively disables typing when [disabled] is set on <trix-editor>
-       (it sets contenteditable="false"), but the toolbar buttons stay clickable
-       and the field still looks editable. Grey out the whole wrapper and block
-       pointer events so a disabled TextEditorField looks and behaves disabled. */
+    /* a disabled <trix-editor> blocks typing, but its toolbar buttons stay clickable */
     textarea.ea-text-editor-content[disabled] + .ea-text-editor-wrapper {
         background-color: var(--form-control-disabled-bg);
         cursor: not-allowed;
-        opacity: 0.65;
+        opacity: var(--form-control-disabled-opacity);
         pointer-events: none;
         user-select: none;
     }
 
-    trix-toolbar .trix-dialog {
+    .ea-text-editor-wrapper trix-toolbar .trix-dialog {
         background: var(--form-type-text-editor-dialog-bg);
-        box-shadow: var(--form-type-text-editor-dialog-box-shadow);
-        border: 0;
-        font-size: var(--font-size-xs);
+        border: var(--border-width) solid var(--dropdown-border-color);
+        border-radius: var(--form-control-border-radius);
+        box-shadow: var(--shadow-md);
+        font-size: var(--font-size-sm);
+        padding: var(--ea-sp-4);
     }
-
-    trix-toolbar .trix-dialog .trix-input {
+    .ea-text-editor-wrapper trix-toolbar .trix-dialog .trix-input {
         background: var(--form-control-bg);
+        block-size: var(--form-control-height);
+        border: var(--border-width) solid var(--form-input-border-color);
+        border-radius: var(--form-control-border-radius);
+        color: var(--form-input-text-color);
+        font-size: var(--font-size-base);
+        padding: var(--form-control-padding-y) var(--form-control-padding-x);
+        transition: border-color var(--ea-duration-fast) var(--ea-ease-out);
+    }
+    .ea-text-editor-wrapper trix-toolbar .trix-dialog .trix-input:focus {
+        border-color: var(--form-input-focus-border-color);
+        box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-focus-ring-color);
+        outline: 0;
+    }
+    .ea-text-editor-wrapper trix-toolbar .trix-dialog .trix-input.validate:invalid {
+        border-color: var(--form-input-error-border-color);
+        box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-input-error-ring-color);
+    }
+    .ea-text-editor-wrapper trix-toolbar .trix-dialog .trix-button {
+        block-size: var(--form-control-height);
+        border: var(--border-width) solid var(--form-input-border-color);
+        border-radius: var(--form-control-border-radius);
+        color: var(--text-color);
+        font-size: var(--font-size-sm);
+        margin-inline-start: var(--ea-sp-2);
+        padding: 0 var(--form-control-padding-x);
+    }
+    .ea-text-editor-wrapper trix-toolbar .trix-dialog .trix-button:hover {
+        background: var(--secondary-bg);
     }
 
     .trix-content pre {

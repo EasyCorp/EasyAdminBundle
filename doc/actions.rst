@@ -673,8 +673,10 @@ that will represent the action::
         // a key-value array of attributes to add to the HTML element
         ->setHtmlAttributes(['data-foo' => 'bar', 'target' => '_blank'])
 
-        // by default, actions are shown as `btn-secondary` elements; use the
-        // following actions to change their style and priority accordingly
+        // these methods set the color of the action, which also changes its
+        // priority and style: default actions (the default) are outline buttons,
+        // primary actions are solid buttons and the other colors are light
+        // (tinted) buttons
         ->asDefaultAction()
         ->asPrimaryAction()
         ->asSuccessAction()
@@ -682,9 +684,8 @@ that will represent the action::
         ->asWarningAction()
         ->asDangerAction()
 
-        // by default, actions are rendered as solid buttons; this method makes
-        // the action to be rendered as a simple text link without button background
-        // (the background is shown when hovering the action link).
+        // this method renders the action as a ghost button: a text without
+        // background or border (the background is shown when hovering the action)
         ->asTextLink()
         // you can combine it with the styling methods (e.g. to create a "text danger" action)
         ->asTextLink()->asDangerAction()
@@ -715,10 +716,11 @@ This is how the different button style variants look in light and dark mode:
 
 .. note::
 
-    When using ``setCssClass()`` or ``addCssClass()`` methods, the action loses
-    the default CSS classes applied by EasyAdmin (``.btn-*`` and
-    ``.action-<the-action-name>``). You might want to add those CSS classes
-    manually to make your actions look as expected.
+    When using the ``setCssClass()`` method, the action loses the default CSS
+    classes applied by EasyAdmin (``.btn-*`` and ``.action-<the-action-name>``).
+    You might want to add those CSS classes manually to make your actions look
+    as expected. The ``addCssClass()`` method keeps the default CSS classes and
+    adds yours to them.
 
 The style and render methods accept an optional boolean argument so you can apply
 them conditionally (e.g. ``asPrimaryAction(Crud::PAGE_DETAIL === $pageName)``,

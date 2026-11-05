@@ -1,31 +1,50 @@
 /* Sidebar (ea:Sidebar component)
 /* ------------------------------------------------------------------------- */
 
-/* Container
-   ========================================================================= */
 .sidebar-wrapper {
     position: relative;
 }
+/* in narrow screens the sidebar is a drawer that floats over the page with the
+   same gap, border and radius as the main content box of wide screens; it slides
+   with 'translate' (not 'left') so the browser doesn't recompute the layout on
+   every frame, and the delayed 'visibility' keeps the closed drawer out of the
+   keyboard navigation only after the closing slide ends */
 .ea-sidebar {
+    --ea-sidebar-closed-translate: calc(-100% - var(--main-content-gap) - 2px);
     background: var(--sidebar-bg);
-    block-size: 100%;
+    border: var(--border-width) solid var(--main-content-border-color);
+    border-radius: var(--main-content-border-radius);
+    box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
-    min-block-size: 100vh;
-    inset-inline-start: calc(0px - 2 * var(--ea-sp-10) - var(--sidebar-max-width));
+    inset-inline-start: var(--main-content-gap);
+    max-inline-size: calc(100vw - 2 * var(--main-content-gap));
+    /* overflow-x/y are the fallback for Chrome < 135 and Safari < 26, which don't
+       support overflow-inline/overflow-block */
+    overflow-x: hidden;
+    overflow-y: auto;
     overflow-inline: hidden;
     overflow-block: auto;
     padding: var(--ea-sp-8) var(--ea-sp-10);
     position: fixed;
-    inset-block-start: 0;
-    transition: left var(--ea-duration-slower);
+    inset-block: var(--main-content-gap);
+    transition: translate var(--ea-duration-drawer-close) var(--ea-ease-drawer), visibility 0s linear
+        var(--ea-duration-drawer-close);
+    translate: var(--ea-sidebar-closed-translate) 0;
+    visibility: hidden;
     z-index: calc(var(--zindex-modal-backdrop) + 1);
     inline-size: calc(2 * var(--ea-sp-10) + var(--sidebar-max-width));
-    overscroll-behavior: contain; /* needed to not scroll the entire page when reaching the end of this element scroll */
+    overscroll-behavior: contain;
+}
+.ea-sidebar:dir(rtl) {
+    --ea-sidebar-closed-translate: calc(100% + var(--main-content-gap) + 2px);
 }
 @media (min-width: 992px) {
     .ea-sidebar {
-        box-shadow: inset calc(-1 * var(--border-width)) 0 0 var(--sidebar-border-color);
+        block-size: 100%;
+        border: 0;
+        border-radius: 0;
+        min-block-size: 100vh;
         max-inline-size: var(--sidebar-max-width);
         /* 'visible' is required so the sticky footer anchors to the viewport instead
            of the sidebar (any other value turns the sidebar into its scrollport) */
@@ -35,16 +54,18 @@
         z-index: calc(var(--zindex-modal-backdrop) - 1);
         inline-size: initial;
         overscroll-behavior: auto;
+        box-shadow: none;
+        transition: none;
+        translate: none;
+        visibility: visible;
     }
 }
 body.ea-mobile-sidebar-visible .ea-sidebar {
-    box-shadow: 20px 0 25px -5px color-mix(in srgb, var(--black) 10%, transparent), 10px 0 10px -5px
-        color-mix(in srgb, var(--black) 4%, transparent);
-    inset-inline-start: 0;
+    transition: translate var(--ea-duration-drawer-open) var(--ea-ease-drawer);
+    translate: 0 0;
+    visibility: visible;
 }
 
-/* Header
-   ========================================================================= */
 .ea-sidebar-header {
     display: none;
     flex-shrink: 0;
@@ -65,7 +86,7 @@ body.ea-mobile-sidebar-visible .ea-sidebar {
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-medium);
     line-height: var(--line-height-normal);
-    padding: var(--ea-sp-8) 0 var(--ea-sp-14) 0;
+    padding: calc(var(--ea-sp-14) - 3px) 0 var(--ea-sp-8);
 }
 .ea-sidebar-logo img,
 .ea-sidebar-logo svg {
@@ -79,14 +100,10 @@ body.ea-mobile-sidebar-visible .ea-sidebar {
     display: none;
 }
 
-/* Content
-   ========================================================================= */
 .ea-sidebar-content {
     padding: 0 0 var(--ea-sp-10);
 }
 
-/* Footer
-   ========================================================================= */
 /* always anchored to the bottom of the screen; when there's not enough vertical
    space, the menu items scroll underneath it (its size is not managed: it grows
    with its contents, so keep them short or make them scrollable yourself) */
@@ -103,9 +120,6 @@ body.ea-mobile-sidebar-visible .ea-sidebar {
 }
 @media (min-width: 992px) {
     .ea-sidebar-footer {
-        /* the inset shadow continues the sidebar right border that the footer overlaps */
-        box-shadow: 0 calc(-1 * var(--border-width)) 0 var(--sidebar-border-color), inset calc(-1 * var(--border-width))
-            0 0 var(--sidebar-border-color);
         margin-block-end: 0;
         margin-inline-start: calc(0px - var(--sidebar-padding-left));
         margin-inline-end: calc(0px - var(--sidebar-padding-right));
@@ -114,8 +128,6 @@ body.ea-mobile-sidebar-visible .ea-sidebar {
     }
 }
 
-/* Groups
-   ========================================================================= */
 .ea-sidebar-group-items {
     list-style: none;
     margin: 0;
@@ -144,10 +156,8 @@ body.ea-mobile-sidebar-visible .ea-sidebar {
     margin-inline-start: auto;
 }
 
-/* Items
-   ========================================================================= */
 .ea-sidebar-item {
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-lg);
     padding-inline-start: var(--sidebar-menu-items-padding-left);
     padding-inline-end: var(--ea-sp-2);
     position: relative;
@@ -174,7 +184,8 @@ body.ea-mobile-sidebar-visible .ea-sidebar {
     display: flex;
     font: inherit;
     inline-size: 100%;
-    padding: var(--ea-sp-2) 0;
+    line-height: calc(20em / 14);
+    padding: var(--ea-sp-3) 0;
     text-align: start;
 }
 
@@ -194,19 +205,19 @@ body.ea-mobile-sidebar-visible .ea-sidebar {
 }
 
 .ea-sidebar-item-icon {
+    align-items: center;
+    align-self: flex-start;
+    block-size: 1lh;
     color: var(--sidebar-menu-icon-color);
+    display: flex;
     flex-shrink: 0;
-    margin-inline-end: var(--ea-sp-5);
-    text-align: center;
-    /* no explicit block-size: the natural line box keeps the baseline (and so the
-       icon) aligned with the first line of the label */
     inline-size: 1.25em;
+    justify-content: center;
+    margin-inline-end: var(--ea-sp-4);
 }
 .ea-sidebar-item-icon svg {
-    color: var(--sidebar-menu-icon-color);
     max-block-size: var(--icon-size-sm);
     max-inline-size: var(--icon-size-md);
-    vertical-align: sub;
 }
 
 .ea-sidebar-item-label {
@@ -215,11 +226,13 @@ body.ea-mobile-sidebar-visible .ea-sidebar {
 }
 
 .ea-sidebar-item-chevron {
+    align-self: flex-start;
+    block-size: 1lh;
     color: var(--sidebar-menu-icon-color);
     flex-shrink: 0;
     margin-inline-start: var(--ea-sp-4);
     transition: rotate var(--ea-duration-slow) var(--ea-ease-in-out);
-    inline-size: auto; /* this is needed to make it look better */
+    inline-size: auto;
 }
 span.icon.ea-sidebar-item-chevron svg {
     max-block-size: 12px;
@@ -238,8 +251,6 @@ span.icon.ea-sidebar-item-chevron svg {
     display: none;
 }
 
-/* Badges
-   ========================================================================= */
 .ea-sidebar-badge {
     margin-inline-start: var(--ea-sp-4);
     min-inline-size: var(--ea-sp-12);
@@ -259,8 +270,6 @@ span.icon.ea-sidebar-item-chevron svg {
     box-shadow: inset 0 0 0 var(--border-width) transparent;
 }
 
-/* Submenus (inline accordion; becomes a flyout in compact mode)
-   ========================================================================= */
 .ea-sidebar-submenu {
     display: grid;
     grid-template-rows: 0fr;
@@ -274,7 +283,6 @@ span.icon.ea-sidebar-item-chevron svg {
     overflow: hidden;
 }
 
-/* the parent label is only displayed as the title of the compact mode flyout */
 .ea-sidebar-submenu-title {
     display: none;
 }
@@ -311,14 +319,10 @@ span.icon.ea-sidebar-item-chevron svg {
     text-transform: uppercase;
 }
 
-/* Tooltip (only displayed in compact mode)
-   ========================================================================= */
 .ea-sidebar-item-tooltip {
     display: none;
 }
 
-/* Compact mode (icon rail, Stripe-style interactions)
-   ========================================================================= */
 @media (min-width: 992px) {
     body.ea-sidebar-width-compact .ea-sidebar {
         overflow: visible;
@@ -343,43 +347,50 @@ span.icon.ea-sidebar-item-chevron svg {
         display: none;
     }
 
-    body.ea-sidebar-width-compact .ea-sidebar-group + .ea-sidebar-group {
+    body.ea-sidebar-width-compact .ea-sidebar .ea-sidebar-group + .ea-sidebar-group {
         margin-block-start: var(--ea-sp-8);
     }
-    body.ea-sidebar-width-compact .ea-sidebar-group-label {
+    body.ea-sidebar-width-compact .ea-sidebar .ea-sidebar-group-label {
         block-size: 0;
         margin: 0;
         overflow: hidden;
         padding: 0;
     }
 
-    /* hide everything except the icon in top-level items */
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item
         > .ea-sidebar-item-link
         .ea-sidebar-item-label,
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item
         > .ea-sidebar-item-link
         .ea-sidebar-item-chevron,
-    body.ea-sidebar-width-compact .ea-sidebar-group-items > .ea-sidebar-item > .ea-sidebar-item-link .ea-sidebar-badge {
+    body.ea-sidebar-width-compact
+        .ea-sidebar
+        .ea-sidebar-group-items
+        > .ea-sidebar-item
+        > .ea-sidebar-item-link
+        .ea-sidebar-badge {
         display: none;
     }
 
-    body.ea-sidebar-width-compact .ea-sidebar-group-items > .ea-sidebar-item {
+    body.ea-sidebar-width-compact .ea-sidebar .ea-sidebar-group-items > .ea-sidebar-item {
         border-radius: 0;
         padding: var(--ea-sp-3) 0;
     }
     /* center the icon tile in the rail, whatever the rail width is */
-    body.ea-sidebar-width-compact .ea-sidebar-group-items > .ea-sidebar-item > .ea-sidebar-item-link {
+    body.ea-sidebar-width-compact .ea-sidebar .ea-sidebar-group-items > .ea-sidebar-item > .ea-sidebar-item-link {
         align-items: center;
         justify-content: center;
         padding: 0;
     }
 
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item
         > .ea-sidebar-item-link
@@ -398,6 +409,7 @@ span.icon.ea-sidebar-item-chevron svg {
     /* hovering the item reveals a tile slightly larger than the icon box,
        growing and tinting in behind the icon */
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item
         > .ea-sidebar-item-link
@@ -415,6 +427,7 @@ span.icon.ea-sidebar-item-chevron svg {
     /* badges are hidden in compact mode, so items with a badge show a small dot
        on the corner of their icon instead */
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item:has(> .ea-sidebar-item-link .ea-sidebar-badge)
         .ea-sidebar-item-icon::after {
@@ -434,30 +447,35 @@ span.icon.ea-sidebar-item-chevron svg {
        its darker text color as the border, so hues stay distinguishable at this
        size); badges without a semantic variant use the default dot colors */
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item:has(> .ea-sidebar-item-link .ea-sidebar-badge.badge-primary) {
         --sidebar-badge-dot-bg: var(--badge-primary-bg);
         --sidebar-badge-dot-border-color: var(--badge-primary-color);
     }
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item:has(> .ea-sidebar-item-link .ea-sidebar-badge.badge-success) {
         --sidebar-badge-dot-bg: var(--badge-success-bg);
         --sidebar-badge-dot-border-color: var(--badge-success-color);
     }
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item:has(> .ea-sidebar-item-link .ea-sidebar-badge.badge-warning) {
         --sidebar-badge-dot-bg: var(--badge-warning-bg);
         --sidebar-badge-dot-border-color: var(--badge-warning-color);
     }
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item:has(> .ea-sidebar-item-link .ea-sidebar-badge.badge-danger) {
         --sidebar-badge-dot-bg: var(--badge-danger-bg);
         --sidebar-badge-dot-border-color: var(--badge-danger-color);
     }
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item:has(> .ea-sidebar-item-link .ea-sidebar-badge.badge-info) {
         --sidebar-badge-dot-bg: var(--badge-info-bg);
@@ -466,45 +484,37 @@ span.icon.ea-sidebar-item-chevron svg {
     /* in dark mode the pale badge backgrounds are semi-transparent and unreadable
        at this size, so the dot is filled with the solid border color instead */
     body.ea-dark-scheme.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item:has(> .ea-sidebar-item-link .ea-sidebar-badge)
         .ea-sidebar-item-icon::after {
         background: var(--sidebar-badge-dot-border-color);
     }
-    /* center the icon glyph inside the square tile (the inline baseline and the
-       'vertical-align: sub' of SVG icons push it down a few pixels otherwise);
-       positioning it keeps the glyph painted above the hover tile */
+    /* positioning it keeps the glyph painted above the hover tile */
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item
         > .ea-sidebar-item-link
         .ea-sidebar-item-icon
         .icon {
-        align-items: center;
-        display: flex;
-        justify-content: center;
         position: relative;
     }
     body.ea-sidebar-width-compact
-        .ea-sidebar-group-items
-        > .ea-sidebar-item
-        > .ea-sidebar-item-link
-        .ea-sidebar-item-icon
-        svg {
-        vertical-align: middle;
-    }
-    body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item:has(> .ea-sidebar-item-link:hover):not(.is-active),
-    body.ea-sidebar-width-compact .ea-sidebar-group-items > .ea-sidebar-item.is-active {
+    body.ea-sidebar-width-compact .ea-sidebar .ea-sidebar-group-items > .ea-sidebar-item.is-active {
         background: none;
     }
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item
         > .ea-sidebar-item-link:hover
         .ea-sidebar-item-icon::before,
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item
         > .ea-sidebar-item-link:focus-visible
@@ -513,6 +523,7 @@ span.icon.ea-sidebar-item-chevron svg {
         scale: 1;
     }
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item.is-active
         > .ea-sidebar-item-link
@@ -520,6 +531,7 @@ span.icon.ea-sidebar-item-chevron svg {
         color: var(--sidebar-menu-active-item-color);
     }
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item.is-active
         > .ea-sidebar-item-link
@@ -528,8 +540,8 @@ span.icon.ea-sidebar-item-chevron svg {
         scale: 1;
     }
 
-    /* tooltip with the item label, displayed on the side of the icon */
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item:not(.has-submenu)
         .ea-sidebar-item-tooltip {
@@ -553,28 +565,26 @@ span.icon.ea-sidebar-item-chevron svg {
         z-index: calc(var(--zindex-modal-backdrop) + 2);
     }
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item:not(.has-submenu):hover
         .ea-sidebar-item-tooltip,
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item:not(.has-submenu):focus-within
         .ea-sidebar-item-tooltip {
         opacity: 1;
     }
 
-    /* while hovered, raise the item above the resizer handler that overlays the last
-       pixels of the rail; otherwise the pointer crosses a strip that doesn't belong to
-       the item and the :hover chain (and the flyout) is lost on its way to the panel */
-    body.ea-sidebar-width-compact .ea-sidebar-group-items > .ea-sidebar-item:hover,
-    body.ea-sidebar-width-compact .ea-sidebar-group-items > .ea-sidebar-item:focus-within {
-        z-index: 1;
-    }
-
     /* submenus become a flyout panel displayed on the side of the icon; the panel
        overlaps the rail a bit, so the pointer can never fall in a gap between the
        icon and the panel that would close it */
-    body.ea-sidebar-width-compact .ea-sidebar-group-items > .ea-sidebar-item.has-submenu > .ea-sidebar-submenu {
+    body.ea-sidebar-width-compact
+        .ea-sidebar
+        .ea-sidebar-group-items
+        > .ea-sidebar-item.has-submenu
+        > .ea-sidebar-submenu {
         display: block;
         grid-template-rows: none;
         inline-size: max-content;
@@ -589,8 +599,13 @@ span.icon.ea-sidebar-item-chevron svg {
         visibility: hidden;
         z-index: calc(var(--zindex-modal-backdrop) + 2);
     }
-    body.ea-sidebar-width-compact .ea-sidebar-group-items > .ea-sidebar-item.has-submenu:hover > .ea-sidebar-submenu,
     body.ea-sidebar-width-compact
+        .ea-sidebar
+        .ea-sidebar-group-items
+        > .ea-sidebar-item.has-submenu:hover
+        > .ea-sidebar-submenu,
+    body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item.has-submenu:focus-within
         > .ea-sidebar-submenu {
@@ -599,6 +614,7 @@ span.icon.ea-sidebar-item-chevron svg {
         visibility: visible;
     }
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item.has-submenu
         > .ea-sidebar-submenu
@@ -608,11 +624,16 @@ span.icon.ea-sidebar-item-chevron svg {
         border-radius: var(--border-radius-lg);
         box-shadow: var(--popover-shadow);
         max-block-size: calc(100vh - var(--ea-sp-12));
+        overflow-y: auto;
         overflow-block: auto;
         padding: var(--ea-sp-4);
     }
 
-    body.ea-sidebar-width-compact .ea-sidebar-group-items > .ea-sidebar-item.has-submenu .ea-sidebar-submenu-title {
+    body.ea-sidebar-width-compact
+        .ea-sidebar
+        .ea-sidebar-group-items
+        > .ea-sidebar-item.has-submenu
+        .ea-sidebar-submenu-title {
         color: var(--sidebar-menu-header-color);
         display: block;
         font-size: var(--font-size-sm);
@@ -620,13 +641,17 @@ span.icon.ea-sidebar-item-chevron svg {
         padding: var(--ea-sp-2) var(--ea-sp-4) var(--ea-sp-3);
     }
 
-    /* no vertical guide line inside the flyout */
-    body.ea-sidebar-width-compact .ea-sidebar-group-items > .ea-sidebar-item.has-submenu .ea-sidebar-submenu-items {
+    body.ea-sidebar-width-compact
+        .ea-sidebar
+        .ea-sidebar-group-items
+        > .ea-sidebar-item.has-submenu
+        .ea-sidebar-submenu-items {
         border-inline-start: 0;
         margin: 0;
         padding-inline-start: 0;
     }
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item.has-submenu
         .ea-sidebar-submenu-items
@@ -635,6 +660,7 @@ span.icon.ea-sidebar-item-chevron svg {
         padding-inline: 0;
     }
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item.has-submenu
         .ea-sidebar-submenu-items
@@ -644,6 +670,7 @@ span.icon.ea-sidebar-item-chevron svg {
         padding: var(--ea-sp-3) var(--ea-sp-4);
     }
     body.ea-sidebar-width-compact
+        .ea-sidebar
         .ea-sidebar-group-items
         > .ea-sidebar-item.has-submenu
         .ea-sidebar-submenu-items
@@ -652,32 +679,29 @@ span.icon.ea-sidebar-item-chevron svg {
     }
 }
 
-/* Resizer handler (toggles between the normal and compact modes)
-   ========================================================================= */
-#sidebar-resizer-handler {
-    cursor: w-resize; /* left arrow: clicking collapses the sidebar */
-    position: absolute;
-    inset-block-start: 0;
-    inset-block-end: 0;
-    inset-inline-end: 0;
-    min-block-size: 100vh;
-}
-body.ea-sidebar-width-compact #sidebar-resizer-handler {
-    cursor: e-resize; /* right arrow: clicking expands the sidebar */
-}
-/* cursor keywords are physical, so they must be swapped in RTL layouts */
-#sidebar-resizer-handler:dir(rtl) {
-    cursor: e-resize;
-}
-body.ea-sidebar-width-compact #sidebar-resizer-handler:dir(rtl) {
-    cursor: w-resize;
-}
-
+/* the compact mode selectors are repeated because a shorter one would lose to
+   their specificity */
 @media (prefers-reduced-motion: reduce) {
+    .ea-sidebar,
+    body.ea-mobile-sidebar-visible .ea-sidebar,
     .ea-sidebar-submenu,
     .ea-sidebar-item-chevron,
-    .ea-sidebar-item-tooltip,
-    .ea-sidebar-item-icon {
+    body.ea-sidebar-width-compact
+        .ea-sidebar
+        .ea-sidebar-group-items
+        > .ea-sidebar-item.has-submenu
+        > .ea-sidebar-submenu,
+    body.ea-sidebar-width-compact
+        .ea-sidebar
+        .ea-sidebar-group-items
+        > .ea-sidebar-item:not(.has-submenu)
+        .ea-sidebar-item-tooltip,
+    body.ea-sidebar-width-compact
+        .ea-sidebar
+        .ea-sidebar-group-items
+        > .ea-sidebar-item
+        > .ea-sidebar-item-link
+        .ea-sidebar-item-icon::before {
         transition: none;
     }
 }

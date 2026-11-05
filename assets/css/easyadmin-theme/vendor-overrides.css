@@ -32,8 +32,8 @@
 
 @media (max-width: 767px) {
     table.datagrid:not(.datagrid-empty) td {
-        /* because of how the contents are rendered in small screens, table contents must be left-aligned
-       the !important flag is needed to override the !important used by Bootstrap in .text-center, .text-right, etc. */
+        /* small screens render each cell as a label/value row, so contents must be
+           left-aligned, defeating the '!important' of .text-center, .text-end, etc. */
         text-align: left !important;
     }
 }

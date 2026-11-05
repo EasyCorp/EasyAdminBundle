@@ -65,6 +65,7 @@ return [
         'save' => '儲存更改',
         'save_and_continue' => '儲存並繼續編輯',
         'toggle_dropdown' => '切換下拉選單',
+        'show_help' => '顯示全部說明',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => '自動',
         ],
         'locale' => '語言',
+    ],
+
+    'layout' => [
+        'collapse' => '收合',
+        'expand' => '展開',
     ],
 
     'login_page' => [

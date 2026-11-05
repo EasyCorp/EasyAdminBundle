@@ -39,8 +39,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (codeBlock.dataset.numberOfRows !== '') {
             const wrapper = editor.getWrapperElement();
-            // Here we consider 21px as the average line height
-            wrapper.style.setProperty('height', `${21 * codeBlock.dataset.numberOfRows}px`, 'important');
+            // the height must include the vertical padding of the lines and the border of
+            // the editor, or the last row is partially hidden
+            const linesStyle = getComputedStyle(wrapper.querySelector('.CodeMirror-lines'));
+            const verticalPadding =
+                Number.parseFloat(linesStyle.paddingTop) + Number.parseFloat(linesStyle.paddingBottom);
+            const verticalBorder = wrapper.offsetHeight - wrapper.clientHeight;
+            const height =
+                editor.defaultTextHeight() * codeBlock.dataset.numberOfRows + verticalPadding + verticalBorder;
+            wrapper.style.setProperty('height', `${height}px`, 'important');
             wrapper.style.setProperty('max-block-size', 'none');
         }
     });

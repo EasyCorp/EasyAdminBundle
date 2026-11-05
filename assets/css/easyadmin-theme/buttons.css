@@ -1,10 +1,14 @@
 /* Buttons
+   Each button combines a COLOR class (.btn-secondary for the default gray color, .btn-primary,
+   .btn-success, .btn-warning, .btn-danger or .btn-info) and a VARIANT class (.btn-solid,
+   .btn-outline, .btn-light, .btn-ghost or .btn-link). Color classes define the --button-c-*
+   values below and variant classes turn them into the --button-* values used by .btn. Buttons
+   without a variant class (e.g. hand-written 'btn btn-primary' markup) use the default variant
+   of their color: solid for primary, outline for default and light for the other colors.
 /* ------------------------------------------------------------------------- */
 .btn {
-    /* Bridge to Bootstrap's button variables so native BS variant classes that EasyAdmin does
-       not restyle (.btn-outline-*, .btn-light, .btn-dark, …) still render like Bootstrap. Each
-       falls back to EasyAdmin's neutral default, and EA's own variant rules (.btn-primary, …) set
-       --button-* directly later in this file, so they always win over the bridge. */
+    /* bridge to Bootstrap's variables, so the Bootstrap color classes that EasyAdmin doesn't
+       restyle (.btn-dark, etc.) still work; the variant rules below override it */
     --button-bg: var(--bs-btn-bg, transparent);
     --button-border-color: var(--bs-btn-border-color, transparent);
     --button-color: var(--bs-btn-color, var(--text-color));
@@ -14,9 +18,17 @@
     --button-active-bg: var(--bs-btn-active-bg, var(--button-hover-bg));
     --button-box-shadow: none;
 
+    --button-c-tone: var(--button-default-tone);
+    --button-c-solid-color: var(--button-default-solid-color);
+    --button-c-color: var(--button-default-color);
+    --button-c-outline-color: var(--button-default-outline-color);
+    --button-c-light-bg: var(--button-default-light-bg);
+    --button-c-light-hover-bg: var(--button-default-light-hover-bg);
+    --button-c-outline-border-color: var(--button-default-outline-border-color);
+
     align-items: center;
     appearance: none;
-    background: var(--button-bg);
+    background-color: var(--button-bg);
     border: var(--button-border-width, var(--border-width)) solid;
     border-color: var(--button-border-color);
     border-radius: var(--button-border-radius);
@@ -28,451 +40,259 @@
     font-size: var(--button-font-size, var(--font-size-base));
     font-weight: var(--button-font-weight, var(--font-weight-medium));
     gap: var(--button-icon-gap, var(--ea-sp-3));
-    min-block-size: var(--button-height, var(--ea-sp-16));
+    min-block-size: var(--button-height, var(--ea-control-height));
     justify-content: space-between;
     line-height: var(--button-line-height);
     padding: var(--button-padding-y, var(--button-padding-y-md)) var(--button-padding-x, var(--button-padding-x-md));
-    isolation: isolate;
     position: relative;
     text-align: center;
     text-decoration: none;
     transition: var(--ea-transition-duration) var(--ea-transition-timing);
-    transition-property: border-color, color, box-shadow, opacity, fill, translate;
+    transition-property: background-color, border-color, color, box-shadow, opacity, fill, translate;
     user-select: none;
     white-space: nowrap;
 }
 
-/* Button hover and keyboard-focus states. The background is pinned to the resting value because
-   Bootstrap's own .btn:hover rule (higher specificity than our base .btn) would otherwise paint
-   Bootstrap's --bs-btn-hover-bg under our state layer, and it flashes through while the layer
-   fades in (very visible on .btn-outline-warning/info: Bootstrap yellow/cyan under EasyAdmin
-   colors). The hover background itself is painted by the ::before state layer below. */
 .btn:not(:disabled):not(.disabled):hover,
 .btn:not(:disabled):not(.disabled):focus-visible {
-    background: var(--button-bg);
+    background-color: var(--button-hover-bg, var(--button-bg));
     border-color: var(--button-hover-border-color, var(--button-border-color));
     color: var(--button-hover-color, var(--button-color));
     text-decoration: none;
 }
 
-/* Button active (pressed) state (background pinned for the same reason as in the hover rule) */
-.btn:not(:disabled):not(.disabled):active {
-    background: var(--button-bg);
+.btn:not(:disabled):not(.disabled):active,
+.btn:not(:disabled):not(.disabled)[data-bs-toggle="dropdown"][aria-expanded="true"] {
+    background-color: var(--button-active-bg, var(--button-hover-bg, var(--button-bg)));
     border-color: var(--button-active-border-color, var(--button-border-color));
     box-shadow: var(--button-active-box-shadow, var(--button-box-shadow));
     color: var(--button-active-color, var(--button-color));
+}
+.btn:not(:disabled):not(.disabled):active {
     outline: none;
+    transition-duration: 0s;
 }
 
-/* subtle press feedback (like shadcn): the button shifts down 1px while pressed;
-   dropdown triggers are excluded so the menu being opened doesn't jump */
-.btn:not(:disabled):not(.disabled):not([aria-haspopup]):active {
+/* dropdown triggers don't move, so the menu doesn't jump (Bootstrap doesn't add
+   aria-haspopup to its toggles, so they are also matched by their data attribute) */
+.btn:not(:disabled):not(.disabled):not([aria-haspopup]):not([data-bs-toggle="dropdown"]):not(
+        .btn-link,
+        .dropdown-item
+    ):active {
     translate: 0 1px;
 }
 
-/* focus ring only for keyboard focus (:focus-visible); clicking with the mouse focuses the
-   button too (:focus) but must not show the ring */
 .btn:not(:disabled):not(.disabled):focus-visible:not(:active) {
     box-shadow: none;
     outline: var(--ea-focus-ring-width) solid var(--button-focus-outline-color);
-    outline-offset: -2px;
-}
-
-/* background state layer: crossfades the hover/active background via opacity, because
-   gradient backgrounds (background-image) can't be transitioned directly. The base .btn
-   keeps the resting background; this layer fades the hover/active background on top.
-   isolation:isolate on .btn lets the z-index:-1 layer paint above the button's own
-   background but below its content. Scoped to exclude .btn-close, and not triggered
-   while loading. */
-.btn:not(.btn-close)::before {
-    content: "";
-    position: absolute;
-    /* extend under the border so the layer's rounded corners (border-radius: inherit = the OUTER
-       radius) match the button outline exactly; with inset: 0 the layer only covers the padding
-       box, whose corner curve is smaller (outer radius minus border width), leaving dirty corner
-       artifacts when the hover fill is subtle */
-    inset: calc(-1 * var(--button-border-width, var(--border-width)));
-    z-index: -1;
-    border-radius: inherit;
-    background: var(--button-hover-bg, var(--button-bg));
-    opacity: 0;
-    transition: opacity var(--ea-transition-duration) var(--ea-transition-timing);
-    pointer-events: none;
-}
-.btn:not(.btn-close):not(.is-loading):not(:disabled):not(.disabled):hover::before,
-.btn:not(.btn-close):not(.is-loading):not(:disabled):not(.disabled):focus-visible::before {
-    opacity: 1;
-}
-.btn:not(.btn-close):not(.is-loading):not(:disabled):not(.disabled):active::before {
-    background: var(--button-active-bg, var(--button-hover-bg, var(--button-bg)));
-    opacity: 1;
-}
-
-/* the close button rendered by Alert ('btn btn-invisible btn-close') is excluded from the state
-   layer; its translucent hover background transitions fine directly.
-   Always scope these rules to '.btn.btn-close': only '.btn' declares the --button-* vars, so a
-   plain Bootstrap close button (modal, toast, offcanvas) would get Bootstrap's styles overridden.
-   Use 'background-color', not the 'background' shorthand, which resets the data-URI
-   background-image that Bootstrap uses to draw the glyph. */
-.btn.btn-close {
-    transition-property: background-color, border-color, color, box-shadow, opacity, fill;
-}
-.btn.btn-close:not(:disabled):not(.disabled):hover,
-.btn.btn-close:not(:disabled):not(.disabled):focus-visible {
-    background-color: var(--button-hover-bg, var(--button-bg, transparent));
-}
-.btn.btn-close:not(:disabled):not(.disabled):active {
-    background-color: var(--button-active-bg, var(--button-hover-bg, var(--button-bg, transparent)));
-}
-
-.btn-primary,
-.btn-primary.btn.disabled,
-.btn-primary.btn:disabled {
-    --button-box-shadow: var(--button-primary-box-shadow);
-    --button-bg: var(--button-primary-bg);
-    --button-color: var(--button-primary-color);
-    --button-icon-color: var(--button-primary-icon-color);
-    --button-border-color: var(--button-primary-border-color);
-    --button-hover-bg: var(--button-primary-hover-bg);
-    --button-hover-color: var(--button-primary-hover-color);
-    --button-hover-border-color: var(--button-primary-hover-border-color);
-    --button-active-box-shadow: var(--button-primary-active-box-shadow);
-    --button-active-color: var(--button-primary-active-color);
-    --button-active-bg: var(--button-primary-active-bg);
-    --button-active-border-color: var(--button-primary-active-border-color);
+    outline-offset: var(--button-focus-outline-offset);
 }
 
 .btn-secondary,
-.btn-secondary.btn.disabled,
-.btn-secondary.btn:disabled {
-    --button-box-shadow: var(--button-secondary-box-shadow);
-    --button-bg: var(--button-secondary-bg);
-    --button-color: var(--button-secondary-color);
-    --button-icon-color: var(--button-secondary-icon-color);
-    --button-border-color: var(--button-secondary-border-color);
-    --button-hover-bg: var(--button-secondary-hover-bg);
-    --button-hover-color: var(--button-secondary-hover-color);
-    --button-hover-border-color: var(--button-secondary-hover-border-color);
-    --button-active-box-shadow: var(--button-secondary-active-box-shadow);
-    --button-active-color: var(--button-secondary-active-color);
-    --button-active-bg: var(--button-secondary-active-bg);
-    --button-active-border-color: var(--button-secondary-active-border-color);
+.btn-outline-secondary {
+    --button-c-tone: var(--button-default-tone);
+    --button-c-solid-color: var(--button-default-solid-color);
+    --button-c-color: var(--button-default-color);
+    --button-c-outline-color: var(--button-default-outline-color);
+    --button-c-light-bg: var(--button-default-light-bg);
+    --button-c-light-hover-bg: var(--button-default-light-hover-bg);
+    --button-c-outline-border-color: var(--button-default-outline-border-color);
+    --button-c-outline-bg: var(--button-default-outline-bg);
+    --button-c-outline-icon-color: var(--button-default-outline-icon-color);
 }
-
+.btn-primary,
+.btn-outline-primary {
+    --button-c-tone: var(--button-primary-tone);
+    --button-c-solid-color: var(--button-primary-solid-color);
+    --button-c-color: var(--button-primary-color);
+    --button-c-outline-color: var(--button-primary-outline-color);
+    --button-c-light-bg: var(--button-primary-light-bg);
+    --button-c-light-hover-bg: var(--button-primary-light-hover-bg);
+    --button-c-outline-border-color: var(--button-primary-outline-border-color);
+}
 .btn-success,
-.btn-success.btn.disabled,
-.btn-success.btn:disabled {
-    --button-box-shadow: var(--button-success-box-shadow);
-    --button-bg: var(--button-success-bg);
-    --button-color: var(--button-success-color);
-    --button-icon-color: var(--button-success-icon-color);
-    --button-border-color: var(--button-success-border-color);
-    --button-hover-bg: var(--button-success-hover-bg);
-    --button-hover-color: var(--button-success-hover-color);
-    --button-hover-border-color: var(--button-success-hover-border-color);
-    --button-active-box-shadow: var(--button-success-active-box-shadow);
-    --button-active-color: var(--button-success-active-color);
-    --button-active-bg: var(--button-success-active-bg);
-    --button-active-border-color: var(--button-success-active-border-color);
+.btn-outline-success {
+    --button-c-tone: var(--button-success-tone);
+    --button-c-solid-color: var(--button-success-solid-color);
+    --button-c-color: var(--button-success-color);
+    --button-c-outline-color: var(--button-success-outline-color);
+    --button-c-light-bg: var(--button-success-light-bg);
+    --button-c-light-hover-bg: var(--button-success-light-hover-bg);
+    --button-c-outline-border-color: var(--button-success-outline-border-color);
 }
-
 .btn-warning,
-.btn-warning.btn.disabled,
-.btn-warning.btn:disabled {
-    --button-box-shadow: var(--button-warning-box-shadow);
-    --button-bg: var(--button-warning-bg);
-    --button-color: var(--button-warning-color);
-    --button-icon-color: var(--button-warning-icon-color);
-    --button-border-color: var(--button-warning-border-color);
-    --button-hover-bg: var(--button-warning-hover-bg);
-    --button-hover-color: var(--button-warning-hover-color);
-    --button-hover-border-color: var(--button-warning-hover-border-color);
-    --button-active-box-shadow: var(--button-warning-active-box-shadow);
-    --button-active-color: var(--button-warning-active-color);
-    --button-active-bg: var(--button-warning-active-bg);
-    --button-active-border-color: var(--button-warning-active-border-color);
+.btn-outline-warning {
+    --button-c-tone: var(--button-warning-tone);
+    --button-c-solid-color: var(--button-warning-solid-color);
+    --button-c-color: var(--button-warning-color);
+    --button-c-outline-color: var(--button-warning-outline-color);
+    --button-c-light-bg: var(--button-warning-light-bg);
+    --button-c-light-hover-bg: var(--button-warning-light-hover-bg);
+    --button-c-outline-border-color: var(--button-warning-outline-border-color);
 }
-
 .btn-danger,
-.btn-danger.btn.disabled,
-.btn-danger.btn:disabled {
-    --button-box-shadow: var(--button-danger-box-shadow);
-    --button-bg: var(--button-danger-bg);
-    --button-color: var(--button-danger-color);
-    --button-icon-color: var(--button-danger-icon-color);
-    --button-border-color: var(--button-danger-border-color);
-    --button-hover-bg: var(--button-danger-hover-bg);
-    --button-hover-color: var(--button-danger-hover-color);
-    --button-hover-border-color: var(--button-danger-hover-border-color);
-    --button-active-box-shadow: var(--button-danger-active-box-shadow);
-    --button-active-color: var(--button-danger-active-color);
-    --button-active-bg: var(--button-danger-active-bg);
-    --button-active-border-color: var(--button-danger-active-border-color);
-}
-
-.btn-info,
-.btn-info.btn.disabled,
-.btn-info.btn:disabled {
-    --button-box-shadow: var(--button-info-box-shadow);
-    --button-bg: var(--button-info-bg);
-    --button-color: var(--button-info-color);
-    --button-icon-color: var(--button-info-icon-color);
-    --button-border-color: var(--button-info-border-color);
-    --button-hover-bg: var(--button-info-hover-bg);
-    --button-hover-color: var(--button-info-hover-color);
-    --button-hover-border-color: var(--button-info-hover-border-color);
-    --button-active-box-shadow: var(--button-info-active-box-shadow);
-    --button-active-color: var(--button-info-active-color);
-    --button-active-bg: var(--button-info-active-bg);
-    --button-active-border-color: var(--button-info-active-border-color);
-}
-
-/* Outline variants: transparent background with the variant accent as text and border color.
-   Defined explicitly (instead of delegating to Bootstrap via the --bs-btn-* bridge above) so
-   they use the EasyAdmin palette; e.g. .btn-outline-primary is indigo like .btn-primary, not
-   Bootstrap blue. On hover/active they reuse the --button-X-hover/active-* tokens, so an
-   outline button fills exactly like its solid counterpart (and adapts to the dark scheme).
-   .btn-outline-secondary deviates from this pattern; see the comments in its rule. */
-.btn-outline-primary,
-.btn-outline-primary.btn.disabled,
-.btn-outline-primary.btn:disabled {
-    --button-box-shadow: none;
-    --button-bg: transparent;
-    --button-color: var(--button-outline-primary-color);
-    --button-icon-color: inherit;
-    --button-border-color: var(--button-outline-primary-color);
-    --button-hover-bg: var(--button-primary-hover-bg);
-    --button-hover-color: var(--button-primary-hover-color);
-    --button-hover-border-color: var(--button-primary-hover-border-color);
-    --button-active-box-shadow: var(--button-primary-active-box-shadow);
-    --button-active-bg: var(--button-primary-active-bg);
-    --button-active-color: var(--button-primary-active-color);
-    --button-active-border-color: var(--button-primary-active-border-color);
-}
-
-.btn-outline-secondary,
-.btn-outline-secondary.btn.disabled,
-.btn-outline-secondary.btn:disabled {
-    --button-box-shadow: none;
-    --button-bg: transparent;
-    --button-color: var(--button-secondary-color);
-    --button-icon-color: var(--button-secondary-icon-color);
-    /* soft border at rest; on hover/active the border strengthens to the text color */
-    --button-border-color: var(--button-secondary-border-color);
-    /* the secondary HOVER tokens are nearly white and imperceptible over a transparent resting
-       background, so this variant hovers straight to the secondary ACTIVE tokens instead */
-    --button-hover-bg: var(--button-secondary-active-bg);
-    --button-hover-color: var(--button-secondary-active-color);
-    --button-hover-border-color: var(--button-secondary-color);
-    --button-active-box-shadow: var(--button-secondary-active-box-shadow);
-    --button-active-bg: var(--button-secondary-active-bg);
-    --button-active-color: var(--button-secondary-active-color);
-    --button-active-border-color: var(--button-secondary-color);
-}
-
-.btn-outline-success,
-.btn-outline-success.btn.disabled,
-.btn-outline-success.btn:disabled {
-    --button-box-shadow: none;
-    --button-bg: transparent;
-    --button-color: var(--button-success-color);
-    --button-icon-color: inherit;
-    --button-border-color: var(--button-success-color);
-    --button-hover-bg: var(--button-success-hover-bg);
-    --button-hover-color: var(--button-success-hover-color);
-    --button-hover-border-color: var(--button-success-hover-border-color);
-    --button-active-box-shadow: var(--button-success-active-box-shadow);
-    --button-active-bg: var(--button-success-active-bg);
-    --button-active-color: var(--button-success-active-color);
-    --button-active-border-color: var(--button-success-active-border-color);
-}
-
-.btn-outline-warning,
-.btn-outline-warning.btn.disabled,
-.btn-outline-warning.btn:disabled {
-    --button-box-shadow: none;
-    --button-bg: transparent;
-    --button-color: var(--button-warning-color);
-    --button-icon-color: inherit;
-    --button-border-color: var(--button-warning-color);
-    --button-hover-bg: var(--button-warning-hover-bg);
-    --button-hover-color: var(--button-warning-hover-color);
-    --button-hover-border-color: var(--button-warning-hover-border-color);
-    --button-active-box-shadow: var(--button-warning-active-box-shadow);
-    --button-active-bg: var(--button-warning-active-bg);
-    --button-active-color: var(--button-warning-active-color);
-    --button-active-border-color: var(--button-warning-active-border-color);
-}
-
 .btn-outline-danger,
-.btn-outline-danger.btn.disabled,
-.btn-outline-danger.btn:disabled {
-    --button-box-shadow: none;
-    --button-bg: transparent;
-    --button-color: var(--button-danger-color);
-    --button-icon-color: inherit;
-    --button-border-color: var(--button-danger-color);
-    --button-hover-bg: var(--button-danger-hover-bg);
-    --button-hover-color: var(--button-danger-hover-color);
-    --button-hover-border-color: var(--button-danger-hover-border-color);
-    --button-active-box-shadow: var(--button-danger-active-box-shadow);
-    --button-active-bg: var(--button-danger-active-bg);
-    --button-active-color: var(--button-danger-active-color);
-    --button-active-border-color: var(--button-danger-active-border-color);
+.btn-link-danger {
+    --button-c-tone: var(--button-danger-tone);
+    --button-c-solid-color: var(--button-danger-solid-color);
+    --button-c-color: var(--button-danger-color);
+    --button-c-outline-color: var(--button-danger-outline-color);
+    --button-c-light-bg: var(--button-danger-light-bg);
+    --button-c-light-hover-bg: var(--button-danger-light-hover-bg);
+    --button-c-outline-border-color: var(--button-danger-outline-border-color);
+}
+.btn-info,
+.btn-outline-info {
+    --button-c-tone: var(--button-info-tone);
+    --button-c-solid-color: var(--button-info-solid-color);
+    --button-c-color: var(--button-info-color);
+    --button-c-outline-color: var(--button-info-outline-color);
+    --button-c-light-bg: var(--button-info-light-bg);
+    --button-c-light-hover-bg: var(--button-info-light-hover-bg);
+    --button-c-outline-border-color: var(--button-info-outline-border-color);
 }
 
-.btn-outline-info,
-.btn-outline-info.btn.disabled,
-.btn-outline-info.btn:disabled {
-    --button-box-shadow: none;
-    --button-bg: transparent;
-    --button-color: var(--button-info-color);
-    --button-icon-color: inherit;
-    --button-border-color: var(--button-info-color);
-    --button-hover-bg: var(--button-info-hover-bg);
-    --button-hover-color: var(--button-info-hover-color);
-    --button-hover-border-color: var(--button-info-hover-border-color);
-    --button-active-box-shadow: var(--button-info-active-box-shadow);
-    --button-active-bg: var(--button-info-active-bg);
-    --button-active-color: var(--button-info-active-color);
-    --button-active-border-color: var(--button-info-active-border-color);
-}
-
-/* Link-style buttons (e.g. the "add new item" / "delete item" buttons of collection fields).
-   Defined explicitly so they use EasyAdmin's link colors instead of the Bootstrap link colors
-   that would otherwise leak in through the --bs-btn-* bridge above. */
-.btn-link,
-.btn-link.btn.disabled,
-.btn-link.btn:disabled {
-    --button-box-shadow: none;
-    --button-bg: transparent;
-    --button-color: var(--link-color);
-    --button-icon-color: inherit;
+.btn-solid,
+.btn-primary:not(.btn-outline, .btn-light, .btn-ghost, .btn-link, .btn-invisible) {
+    --button-bg: var(--button-c-tone);
+    --button-hover-bg: color-mix(in oklab, var(--button-c-tone) 88%, var(--body-bg));
+    --button-active-bg: color-mix(in oklab, var(--button-c-tone) 82%, var(--body-bg));
+    --button-color: var(--button-c-solid-color);
+    --button-hover-color: var(--button-c-solid-color);
+    --button-active-color: var(--button-c-solid-color);
+    --button-icon-color: currentColor;
     --button-border-color: transparent;
-    --button-hover-bg: transparent;
-    --button-hover-color: var(--link-hover-color);
     --button-hover-border-color: transparent;
-    --button-active-box-shadow: none;
-    --button-active-color: var(--link-hover-color);
-    --button-active-bg: transparent;
+    --button-active-border-color: transparent;
+    --button-split-divider-color: color-mix(in srgb, var(--button-c-solid-color) 25%, transparent);
+}
+
+.btn-outline,
+[class*="btn-outline-"],
+.btn-secondary:not(.btn-solid, .btn-light, .btn-ghost, .btn-link, .btn-invisible) {
+    --button-bg: var(--button-c-outline-bg, transparent);
+    --button-hover-bg: var(--button-c-light-bg);
+    --button-active-bg: var(--button-c-light-hover-bg);
+    --button-color: var(--button-c-outline-color);
+    --button-hover-color: var(--button-c-outline-color);
+    --button-active-color: var(--button-c-outline-color);
+    --button-icon-color: var(--button-c-outline-icon-color, currentColor);
+    --button-border-color: var(--button-c-outline-border-color);
+    --button-hover-border-color: var(--button-c-outline-border-color);
+    --button-active-border-color: var(--button-c-outline-border-color);
+}
+.btn-outline,
+.btn-outline:not(:disabled):not(.disabled):is(:hover, :focus-visible, :active),
+[class*="btn-outline-"],
+[class*="btn-outline-"]:not(:disabled):not(.disabled):is(:hover, :focus-visible, :active),
+.btn-secondary:not(.btn-solid, .btn-light, .btn-ghost, .btn-link, .btn-invisible),
+.btn-secondary:not(.btn-solid, .btn-light, .btn-ghost, .btn-link, .btn-invisible):not(:disabled):not(.disabled):is(
+        :hover,
+        :focus-visible,
+        :active
+    ) {
+    background-clip: padding-box;
+}
+
+.btn-light,
+:is(.btn-success, .btn-warning, .btn-danger, .btn-info):not(
+        .btn-solid,
+        .btn-outline,
+        .btn-ghost,
+        .btn-link,
+        .btn-invisible
+    ) {
+    --button-bg: var(--button-c-light-bg);
+    --button-hover-bg: var(--button-c-light-hover-bg);
+    --button-active-bg: var(--button-c-light-hover-bg);
+    --button-color: var(--button-c-color);
+    --button-hover-color: var(--button-c-color);
+    --button-active-color: var(--button-c-color);
+    --button-icon-color: currentColor;
+    --button-border-color: transparent;
+    --button-hover-border-color: transparent;
     --button-active-border-color: transparent;
 }
-.btn-link:not(:disabled):not(.disabled):hover,
-.btn-link:not(:disabled):not(.disabled):focus-visible {
+
+.btn-ghost,
+.btn-invisible {
+    --button-bg: transparent;
+    --button-hover-bg: var(--button-c-light-bg);
+    --button-active-bg: var(--button-c-light-hover-bg);
+    --button-color: var(--button-c-outline-color);
+    --button-hover-color: var(--button-c-outline-color);
+    --button-active-color: var(--button-c-outline-color);
+    --button-icon-color: currentColor;
+    --button-border-color: transparent;
+    --button-hover-border-color: transparent;
+    --button-active-border-color: transparent;
+}
+
+.btn-link:not(.btn-secondary, .btn-primary, .btn-success, .btn-warning, .btn-danger, .btn-info, .btn-link-danger) {
+    --button-c-outline-color: var(--button-primary-outline-color);
+}
+.btn-link {
+    --button-bg: transparent;
+    --button-hover-bg: transparent;
+    --button-active-bg: transparent;
+    --button-color: var(--button-c-outline-color);
+    --button-hover-color: var(--button-c-outline-color);
+    --button-active-color: var(--button-c-outline-color);
+    --button-icon-color: currentColor;
+    --button-border-color: transparent;
+    --button-hover-border-color: transparent;
+    --button-active-border-color: transparent;
+}
+.btn-link:not(:disabled):not(.disabled):is(:hover, :focus-visible) {
     text-decoration: underline;
+    text-underline-offset: 0.25em;
 }
 
-.btn-link.btn-link-danger,
-.btn-link.btn-link-danger.btn.disabled,
-.btn-link.btn-link-danger.btn:disabled {
-    --button-color: var(--link-danger-color);
-    --button-hover-color: var(--link-danger-hover-color);
-    --button-active-color: var(--link-danger-hover-color);
-}
-
-.btn-invisible,
-.btn-invisible.btn.disabled,
-.btn-invisible.btn:disabled {
-    --button-box-shadow: var(--button-invisible-box-shadow);
-    --button-bg: var(--button-invisible-bg);
-    --button-color: var(--button-invisible-color);
-    --button-icon-color: var(--button-invisible-icon-color);
-    --button-border-color: var(--button-invisible-border-color);
-    --button-hover-bg: var(--button-invisible-hover-bg);
-    --button-hover-color: var(--button-invisible-hover-color);
-    --button-hover-border-color: var(--button-invisible-hover-border-color);
-    --button-active-box-shadow: var(--button-invisible-active-box-shadow);
-    --button-active-color: var(--button-invisible-active-color);
-    --button-active-bg: var(--button-invisible-active-bg);
-    --button-active-border-color: var(--button-invisible-active-border-color);
-}
-.btn-invisible:hover,
-.btn-invisible:focus,
-.btn-invisible:focus-visible,
-.btn-invisible:active {
-    box-shadow: none;
-}
-
-.btn-invisible.btn-danger,
-.btn-invisible.btn-danger.btn.disabled,
-.btn-invisible.btn-danger.btn:disabled {
-    --button-color: var(--button-invisible-danger-color);
-    --button-icon-color: var(--button-invisible-danger-hover-icon-color);
-    --button-hover-color: var(--button-invisible-danger-hover-color);
-    --button-hover-bg: var(--button-invisible-danger-hover-hover-bg);
-    --button-active-color: var(--button-invisible-danger-active-color);
-    --button-active-bg: var(--button-invisible-danger-hover-active-bg);
-}
-.btn-invisible.btn-danger:hover,
-.btn-invisible.btn-danger:focus,
-.btn-invisible.btn-danger:focus-visible,
-.btn-invisible.btn-danger:active {
-    box-shadow: none;
-}
-
-/* Button sizes */
 .btn-sm {
+    --button-border-radius: var(--button-border-radius-sm);
     --button-font-size: var(--button-font-size-sm);
     --button-padding-y: var(--button-padding-y-sm);
     --button-padding-x: var(--button-padding-x-sm);
     --button-icon-gap: var(--ea-sp-2);
-    --button-height: var(--ea-sp-14);
+    --button-height: var(--ea-control-height-sm);
 }
 
 .btn-lg {
     --button-font-size: var(--button-font-size-lg);
     --button-padding-y: var(--button-padding-y-lg);
     --button-padding-x: var(--button-padding-x-lg);
-    --button-height: var(--ea-sp-18);
+    --button-height: var(--ea-control-height-lg);
 }
 
-.btn-block {
-    display: block;
-    inline-size: 100%;
-    place-content: center;
-}
-
-/* Disabled state */
 .btn.disabled,
 .btn:disabled {
-    background: var(--button-bg);
+    background-color: var(--button-bg);
     border-color: var(--button-border-color);
     color: var(--button-color);
     box-shadow: none;
-    cursor: not-allowed;
     opacity: var(--button-disabled-opacity);
     pointer-events: none;
 }
 
-/* For anchor tags styled as buttons */
-a.btn.disabled,
-fieldset:disabled a.btn {
-    pointer-events: unset;
-}
-
-/* Button content elements */
+/* long labels are truncated here and not on .btn, because overflow on the button would
+   also clip any badge or dot positioned on its corners */
 .btn > .btn-label {
-    align-items: center;
-    display: inline-flex;
+    display: block;
     margin: 0;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .btn > .btn-icon {
     color: var(--button-icon-color, currentColor);
-    display: grid;
     flex-shrink: 0;
-    place-content: center;
     inline-size: 1em;
 }
 
 .btn .btn-icon svg {
     color: var(--button-icon-color, currentColor);
     fill: var(--button-icon-color, currentColor);
-}
-
-.btn > .btn-icon + .btn-label,
-.btn > i + .btn-label {
-    margin-inline-start: 0;
 }
 
 .btn > .btn-label + .btn-icon,
@@ -484,20 +304,25 @@ fieldset:disabled a.btn {
     display: none;
 }
 
-/* Icon-only buttons render as a true square: no padding and a minimum width equal to the button
-   height (28/32/36px for sm/md/lg, like shadcn's icon sizes). Scoped to buttons that actually
-   contain an EA icon so that native Bootstrap buttons (no .btn-icon and no .btn-label) keep
-   their horizontal padding. */
 .btn:has(.btn-icon):not(:has(.btn-label)) {
     justify-content: center;
-    min-inline-size: var(--button-height, var(--ea-sp-16));
+    min-inline-size: var(--button-height, var(--ea-control-height));
     padding: 0;
 }
 
-/* Button groups: adjacent buttons overlap their borders and flatten their inner corners to
-   render as a single segmented control. Bootstrap ships equivalent rules but they live in the
-   'vendor' layer, so the 'ea' layer's .btn border-radius would override them; these mirror
-   Bootstrap's selectors with logical properties so RTL works. */
+.btn:has(> .btn-icon:first-child + .btn-label:not(:empty)) {
+    padding-inline-start: calc(var(--button-padding-x, var(--button-padding-x-md)) - var(--ea-sp-1));
+}
+.btn:has(> .btn-label:not(:empty) + .btn-icon:last-child) {
+    padding-inline-end: calc(var(--button-padding-x, var(--button-padding-x-md)) - var(--ea-sp-1));
+}
+
+.btn.btn-close {
+    background-image: none;
+}
+
+/* these mirror the button group rules of Bootstrap (with logical properties), because the
+   .btn border-radius of the 'ea' layer overrides the ones of the 'vendor' layer */
 .btn-group > .btn-group:not(:first-child),
 .btn-group > :not(.btn-check:first-child) + .btn {
     margin-inline-start: calc(-1 * var(--button-border-width, var(--border-width)));
@@ -515,30 +340,37 @@ fieldset:disabled a.btn {
     border-end-start-radius: 0;
 }
 .btn-group > .btn.dropdown-toggle.dropdown-toggle-split {
-    padding-inline-end: var(--ea-sp-4);
-    padding-inline-start: var(--ea-sp-4);
+    justify-content: center;
+    min-inline-size: var(--button-height, var(--ea-control-height));
+    padding-inline: 0;
+}
+.btn-group > .btn + .btn.dropdown-toggle-split:not(:disabled):not(.disabled) {
+    border-inline-start-color: var(--button-split-divider-color, var(--button-border-color));
+}
+.btn-group > .btn:is(:hover, :focus-visible, :active) {
+    z-index: 1;
 }
 .dropdown-menu .dropdown-submenu .dropdown-toggle.dropdown-toggle-split {
     border: 0;
     inline-size: auto;
 }
 
-/* Block buttons (full width) */
 .btn-block {
     display: flex;
     inline-size: 100%;
+    place-content: center;
 }
 
-/* Button with badge */
 .btn .badge {
     margin-inline-start: var(--button-icon-gap);
+    /* Bootstrap moves badges 1px up inside buttons to align them with baseline-aligned text;
+       EasyAdmin buttons center their contents with flexbox, so that offset misaligns them */
+    inset-block-start: 0;
 }
 
-/* Loading state placeholder */
 .btn.is-loading {
     color: transparent;
     pointer-events: none;
-    position: relative;
 }
 
 .btn.is-loading::after {
@@ -564,43 +396,22 @@ fieldset:disabled a.btn {
     }
 }
 
-/* Ensure compatibility with existing button usage */
 .btn > i {
     font-size: inherit;
     line-height: inherit;
-    vertical-align: middle;
 }
 
-/* RTL support using logical properties */
-[dir="rtl"] .btn > .btn-icon + .btn-label,
-[dir="rtl"] .btn > i + .btn-label {
-    margin-inline-start: 0;
-    margin-inline-end: 0;
-}
-
-[dir="rtl"] .btn > .btn-label + .btn-icon,
-[dir="rtl"] .btn > .btn-label + i {
-    margin-inline-start: 0;
-    margin-inline-end: 0;
-}
-
-/* fallback focus ring for buttons excluded from the main :focus-visible rule at the top of this
-   file (e.g. disabled anchor buttons, which remain focusable); on regular buttons that rule wins
-   because it has a higher specificity */
+/* for buttons excluded from the :focus-visible rule above (e.g. disabled anchor buttons,
+   which remain focusable) */
 .btn:focus-visible {
-    outline: var(--ea-focus-ring-width) solid var(--link-color);
-    outline-offset: 2px;
+    outline: var(--ea-focus-ring-width) solid var(--button-focus-outline-color);
+    outline-offset: var(--button-focus-outline-offset);
 }
 
-/* Ensure button text doesn't wrap */
-.btn {
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-/* Allow wrapping when needed */
 .btn.text-wrap {
+    white-space: normal;
+}
+.btn.text-wrap > .btn-label {
     overflow: visible;
     text-overflow: unset;
-    white-space: normal;
 }

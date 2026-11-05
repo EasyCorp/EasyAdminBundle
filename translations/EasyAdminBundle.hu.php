@@ -65,6 +65,7 @@ return [
         'save' => 'Mentés',
         'save_and_continue' => 'Mentés és szerkesztés',
         'toggle_dropdown' => 'Legördülő menü váltása',
+        'show_help' => 'A teljes súgó megjelenítése',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automatikus',
         ],
         'locale' => 'Nyelv',
+    ],
+
+    'layout' => [
+        'collapse' => 'Összecsukás',
+        'expand' => 'Kibontás',
     ],
 
     'login_page' => [

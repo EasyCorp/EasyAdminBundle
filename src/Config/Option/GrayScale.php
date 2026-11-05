@@ -12,4 +12,8 @@ final class GrayScale
     public const ZINC = 'zinc';
     public const GRAY = 'gray';
     public const SLATE = 'slate';
+    public const MAUVE = 'mauve';
+    public const OLIVE = 'olive';
+    public const MIST = 'mist';
+    public const TAUPE = 'taupe';
 }

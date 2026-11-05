@@ -36,6 +36,7 @@ class DefaultLayoutTest extends AbstractCrudTestCase
         // by default, content width is 'normal'
         $body = $crawler->filter('body');
         static::assertSame('normal', $body->attr('data-ea-content-width'));
+        static::assertSame('false', $body->attr('data-ea-content-width-configured'));
     }
 
     public function testDefaultSidebarWidthIsNormal(): void
@@ -47,6 +48,7 @@ class DefaultLayoutTest extends AbstractCrudTestCase
         // by default, sidebar width is 'normal'
         $body = $crawler->filter('body');
         static::assertSame('normal', $body->attr('data-ea-sidebar-width'));
+        static::assertSame('false', $body->attr('data-ea-sidebar-width-configured'));
     }
 
     public function testDefaultTextDirectionIsLtr(): void

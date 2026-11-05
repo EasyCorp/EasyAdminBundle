@@ -65,6 +65,7 @@ return [
         'save' => 'Сохранить',
         'save_and_continue' => 'Сохранить и продолжить',
         'toggle_dropdown' => 'Переключить выпадающее меню',
+        'show_help' => 'Показать всю справку',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Автоматически',
         ],
         'locale' => 'Язык',
+    ],
+
+    'layout' => [
+        'collapse' => 'Свернуть',
+        'expand' => 'Развернуть',
     ],
 
     'login_page' => [

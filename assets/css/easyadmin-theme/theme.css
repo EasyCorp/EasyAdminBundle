@@ -1,11 +1,14 @@
 /* This file is imported into the 'ea' layer (see app.css), so these sublayers
-   become ea.tokens, ea.base, ea.components and ea.utilities (their order is
-   defined in layers.css) */
+   become ea.tokens, ea.base, ea.prose, ea.components and ea.utilities (their
+   order is defined in layers.css) */
+@import "./fonts.css" layer(tokens);
 @import "./color-palette.css" layer(tokens);
 @import "./design-tokens.css" layer(tokens);
 @import "./variables-theme.css" layer(tokens);
 
 @import "./base.css" layer(base);
+
+@import "./prose.css" layer(prose);
 
 @import "./action-menu.css" layer(components);
 @import "./pagination.css" layer(components);

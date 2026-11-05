@@ -19,6 +19,9 @@
 .list-pagination-counter {
     color: var(--pagination-color);
 }
+.list-pagination-counter strong {
+    font-weight: var(--font-weight-medium);
+}
 
 .pager .pagination {
     --bs-pagination-font-size: var(--font-size-sm);
@@ -26,22 +29,39 @@
 
     margin-block-end: 0;
 }
-@media (max-width: 992px) {
+@media (max-width: 991.98px) {
     .pager .pagination {
         margin-block-start: var(--ea-sp-8);
     }
 }
 .page-item .page-link {
+    align-items: center;
+    display: flex;
+    font-weight: var(--font-weight-normal);
+    gap: var(--ea-sp-2);
     white-space: nowrap;
 }
+.page-item .page-link .icon {
+    block-size: 1lh;
+}
 .page-item.active .page-link,
+.page-item.active .page-link:focus,
 .page-item.active .page-link:hover {
     background: var(--pagination-active-bg);
     border-color: var(--pagination-active-bg);
     color: var(--pagination-active-color);
+    position: relative;
+}
+.page-item.active .page-link::after {
+    background: var(--ea-primary-on-surface);
+    border-radius: var(--border-radius-pill);
+    block-size: var(--ea-sp-1);
+    content: "";
+    inset-block-end: 0;
+    inset-inline: 0;
+    position: absolute;
 }
 .page-item.disabled .page-link {
-    background: transparent;
     color: var(--pagination-disabled-color);
 }
 .page-item .page-link,
@@ -52,17 +72,17 @@
     border-radius: var(--bs-pagination-border-radius);
     color: inherit;
     margin: 0 1px;
+    transition: background-color var(--ea-duration-fast) var(--ea-ease-out);
 }
-/* needed to override some Bootstrap styles */
-.page-item:not(:first-child) .page-link {
-    margin: 0 1px;
+.page-item:not(.active, .disabled) .page-link:hover {
+    background: var(--pagination-hover-bg);
 }
-.page-item .page-link:focus,
-.page-item .page-link:hover {
-    border-color: var(--pagination-hover-border-color);
+.page-item .page-link:focus-visible {
+    outline: 2px solid var(--ea-primary-ring);
+    outline-offset: 1px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
     .pager .page-item:not(.page-item-previous, .page-item-next, .page-item.active) {
         display: none;
     }
@@ -86,14 +106,11 @@
         padding-inline-start: calc(var(--bs-pagination-padding-x) / 2);
     }
     .pager .page-item-next .page-link {
-        text-align: right;
+        justify-content: flex-end;
         padding-inline-end: calc(var(--bs-pagination-padding-x) / 2);
     }
 }
 
-/* The radius utilities set Bootstrap's pagination radius token, so the chosen
-   radius reaches every link -- including Bootstrap's first/last-child corners
-   and the mobile previous/next buttons -- without any specificity overrides. */
 .page-link.ea-rounded-none {
     --bs-pagination-border-radius: var(--border-radius-none);
 }

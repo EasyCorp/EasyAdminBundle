@@ -42,5 +42,6 @@ class SidebarMinimizedTest extends AbstractCrudTestCase
         // verify the sidebar width is set to 'compact'
         $body = $crawler->filter('body');
         static::assertSame('compact', $body->attr('data-ea-sidebar-width'), 'Sidebar should be minimized');
+        static::assertSame('true', $body->attr('data-ea-sidebar-width-configured'), 'The configured width must win over the one remembered by the browser');
     }
 }

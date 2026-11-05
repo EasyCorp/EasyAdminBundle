@@ -5,8 +5,8 @@
 } %}
 
 <twig:ea:Button
-    variant="{{ action.variant }}"
-    isInvisible="{{ action.usesTextStyle }}"
+    color="{{ action.color }}"
+    variant="{{ action.buttonVariant }}"
     class="{{ action.htmlElement.isLink and isIncludedInDropdown|default(false) ? 'dropdown-item' }} {{ action.cssClass }}"
     {{ ...action.htmlAttributes|ea_html_attrs|filter(v => v is not null) }}
     htmlElement="{{ action.htmlElement }}"

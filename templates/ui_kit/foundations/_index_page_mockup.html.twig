@@ -1,0 +1,34 @@
+<div class="ea-ui-kit-mockup ea-not-prose" data-ea-ui-kit-mockup>
+    {{ include('@EasyAdmin/ui_kit/foundations/_mockup_sidebar.html.twig') }}
+
+    <div class="ea-ui-kit-mockup-content">
+        <div class="ea-ui-kit-mockup-header">
+            <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-title"></div>
+            <twig:ea:Button type="button">Export</twig:ea:Button>
+            <twig:ea:Button color="primary" type="button" icon="internal:plus">Add order</twig:ea:Button>
+        </div>
+
+        <div class="ea-ui-kit-mockup-rows">
+            {% for row in [
+                {widths: [60, 80, 45], published: true},
+                {widths: [70, 55, 60], published: true},
+                {widths: [50, 70, 40], published: false},
+                {widths: [65, 60, 55], published: true},
+                {widths: [55, 75, 50], published: false},
+            ] %}
+                <div class="ea-ui-kit-mockup-row">
+                    <twig:ea:Switch ariaLabel="Published" :checked="row.published" />
+                    {% for width in row.widths %}
+                        <div class="ea-ui-kit-mockup-cell"><div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-w{{ width }}"></div></div>
+                    {% endfor %}
+                    <div class="ea-ui-kit-mockup-cell"><div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-w60"></div></div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="ea-ui-kit-mockup-footer">
+            <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-w30"></div>
+            <twig:ea:Pagination :currentPage="2" :lastPage="8" urlPattern="#page-{page}" />
+        </div>
+    </div>
+</div>

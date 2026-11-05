@@ -19,23 +19,23 @@ class ButtonTest extends AbstractFieldFunctionalTestCase
     {
         $html = $this->renderButton('<twig:ea:Button>Save</twig:ea:Button>');
 
-        self::assertStringContainsString('<button class="btn btn-secondary" type="submit">', $html);
+        self::assertStringContainsString('<button class="btn btn-secondary btn-outline" type="submit">', $html);
         self::assertStringContainsString('<span class="btn-label">Save</span>', $html);
         self::assertStringContainsString('</button>', $html);
     }
 
     public function testVariantAndCustomClassAreMerged(): void
     {
-        $html = $this->renderButton('<twig:ea:Button variant="danger" class="my-button">x</twig:ea:Button>');
+        $html = $this->renderButton('<twig:ea:Button color="danger" variant="solid" class="my-button">x</twig:ea:Button>');
 
-        self::assertStringContainsString('class="btn btn-danger my-button"', $html);
+        self::assertStringContainsString('class="btn btn-danger btn-solid my-button"', $html);
     }
 
     public function testLinkWithHref(): void
     {
         $html = $this->renderButton('<twig:ea:Button htmlElement="a" href="https://example.com">Go</twig:ea:Button>');
 
-        self::assertStringContainsString('<a class="btn btn-secondary" role="button" href="https://example.com">', $html);
+        self::assertStringContainsString('<a class="btn btn-secondary btn-outline" role="button" href="https://example.com">', $html);
         self::assertStringContainsString('</a>', $html);
     }
 
@@ -54,7 +54,7 @@ class ButtonTest extends AbstractFieldFunctionalTestCase
         self::assertStringNotContainsString('href', $html);
         self::assertStringContainsString('aria-disabled="true"', $html);
         self::assertStringContainsString('tabindex="-1"', $html);
-        self::assertStringContainsString('class="btn btn-secondary disabled"', $html);
+        self::assertStringContainsString('class="btn btn-secondary btn-outline disabled"', $html);
     }
 
     public function testInactiveButtonIsDisabled(): void
@@ -62,7 +62,7 @@ class ButtonTest extends AbstractFieldFunctionalTestCase
         $html = $this->renderButton('<twig:ea:Button inactive>x</twig:ea:Button>');
 
         self::assertStringContainsString('disabled', $html);
-        self::assertStringContainsString('class="btn btn-secondary disabled"', $html);
+        self::assertStringContainsString('class="btn btn-secondary btn-outline disabled"', $html);
     }
 
     public function testFormButton(): void
@@ -74,7 +74,7 @@ class ButtonTest extends AbstractFieldFunctionalTestCase
         self::assertStringContainsString('<form action="/delete" method="POST" class="action-delete">', $html);
         self::assertSame(1, substr_count($html, 'id="delete-button"'));
         self::assertSame(1, substr_count($html, 'data-foo="bar"'));
-        self::assertStringContainsString('<button class="btn btn-secondary action-delete"', $html);
+        self::assertStringContainsString('<button class="btn btn-secondary btn-outline action-delete"', $html);
         self::assertStringNotContainsString('_method', $html);
     }
 
@@ -157,10 +157,11 @@ class ButtonTest extends AbstractFieldFunctionalTestCase
     {
         $html = $this->renderButton(<<<'TWIG'
             {% set element = enum('EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\Component\\Option\\ButtonElement').A %}
-            {% set variant = enum('EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\Component\\Option\\ButtonVariant').Danger %}
-            <twig:ea:Button htmlElement="{{ element }}" variant="{{ variant }}" href="/foo">x</twig:ea:Button>
+            {% set color = enum('EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\Component\\Option\\ButtonColor').Danger %}
+            {% set variant = enum('EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\Component\\Option\\ButtonVariant').Ghost %}
+            <twig:ea:Button htmlElement="{{ element }}" color="{{ color }}" variant="{{ variant }}" href="/foo">x</twig:ea:Button>
             TWIG);
 
-        self::assertStringContainsString('<a class="btn btn-danger" role="button" href="/foo">', $html);
+        self::assertStringContainsString('<a class="btn btn-danger btn-ghost" role="button" href="/foo">', $html);
     }
 }

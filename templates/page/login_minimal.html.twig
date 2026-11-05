@@ -17,6 +17,10 @@
             {% endguard %}
         {% endblock head_metas %}
 
+        {% block head_fonts %}
+            {{ include('@EasyAdmin/includes/_fonts.html.twig', {theme: null, asset_package: constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')}, with_context: false) }}
+        {% endblock head_fonts %}
+
         {% block head_favicon %}
             <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⬛</text></svg>">
         {% endblock %}

@@ -17,6 +17,8 @@ final class DashboardDto
     private ?string $textDirection = null;
     private string $contentWidth = Crud::LAYOUT_CONTENT_DEFAULT;
     private string $sidebarWidth = Crud::LAYOUT_SIDEBAR_DEFAULT;
+    private bool $contentWidthConfigured = false;
+    private bool $sidebarWidthConfigured = false;
     private bool $absoluteUrls = true;
     private bool $enableDarkMode = true;
     private string $defaultColorScheme = ColorScheme::AUTO;
@@ -84,6 +86,12 @@ final class DashboardDto
     public function setContentWidth(string $contentWidth): void
     {
         $this->contentWidth = $contentWidth;
+        $this->contentWidthConfigured = true;
+    }
+
+    public function isContentWidthConfigured(): bool
+    {
+        return $this->contentWidthConfigured;
     }
 
     public function getSidebarWidth(): string
@@ -94,6 +102,12 @@ final class DashboardDto
     public function setSidebarWidth(string $sidebarWidth): void
     {
         $this->sidebarWidth = $sidebarWidth;
+        $this->sidebarWidthConfigured = true;
+    }
+
+    public function isSidebarWidthConfigured(): bool
+    {
+        return $this->sidebarWidthConfigured;
     }
 
     public function getAbsoluteUrls(): bool

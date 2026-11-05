@@ -38,6 +38,8 @@ each class declares itself. A `self` return type means the call is chainable.
 - [Config\Option\ClickTrigger](#configoptionclicktrigger)
 - [Config\Option\ColorScheme](#configoptioncolorscheme)
 - [Config\Option\EA](#configoptionea)
+- [Config\Option\Font](#configoptionfont)
+- [Config\Option\FontFeature](#configoptionfontfeature)
 - [Config\Option\GrayScale](#configoptiongrayscale)
 - [Config\Option\IconSet](#configoptioniconset)
 - [Config\Option\ReplacedFileBehavior](#configoptionreplacedfilebehavior)
@@ -46,6 +48,7 @@ each class declares itself. A `self` return type means the call is chainable.
 - [Config\Option\SortOrder](#configoptionsortorder)
 - [Config\Option\TextAlign](#configoptiontextalign)
 - [Config\Option\TextDirection](#configoptiontextdirection)
+- [Config\Option\ThemeColor](#configoptionthemecolor)
 - [Config\Theme](#configtheme)
 - [Config\UserMenu](#configusermenu)
 - [Contracts\Controller\CrudControllerInterface](#contractscontrollercrudcontrollerinterface)
@@ -496,13 +499,37 @@ const ROUTE_PARAMS = 'routeParams'
 const SORT = 'sort'
 ```
 
+## Config\Option\Font
+
+```
+const AtkinsonHyperlegibleNext = …
+const IbmPlexSans = …
+const Inter = …
+const JetBrainsMono = …
+const Rubik = …
+const System = …
+```
+
+## Config\Option\FontFeature
+
+```
+const NoContextualAlternates = …
+const NoLigatures = …
+const SlashedZero = …
+const TabularNumbers = …
+```
+
 ## Config\Option\GrayScale
 
 ```
 const GRAY = 'gray'
+const MAUVE = 'mauve'
+const MIST = 'mist'
 const NEUTRAL = 'neutral'
+const OLIVE = 'olive'
 const SLATE = 'slate'
 const STONE = 'stone'
+const TAUPE = 'taupe'
 const ZINC = 'zinc'
 ```
 
@@ -560,14 +587,38 @@ const LTR = 'ltr'
 const RTL = 'rtl'
 ```
 
+## Config\Option\ThemeColor
+
+```
+const Amber = …
+const Blue = …
+const Cyan = …
+const Emerald = …
+const Fuchsia = …
+const Green = …
+const Indigo = …
+const Lime = …
+const Neutral = …
+const Orange = …
+const Pink = …
+const Purple = …
+const Red = …
+const Rose = …
+const Sky = …
+const Teal = …
+const Violet = …
+const Yellow = …
+```
+
 ## Config\Theme
 
 ```
 static new(): self
 
+font(Font|string|null $base = null, Font|string|null $monospace = null, ?int $baseWeight = null, ?array $features = null): self
 getAsDto(): ThemeDto
 grays(string $grayScale, ?string $dark = null): self
-primaryColor(string $color, ?string $dark = null): self
+primaryColor(ThemeColor|string $color, ThemeColor|string|null $dark = null): self
 radius(string $value): self
 spacing(string $value): self
 ```

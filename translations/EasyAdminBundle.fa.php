@@ -65,6 +65,7 @@ return [
         'save' => 'ذخیره تغییرات',
         'save_and_continue' => 'ذخیره کردن و ادامه ویرایش',
         'toggle_dropdown' => 'تغییر منوی کشویی',
+        'show_help' => 'نمایش کامل راهنما',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'خودکار',
         ],
         'locale' => 'زبان',
+    ],
+
+    'layout' => [
+        'collapse' => 'جمع کردن',
+        'expand' => 'باز کردن',
     ],
 
     'login_page' => [

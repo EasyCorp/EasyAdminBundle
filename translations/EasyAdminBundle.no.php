@@ -65,6 +65,7 @@ return [
         'save' => 'Lagre endringer',
         'save_and_continue' => 'Lagre og fortsett redigering',
         'toggle_dropdown' => 'Bytt rullegardinmeny',
+        'show_help' => 'Vis hele hjelpen',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automatisk',
         ],
         'locale' => 'Språk',
+    ],
+
+    'layout' => [
+        'collapse' => 'Fold sammen',
+        'expand' => 'Utvid',
     ],
 
     'login_page' => [

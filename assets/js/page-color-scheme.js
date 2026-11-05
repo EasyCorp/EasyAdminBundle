@@ -17,13 +17,15 @@ class ColorSchemeHandler {
             return;
         }
 
-        // for responsive design" reasons, pages contain two settings dropdowns (and inside them, one
+        // for responsive design reasons, pages contain two settings dropdowns (and inside them, one
         // scheme selector each) instead of one and the selected scheme must be kept in sync in both
         const colorSchemeSelectors = document.querySelectorAll('.dropdown-settings');
-        const currentScheme = localStorage.getItem(this.#colorSchemeLocalStorageKey) || 'auto';
+        const currentScheme =
+            localStorage.getItem(this.#colorSchemeLocalStorageKey) ||
+            document.body.getAttribute('data-ea-default-color-scheme') ||
+            'auto';
 
-        // toggle the selected state via aria-checked (this drives the trailing checkmark
-        // shown by CSS); the legacy `active` class is kept in sync for one release
+        // the legacy `active` class is kept in sync with aria-checked for one release
         const setChecked = (el, isChecked) => {
             el.setAttribute('aria-checked', isChecked ? 'true' : 'false');
             el.classList.toggle('active', isChecked);
@@ -38,10 +40,15 @@ class ColorSchemeHandler {
             );
 
             selectorOptions.forEach((selector) => setChecked(selector, false));
-            setChecked(selectorActiveOption, true);
+            if (selectorActiveOption) {
+                setChecked(selectorActiveOption, true);
+            }
 
             selectorOptions.forEach((selector) => {
-                selector.addEventListener('click', () => {
+                selector.addEventListener('click', (event) => {
+                    // the options are href="#" links; following them would scroll to the top and
+                    // trigger 'popstate', which makes tabs.js select the first tab
+                    event.preventDefault();
                     const selectedColorScheme = selector.getAttribute('data-ea-color-scheme');
                     this.#setColorScheme(selectedColorScheme, true);
 

@@ -65,6 +65,7 @@ return [
         'save' => 'Spara ändringar',
         'save_and_continue' => 'Spara och fortsätt redigera',
         'toggle_dropdown' => 'Växla rullgardinsmeny',
+        'show_help' => 'Visa hela hjälpen',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automatiskt',
         ],
         'locale' => 'Språk',
+    ],
+
+    'layout' => [
+        'collapse' => 'Fäll ihop',
+        'expand' => 'Fäll ut',
     ],
 
     'login_page' => [

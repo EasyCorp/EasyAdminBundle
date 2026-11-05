@@ -1,6 +1,83 @@
 Upgrade Guide
 =============
 
+This guide is for humans. If you are an AI agent, read [UPGRADE-AI.md](UPGRADE-AI.md) instead.
+
+## EasyAdmin 5.9.0
+
+EasyAdmin UI has been refreshed. All elements remain the same on all pages,
+but everything looks better and more modern now. The main visual changes:
+
+* The default gray palette is now neutral instead of blueish
+* The default accent color is black instead of indigo
+* The default font is Inter instead of your default operating system font
+* Alerts now have rounded corners and a space below them; flash messages too:
+  they're still displayed above the page layout, but no longer as a full-width band
+* In `detail` pages, field labels are now aligned to the start of the line, and boolean
+  fields show the label before the value, like all other fields
+
+You can't get the exact previous design back, but this gets you very close to it:
+
+```php
+namespace App\Controller\Admin;
+
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\Font;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\GrayScale;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Theme;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+
+#[AdminDashboard(routePath: '/admin', routeName: 'admin')]
+class DashboardController extends AbstractDashboardController
+{
+    // ...
+
+    public function configureDashboard(): Dashboard
+    {
+        return Dashboard::new()
+            // ...
+            ->setTheme(Theme::new()
+                ->primaryColor('hsl(230, 61%, 58%)', dark: 'hsl(224, 84%, 49%)')
+                ->grays(GrayScale::SLATE, dark: GrayScale::NEUTRAL)
+                ->radius('xs')
+                ->font(base: Font::System, monospace: Font::System)
+            );
+    }
+
+    // ...
+}
+```
+
+Other notable changes of the new design:
+
+* The color palette (`--blue-600`, `--red-500`, etc.) now uses the values of
+  Tailwind CSS 4 (in the `oklch()` format) instead of Tailwind CSS 3, so most
+  colors are a bit more vivid. The chromatic colors also define a new `950` step.
+* Custom pages now define a stylesheet that makes all elements look nice by default
+  (font sizes, margins, etc.)
+* Buttons now define more variants (`solid`, `outline`, `light`, `ghost` or `link`)
+* `renderContentMaximized()` and `renderSidebarMinimized()` now apply on every page
+  load. The widths selected by users with the layout buttons are only remembered in
+  the pages where you don't call these methods
+* Icons are now vertically centered with the text next to them, using any icon set and
+  any font. The `<span class="icon">` element is now `inline-flex` and its `<svg>` is
+  `display: block`, so the element is as tall as the icon and no longer as tall as a line
+  of text. If your custom CSS moved icons a few pixels to fix their alignment (with
+  `vertical-align`, `translate`, `position: relative`, etc.), remove those styles. If an
+  element only contains an icon and its height came from that line of text, set its
+  height explicitly.
+* `Theme::spacing()` no longer scales buttons, inputs and switches freely, because they
+  looked wrong when their padding changed but the size of their text didn't. They get one
+  size smaller with values below `md`, and they don't get larger with values above it
+* On small screens, the search input now takes the full width and the page actions are
+  aligned to the start of the line. In the header of small screens, the user menu and the
+  settings menu are now wrapped in a `<div class="responsive-header-actions">` element,
+  so update any custom CSS that selected them as direct children of `.responsive-header`.
+* The table of `index` pages is now wrapped in a `<div class="datagrid-scroll">` element,
+  so wide tables scroll inside it instead of moving the whole page. Update any custom CSS
+  that selected the table as a direct child of `.content-body`.
+
 ## EasyAdmin 5.8.0
 
 ### `createEntity()` Can Return `null`

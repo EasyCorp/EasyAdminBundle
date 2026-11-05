@@ -65,6 +65,7 @@ return [
         'save' => 'Späicheren',
         'save_and_continue' => 'Späicheren a weider beaarbechten',
         'toggle_dropdown' => 'Dropdown-Menü ëmschalten',
+        'show_help' => 'Ganz Hëllef weisen',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automatesch',
         ],
         'locale' => 'Sprooch',
+    ],
+
+    'layout' => [
+        'collapse' => 'Zesummeklappen',
+        'expand' => 'Opklappen',
     ],
 
     'login_page' => [

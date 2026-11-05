@@ -24,6 +24,7 @@
     color: var(--badge-color);
     display: inline-flex;
     gap: var(--ea-sp-2);
+    justify-content: center;
     /* fixed line-heights pin the height of each badge size, so badges with
        icons, images or flags are as tall as badges with only text */
     line-height: 16px;
@@ -31,7 +32,9 @@
 }
 
 .badge.badge-sm {
+    --bs-badge-font-size: 11px;
     --bs-badge-padding-x: var(--ea-sp-2);
+    --bs-badge-padding-y: 1px;
     line-height: 14px;
 }
 
@@ -171,6 +174,9 @@
     display: inline-flex;
     gap: var(--ea-sp-2);
 }
+.badge > .country-flag-with-name .country-flag {
+    margin: 0;
+}
 
 .badge-dismiss {
     align-items: center;
@@ -197,12 +203,6 @@
     outline: var(--border-width) solid currentColor;
 }
 .badge-dismiss > .icon {
-    display: inline-flex;
     font-size: var(--icon-size-xxs);
     inline-size: auto;
-    line-height: 1;
-}
-/* the default text-bottom alignment of icons moves the glyph off the center of the button */
-.badge-dismiss > .icon svg {
-    vertical-align: top;
 }

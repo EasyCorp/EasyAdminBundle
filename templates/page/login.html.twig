@@ -44,7 +44,7 @@
 
         <section class="content">
             {% if error|default(false) %}
-                <div class="w-100 alert alert-danger rounded mb-3">
+                <div class="w-100 alert alert-danger">
                     {{ error.messageKey|trans(error.messageData, 'security') }}
                 </div>
             {% endif %}
@@ -88,7 +88,7 @@
                     </div>
                 {% endif %}
 
-                <twig:ea:Button type="submit" variant="primary" size="lg" isBlock>{{ _sign_in_label }}</twig:ea:Button>
+                <twig:ea:Button type="submit" color="primary" size="lg" isBlock>{{ _sign_in_label }}</twig:ea:Button>
             </form>
 
             {% block login_form_footer %}{% endblock login_form_footer %}

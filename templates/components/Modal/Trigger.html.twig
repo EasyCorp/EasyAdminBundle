@@ -2,9 +2,9 @@
     Button that opens a Modal. Wraps `<twig:ea:Button>` and adds the Bootstrap
     attributes needed to open the target modal, so callers don't have to remember
     `data-bs-toggle`/`data-bs-target`. The label goes in the default slot; any other
-    Button prop (variant, icon, size, …) is forwarded.
+    Button prop (color, variant, icon, size, …) is forwarded.
 
-    Usage: <twig:ea:Modal:Trigger target="#my-modal" variant="primary">Open</twig:ea:Modal:Trigger>
+    Usage: <twig:ea:Modal:Trigger target="#my-modal" color="primary">Open</twig:ea:Modal:Trigger>
 #}
 {% props
     ## string The CSS selector of the modal to open (e.g. `#delete-modal`).

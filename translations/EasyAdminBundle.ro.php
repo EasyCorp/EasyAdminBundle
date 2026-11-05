@@ -65,6 +65,7 @@ return [
         'save' => 'Salvează modificarile',
         'save_and_continue' => 'Salvează și continuă editarea',
         'toggle_dropdown' => 'Comutați meniul drop-down',
+        'show_help' => 'Afișați tot ajutorul',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automat',
         ],
         'locale' => 'Limba',
+    ],
+
+    'layout' => [
+        'collapse' => 'Restrânge',
+        'expand' => 'Extinde',
     ],
 
     'login_page' => [

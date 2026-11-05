@@ -7,7 +7,6 @@ export default class Autocomplete {
             return;
         }
 
-        // TomSelect only works with <select> and <input> elements
         if ('SELECT' !== element.tagName && 'INPUT' !== element.tagName) {
             return;
         }
@@ -77,12 +76,14 @@ export default class Autocomplete {
     }
 
     #createAutocompleteWithHtmlContents(element) {
-        let config = this.#mergeObjects(this.#getCommonConfig(element), {
+        const commonConfig = this.#getCommonConfig(element);
+        let config = this.#mergeObjects(commonConfig, {
             valueField: 'value',
             labelField: 'label_raw',
             searchField: ['label_text'],
             maxOptions: null,
             render: {
+                ...commonConfig.render,
                 item: (item, escape) => `<div>${item.label_raw}</div>`,
                 option: (item, escape) => `<div>${item.label_raw}</div>`,
             },
@@ -117,9 +118,7 @@ export default class Autocomplete {
             firstUrl: (query) => {
                 return `${autocompleteEndpointUrl}&query=${encodeURIComponent(query)}`;
             },
-            // VERY IMPORTANT: use 'function (query, callback) { ... }' instead of the
-            // '(query, callback) => { ... }' syntax because, otherwise,
-            // the 'this.XXX' calls inside of this method fail
+            // not an arrow function, because TomSelect binds 'this' to its instance
             load: function (query, callback) {
                 const url = this.getUrl(query);
                 fetch(url)

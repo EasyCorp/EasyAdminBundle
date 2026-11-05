@@ -65,6 +65,7 @@ return [
         'save' => 'Desar els canvis',
         'save_and_continue' => 'Desar i continuar editant',
         'toggle_dropdown' => 'Commuta el menú desplegable',
+        'show_help' => 'Mostra tota l\'ajuda',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automàtic',
         ],
         'locale' => 'Llenguatge',
+    ],
+
+    'layout' => [
+        'collapse' => 'Replega',
+        'expand' => 'Desplega',
     ],
 
     'login_page' => [

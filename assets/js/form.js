@@ -27,13 +27,10 @@ class Form {
 
     #createFieldsWithErrors() {
         const handleFieldsWithErrors = (form, pageName) => {
-            // Intercept errors before submit to avoid browser error "An invalid form control with name='...' is not focusable."
+            // errors are intercepted before submit to avoid the browser error "An invalid form control
+            // with name='...' is not focusable" (e.g. for fields inside hidden tabs); the 'has-error'
+            // class of form groups is removed when clicking on them to support custom/complex fields
             //
-            // Adding visual feedback for invalid fields: any ".form-group" with invalid fields
-            // receives "has-error" class. The class is removed on click on the ".form-group"
-            // itself to support custom/complex fields.
-            //
-            // Adding visual error counter feedback for invalid fields inside form tabs (visible or not)
             // the default submit buttons live outside the <form> element and are associated to it
             // via the HTML 'form' attribute; that's why this uses form.elements (which includes
             // those buttons) instead of form.querySelectorAll() (which only finds descendants)
@@ -43,10 +40,10 @@ class Form {
                     button.addEventListener('click', function onSubmitButtonsClick(clickEvent) {
                         let formHasErrors = false;
 
-                        // remove all error counter badges (tabs and fieldsets)
+                        // '.tab-nav-item-badge' are the custom badges configured for tabs, not error counters
                         document
                             .querySelectorAll(
-                                '.form-tabs-tablist .nav-item .badge-danger.badge, .form-fieldset-title-content .badge-danger.badge'
+                                '.form-tabs-tablist .nav-item .badge-danger.badge:not(.tab-nav-item-badge), .form-fieldset-title-content .badge-danger.badge'
                             )
                             .forEach((badge) => {
                                 badge.parentElement.removeChild(badge);
@@ -63,10 +60,8 @@ class Form {
                             if (!input.disabled && !input.validity.valid) {
                                 formHasErrors = true;
 
-                                // visual feedback for tabs: adding a badge with a error count next to the tab label
                                 const formTab = input.closest('div.tab-pane');
                                 if (formTab) {
-                                    // match tab link either by "data-bs-target" attribute or by href linking to the id anchor
                                     const navLinkTab = document.querySelector(
                                         `[data-bs-target="#${formTab.id}"], a[href="#${formTab.id}"]`
                                     );
@@ -74,12 +69,10 @@ class Form {
                                     if (navLinkTab) {
                                         navLinkTab.classList.add('has-error');
 
-                                        const badge = navLinkTab.querySelector('.badge');
+                                        const badge = navLinkTab.querySelector('.badge:not(.tab-nav-item-badge)');
                                         if (badge) {
-                                            // increment number of error
                                             badge.textContent = (Number.parseInt(badge.textContent) + 1).toString();
                                         } else {
-                                            // create a new badge
                                             const newErrorBadge = document.createElement('span');
                                             newErrorBadge.classList.add('badge', 'badge-danger');
                                             newErrorBadge.textContent = '1';
@@ -88,7 +81,6 @@ class Form {
                                     }
                                 }
 
-                                // visual feedback for fieldsets
                                 const formFieldset = input.closest('div.form-fieldset');
                                 if (formFieldset) {
                                     const fieldsetTitleContent =
@@ -109,13 +101,10 @@ class Form {
                                     }
                                 }
 
-                                // visual feedback for group
                                 const formGroup = input.closest('div.form-group');
-                                formGroup.classList.add('has-error');
-
-                                formGroup.addEventListener('click', function onFormGroupClick() {
-                                    formGroup.classList.remove('has-error');
-                                    formGroup.removeEventListener('click', onFormGroupClick);
+                                formGroup?.classList.add('has-error');
+                                formGroup?.addEventListener('click', () => formGroup.classList.remove('has-error'), {
+                                    once: true,
                                 });
                             }
                         });
@@ -124,7 +113,6 @@ class Form {
                             clickEvent.preventDefault();
                             clickEvent.stopPropagation();
 
-                            // set as active the first tab with errors
                             const firstTabWithErrors = document.querySelector(
                                 '.form-tabs-tablist .nav-tabs .nav-item .nav-link.has-error'
                             );
@@ -132,7 +120,6 @@ class Form {
                                 setTabAsActive(firstTabWithErrors.id);
                             }
 
-                            // auto-expand all collapsed fieldsets with errors
                             document
                                 .querySelectorAll('.form-fieldset.has-fieldset-error')
                                 .forEach((fieldsetWithErrors) => {
@@ -140,8 +127,7 @@ class Form {
                                         '.form-fieldset-body.collapse:not(.show)'
                                     );
                                     if (collapsedBody) {
-                                        const Collapse = bootstrap.Collapse;
-                                        new Collapse(collapsedBody, { toggle: true });
+                                        bootstrap.Collapse.getOrCreateInstance(collapsedBody, { toggle: false }).show();
                                         const collapseToggle =
                                             fieldsetWithErrors.querySelector('.form-fieldset-collapse');
                                         if (collapseToggle) {
@@ -191,7 +177,11 @@ class Form {
 
             form.addEventListener(
                 'submit',
-                () => {
+                (submitEvent) => {
+                    if (submitEvent.defaultPrevented) {
+                        return;
+                    }
+
                     // this timeout is needed to include the disabled button into the submitted form
                     setTimeout(() => {
                         Array.from(form.elements)

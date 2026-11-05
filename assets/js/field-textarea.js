@@ -11,26 +11,22 @@ class Autogrow {
         this.field.style.resize = 'none';
         this.field.style.boxSizing = 'border-box';
 
-        // this is needed to avoid jumps when editing content in large textareas
-        // see https://github.com/EasyCorp/EasyAdminBundle/issues/7258
+        // the <textarea> can be inside a hidden tab or a collapsed panel; its computed width
+        // is 'auto' there, so the mirror would compute a wrong height
+        if (0 === this.field.getClientRects().length) {
+            return;
+        }
+
+        // measuring a mirror avoids jumps when editing content in large textareas
+        // (see https://github.com/EasyCorp/EasyAdminBundle/issues/7258)
         // TODO: remove this when `field-sizing: content` is widely supported (https://caniuse.com/?search=field-sizing)
         if (!this.mirror) {
             this.createMirror();
         }
 
-        // sync width (use computedStyle to get actual rendered width)
         this.mirror.style.width = window.getComputedStyle(this.field).width;
-
-        // copy content to mirror
         this.mirror.value = this.field.value;
-
-        const newHeight = this.mirror.scrollHeight;
-
-        // this check is needed because the <textarea> element can be inside a
-        // minimizable panel, causing its scrollHeight value to be 0
-        if (newHeight > 0) {
-            this.field.style.height = `${newHeight}px`;
-        }
+        this.field.style.height = `${this.mirror.scrollHeight}px`;
     }
 
     createMirror() {

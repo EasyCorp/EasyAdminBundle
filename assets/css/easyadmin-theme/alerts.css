@@ -1,33 +1,31 @@
 /* Alerts and flash messages
 /* ------------------------------------------------------------------------- */
 
-#flash-messages {
-    background: transparent;
-}
 .alert {
-    border-width: 0 0 var(--border-width);
+    color: var(--text-color);
+    margin-block-end: var(--ea-sp-8);
+}
+.alert:last-child {
     margin-block-end: 0;
 }
-.alert:last-of-type {
-    border-block-end-width: 2px;
-}
 
-/* alerts with an icon switch to a two-column layout (icon + content) */
 .alert:has(> .alert-icon) {
     display: flex;
     align-items: flex-start;
     gap: var(--ea-sp-4);
 }
 .alert > .alert-icon {
+    block-size: 1lh;
+    color: var(--bs-alert-color);
     flex-shrink: 0;
-    margin-block-start: var(--ea-sp-1);
 }
 .alert > .alert-content {
     flex: 1;
     min-inline-size: 0;
 }
 .alert .alert-title {
-    font-weight: var(--font-weight-medium);
+    color: var(--bs-alert-color);
+    font-weight: var(--font-weight-semibold);
 }
 .alert .alert-actions {
     display: flex;
@@ -35,18 +33,52 @@
     margin-block-start: var(--ea-sp-4);
 }
 
+/* Bootstrap uses physical 'padding-right' and 'right', which are wrong in RTL */
+.alert-dismissible {
+    padding-inline: var(--bs-alert-padding-x) 3rem;
+}
 /* scoped to '.btn.btn-close' because these rules only undo what '.btn' does to the Alert
    dismiss button; plain Bootstrap close buttons must keep Bootstrap's layout */
 .alert-dismissible .btn.btn-close {
     --bs-btn-close-opacity: 1;
     --bs-btn-close-hover-opacity: 1;
+    --button-hover-bg: color-mix(in srgb, var(--bs-alert-color) 12%, transparent);
+    --button-active-bg: color-mix(in srgb, var(--bs-alert-color) 20%, transparent);
+    --button-font-size: var(--font-size-base);
+
+    /* Bootstrap sizes this button as 'content-box', which adds the size set by '.btn' to the
+       padding and the border and makes it wider than other icon-only buttons */
+    block-size: var(--button-height);
+    box-sizing: border-box;
+    inline-size: var(--button-height);
 
     /* Bootstrap positions this button absolutely, but its rule lives in the 'vendor' layer and
-       the 'ea' layer's '.btn { position: relative }' would win, leaving the button inline */
+       the 'ea' layer's '.btn { position: relative }' would win, leaving the button inline.
+       The offset centers the button on the first line of the message */
     position: absolute;
-    inset-block-start: var(--ea-sp-5);
-    inset-inline-end: 5px;
-    padding: var(--button-padding-y-md) var(--button-padding-x-md);
+    inset-block-start: calc(var(--bs-alert-padding-y) + 0.5lh - 0.5 * var(--button-height));
+    inset-inline: auto var(--ea-sp-4);
+}
+.alert-dismissible .btn.btn-close::after {
+    content: "";
+    inset: calc(-1 * var(--ea-sp-2));
+    position: absolute;
+}
+
+#flash-messages {
+    display: flow-root;
+    padding-inline: var(--ea-sp-4);
+}
+#flash-messages .alert {
+    margin-block: var(--ea-sp-4);
+}
+@media (min-width: 992px) {
+    #flash-messages {
+        background: var(--sidebar-bg);
+    }
+    #flash-messages .alert:last-child {
+        margin-block-end: 0;
+    }
 }
 
 /* Bootstrap inverts close buttons in dark mode because their glyph is a black data-URI

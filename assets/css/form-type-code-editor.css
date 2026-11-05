@@ -6,6 +6,8 @@
 @layer ea.components {
     .CodeMirror {
         font-family: var(--font-family-monospace);
+        font-feature-settings: normal;
+        font-variant-ligatures: none;
         font-size: var(--font-size-sm);
         line-height: var(--line-height-normal);
         block-size: auto;
@@ -15,14 +17,22 @@
     .CodeMirror-wrap {
         background: var(--form-control-bg);
         border: var(--border-width) solid var(--form-input-border-color);
-        box-shadow: var(--form-input-shadow);
-        border-radius: var(--border-radius);
+        border-radius: var(--form-control-border-radius);
         color: var(--form-input-text-color);
+        transition: border-color var(--ea-duration-fast) var(--ea-ease-out), background-color var(--ea-duration-fast)
+            var(--ea-ease-out);
     }
     .CodeMirror-wrap:focus-within {
-        border-color: var(--form-input-hover-border-color);
-        box-shadow: var(--form-input-hover-shadow);
+        border-color: var(--form-input-focus-border-color);
+        box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-focus-ring-color);
         outline: 0;
+    }
+    .has-error .CodeMirror-wrap {
+        border-color: var(--form-input-error-border-color);
+    }
+    .has-error .CodeMirror-wrap:focus-within {
+        border-color: var(--form-input-error-border-color);
+        box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-input-error-ring-color);
     }
     .CodeMirror-gutters {
         background: var(--form-input-group-text-bg);

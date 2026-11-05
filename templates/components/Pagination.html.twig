@@ -26,9 +26,9 @@
                 <li class="page-item page-item-previous {{ not has_previous_page ? 'disabled' }}">
                     <a class="{{ page_link_css_class }}" href="{{ not has_previous_page ? '#' : this.urlForPage(this.previousPage) }}"{% if has_previous_page %} rel="prev"{% else %} aria-disabled="true" tabindex="-1"{% endif %}>
                         {% if is_rtl %}
-                            <twig:ea:Icon name="internal:chevron-right" class="mx-1" aria-hidden="true" />
+                            <twig:ea:Icon name="internal:chevron-right" aria-hidden="true" />
                         {% else %}
-                            <twig:ea:Icon name="internal:chevron-left" class="mx-1" aria-hidden="true" />
+                            <twig:ea:Icon name="internal:chevron-left" aria-hidden="true" />
                         {% endif %}
 
                         <span class="{{ this.showPreviousNextLabels ? 'btn-label' : 'visually-hidden' }}">{## The label of the link to the previous page. ##}{% block previous_label %}{{ 'paginator.previous'|trans({}, this.translationDomain) }}{% endblock %}</span>
@@ -56,9 +56,9 @@
                         <span class="{{ this.showPreviousNextLabels ? 'btn-label' : 'visually-hidden' }}">{## The label of the link to the next page. ##}{% block next_label %}{{ 'paginator.next'|trans({}, this.translationDomain) }}{% endblock %}</span>
 
                         {% if is_rtl %}
-                            <twig:ea:Icon name="internal:chevron-left" class="mx-1" aria-hidden="true" />
+                            <twig:ea:Icon name="internal:chevron-left" aria-hidden="true" />
                         {% else %}
-                            <twig:ea:Icon name="internal:chevron-right" class="mx-1" aria-hidden="true" />
+                            <twig:ea:Icon name="internal:chevron-right" aria-hidden="true" />
                         {% endif %}
                     </a>
                 </li>

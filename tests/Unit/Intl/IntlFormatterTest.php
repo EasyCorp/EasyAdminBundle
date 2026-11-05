@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Intl;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use function Symfony\Component\String\u;
 
 class IntlFormatterTest extends TestCase
 {
@@ -194,14 +193,6 @@ class IntlFormatterTest extends TestCase
 
     private function normalizeWhiteSpaces(string $string): string
     {
-        return u($string)
-            ->replace("\xA0", ' ')         // no-break space (0xA0)
-            ->replace("\xE2\x80\xAF", ' ') // narrow no-break space (0x202F)
-            // for some unkown reason, the previous replace() calls fail sometimes
-            // if the input is 'a.<0x202F>m.', it returns 'a. .'
-            // i can't solve this in any way, so let's just add the missing 'm' in 'a. m.' and 'p. m.'
-            ->replace('a. .', 'a. m.')
-            ->replace('p. .', 'p. m.')
-            ->toString();
+        return str_replace(["\u{A0}", "\u{202F}"], ' ', $string);
     }
 }

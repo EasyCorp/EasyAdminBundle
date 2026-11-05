@@ -162,6 +162,7 @@ explained later)::
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Locale;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Option\Font;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Theme;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 
@@ -176,7 +177,7 @@ explained later)::
                 // the name visible to end users
                 ->setTitle('ACME Corp.')
                 // you can include HTML contents too (e.g. to link to an image)
-                ->setTitle('<img src="..."> ACME <span class="text-small">Corp.</span>')
+                ->setTitle('<img src="..."> ACME <small>Corp.</small>')
 
                 // by default EasyAdmin displays a black square as its default favicon;
                 // use this method to display a custom favicon: the given path is passed
@@ -215,38 +216,15 @@ explained later)::
                 // instead of magic strings, you can use constants as the value of
                 // this option: EasyCorp\Bundle\EasyAdminBundle\Config\Option\ColorScheme::DARK
 
-                // use this option to create a custom theme for the backend without
-                // writing any CSS (all Theme options are optional; you can call only
-                // the ones you need)
+                // changes the colors, corners, spacing and fonts of the backend without
+                // writing any CSS; all the options are optional and they are explained
+                // in the Design chapter
                 ->setTheme(Theme::new()
-                    // the accent color of buttons, links, switches, etc. Use the
-                    // hexadecimal, rgb(), hsl() or oklch() formats (no alpha channel).
-                    // The color of the text/icons displayed on top of primary-colored
-                    // elements is computed automatically based on this color.
-                    // The optional 'dark' argument sets a different primary color for
-                    // the dark color scheme (if not set, the same color is used in both)
-                    ->primaryColor('#15803d', dark: 'oklch(0.6 0.2 150)')
-                    // the base border radius from which all border radius values of the
-                    // backend derive. Use a CSS length in 'px' or 'rem' units or one of
-                    // these presets: 'none', 'xs', 'sm', 'md' (the default look), 'lg', 'xl'
-                    // (the 'sm', 'md', 'lg' and 'xl' presets are also available as the
-                    // constants of EasyCorp\Bundle\EasyAdminBundle\Config\Option\Size)
-                    ->radius('0.5rem')
-                    // the base spacing unit from which all paddings, margins, gaps and
-                    // control sizes derive; it defines the density of the whole interface.
-                    // Use a CSS length in 'px' or 'rem' units or one of these presets:
-                    // 'xs', 'sm', 'md' (the default look), 'lg', 'xl' (the 'sm', 'md', 'lg'
-                    // and 'xl' presets are also available as the constants of
-                    // EasyCorp\Bundle\EasyAdminBundle\Config\Option\Size)
+                    ->primaryColor('emerald')
+                    ->radius('lg')
                     ->spacing('md')
-                    // the gray scale used by all neutral surfaces, borders and text
-                    // colors: 'neutral', 'stone' (warmer), 'zinc', 'gray' or 'slate'
-                    // (cooler). The default look uses 'slate' in the light color scheme
-                    // and 'neutral' in the dark one. The optional 'dark' argument sets a
-                    // different gray scale for the dark color scheme (if not set, the
-                    // same scale is used in both). Instead of magic strings, you can use
-                    // the constants of EasyCorp\Bundle\EasyAdminBundle\Config\Option\GrayScale
-                    ->grays('zinc', dark: 'stone'))
+                    ->grays('zinc')
+                    ->font(base: Font::IbmPlexSans))
 
                 // by default, all backend URLs are generated as absolute URLs. If you
                 // need to generate relative URLs instead, call this method
@@ -280,9 +258,9 @@ The ``renderContentMaximized()``, ``renderSidebarMinimized()``, ``disableDarkMod
 boolean argument (which is ``true`` by default) so you can enable them conditionally
 (e.g. ``->disableDarkMode($someCondition)``).
 
-The ``setTheme()`` method covers the most common visual customizations without
-writing any CSS. Read :doc:`the Design chapter </design>` to learn how to further
-customize the look of your backend with your own assets and templates.
+The ``setTheme()`` method is the fastest way to make the backend look like yours.
+Read :ref:`the Design chapter <design-theme>` to learn about all its options, how to
+try them live in the UI Kit and how to go further with your own CSS and templates.
 
 Customizing the Dashboard Contents
 ----------------------------------
@@ -339,13 +317,13 @@ learn how to load the CSS and JavaScript files needed to render those charts.
 
 To use EasyAdmin's built-in layout on your custom dashboard (e.g. the main menu
 bar on the left - explained in the next section), make your template extend
-``vendor/easycorp/easyadmin-bundle/templates/layout.html.twig`` and override
+``vendor/easycorp/easyadmin-bundle/templates/page/content.html.twig`` and override
 some blocks:
 
 .. code-block:: twig
 
     {# templates/admin/my-dashboard.html.twig #}
-    {% extends '@EasyAdmin/layout.html.twig' %}
+    {% extends '@EasyAdmin/page/content.html.twig' %}
 
     {% block main %}
         {# ... #}
@@ -1285,6 +1263,13 @@ etc. Example:
             </tbody>
         </table>
     {% endblock %}
+
+The HTML contents of the ``main`` block (headings, paragraphs, lists, tables,
+links, etc.) are styled automatically, so they look like the rest of the
+backend without writing any CSS. Templates that extend
+``@EasyAdmin/layout.html.twig`` directly don't get these styles. Read
+:ref:`how to style custom content <design-prose>` to learn more about these
+styles and how to disable them.
 
 .. _custom-pages-symfony-forms:
 

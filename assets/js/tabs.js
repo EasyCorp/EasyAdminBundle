@@ -37,10 +37,8 @@ function persistSelectedTab() {
         setTabAsActive(selectedTabId);
     }
 
-    // update the page anchor when the selected tab changes
     document.querySelectorAll(TAB_SELECTOR).forEach((tabElement) => {
         tabElement.addEventListener('shown.bs.tab', (event) => {
-            // don't push state when navigating through browser history (back/forward)
             if (isNavigatingHistory) {
                 return;
             }
@@ -49,7 +47,6 @@ function persistSelectedTab() {
         });
     });
 
-    // handle browser back/forward navigation to restore the correct tab
     window.addEventListener('popstate', () => {
         isNavigatingHistory = true;
         const urlHash = window.location.hash;

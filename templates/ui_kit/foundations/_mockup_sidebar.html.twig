@@ -1,0 +1,13 @@
+<div class="ea-ui-kit-mockup-sidebar">
+    <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-logo"></div>
+    <twig:ea:Sidebar:Group label="Sales" icon="internal:folder-open">
+        <twig:ea:Sidebar:Item label="Orders" href="#" icon="internal:file-lines" active />
+        <twig:ea:Sidebar:Item label="Invoices" href="#" icon="internal:detail" />
+        <twig:ea:Sidebar:Item label="Customers" href="#" icon="internal:user" />
+    </twig:ea:Sidebar:Group>
+    <div class="ea-ui-kit-mockup-menu-placeholders">
+        {% for width in [70, 55, 80, 60] %}
+            <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-w{{ width }}"></div>
+        {% endfor %}
+    </div>
+</div>

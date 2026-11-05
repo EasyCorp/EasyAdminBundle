@@ -17,6 +17,10 @@
         {% endguard %}
     {% endblock head_metas %}
 
+    {% block head_fonts %}
+        {{ include('@EasyAdmin/includes/_fonts.html.twig', {theme: ea.dashboardTheme, asset_package: ea.assets.defaultAssetPackageName}, with_context: false) }}
+    {% endblock head_fonts %}
+
     {% set page_title_block_output %}{% block page_title %}{{ block('content_title') }}{% endblock %}{% endset %}
     <title>{{ page_title_block_output|striptags|raw }}</title>
 
@@ -33,6 +37,9 @@
        configured by the user, so their CSS can override the theme #}
     {# these lines are not indented on purpose: Twig removes the newline found
        after each tag, so the CSS newlines must belong to the content lines #}
+    {# the values are printed with 'raw' because browsers don't decode HTML entities
+       inside <style> (e.g. the quotes of font names); it's safe because the Theme
+       class only accepts strictly validated values #}
     {% block head_theme %}
         {% set theme = ea.dashboardTheme %}
         {% if theme is not null and theme.hasCssVariables %}
@@ -45,6 +52,13 @@
 {% if themeCssVariables.common is not empty %}
 :root, .ea-dark-scheme {
 {% for name, value in themeCssVariables.common %}
+    {{ name }}: {{ value|raw }};
+{% endfor %}
+}
+{% endif %}
+{% if themeCssVariables.light is not empty %}
+:root {
+{% for name, value in themeCssVariables.light %}
     {{ name }}: {{ value }};
 {% endfor %}
 }
@@ -52,7 +66,7 @@
 {% if themeCssVariables.dark is not empty %}
 .ea-dark-scheme {
 {% for name, value in themeCssVariables.dark %}
-    {{ name }}: {{ value }};
+    {{ name }}: {{ value|raw }};
 {% endfor %}
 }
 {% endif %}
@@ -100,7 +114,9 @@
         id="{% block body_id %}{% endblock %}"
         class="ea {% block body_class %}{% endblock %}"
         data-ea-content-width="{{ ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal' }}"
+        data-ea-content-width-configured="{{ (ea.crud.contentWidth ?? null) is not null or (ea.dashboardContentWidthConfigured ?? false) ? 'true' : 'false' }}"
         data-ea-sidebar-width="{{ ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal' }}"
+        data-ea-sidebar-width-configured="{{ (ea.crud.sidebarWidth ?? null) is not null or (ea.dashboardSidebarWidthConfigured ?? false) ? 'true' : 'false' }}"
         data-ea-dark-scheme-is-enabled="{{ ea.dashboardHasDarkModeEnabled ? 'true' : 'false' }}"
         data-ea-default-color-scheme="{{ ea.dashboardDefaultColorScheme }}"
         data-ea-icon-set="{{ ea.assets.iconSet }}"
@@ -167,7 +183,7 @@
         {% set impersonator_permission = constant('Symfony\\Component\\Security\\Core\\Authorization\\Voter\\AuthenticatedVoter::IS_IMPERSONATOR') is defined ? 'IS_IMPERSONATOR' : 'ROLE_PREVIOUS_ADMIN' %}
 
         {% set user_menu_dropdown %}
-            <twig:ea:ActionMenu:ActionList>
+            <twig:ea:ActionMenu:ActionList align="end">
                 <twig:ea:ActionMenu:ActionList:Content class="dropdown-user-details">
                     <div>{{ user_menu_avatar }}</div>
                     <div>
@@ -188,7 +204,7 @@
                     </twig:ea:ActionMenu:Button>
 
                     <twig:ea:ActionMenu:Overlay>
-                        <twig:ea:ActionMenu:ActionList>
+                        <twig:ea:ActionMenu:ActionList align="end">
                             {% if ea.dashboardLocales %}
                                 <twig:ea:ActionMenu:ActionList:RadioList label="{{ 'settings.locale'|trans(domain: 'EasyAdminBundle') }}" labelClass="dropdown-locales-label">
                                     {% for localeDto in ea.dashboardLocales %}
@@ -236,9 +252,9 @@
             {% block wrapper %}
                 <div class="responsive-header">
                     {% block responsive_header %}
-                        <twig:ea:Button type="button" isInvisible icon="internal:menu-bars" id="navigation-toggler" aria-label="Toggle navigation" aria-expanded="false"></twig:ea:Button>
+                        <twig:ea:Button type="button" variant="ghost" icon="internal:menu-bars" id="navigation-toggler" aria-label="Toggle navigation" aria-expanded="false"></twig:ea:Button>
 
-                        <div id="responsive-header-logo" class="text-truncate ms-auto">
+                        <div id="responsive-header-logo" class="text-truncate">
                             {% block responsive_header_logo %}
                                 <a class="responsive-logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
                                     {{ ea.dashboardTitle|raw }}
@@ -246,22 +262,24 @@
                             {% endblock responsive_header_logo %}
                         </div>
 
-                        <twig:ea:ActionMenu class="ms-auto user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
-                            <twig:ea:ActionMenu:Button class="user-details" data-bs-offset="0,5" withoutDropdownToggleMarker>
-                                {# to make the site design consistent, always display the user avatar in responsive header
-                                   and hide the user name (because there's no space left) regardless of the user config #}
-                                {% if ea.userMenu.avatarDisplayed %}
-                                    {{ user_menu_avatar }}
-                                {% else %}
-                                    <twig:ea:Icon class="user-avatar" name="{{ ea.user is not null ? 'internal:user' : 'internal:user-xmark' }}" />
-                                {% endif %}
-                            </twig:ea:ActionMenu:Button>
-                            <twig:ea:ActionMenu:Overlay>
-                                {{ user_menu_dropdown }}
-                            </twig:ea:ActionMenu:Overlay>
-                        </twig:ea:ActionMenu>
+                        <div class="responsive-header-actions">
+                            <twig:ea:ActionMenu class="user-menu-wrapper {{ is_granted(impersonator_permission) ? 'user-is-impersonated' }}">
+                                <twig:ea:ActionMenu:Button class="user-details" data-bs-offset="0,5" withoutDropdownToggleMarker>
+                                    {# to make the site design consistent, always display the user avatar in responsive header
+                                       and hide the user name (because there's no space left) regardless of the user config #}
+                                    {% if ea.userMenu.avatarDisplayed %}
+                                        {{ user_menu_avatar }}
+                                    {% else %}
+                                        <twig:ea:Icon class="user-avatar" name="{{ ea.user is not null ? 'internal:user' : 'internal:user-xmark' }}" />
+                                    {% endif %}
+                                </twig:ea:ActionMenu:Button>
+                                <twig:ea:ActionMenu:Overlay>
+                                    {{ user_menu_dropdown }}
+                                </twig:ea:ActionMenu:Overlay>
+                            </twig:ea:ActionMenu>
 
-                        {{ settings_dropdown }}
+                            {{ settings_dropdown }}
+                        </div>
                     {% endblock responsive_header %}
                 </div>
 
@@ -309,6 +327,15 @@
                         {{ sidebar_contents }}
                     </twig:ea:Sidebar>
                 </div>
+                {% set is_sidebar_compact = 'compact' == (ea.crud.sidebarWidth ?? ea.dashboardSidebarWidth ?? 'normal') %}
+                <button type="button" class="ea-layout-toggle ea-layout-toggle-sidebar"
+                        aria-expanded="{{ is_sidebar_compact ? 'false' : 'true' }}"
+                        aria-label="{{ (is_sidebar_compact ? 'layout.expand' : 'layout.collapse')|trans(domain: 'EasyAdminBundle') }}"
+                        data-ea-collapse-label="{{ 'layout.collapse'|trans(domain: 'EasyAdminBundle') }}"
+                        data-ea-expand-label="{{ 'layout.expand'|trans(domain: 'EasyAdminBundle') }}">
+                    <span class="ea-layout-toggle-marker" aria-hidden="true"></span>
+                    <span class="ea-layout-toggle-label" aria-hidden="true">{{ (is_sidebar_compact ? 'layout.expand' : 'layout.collapse')|trans(domain: 'EasyAdminBundle') }}</span>
+                </button>
                 {% block main_content_wrapper %}
                 <section class="main-content">
                     {% set has_search = ea.crud is not null and ea.crud.isSearchEnabled %}
@@ -419,14 +446,6 @@
                                             <div class="content-header-title">
                                                 <h1 class="title">
                                                     {% block content_title %}{% endblock %}
-
-                                                    {% block content_help %}
-                                                        {% if has_help_message %}
-                                                            <a tabindex="0" class="content-header-help" data-bs-toggle="popover" data-bs-custom-class="ea-content-help-popover" data-bs-animation="true" data-bs-html="true" data-bs-placement="bottom" data-bs-trigger="focus" data-bs-content="{{ ea.crud.helpMessage|trans|e('html') }}">
-                                                                <twig:ea:Icon name="internal:circle-info" />
-                                                            </a>
-                                                        {% endif %}
-                                                    {% endblock %}
                                                 </h1>
                                             </div>
 
@@ -435,6 +454,17 @@
                                             {% endblock %}
                                         {% endblock content_header %}
                                     </section>
+
+                                    {% block content_help %}
+                                        {% if has_help_message %}
+                                            <div class="content-help" data-ea-content-help data-state="collapsed">
+                                                <div class="content-help-message" id="content-help-message" tabindex="-1">{{ crud_help_message|trans|raw }}</div>
+                                                <button type="button" class="content-help-expander" hidden aria-expanded="false" aria-controls="content-help-message" aria-label="{{ 'action.show_help'|trans(domain: 'EasyAdminBundle') }}" title="{{ 'action.show_help'|trans(domain: 'EasyAdminBundle') }}">
+                                                    <twig:ea:Icon name="internal:dots-horizontal" />
+                                                </button>
+                                            </div>
+                                        {% endif %}
+                                    {% endblock %}
                                 {% endblock content_header_wrapper %}
 
                                 <section id="main" class="content-body">
@@ -451,7 +481,17 @@
                             </article>
                         {% endblock content %}
 
-                        <div id="content-resizer-handler" class="resizer-handler resizer-handler-right"></div>
+                        {% set is_content_full = 'full' == (ea.crud.contentWidth ?? ea.dashboardContentWidth ?? 'normal') %}
+                        <div class="ea-layout-toggle-content-rail">
+                            <button type="button" class="ea-layout-toggle ea-layout-toggle-content"
+                                    aria-expanded="{{ is_content_full ? 'true' : 'false' }}"
+                                    aria-label="{{ (is_content_full ? 'layout.collapse' : 'layout.expand')|trans(domain: 'EasyAdminBundle') }}"
+                                    data-ea-collapse-label="{{ 'layout.collapse'|trans(domain: 'EasyAdminBundle') }}"
+                                    data-ea-expand-label="{{ 'layout.expand'|trans(domain: 'EasyAdminBundle') }}">
+                                <span class="ea-layout-toggle-marker" aria-hidden="true"></span>
+                                <span class="ea-layout-toggle-label" aria-hidden="true">{{ (is_content_full ? 'layout.collapse' : 'layout.expand')|trans(domain: 'EasyAdminBundle') }}</span>
+                            </button>
+                        </div>
                     </div>
                 </section>
                 {% endblock main_content_wrapper %}

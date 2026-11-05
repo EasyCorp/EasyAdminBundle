@@ -8,12 +8,12 @@ To open/close the modal use the `<twig:ea:Modal:Trigger target="#id">` and
 Usage examples:
 
     # a confirmation dialog opened by a trigger button
-    <twig:ea:Modal:Trigger target="#delete-modal" variant="danger" icon="internal:delete">Delete</twig:ea:Modal:Trigger>
+    <twig:ea:Modal:Trigger target="#delete-modal" color="danger" icon="internal:delete">Delete</twig:ea:Modal:Trigger>
 
     <twig:ea:Modal id="delete-modal" title="Delete this item?" description="This action cannot be undone.">
         <twig:block name="footer">
             <twig:ea:Modal:Close>Cancel</twig:ea:Modal:Close>
-            <twig:ea:Button variant="danger" data-bs-dismiss="modal">Delete</twig:ea:Button>
+            <twig:ea:Button color="danger" variant="solid" data-bs-dismiss="modal">Delete</twig:ea:Button>
         </twig:block>
     </twig:ea:Modal>
 
@@ -29,7 +29,7 @@ Usage examples:
     <twig:ea:Modal id="warn-modal" topIcon="internal:circle-exclamation" title="Are you sure?">
         <twig:block name="footer">
             <twig:ea:Modal:Close>No</twig:ea:Modal:Close>
-            <twig:ea:Button variant="primary" data-bs-dismiss="modal">Yes</twig:ea:Button>
+            <twig:ea:Button color="primary" data-bs-dismiss="modal">Yes</twig:ea:Button>
         </twig:block>
     </twig:ea:Modal>
 #}

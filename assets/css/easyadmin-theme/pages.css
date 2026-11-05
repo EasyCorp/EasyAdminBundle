@@ -17,6 +17,9 @@ body.page-login {
     }
 }
 body.page-login #flash-messages {
+    /* the background of alerts is translucent and this element can overlap the login form;
+       'inherit' follows the page background, which changes with the viewport width */
+    background: inherit;
     position: absolute;
     inset-inline-start: 0;
     inset-block-start: 0;
@@ -29,10 +32,6 @@ body.page-login #flash-messages {
         inline-size: 25rem;
     }
 }
-.login-wrapper .main-header {
-    display: block;
-    padding-inline-end: 0;
-}
 .login-wrapper .main-header #header-logo {
     border-block-end: var(--border-width) var(--border-style) var(--border-secondary-color);
     margin: var(--ea-sp-12) 0 var(--ea-sp-8);
@@ -43,7 +42,7 @@ body.page-login #flash-messages {
         border-block-end: none;
     }
 }
-.login-wrapper .main-header #header-logo a {
+.login-wrapper .main-header #header-logo .logo {
     color: var(--sidebar-logo-color);
     display: block;
     font-size: var(--font-size-lg);
@@ -54,7 +53,7 @@ body.page-login #flash-messages {
     padding: 0;
 }
 @media (min-width: 576px) {
-    .login-wrapper .main-header #header-logo a {
+    .login-wrapper .main-header #header-logo .logo {
         font-size: var(--font-size-xl);
     }
 }
@@ -73,17 +72,19 @@ body.page-login #flash-messages {
 }
 .login-wrapper .form-widget input {
     background-color: var(--page-login-form-control-bg);
+    block-size: calc(var(--form-control-height) + var(--ea-sp-2));
     border-color: var(--page-login-form-control-border-color);
     font-size: var(--font-size-lg);
-    /* fixed height with matching line-height to center the text vertically */
-    block-size: 38px;
-    line-height: 38px;
+    line-height: var(--line-height-normal);
+    padding-block: 0;
 }
 .login-wrapper .form-group label.required:after {
     display: none;
 }
-.login-wrapper .btn-primary {
-    background-color: var(--page-login-form-control-button-bg);
+/* set the token instead of the background property, because the hover and active
+   backgrounds of solid buttons are derived from --button-c-tone */
+.login-wrapper .btn.btn-primary {
+    --button-c-tone: var(--page-login-form-control-button-bg);
     font-size: var(--font-size-base);
     margin-block-start: var(--ea-sp-8);
 }

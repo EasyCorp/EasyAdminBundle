@@ -58,17 +58,15 @@ class FileUploadField {
         const newFiles = Array.from(this.#fileInput.files);
 
         if (!this.#isMultiple) {
-            // single mode: remove any existing cards and replace
             this.#revokeAllObjectUrls();
             this.#removeAllCards();
             this.#selectedFiles = newFiles;
         } else {
-            // multiple mode: accumulate files across multiple selections
+            // each selection replaces the FileList of the input, so files are accumulated here
             this.#selectedFiles = this.#selectedFiles.concat(newFiles);
             this.#syncFileInput();
         }
 
-        // create cards for the newly selected files
         const startIndex = this.#selectedFiles.length - newFiles.length;
         for (let i = 0; i < newFiles.length; i++) {
             const objectUrl = URL.createObjectURL(newFiles[i]);
@@ -87,10 +85,8 @@ class FileUploadField {
         const fileName = cardElement.getAttribute('data-filename');
 
         if (fileName) {
-            // existing server-side file: track for per-file deletion
             this.#addToDeletedFiles(fileName);
         } else {
-            // newly selected file: remove from our tracked list
             const fileIndex = Number.parseInt(cardElement.getAttribute('data-file-index'), 10);
             if (!Number.isNaN(fileIndex) && fileIndex >= 0 && fileIndex < this.#selectedFiles.length) {
                 this.#selectedFiles.splice(fileIndex, 1);
@@ -99,7 +95,6 @@ class FileUploadField {
             }
         }
 
-        // revoke any object URL to prevent memory leaks
         const thumbnail = cardElement.querySelector('.ea-fileupload-card-thumbnail');
         if (thumbnail?.src.startsWith('blob:')) {
             URL.revokeObjectURL(thumbnail.src);
@@ -110,29 +105,23 @@ class FileUploadField {
     }
 
     #clearAll() {
-        // mark all existing files for deletion via checkbox
         if (this.#deleteCheckbox) {
             this.#deleteCheckbox.checked = true;
         }
 
-        // clear the per-file deletion tracking
         if (this.#deletedFilesInput) {
             this.#deletedFilesInput.value = '';
         }
 
-        // clear selected files and file input
         this.#selectedFiles = [];
         this.#fileInput.value = '';
 
-        // revoke object URLs and remove all cards
         this.#revokeAllObjectUrls();
         this.#removeAllCards();
         this.#updateToolbarVisibility();
     }
 
-    /**
-     * Syncs the file input's FileList with our #selectedFiles array using DataTransfer.
-     */
+    // a FileList can't be modified, so a new one is created with DataTransfer
     #syncFileInput() {
         const dt = new DataTransfer();
         for (const file of this.#selectedFiles) {
@@ -160,10 +149,7 @@ class FileUploadField {
         this.#deletedFilesInput.value = JSON.stringify(deletedFiles);
     }
 
-    /**
-     * Re-indexes all newly-added cards so their data-file-index matches
-     * their position in the #selectedFiles array.
-     */
+    // the 'data-file-index' of new cards must match their position in #selectedFiles
     #reindexNewCards() {
         let index = 0;
         this.#cardsContainer.querySelectorAll('[data-ea-fileupload-card][data-new-file]').forEach((card) => {
@@ -206,7 +192,6 @@ class FileUploadField {
         card.setAttribute('data-new-file', '');
         card.setAttribute('data-file-index', String(fileIndex));
 
-        // preview (left side)
         const preview = document.createElement('div');
         preview.className = 'ea-fileupload-card-preview';
 
@@ -224,7 +209,6 @@ class FileUploadField {
         }
         card.appendChild(preview);
 
-        // info (center)
         const info = document.createElement('div');
         info.className = 'ea-fileupload-card-info';
 
@@ -240,7 +224,6 @@ class FileUploadField {
 
         card.appendChild(info);
 
-        // actions (right side): only delete for newly selected files
         const actions = document.createElement('div');
         actions.className = 'ea-fileupload-card-actions';
 
@@ -261,9 +244,7 @@ class FileUploadField {
         return card;
     }
 
-    /**
-     * Safely converts an HTML string (from a trusted Twig-rendered data attribute) into DOM nodes.
-     */
+    // the HTML is not sanitized: it comes from a trusted, server-rendered data attribute
     #parseIconHtml(htmlString) {
         if (!htmlString) {
             return null;
@@ -285,7 +266,7 @@ class FileUploadField {
             return '0 B';
         }
 
-        const factor = Math.trunc(Math.floor(Math.log(bytes) / Math.log(1024)));
+        const factor = Math.floor(Math.log(bytes) / Math.log(1024));
 
         if (0 === factor) {
             return `${Math.trunc(bytes)} ${units[0]}`;

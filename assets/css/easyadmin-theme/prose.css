@@ -1,0 +1,1060 @@
+/* Typography of HTML content: the pages, documents and texts shown in the
+   backend, as opposed to the interface of the backend itself.
+
+   1. '.ea-prose' styles the HTML inside it; the 'main' block of custom pages
+      (body.page-content .content-body) gets the same styles automatically
+   2. classes don't stop it: <p class="text-center"> is still a styled paragraph
+   3. components are left alone: Bootstrap and EasyAdmin components, Bootstrap
+      typography classes (.h1, .display-1, .list-unstyled...) and forms
+   4. '.ea-not-prose' and [data-ea-not-prose] leave out any other part
+
+   How it works:
+   * every selector has zero specificity (except for the '::marker' ones, which
+     the last '::marker' rule matches with the same specificity), so source
+     order decides between these rules and any CSS outside of the EasyAdmin
+     cascade layers wins over them
+   * this file is the 'ea.prose' layer: it beats Bootstrap and base.css and it
+     loses to EasyAdmin components and utilities
+   * elements only get top margins, so each one owns the gap above it; every
+     vertical gap is a multiple of --ea-prose-spacing
+   * spacing uses em units instead of the --ea-sp-* steps used elsewhere in the
+     theme on purpose: it must scale with the text and the --ea-prose-* knobs
+   * the last rules undo everything for components and opt-outs with
+     'revert-layer', which rolls those elements back to the previous layers as
+     if this file didn't exist; prose-defaults.css gives opt-outs the default
+     backend typography instead of the one they'd inherit from prose
+
+   The spacing model follows shadcn/typeset and the color variables and the
+   covered elements follow the Tailwind CSS Typography plugin. Unlike them, this
+   file doesn't sit on top of a CSS reset, so it also neutralizes some Bootstrap
+   Reboot styles (margin-bottom of blocks, hr opacity, kbd colors, etc.) */
+
+:where(.ea-prose):not(:where(.ea-not-prose, [data-ea-not-prose], .ea-not-prose *, [data-ea-not-prose] *)) {
+    /* the font knobs are not declared by default: an undefined variable makes the
+       declaration invalid at computed-value time, which behaves like 'unset' and
+       inherits the font of the parent element; this is intended */
+    font-family: var(--ea-prose-font-family);
+    font-size: var(--ea-prose-font-size);
+    line-height: var(--ea-prose-line-height);
+    color: var(--prose-color);
+    overflow-wrap: break-word;
+}
+
+/* custom pages don't get container styles like .ea-prose (wrappers, forms and
+   components inside them would inherit them); instead, their outermost text
+   elements get them, and the elements nested inside those inherit them, as in
+   .ea-prose (e.g. a <p> in a table cell keeps the wrapping of the cell). Their
+   text size is set later in this file */
+:where(body.page-content .content-body)
+    :where(
+        p,
+        ul,
+        ol,
+        dl,
+        blockquote,
+        figure,
+        details,
+        address,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        table,
+        .ea-prose-scroll,
+        .footnotes,
+        [data-footnotes]
+    ):not(
+        :where(
+                p,
+                ul,
+                ol,
+                dl,
+                blockquote,
+                figure,
+                picture,
+                details,
+                address,
+                pre,
+                table,
+                h1,
+                h2,
+                h3,
+                h4,
+                h5,
+                h6,
+                .ea-prose-scroll,
+                .footnotes,
+                [data-footnotes],
+                .ea-prose
+            )
+            *
+    ) {
+    font-family: var(--ea-prose-font-family);
+    line-height: var(--ea-prose-line-height);
+    overflow-wrap: break-word;
+}
+
+:where(.ea-prose, body.page-content .content-body) :where(p, address) {
+    margin-block: var(--ea-prose-spacing) 0;
+}
+:where(.ea-prose, body.page-content .content-body) :where(p.lead) {
+    --ea-prose-element-scale: 1.286;
+    color: var(--prose-lead-color);
+    font-size: calc(var(--ea-prose-element-scale) * 1em);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.556;
+    margin-block-start: calc(var(--ea-prose-spacing) / 1.286);
+}
+:where(.ea-prose, body.page-content .content-body) :where([id]) {
+    scroll-margin-block-start: var(--ea-prose-spacing);
+}
+
+:where(.ea-prose, body.page-content .content-body) :where(a[href]) {
+    color: var(--prose-link-color);
+    font-weight: var(--link-font-weight);
+    text-decoration-line: underline;
+    text-decoration-color: var(--prose-link-underline-color);
+    text-underline-offset: 0.2em;
+}
+:where(.ea-prose, body.page-content .content-body) :where(a[href]:hover) {
+    text-decoration-color: currentColor;
+}
+:where(.ea-prose, body.page-content .content-body) :where(a[href]:focus-visible) {
+    border-radius: 0.125em;
+    outline: 2px solid var(--ea-primary-ring);
+    outline-offset: 2px;
+}
+:where(.ea-prose, body.page-content .content-body) :where(strong, b) {
+    color: var(--prose-bold-color);
+    font-weight: var(--font-weight-semibold);
+}
+:where(.ea-prose, body.page-content .content-body) :where(mark) {
+    background-color: var(--prose-mark-bg);
+    border-radius: 0.2em;
+    color: inherit;
+    padding: 0.05em 0.15em;
+}
+:where(.ea-prose, body.page-content .content-body) :where(abbr[title]) {
+    text-underline-offset: 0.2em;
+}
+:where(.ea-prose, body.page-content .content-body) :where(del, s) {
+    color: var(--prose-quote-color);
+}
+
+:where(.ea-prose, body.page-content .content-body) :where(h1, h2, h3, h4, h5, h6) {
+    color: var(--prose-heading-color);
+    font-family: var(--ea-prose-heading-font-family);
+    font-weight: var(--heading-font-weight);
+    margin-block-end: 0;
+}
+:where(.ea-prose, body.page-content .content-body) :where(h1) {
+    --ea-prose-element-scale: 1.867;
+    font-size: calc(var(--ea-prose-element-scale) * 1em);
+    letter-spacing: var(--heading-letter-spacing);
+    line-height: 1.25;
+    margin-block-start: var(--ea-prose-spacing);
+}
+:where(.ea-prose, body.page-content .content-body) :where(h2) {
+    --ea-prose-element-scale: 1.4;
+    font-size: calc(var(--ea-prose-element-scale) * 1em);
+    letter-spacing: var(--heading-letter-spacing);
+    line-height: 1.4;
+    margin-block-start: calc(var(--ea-prose-spacing) * 1.4);
+}
+:where(.ea-prose, body.page-content .content-body) :where(h3) {
+    --ea-prose-element-scale: 1.2;
+    font-size: calc(var(--ea-prose-element-scale) * 1em);
+    line-height: 1.45;
+    margin-block-start: var(--ea-prose-spacing);
+}
+:where(.ea-prose, body.page-content .content-body) :where(h4) {
+    font-size: 1em;
+    line-height: 1.5;
+    margin-block-start: var(--ea-prose-spacing);
+}
+:where(.ea-prose, body.page-content .content-body) :where(h5) {
+    --ea-prose-element-scale: 0.929;
+    color: var(--prose-quote-color);
+    font-size: calc(var(--ea-prose-element-scale) * 1em);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+    margin-block-start: calc(var(--ea-prose-spacing) / 0.929);
+}
+:where(.ea-prose, body.page-content .content-body) :where(h6) {
+    --ea-prose-element-scale: 0.857;
+    color: var(--prose-quote-color);
+    font-size: calc(var(--ea-prose-element-scale) * 1em);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.08em;
+    line-height: 1.5;
+    margin-block-start: calc(var(--ea-prose-spacing) / 0.857);
+    text-transform: uppercase;
+}
+
+:where(.ea-prose, body.page-content .content-body) :where(ul, ol) {
+    margin-block: var(--ea-prose-spacing) 0;
+    /* both sides, because Bootstrap sets a physical padding-left, which is the
+       wrong side in right-to-left languages */
+    padding-inline: 1.5em 0;
+}
+:where(.ea-prose, body.page-content .content-body) :where(ul > li, ol > li) {
+    margin-block-start: calc(var(--ea-prose-spacing) * 0.25);
+    padding-inline-start: 0.429em;
+}
+:where(.ea-prose, body.page-content .content-body) :where(ul > li)::marker {
+    color: var(--prose-bullet-color);
+}
+:where(.ea-prose, body.page-content .content-body) :where(ol > li)::marker {
+    color: var(--prose-counter-color);
+    font-weight: var(--font-weight-normal);
+}
+:where(.ea-prose, body.page-content .content-body) :where(ul.contains-task-list) {
+    list-style-type: none;
+    padding-inline: 0.25em 0;
+}
+:where(.ea-prose, body.page-content .content-body) :where(li.task-list-item > input[type="checkbox"]) {
+    accent-color: var(--ea-primary);
+    margin-inline-end: 0.5em;
+    vertical-align: -0.1em;
+}
+:where(.ea-prose, body.page-content .content-body) :where(dl) {
+    margin-block: var(--ea-prose-spacing) 0;
+}
+:where(.ea-prose, body.page-content .content-body) :where(dt) {
+    color: var(--prose-heading-color);
+    font-weight: var(--font-weight-medium);
+    margin-block-start: calc(var(--ea-prose-spacing) * 0.875);
+}
+:where(.ea-prose, body.page-content .content-body) :where(dd) {
+    margin-block: calc(var(--ea-prose-spacing) * 0.25) 0;
+    margin-inline-start: 0;
+    padding-inline-start: 1em;
+}
+:where(.ea-prose, body.page-content .content-body) :where(details) {
+    margin-block: var(--ea-prose-spacing) 0;
+}
+:where(.ea-prose, body.page-content .content-body) :where(summary) {
+    cursor: pointer;
+    font-weight: var(--font-weight-medium);
+}
+:where(.ea-prose, body.page-content .content-body) :where(summary)::marker {
+    color: var(--prose-counter-color);
+}
+
+:where(.ea-prose, body.page-content .content-body) :where(code) {
+    background-color: var(--prose-code-bg);
+    border-radius: var(--border-radius);
+    color: var(--prose-code-color);
+    font-family: var(--ea-prose-code-font-family, var(--font-family-monospace));
+    font-size: 0.857em;
+    padding: 0.125em 0.3em;
+}
+:where(.ea-prose, body.page-content .content-body) :where(kbd) {
+    background-color: transparent;
+    border: 1px solid var(--prose-rule-color);
+    border-block-end-width: 2px;
+    border-radius: var(--border-radius);
+    color: var(--prose-kbd-color);
+    font-family: inherit;
+    font-size: 0.857em;
+    font-weight: var(--font-weight-medium);
+    padding: 0.0625em 0.35em;
+}
+:where(.ea-prose, body.page-content .content-body) :where(kbd kbd) {
+    font-size: 1em;
+}
+:where(.ea-prose, body.page-content .content-body) :where(kbd:has(> kbd)) {
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
+    font-weight: inherit;
+    padding: 0;
+}
+:where(.ea-prose, body.page-content .content-body) :where(pre) {
+    --ea-prose-element-scale: 0.857;
+    background-color: var(--prose-pre-bg);
+    border-radius: var(--border-radius-lg);
+    color: var(--prose-pre-color);
+    direction: ltr;
+    font-family: var(--ea-prose-code-font-family, var(--font-family-monospace));
+    font-size: calc(var(--ea-prose-element-scale) * 1em);
+    line-height: 1.5;
+    margin-block: calc(var(--ea-prose-spacing) / 0.857) 0;
+    overflow-x: auto;
+    padding: 0.75em 1em;
+    tab-size: 4;
+}
+
+:where(.ea-prose, body.page-content .content-body) :where(blockquote) {
+    border-inline-start: 2px solid var(--prose-rule-color);
+    color: var(--prose-quote-color);
+    margin: var(--ea-prose-spacing) 0 0;
+    padding-inline-start: 1em;
+}
+:where(.ea-prose, body.page-content .content-body) :where(hr) {
+    border: 0;
+    border-block-start: 1px solid var(--prose-rule-color);
+    margin-block: calc(var(--ea-prose-spacing) * 2) 0;
+    opacity: 1;
+}
+:where(.ea-prose, body.page-content .content-body) :where(.footnotes, [data-footnotes]) {
+    --ea-prose-element-scale: 0.857;
+    border-block-start: 1px solid var(--prose-rule-color);
+    color: var(--prose-caption-color);
+    font-size: calc(var(--ea-prose-element-scale) * 1em);
+    margin-block-start: calc(var(--ea-prose-spacing) * 2);
+    padding-block-start: var(--ea-prose-spacing);
+}
+:where(.ea-prose, body.page-content .content-body) :where(math[display="block"]) {
+    margin-block-start: var(--ea-prose-spacing);
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-block: 0.25em;
+}
+
+:where(.ea-prose, body.page-content .content-body) :where(img, video) {
+    block-size: auto;
+    border-radius: var(--border-radius-lg);
+    display: block;
+    margin-block: var(--ea-prose-spacing) 0;
+    max-inline-size: 100%;
+}
+:where(.ea-prose, body.page-content .content-body) :where(picture) {
+    display: block;
+    margin-block: var(--ea-prose-spacing) 0;
+}
+:where(.ea-prose, body.page-content .content-body) :where(figure) {
+    margin: var(--ea-prose-spacing) 0 0;
+}
+:where(.ea-prose, body.page-content .content-body) :where(figcaption, caption) {
+    color: var(--prose-caption-color);
+    font-size: 0.857em;
+    line-height: 1.333;
+    margin-block-start: calc(var(--ea-prose-spacing) * 0.5);
+    text-align: start;
+}
+:where(.ea-prose, body.page-content .content-body) :where(caption) {
+    caption-side: bottom;
+    padding-block: 0;
+}
+
+:where(.ea-prose, body.page-content .content-body) :where(table) {
+    border-block-end: 1px solid var(--prose-rule-color);
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 1em;
+    font-variant-numeric: tabular-nums;
+    inline-size: 100%;
+    line-height: 1.5;
+    margin-block: var(--ea-prose-spacing) 0;
+}
+/* 'anywhere' (unlike 'break-word') also lowers the minimum width of the cells,
+   so long URLs break instead of making the table wider than the page */
+:where(.ea-prose, body.page-content .content-body) :where(th, td) {
+    overflow-wrap: anywhere;
+}
+:where(.ea-prose, body.page-content .content-body) :where(thead th) {
+    color: var(--prose-heading-color);
+    font-weight: var(--font-weight-medium);
+    padding: 0.571em 0.857em;
+    text-align: start;
+    vertical-align: bottom;
+}
+:where(.ea-prose, body.page-content .content-body) :where(:is(tbody, tfoot) :is(td, th)) {
+    border-block-start: 1px solid var(--prose-rule-color);
+    padding: 0.571em 0.857em;
+    text-align: start;
+    vertical-align: top;
+}
+:where(.ea-prose, body.page-content .content-body) :where(:is(tbody, tfoot) > tr:first-child > :is(td, th)) {
+    border-block-start-color: var(--prose-th-border-color);
+}
+:where(.ea-prose, body.page-content .content-body) :where(:is(tbody, tfoot) th) {
+    font-weight: var(--font-weight-medium);
+}
+:where(.ea-prose, body.page-content .content-body) :where(:is(th, td):first-child) {
+    padding-inline-start: 0;
+}
+:where(.ea-prose, body.page-content .content-body) :where(:is(th, td):last-child) {
+    padding-inline-end: 0;
+}
+/* the 'align' attribute is physical (align="right" is right also in right-to-left
+   pages), unlike the logical alignment that prose uses for the other cells */
+:where(.ea-prose, body.page-content .content-body) :where(:is(th, td)[align="left" i]) {
+    text-align: left;
+}
+:where(.ea-prose, body.page-content .content-body) :where(:is(th, td)[align="center" i]) {
+    text-align: center;
+}
+:where(.ea-prose, body.page-content .content-body) :where(:is(th, td)[align="right" i]) {
+    text-align: right;
+}
+:where(.ea-prose, body.page-content .content-body) :where(.ea-prose-scroll) {
+    margin-block-start: var(--ea-prose-spacing);
+    overflow-x: auto;
+}
+:where(.ea-prose, body.page-content .content-body) :where(.ea-prose-scroll > table) {
+    inline-size: max-content;
+    max-inline-size: none;
+}
+:where(.ea-prose, body.page-content .content-body) :where(.ea-prose-scroll thead th) {
+    white-space: nowrap;
+}
+
+/* custom pages have no container to set the text size on (see the custom page
+   rule above), so their outermost text elements get it instead; the elements
+   nested inside them inherit it, as in .ea-prose. Elements with their own size
+   (headings, code blocks, etc.) declare it as --ea-prose-element-scale, so here
+   it multiplies the text size; the other elements inherit no scale (none of
+   their ancestors outside these elements declares it), so the fallback is 1 */
+:where(body.page-content .content-body)
+    :where(
+        p,
+        ul,
+        ol,
+        dl,
+        blockquote,
+        figure,
+        picture,
+        details,
+        address,
+        hr,
+        pre,
+        table,
+        img,
+        video,
+        math,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .ea-prose-scroll,
+        .footnotes,
+        [data-footnotes]
+    ):not(
+        :where(
+                p,
+                ul,
+                ol,
+                dl,
+                blockquote,
+                figure,
+                picture,
+                details,
+                address,
+                pre,
+                table,
+                h1,
+                h2,
+                h3,
+                h4,
+                h5,
+                h6,
+                .ea-prose-scroll,
+                .footnotes,
+                [data-footnotes],
+                .ea-prose
+            )
+            *
+    ) {
+    font-size: calc(var(--ea-prose-font-size) * var(--ea-prose-element-scale, 1));
+}
+
+/* the rules from here on override the previous ones for some contexts, so they
+   must stay after them */
+:where(.ea-prose, body.page-content .content-body) :where(:is(h1, h2, h3, h4, h5, h6) + *) {
+    margin-block-start: calc(var(--ea-prose-spacing) * 0.875);
+}
+:where(.ea-prose, body.page-content .content-body) :where(hr + *) {
+    margin-block-start: calc(var(--ea-prose-spacing) * 2);
+}
+:where(.ea-prose, body.page-content .content-body) :where(li > :is(p, ul, ol, blockquote, table, figure, picture)) {
+    margin-block-start: calc(var(--ea-prose-spacing) * 0.5);
+}
+:where(.ea-prose, body.page-content .content-body) :where(li > pre) {
+    margin-block-start: calc(var(--ea-prose-spacing) * 0.5 / 0.857);
+}
+:where(.ea-prose, body.page-content .content-body) :where(dt + dt) {
+    margin-block-start: calc(var(--ea-prose-spacing) * 0.25);
+}
+:where(.ea-prose, body.page-content .content-body) :where(.ea-prose-scroll > *, picture > img) {
+    margin-block-start: 0;
+}
+:where(.ea-prose, body.page-content .content-body)
+    :where(:is(p, li, td, th, dt, dd, h1, h2, h3, h4, h5, h6, figcaption, caption, a) :is(img, video)) {
+    display: inline;
+    margin-block-start: 0;
+}
+:where(.ea-prose, body.page-content .content-body) :where(:is(h1, h2, h3, h4) code) {
+    font-size: 0.9em;
+}
+:where(.ea-prose, body.page-content .content-body)
+    :where(:is(h1, h2, h3, h4, h5, h6, a, blockquote, thead th) :is(code, strong, b)) {
+    color: inherit;
+}
+:where(.ea-prose, body.page-content .content-body) :where(:is(h1, h2, h3, h4, h5, h6) :is(a[href], strong, b)) {
+    color: inherit;
+    font-weight: inherit;
+}
+:where(.ea-prose, body.page-content .content-body) :where(sup a[href]) {
+    text-decoration-line: none;
+}
+:where(.ea-prose, body.page-content .content-body) :where(pre code) {
+    background: transparent;
+    border-radius: 0;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+}
+
+@media print {
+    :where(.ea-prose, body.page-content .content-body) :where(pre, table, blockquote, figure) {
+        break-inside: avoid;
+    }
+    :where(.ea-prose, body.page-content .content-body) :where(h1, h2, h3, h4) {
+        break-after: avoid;
+    }
+}
+/* forced colors modes remove backgrounds, so inline code needs a border */
+@media (forced-colors: active) {
+    :where(.ea-prose, body.page-content .content-body) :where(code) {
+        border: 1px solid;
+    }
+    :where(.ea-prose, body.page-content .content-body) :where(pre code) {
+        border: 0;
+    }
+}
+
+:where(.ea-prose, body.page-content .content-body) > :where(:first-child),
+:where(.ea-prose, body.page-content .content-body) > :where(:first-child) > :where(:first-child),
+:where(.ea-prose, body.page-content .content-body)
+    :where(:is(li, blockquote, td, th, dd, figure, details) > :first-child) {
+    margin-block-start: 0;
+}
+/* top margins don't collapse in flex and grid containers, so they would push
+   their items out of line (e.g. a heading next to a button); '.row' is left
+   out because Bootstrap uses that margin for its vertical gutter */
+:where(.ea-prose, body.page-content .content-body)
+    :where(:is(.d-flex, .d-inline-flex, .d-grid, .d-inline-grid, .hstack, .vstack) > *) {
+    margin-block-start: 0;
+}
+
+/* Undo all the previous rules for opt-outs and for components: this must be
+   after all the prose rules (except for the following '::marker' one and the
+   gaps above the elements without prose styles) because all prose rules have the
+   same zero specificity. 'revert-layer' rolls each property back to the value
+   of the previous layers (Bootstrap and base.css), as if prose didn't exist.
+
+   The components are Bootstrap components, Bootstrap typography classes that
+   prose would override (they don't use '!important'), EasyAdmin components and
+   forms. Their last three selectors match: a component (unless it's also a
+   prose container), the contents of a component that isn't inside a prose
+   container and the contents of a component placed inside a prose container.
+   When adding an EasyAdmin component, add its root CSS class to these lists */
+:where(.ea-prose, body.page-content .content-body)
+    :where(
+        .ea-not-prose,
+        .ea-not-prose *,
+        [data-ea-not-prose],
+        [data-ea-not-prose] *,
+        :is(
+                .accordion,
+                .alert,
+                .badge,
+                .breadcrumb,
+                .btn,
+                .btn-group,
+                .btn-toolbar,
+                .card,
+                .carousel,
+                .dropdown,
+                .dropdown-menu,
+                .input-group,
+                .list-group,
+                .modal,
+                .nav,
+                .navbar,
+                .offcanvas,
+                .pagination,
+                .popover,
+                .table,
+                .toast,
+                .tooltip,
+                .h1,
+                .h2,
+                .h3,
+                .h4,
+                .h5,
+                .h6,
+                .display-1,
+                .display-2,
+                .display-3,
+                .display-4,
+                .display-5,
+                .display-6,
+                .list-unstyled,
+                .list-inline,
+                .blockquote,
+                .figure,
+                .img-thumbnail,
+                .datagrid,
+                .content-panel,
+                .list-pagination,
+                .ea-sidebar,
+                .form-tabs-tablist,
+                form
+            ):not(.ea-prose),
+        :is(
+                .accordion,
+                .alert,
+                .badge,
+                .breadcrumb,
+                .btn,
+                .btn-group,
+                .btn-toolbar,
+                .card,
+                .carousel,
+                .dropdown,
+                .dropdown-menu,
+                .input-group,
+                .list-group,
+                .modal,
+                .nav,
+                .navbar,
+                .offcanvas,
+                .pagination,
+                .popover,
+                .table,
+                .toast,
+                .tooltip,
+                .h1,
+                .h2,
+                .h3,
+                .h4,
+                .h5,
+                .h6,
+                .display-1,
+                .display-2,
+                .display-3,
+                .display-4,
+                .display-5,
+                .display-6,
+                .list-unstyled,
+                .list-inline,
+                .blockquote,
+                .figure,
+                .img-thumbnail,
+                .datagrid,
+                .content-panel,
+                .list-pagination,
+                .ea-sidebar,
+                .form-tabs-tablist,
+                form
+            )
+            *:not(.ea-prose, .ea-prose *),
+        .ea-prose
+            :is(
+                .accordion,
+                .alert,
+                .badge,
+                .breadcrumb,
+                .btn,
+                .btn-group,
+                .btn-toolbar,
+                .card,
+                .carousel,
+                .dropdown,
+                .dropdown-menu,
+                .input-group,
+                .list-group,
+                .modal,
+                .nav,
+                .navbar,
+                .offcanvas,
+                .pagination,
+                .popover,
+                .table,
+                .toast,
+                .tooltip,
+                .h1,
+                .h2,
+                .h3,
+                .h4,
+                .h5,
+                .h6,
+                .display-1,
+                .display-2,
+                .display-3,
+                .display-4,
+                .display-5,
+                .display-6,
+                .list-unstyled,
+                .list-inline,
+                .blockquote,
+                .figure,
+                .img-thumbnail,
+                .datagrid,
+                .content-panel,
+                .list-pagination,
+                .ea-sidebar,
+                .form-tabs-tablist,
+                form
+            )
+            *
+    ) {
+    all: revert-layer;
+    /* 'all' doesn't include 'direction', which prose sets on <pre> */
+    direction: revert-layer;
+}
+:where(.ea-prose, body.page-content .content-body)
+    :where(
+        .ea-not-prose,
+        .ea-not-prose *,
+        [data-ea-not-prose],
+        [data-ea-not-prose] *,
+        :is(
+                .accordion,
+                .alert,
+                .badge,
+                .breadcrumb,
+                .btn,
+                .btn-group,
+                .btn-toolbar,
+                .card,
+                .carousel,
+                .dropdown,
+                .dropdown-menu,
+                .input-group,
+                .list-group,
+                .modal,
+                .nav,
+                .navbar,
+                .offcanvas,
+                .pagination,
+                .popover,
+                .table,
+                .toast,
+                .tooltip,
+                .h1,
+                .h2,
+                .h3,
+                .h4,
+                .h5,
+                .h6,
+                .display-1,
+                .display-2,
+                .display-3,
+                .display-4,
+                .display-5,
+                .display-6,
+                .list-unstyled,
+                .list-inline,
+                .blockquote,
+                .figure,
+                .img-thumbnail,
+                .datagrid,
+                .content-panel,
+                .list-pagination,
+                .ea-sidebar,
+                .form-tabs-tablist,
+                form
+            ):not(.ea-prose),
+        :is(
+                .accordion,
+                .alert,
+                .badge,
+                .breadcrumb,
+                .btn,
+                .btn-group,
+                .btn-toolbar,
+                .card,
+                .carousel,
+                .dropdown,
+                .dropdown-menu,
+                .input-group,
+                .list-group,
+                .modal,
+                .nav,
+                .navbar,
+                .offcanvas,
+                .pagination,
+                .popover,
+                .table,
+                .toast,
+                .tooltip,
+                .h1,
+                .h2,
+                .h3,
+                .h4,
+                .h5,
+                .h6,
+                .display-1,
+                .display-2,
+                .display-3,
+                .display-4,
+                .display-5,
+                .display-6,
+                .list-unstyled,
+                .list-inline,
+                .blockquote,
+                .figure,
+                .img-thumbnail,
+                .datagrid,
+                .content-panel,
+                .list-pagination,
+                .ea-sidebar,
+                .form-tabs-tablist,
+                form
+            )
+            *:not(.ea-prose, .ea-prose *),
+        .ea-prose
+            :is(
+                .accordion,
+                .alert,
+                .badge,
+                .breadcrumb,
+                .btn,
+                .btn-group,
+                .btn-toolbar,
+                .card,
+                .carousel,
+                .dropdown,
+                .dropdown-menu,
+                .input-group,
+                .list-group,
+                .modal,
+                .nav,
+                .navbar,
+                .offcanvas,
+                .pagination,
+                .popover,
+                .table,
+                .toast,
+                .tooltip,
+                .h1,
+                .h2,
+                .h3,
+                .h4,
+                .h5,
+                .h6,
+                .display-1,
+                .display-2,
+                .display-3,
+                .display-4,
+                .display-5,
+                .display-6,
+                .list-unstyled,
+                .list-inline,
+                .blockquote,
+                .figure,
+                .img-thumbnail,
+                .datagrid,
+                .content-panel,
+                .list-pagination,
+                .ea-sidebar,
+                .form-tabs-tablist,
+                form
+            )
+            *
+    )::marker {
+    color: revert-layer;
+    font-weight: revert-layer;
+}
+
+/* the elements without prose styles (<div>, <section>, components, etc.) get
+   the gap of a paragraph when they follow a text block, and the gap below a
+   heading when they follow a heading, so they never stick to the text above
+   them. These rules must stay after the 'revert-layer' one, which would undo
+   them for components. The children of Bootstrap flex and grid containers are
+   left out, because a top margin would misalign them */
+:where(.ea-prose, body.page-content .content-body)
+    :where(
+        :is(
+                p,
+                ul,
+                ol,
+                dl,
+                blockquote,
+                figure,
+                picture,
+                details,
+                address,
+                pre,
+                table,
+                .ea-prose-scroll,
+                .footnotes,
+                [data-footnotes]
+            )
+            + :not(
+                p,
+                ul,
+                ol,
+                dl,
+                blockquote,
+                figure,
+                picture,
+                details,
+                address,
+                pre,
+                table,
+                .ea-prose-scroll,
+                .footnotes,
+                [data-footnotes],
+                h1,
+                h2,
+                h3,
+                h4,
+                h5,
+                h6,
+                hr,
+                img,
+                video,
+                math
+            )
+    ):not(
+        :where(
+                .ea-not-prose *,
+                [data-ea-not-prose] *,
+                :is(
+                        .accordion,
+                        .alert,
+                        .badge,
+                        .breadcrumb,
+                        .btn,
+                        .btn-group,
+                        .btn-toolbar,
+                        .card,
+                        .carousel,
+                        .dropdown,
+                        .dropdown-menu,
+                        .input-group,
+                        .list-group,
+                        .modal,
+                        .nav,
+                        .navbar,
+                        .offcanvas,
+                        .pagination,
+                        .popover,
+                        .table,
+                        .toast,
+                        .tooltip,
+                        .h1,
+                        .h2,
+                        .h3,
+                        .h4,
+                        .h5,
+                        .h6,
+                        .display-1,
+                        .display-2,
+                        .display-3,
+                        .display-4,
+                        .display-5,
+                        .display-6,
+                        .list-unstyled,
+                        .list-inline,
+                        .blockquote,
+                        .figure,
+                        .img-thumbnail,
+                        .datagrid,
+                        .content-panel,
+                        .list-pagination,
+                        .ea-sidebar,
+                        .form-tabs-tablist,
+                        form
+                    )
+                    *,
+                :is(.d-flex, .d-inline-flex, .d-grid, .d-inline-grid, .hstack, .vstack, .row) > *
+            )
+    ) {
+    margin-block-start: var(--ea-prose-spacing);
+}
+:where(.ea-prose, body.page-content .content-body)
+    :where(
+        :is(h1, h2, h3, h4, h5, h6)
+            + :not(
+                p,
+                ul,
+                ol,
+                dl,
+                blockquote,
+                figure,
+                picture,
+                details,
+                address,
+                pre,
+                table,
+                .ea-prose-scroll,
+                .footnotes,
+                [data-footnotes],
+                h1,
+                h2,
+                h3,
+                h4,
+                h5,
+                h6,
+                hr,
+                img,
+                video,
+                math
+            )
+    ):not(
+        :where(
+                .ea-not-prose *,
+                [data-ea-not-prose] *,
+                :is(
+                        .accordion,
+                        .alert,
+                        .badge,
+                        .breadcrumb,
+                        .btn,
+                        .btn-group,
+                        .btn-toolbar,
+                        .card,
+                        .carousel,
+                        .dropdown,
+                        .dropdown-menu,
+                        .input-group,
+                        .list-group,
+                        .modal,
+                        .nav,
+                        .navbar,
+                        .offcanvas,
+                        .pagination,
+                        .popover,
+                        .table,
+                        .toast,
+                        .tooltip,
+                        .h1,
+                        .h2,
+                        .h3,
+                        .h4,
+                        .h5,
+                        .h6,
+                        .display-1,
+                        .display-2,
+                        .display-3,
+                        .display-4,
+                        .display-5,
+                        .display-6,
+                        .list-unstyled,
+                        .list-inline,
+                        .blockquote,
+                        .figure,
+                        .img-thumbnail,
+                        .datagrid,
+                        .content-panel,
+                        .list-pagination,
+                        .ea-sidebar,
+                        .form-tabs-tablist,
+                        form
+                    )
+                    *,
+                :is(.d-flex, .d-inline-flex, .d-grid, .d-inline-grid, .hstack, .vstack, .row) > *
+            )
+    ) {
+    margin-block-start: calc(var(--ea-prose-spacing) * 0.875);
+}

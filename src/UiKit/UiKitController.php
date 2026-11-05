@@ -3,15 +3,20 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\UiKit;
 
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\Font;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\GrayScale;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\IconSet;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\ThemeColor;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Theme;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Twig\Environment;
 
 /**
- * Renders the UI Kit (EasyAdmin Twig components and their examples) inside the current dashboard.
- * Each example is a Twig template that is rendered and also shown as source code.
+ * Renders the UI Kit inside the current dashboard: the foundations of the design
+ * (typography, accent colors and fonts) and the EasyAdmin Twig components with their
+ * examples. Each example is a Twig template that is rendered and also shown as source code.
  * The routes only exist when the UI Kit is enabled (by default, in debug mode).
  *
  * @internal
@@ -20,6 +25,12 @@ use Twig\Environment;
 final class UiKitController
 {
     private const COMPONENTS_TEMPLATE_PREFIX = '@EasyAdmin/ui_kit/components';
+    private const FOUNDATIONS = [
+        'typography' => 'Typography',
+        'colors' => 'Colors',
+        'fonts' => 'Fonts',
+    ];
+    private const TYPOGRAPHY_SAMPLE_TEMPLATE = '@EasyAdmin/ui_kit/foundations/_typography_sample.html.twig';
     // the namespace mapped to the 'ea:' prefix in EasyAdminExtension::prepend()
     private const COMPONENTS_NAMESPACE = 'EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\Component\\';
     // these examples use FontAwesome icon names, which only work when the dashboard uses that icon set
@@ -61,8 +72,31 @@ final class UiKitController
     public function index(): Response
     {
         return new Response($this->twig->render('@EasyAdmin/ui_kit/index.html.twig', [
+            'foundations' => self::FOUNDATIONS,
             'components' => $this->findComponents(),
         ]));
+    }
+
+    #[AdminRoute(path: '/foundations/{name}', name: 'foundation', options: ['methods' => ['GET'], 'requirements' => ['name' => '[a-z0-9_]+']])]
+    public function foundation(string $name): Response
+    {
+        if (!\array_key_exists($name, self::FOUNDATIONS)) {
+            throw new NotFoundHttpException(sprintf('The UI Kit doesn\'t include any foundation called "%s".', $name));
+        }
+
+        $parameters = match ($name) {
+            'typography' => [
+                'sample_template' => self::TYPOGRAPHY_SAMPLE_TEMPLATE,
+                'highlighted_sample' => $this->highlighter->highlight(rtrim($this->twig->getLoader()->getSourceContext(self::TYPOGRAPHY_SAMPLE_TEMPLATE)->getCode())),
+            ],
+            'colors' => ['gray_options' => $this->getGrayScaleOptions(), 'accent_color_options' => $this->getAccentColorOptions()],
+            'fonts' => ['font_options' => $this->getFontOptions()],
+        };
+
+        return new Response($this->twig->render(sprintf('@EasyAdmin/ui_kit/foundations/%s.html.twig', $name), [
+            'foundation_dir_name' => $name,
+            'foundation_name' => self::FOUNDATIONS[$name],
+        ] + $parameters));
     }
 
     #[AdminRoute(path: '/components/{name}', name: 'component', options: ['methods' => ['GET'], 'requirements' => ['name' => '[a-z0-9_]+']])]
@@ -80,6 +114,103 @@ final class UiKitController
             'documentation' => $this->findDocumentation($components[$name]),
             'sub_components_documentation' => $this->findSubComponentsDocumentation($components[$name]),
         ]));
+    }
+
+    /**
+     * The gray scales, with the CSS that applies each one to the page
+     * (the same CSS that Theme::grays() generates).
+     *
+     * @return list<array{label: string, css: string, swatch: string, php: string}>
+     */
+    private function getGrayScaleOptions(): array
+    {
+        $options = [];
+        foreach ((new \ReflectionClass(GrayScale::class))->getConstants() as $constantName => $grayScale) {
+            $cssVariables = Theme::new()->grays($grayScale)->getAsDto()->getCssVariables();
+
+            $options[] = [
+                'label' => ucfirst($grayScale),
+                'css' => self::getThemeCss($cssVariables),
+                'swatch' => $cssVariables['common']['--gray-500'],
+                'php' => sprintf('->grays(GrayScale::%s)', $constantName),
+            ];
+        }
+
+        return $options;
+    }
+
+    /**
+     * The predefined accent colors, with the CSS that applies each one to the page
+     * (the same CSS that Theme::primaryColor() generates).
+     *
+     * @return list<array{label: string, css: string, swatch: string, php: string}>
+     */
+    private function getAccentColorOptions(): array
+    {
+        $options = [];
+        foreach (ThemeColor::cases() as $color) {
+            $cssVariables = Theme::new()->primaryColor($color)->getAsDto()->getCssVariables();
+            // when a color doesn't define how it's displayed on surfaces, reset the value
+            // that the current dashboard theme might have defined
+            $cssVariables['light'] += ['--ea-primary-on-surface' => 'var(--ea-primary)'];
+            $cssVariables['dark'] += ['--ea-primary-on-surface' => 'var(--ea-primary-text)'];
+
+            $options[] = [
+                'label' => $color->name,
+                'css' => self::getThemeCss($cssVariables),
+                'swatch' => $cssVariables['common']['--ea-primary'],
+                'php' => sprintf('->primaryColor(ThemeColor::%s)', $color->name),
+            ];
+        }
+
+        return $options;
+    }
+
+    /**
+     * The bundled fonts for text, with the CSS that applies each one to the page
+     * (the same CSS that Theme::font() generates).
+     *
+     * @return list<array{label: string, css: string, php: string}>
+     */
+    private function getFontOptions(): array
+    {
+        $options = [];
+        foreach (Font::cases() as $font) {
+            if (Font::JetBrainsMono === $font) {
+                continue;
+            }
+
+            $options[] = [
+                'label' => $font->value,
+                'css' => self::getThemeCss(Theme::new()->font(base: $font)->getAsDto()->getCssVariables()),
+                'php' => sprintf('->font(base: Font::%s)', $font->name),
+            ];
+        }
+
+        return $options;
+    }
+
+    /**
+     * Mirrors the <style> element that the layout renders for the dashboard theme.
+     *
+     * @param array{common: array<string, string>, light: array<string, string>, dark: array<string, string>} $cssVariables
+     */
+    private static function getThemeCss(array $cssVariables): string
+    {
+        $css = '';
+        foreach (['common' => ':root, .ea-dark-scheme', 'light' => ':root', 'dark' => '.ea-dark-scheme'] as $group => $selector) {
+            if ([] === $cssVariables[$group]) {
+                continue;
+            }
+
+            $declarations = '';
+            foreach ($cssVariables[$group] as $name => $value) {
+                $declarations .= sprintf('%s: %s; ', $name, $value);
+            }
+            $css .= sprintf('%s { %s}', $selector, $declarations);
+        }
+
+        return $css;
     }
 
     /**

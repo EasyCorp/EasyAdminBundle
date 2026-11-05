@@ -15,7 +15,7 @@ body.error .error-message h1 {
     display: flex;
     align-items: center;
     font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--heading-font-weight);
     margin-block-end: 1em;
 }
 body.error .error-message h1 .icon {

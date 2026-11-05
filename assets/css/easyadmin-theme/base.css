@@ -2,8 +2,6 @@
     color-scheme: light dark;
 }
 
-/* Reset styles
-   ========================================================================= */
 html,
 body {
     block-size: 100vh;
@@ -12,20 +10,32 @@ body {
 html {
     scrollbar-gutter: stable;
 }
-/* Bootstrap adds inline body padding to compensate the scrollbar hidden while
-   a modal is open, but the stable gutter already keeps that space reserved.
-   Both inline sides are reset (instead of just the end one) because Bootstrap
-   always writes a *physical* 'padding-right', even in RTL, so it lands on the
-   inline start when the direction flips; the body has no padding of its own,
-   so zeroing both is harmless. */
-body.modal-open {
-    padding-inline: 0 !important;
+/* Bootstrap pads the body to make up for the scrollbar hidden by modals, but the
+   stable gutter already reserves that space. Both sides are reset because Bootstrap
+   writes a physical 'padding-right' even in RTL. Browsers without 'scrollbar-gutter'
+   still need Bootstrap's padding */
+@supports (scrollbar-gutter: stable) {
+    body.modal-open {
+        padding-inline: 0 !important;
+    }
 }
 body {
     background-color: var(--body-bg);
     color: var(--text-color);
     font-family: var(--font-family-base);
     font-size: var(--font-size-base);
+    font-feature-settings: var(--font-feature-settings);
+    font-size-adjust: var(--font-size-adjust);
+    font-weight: var(--font-weight-normal);
+    overflow-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* icon fonts are drawn at the font size, so 'font-size-adjust' (which scales text
+   fonts by their x-height) must not change them */
+:where(.fa, .fas, .far, .fab, .fal, .fad, .fa-solid, .fa-regular, .fa-brands, [class^="fa-"], [class*=" fa-"]) {
+    font-size-adjust: none;
 }
 
 /* Needed because we always add 'fa fa-' to the given icon name, so these
@@ -44,21 +54,35 @@ i.fal {
 i.fad {
     font-family: "Font Awesome 6 Duotone", sans-serif;
 }
+/* inline-flex, so the box of the icon is exactly as tall as the SVG (an inline SVG would sit in a
+   line box as tall as the text, and away from its center) and flex/grid parents can center it.
+   'vertical-align' only applies to icons in running text: it places the center of the icon at the
+   center of the capital letters. -0.125em is the value for most fonts, for browsers without 'cap' */
 span.icon {
-    display: inline-block;
+    --ea-icon-svg-size: 1em;
+
+    align-items: center;
+    display: inline-flex;
     inline-size: 1.25em;
-    text-align: center;
+    justify-content: center;
+    vertical-align: -0.125em;
+    vertical-align: calc(0.5cap - 0.5 * var(--ea-icon-svg-size));
+}
+/* the glyphs of Font Awesome are centered 0.375em above the baseline of their font, which is the
+   baseline of the icon box (SVG icons don't have one, so the bottom of the box is used) */
+span.icon:has(> i) {
+    vertical-align: 0;
+    vertical-align: calc(0.5cap - 0.375em);
 }
 span.icon svg {
+    display: block;
     inline-size: 100%;
     block-size: 100%;
-    max-block-size: 1em;
-    max-inline-size: 1em;
-    vertical-align: text-bottom;
+    max-block-size: var(--ea-icon-svg-size);
+    max-inline-size: var(--ea-icon-svg-size);
 }
-body[data-ea-icon-prefix="tabler"] span.icon svg {
-    max-block-size: 1.15em;
-    max-inline-size: 1.15em;
+body[data-ea-icon-prefix="tabler"] span.icon {
+    --ea-icon-svg-size: 1.15em;
 }
 /* !important because an explicit size must win over the theme rules that size
    icons through deep selectors (e.g. '.datagrid .dropdown-actions > .dropdown-toggle .icon') */
@@ -80,6 +104,7 @@ body[data-ea-icon-prefix="tabler"] span.icon svg {
 
 a {
     color: var(--link-color);
+    font-weight: var(--link-font-weight);
     text-decoration: none;
 }
 a:hover {
@@ -87,11 +112,32 @@ a:hover {
     text-decoration: var(--link-hover-decoration);
 }
 
-/* these Bootstrap components color their own anchors, but their rules live in
+a:not([class], [data-bs-toggle]),
+a:not([class], [data-bs-toggle]):hover {
+    text-decoration-line: underline;
+    text-decoration-color: var(--link-underline-color);
+    text-underline-offset: 3px;
+}
+a:not([class], [data-bs-toggle]):hover {
+    text-decoration-color: var(--link-hover-underline-color);
+}
+.datagrid thead a:not([class]) {
+    text-decoration: none;
+}
+:is(.datagrid td, .ea-detail .field-value) > a:not([class], [data-bs-toggle]) {
+    text-decoration-line: none;
+}
+:is(.datagrid td, .ea-detail .field-value) > a:not([class], [data-bs-toggle]):hover {
+    text-decoration-line: underline;
+    text-decoration-color: var(--link-hover-underline-color);
+}
+
+/* these Bootstrap components style their own anchors, but their rules live in
    the 'vendor' layer, so the generic 'a' rules above would always beat them
-   (layer order trumps specificity); hand the color back to Bootstrap's own
-   cascade, which handles all their variants and states (#7768). The second
-   selector is needed because 'a:hover' out-specifies single-class selectors */
+   (layer order trumps specificity); hand the color and font weight back to
+   Bootstrap's own cascade, which handles all their variants and states (#7768).
+   The second selector is needed because 'a:hover' out-specifies single-class
+   selectors */
 :is(
         .alert-link,
         .nav-link,
@@ -113,6 +159,13 @@ a:hover {
         .carousel-control-next
     ):is(:hover, :focus, :active) {
     color: revert-layer;
+    font-weight: revert-layer;
+}
+
+/* Bootstrap uses 'bolder', which ignores the bold weight tuned for each bundled font */
+b,
+strong {
+    font-weight: var(--font-weight-bold);
 }
 
 code,
@@ -120,6 +173,16 @@ pre {
     color: var(--code-color);
     font-family: var(--font-family-monospace);
     font-size: var(--font-size-sm);
+}
+/* the font features of Theme::font() only apply to the base font, so the elements
+   that use the monospace font don't inherit them */
+code,
+kbd,
+pre,
+samp,
+.font-monospace {
+    font-feature-settings: normal;
+    font-variant-ligatures: none;
 }
 pre {
     line-height: var(--line-height-relaxed);
@@ -134,27 +197,105 @@ pre {
     text-align: right;
 }
 
-/* Layout
-   ========================================================================= */
 @media (min-width: 992px) {
     .wrapper {
+        background: var(--sidebar-bg);
         display: grid;
         grid-template-columns: var(--sidebar-max-width) auto;
         min-block-size: 100vh;
     }
-}
-@media (min-width: 1280px) {
-    .wrapper {
-        grid-column-gap: 0;
+
+    /* the page scrolls as a whole (not inside this box), so when the contents
+       are taller than the screen only the top corners are visible at first and
+       the bottom ones appear when scrolling to the end of the page */
+    .main-content {
+        background: var(--body-bg);
+        border: var(--border-width) solid var(--main-content-border-color);
+        border-radius: var(--main-content-border-radius);
+        display: flex;
+        flex-direction: column;
+        margin: var(--main-content-gap);
+        margin-inline-start: 0;
+        min-block-size: calc(100vh - 2 * var(--main-content-gap));
+    }
+    .main-content > .content-wrapper {
+        flex-grow: 1;
     }
 }
 
-body:not(.ea-content-width-full) .content-wrapper {
+.content-wrapper {
+    /* the explicit width is needed because the auto margins disable the
+       stretching of this element inside its flex container */
+    inline-size: 100%;
+    margin-inline: auto;
     max-inline-size: var(--body-max-width);
+}
+/* '100%' instead of 'none' so the change of width can be animated */
+body.ea-content-width-full .content-wrapper {
+    max-inline-size: 100%;
 }
 @media (min-width: 992px) {
     body.ea-sidebar-width-compact .wrapper {
         grid-template-columns: 64px auto;
+    }
+
+    /* JavaScript adds these classes when clicking the sidebar and content toggles,
+       so the widths restored when loading the page aren't animated */
+    body.ea-content-transitions .content-wrapper {
+        transition: max-inline-size 200ms cubic-bezier(0.2, 0, 0, 1);
+    }
+    body.ea-sidebar-transitions .wrapper {
+        transition: grid-template-columns 300ms cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    body.ea-sidebar-transitions .ea-layout-toggle-sidebar {
+        transition: inset-inline-start 300ms cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    /* the sidebar is clipped with 'clip-path' because 'overflow' must stay 'visible' for its
+       sticky footer. Each width has its own animation with the same keyframes because an
+       animation only restarts when its name changes */
+    body.ea-sidebar-transitions.ea-sidebar-width-normal .ea-sidebar {
+        animation: ea-sidebar-clip 300ms;
+    }
+    body.ea-sidebar-transitions.ea-sidebar-width-compact .ea-sidebar {
+        animation: ea-sidebar-clip-compact 300ms;
+    }
+    body.ea-sidebar-transitions.ea-sidebar-width-normal .ea-sidebar > * {
+        animation: ea-sidebar-fade-in 250ms ease-out;
+    }
+    body.ea-sidebar-transitions.ea-sidebar-width-compact .ea-sidebar > * {
+        animation: ea-sidebar-fade-in-compact 250ms ease-out;
+    }
+}
+@keyframes ea-sidebar-clip {
+    from,
+    to {
+        clip-path: inset(0);
+    }
+}
+@keyframes ea-sidebar-clip-compact {
+    from,
+    to {
+        clip-path: inset(0);
+    }
+}
+@keyframes ea-sidebar-fade-in {
+    from {
+        opacity: 0;
+    }
+}
+@keyframes ea-sidebar-fade-in-compact {
+    from {
+        opacity: 0;
+    }
+}
+@media (min-width: 992px) and (prefers-reduced-motion: reduce) {
+    body:is(.ea-content-transitions, .ea-sidebar-transitions)
+        :is(.wrapper, .content-wrapper, .ea-layout-toggle-sidebar) {
+        transition: none;
+    }
+    body.ea-sidebar-transitions .ea-sidebar,
+    body.ea-sidebar-transitions .ea-sidebar > * {
+        animation: none;
     }
 }
 
@@ -162,8 +303,10 @@ body:not(.ea-content-width-full) .content-wrapper {
     align-items: center;
     background: var(--responsive-header-bg);
     box-shadow: inset 0 -1px 0 var(--responsive-header-border-color);
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr minmax(0, auto) 1fr;
+    justify-items: start;
     padding: var(--ea-sp-4) var(--ea-sp-8);
 }
 @media (min-width: 992px) {
@@ -184,6 +327,11 @@ body:not(.ea-content-width-full) .content-wrapper {
 .responsive-header .dropdown-settings {
     display: block;
 }
+.responsive-header-actions {
+    align-items: center;
+    display: flex;
+    justify-self: end;
+}
 #navigation-toggler {
     margin-inline-start: calc(-1 * var(--ea-sp-2));
 }
@@ -196,17 +344,13 @@ body:not(.ea-content-width-full) .content-wrapper {
 .dropdown-toggle.dropdown-toggle-hidden-marker:after {
     display: none;
 }
-.dropdown-toggle.dropdown-toggle-hidden-marker:hover {
-    cursor: pointer;
-}
 
-.user-menu-wrapper a.user-details,
-a.user-menu-wrapper .user-details:hover {
+.user-menu-wrapper a.user-details {
     align-items: center;
     color: var(--user-name-color);
     cursor: pointer;
     display: flex;
-    -webkit-appearance: none; /* needed for Safari */
+    font-weight: var(--font-weight-normal);
 }
 .user-menu-wrapper.user-is-impersonated a.user-details,
 .user-menu-wrapper.user-is-impersonated a.user-details:hover {
@@ -227,8 +371,11 @@ a.user-menu-wrapper .user-details:hover {
     inline-size: 2em;
     text-align: center;
 }
-.user-menu-wrapper .dropdown-user-details .user-avatar .icon {
-    display: block;
+.user-menu-wrapper .user-details span.user-avatar,
+.dropdown-settings .dropdown-settings-button {
+    align-items: center;
+    display: flex;
+    justify-content: center;
 }
 
 .user-menu-wrapper .dropdown-menu {
@@ -268,23 +415,8 @@ a.user-menu-wrapper .user-details:hover {
 .dropdown-settings .dropdown-settings-button {
     color: var(--dropdown-settings-icon-color);
     font-size: var(--icon-size-md);
+    font-weight: var(--font-weight-normal);
     padding-inline-start: var(--ea-sp-8);
-}
-
-.dropdown-settings .dropdown-header {
-    color: var(--text-muted);
-    display: block;
-    font-size: var(--font-size-sm);
-}
-
-.dropdown-settings .dropdown-item.active {
-    background: var(--dropdown-settings-active-item-bg);
-    box-shadow: var(--dropdown-settings-active-item-shadow);
-    color: var(--dropdown-settings-active-item-color);
-}
-.dropdown-settings .dropdown-item.active i,
-.dropdown-settings .dropdown-item.active .icon {
-    color: var(--dropdown-settings-active-item-color);
 }
 
 .content-wrapper {
@@ -292,8 +424,6 @@ a.user-menu-wrapper .user-details:hover {
 }
 @media (min-width: 992px) {
     .content-wrapper {
-        display: grid;
-        grid-template-columns: auto var(--resize-handler-width);
         padding: 0 var(--lg-content-padding-right) var(--lg-content-padding-bottom) var(--lg-content-padding-left);
     }
 }
@@ -301,46 +431,168 @@ a.user-menu-wrapper .user-details:hover {
 .content {
     margin-block-start: 1px;
 }
+/* by default, grid items can't be narrower than the longest line of their
+   contents, so a wide table or code block would make the whole page wider
+   instead of scrolling inside its own element */
+.main-content,
+.content {
+    min-inline-size: 0;
+}
 
-.resizer-handler {
+.ea-layout-toggle,
+.ea-layout-toggle-content-rail {
     display: none;
 }
 @media (min-width: 992px) {
-    .resizer-handler {
-        cursor: col-resize;
-        display: block;
-        margin: 0 0 0 var(--ea-sp-4);
-        min-block-size: 100vh;
-        transition: background var(--ea-duration-slower);
-        inline-size: 3px;
+    .ea-layout-toggle {
+        align-items: center;
+        background: none;
+        block-size: var(--ea-sp-32);
+        border: 0;
+        cursor: pointer;
+        display: flex;
+        /* both toggles are centered in the screen area below the content header
+           (the top gap of the content box + the 56px-high .content-top); they use
+           'vh' units because one is 'fixed' and the other one 'sticky', and their '%'
+           units would refer to different boxes (e.g. with a horizontal scrollbar) */
+        inset-block-start: calc(50vh + (var(--main-content-gap) + var(--ea-sp-28)) / 2 - var(--ea-sp-32) / 2);
+        outline: 0;
+        padding: 0;
+        position: fixed;
+        z-index: calc(var(--zindex-modal-backdrop) - 1);
     }
-    .resizer-handler:hover {
-        background: var(--resize-handler-hover-bg);
+    .ea-layout-toggle-sidebar {
+        --ea-layout-toggle-arrow: 1;
+        --ea-layout-toggle-line-offset: calc(var(--sidebar-padding-right) + var(--ea-sp-4));
+        inline-size: calc(var(--sidebar-padding-right) + var(--lg-content-padding-left) - var(--ea-sp-2));
+        inset-inline-start: calc(var(--sidebar-max-width) - var(--sidebar-padding-right));
+        justify-content: flex-start;
+        padding-inline-start: var(--ea-layout-toggle-line-offset);
+    }
+    body.ea-sidebar-width-compact .ea-layout-toggle-sidebar {
+        --ea-layout-toggle-arrow: -1;
+        --ea-layout-toggle-line-offset: var(--ea-sp-4);
+        inline-size: calc(var(--lg-content-padding-left) - var(--ea-sp-2));
+        inset-inline-start: 64px;
+    }
+    .content-wrapper {
+        position: relative;
+    }
+    .ea-layout-toggle-content-rail {
+        display: block;
+        inline-size: var(--lg-content-padding-right);
+        inset-block: 0;
+        inset-inline-end: 0;
+        position: absolute;
+    }
+    .ea-layout-toggle-content {
+        --ea-layout-toggle-arrow: -1;
+        --ea-layout-toggle-line-offset: var(--ea-sp-4);
+        inline-size: 100%;
+        justify-content: flex-end;
+        padding-inline-end: var(--ea-layout-toggle-line-offset);
+        position: sticky;
+    }
+    body.ea-content-width-full .ea-layout-toggle-content {
+        --ea-layout-toggle-arrow: 1;
     }
 }
-#content-resizer-handler {
-    min-block-size: calc(100vh - var(--ea-sp-28) - var(--lg-content-padding-bottom));
+
+/* two bars joined at the middle that rotate around that joint to form an arrow:
+   '<' when --ea-layout-toggle-arrow is 1 and '>' when it's -1 */
+.ea-layout-toggle-marker {
+    --ea-layout-toggle-direction: 1;
+    block-size: var(--ea-sp-8);
+    inline-size: var(--ea-sp-1);
+    position: relative;
+    transition: translate var(--ea-duration-slow) var(--ea-ease-out);
+}
+.ea-layout-toggle-marker:dir(rtl) {
+    --ea-layout-toggle-direction: -1;
+    scale: -1 1;
+}
+.ea-layout-toggle:is(:hover, :focus-visible) .ea-layout-toggle-marker {
+    translate: calc(-1 * var(--ea-layout-toggle-arrow) * var(--ea-layout-toggle-direction) * var(--ea-sp-2)) 0;
+}
+.ea-layout-toggle-marker::before,
+.ea-layout-toggle-marker::after {
+    background: var(--layout-toggle-marker-color);
+    block-size: 50%;
+    content: "";
+    inline-size: 100%;
+    inset-inline-start: 0;
+    position: absolute;
+    transition: rotate var(--ea-duration-fast) linear, background-color var(--ea-duration-fast) linear;
+}
+.ea-layout-toggle-marker::before {
+    border-start-end-radius: var(--border-radius-pill);
+    border-start-start-radius: var(--border-radius-pill);
+    inset-block-start: 0;
+    transform-origin: bottom center;
+}
+.ea-layout-toggle-marker::after {
+    border-end-end-radius: var(--border-radius-pill);
+    border-end-start-radius: var(--border-radius-pill);
+    inset-block-end: 0;
+    transform-origin: top center;
+}
+.ea-layout-toggle:is(:hover, :focus-visible) .ea-layout-toggle-marker::before,
+.ea-layout-toggle:is(:hover, :focus-visible) .ea-layout-toggle-marker::after {
+    background: var(--layout-toggle-marker-hover-color);
+}
+.ea-layout-toggle:is(:hover, :focus-visible) .ea-layout-toggle-marker::before {
+    rotate: calc(var(--ea-layout-toggle-arrow) * 40deg);
+}
+.ea-layout-toggle:is(:hover, :focus-visible) .ea-layout-toggle-marker::after {
+    rotate: calc(var(--ea-layout-toggle-arrow) * -40deg);
+}
+
+.ea-layout-toggle-label {
+    background: var(--layout-toggle-label-bg);
+    border-radius: var(--border-radius);
+    color: var(--layout-toggle-label-color);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    opacity: 0;
+    padding: var(--ea-sp-1) var(--ea-sp-4);
+    pointer-events: none;
+    position: absolute;
+    transition: opacity var(--ea-duration-slow) var(--ea-ease-out), translate var(--ea-duration-slow) var(--ea-ease-out);
+    white-space: nowrap;
+}
+.ea-layout-toggle-sidebar .ea-layout-toggle-label {
+    inset-inline-start: calc(var(--ea-layout-toggle-line-offset) + var(--ea-sp-6));
+    translate: calc(-1 * var(--ea-sp-1)) 0;
+}
+.ea-layout-toggle-content .ea-layout-toggle-label {
+    inset-inline-end: calc(var(--ea-layout-toggle-line-offset) + var(--ea-sp-6));
+    translate: var(--ea-sp-1) 0;
+}
+.ea-layout-toggle:is(:hover, :focus-visible) .ea-layout-toggle-label {
+    opacity: 1;
+    translate: 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ea-layout-toggle-marker,
+    .ea-layout-toggle-marker::before,
+    .ea-layout-toggle-marker::after,
+    .ea-layout-toggle-label {
+        transition: none;
+    }
 }
 
 .content-top {
     align-items: center;
-    box-shadow: 0 1px 0 var(--content-top-border-color);
     display: flex;
-    padding: var(--ea-sp-2) var(--ea-sp-8) var(--ea-sp-2) var(--content-padding-left); /* 5px 15px 5px */
-}
-@media (max-width: 992px) {
-    .content-top.ea-search-disabled {
-        box-shadow: none;
-    }
+    padding: var(--ea-sp-2) var(--ea-sp-8) var(--ea-sp-2) var(--content-padding-left);
 }
 
 @media (min-width: 992px) {
     .content-top {
-        display: flex;
         block-size: 56px;
         justify-content: space-between;
-        padding: var(--ea-sp-6) calc(var(--lg-content-padding-right) + var(--resize-handler-width)) var(--ea-sp-6)
-            var(--lg-content-padding-left);
+        padding: var(--ea-sp-6);
         position: relative;
     }
 }
@@ -358,7 +610,7 @@ a.user-menu-wrapper .user-details:hover {
    they override generic form styles, so they must be in the components layer */
 
 .content-header {
-    padding: var(--ea-sp-12) 0 var(--ea-sp-8);
+    padding: var(--ea-sp-6) 0 var(--ea-sp-8);
 }
 @media (min-width: 768px) {
     .content-header {
@@ -366,8 +618,14 @@ a.user-menu-wrapper .user-details:hover {
         background: var(--body-bg);
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         justify-content: space-between;
-        padding: var(--ea-sp-18) 0 var(--ea-sp-8);
+        row-gap: var(--ea-sp-4);
+    }
+}
+@media (min-width: 992px) {
+    .content-header {
+        padding-block-start: var(--ea-sp-18);
     }
 }
 
@@ -389,113 +647,203 @@ a.user-menu-wrapper .user-details:hover {
     }
 }
 
+/* the title can break anywhere, so its minimum width is almost zero; this base width makes
+   the actions move to their own line before the title gets too narrow */
 .content-header-title {
-    flex: 1;
+    flex: 1 1 12rem;
+    min-inline-size: 0;
 }
 .content-header-title .title {
+    /* 'anywhere' instead of 'break-word' because only 'anywhere' lets a very long word reduce the
+       width of a flex item, so it doesn't push the page actions out of the page */
+    overflow-wrap: anywhere;
     font-size: var(--font-size-xxl);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--heading-font-weight);
+    letter-spacing: var(--heading-letter-spacing);
     line-height: var(--line-height-tight);
     margin: 0;
     padding-inline-end: var(--ea-sp-8);
 }
-@media (min-width: 992px) {
-    .content-header-title .title {
-        font-size: var(--font-size-xxxl);
-    }
-}
 .content-header-title .title small {
-    color: var(--gray-600);
+    color: var(--text-muted);
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-medium);
     line-height: var(--font-size-lg);
 }
 
-.content-header-help {
-    cursor: pointer;
+/* 'body' makes it win over the sticky header padding of new/edit pages */
+body .content-header:has(+ .content-help) {
+    padding-block-end: var(--ea-sp-6);
 }
-
-.content-header-help i {
+.content-help {
+    align-items: center;
     color: var(--text-muted);
-    font-size: var(--icon-size-md);
-}
-
-/* customizing Bootstrap's Saas variables for popovers doesn't work,
-   so we need to define these styles explicitly */
-.popover.ea-content-help-popover {
-    --bs-popover-border-radius: var(--border-radius);
-
-    border-color: var(--popover-border-color);
-    box-shadow: var(--popover-shadow);
-    max-inline-size: var(--popover-max-width);
-}
-.popover.ea-content-help-popover .popover-body {
-    background: var(--popover-bg);
-    border-radius: var(--border-radius);
-    color: var(--popover-color);
+    display: flex;
     font-size: var(--font-size-base);
-    padding: var(--ea-sp-8);
-    text-align: left;
+    gap: var(--ea-sp-3);
+    line-height: var(--line-height-normal);
+    margin-block-end: var(--ea-sp-8);
+    max-inline-size: 160ch;
 }
-.popover.ea-content-help-popover.bs-popover-auto[data-popper-placement^="top"] > .popover-arrow:before,
-.bs-popover-top > .popover-arrow:before {
-    border-block-start-color: var(--popover-border-color);
+.content-help-message {
+    flex: 0 1 auto;
+    min-inline-size: 0;
 }
-.popover.ea-content-help-popover.bs-popover-auto[data-popper-placement^="top"] > .popover-arrow:after,
-.bs-popover-top > .popover-arrow:before {
-    border-block-start-color: var(--popover-bg);
+.content-help-message:focus {
+    outline: 0;
 }
-.popover.ea-content-help-popover.bs-popover-auto[data-popper-placement^="right"] > .popover-arrow:before,
-.bs-popover-end > .popover-arrow:before {
-    border-inline-end-color: var(--popover-border-color);
+.content-help-message > * {
+    margin-block: 0 var(--ea-sp-4);
 }
-.popover.ea-content-help-popover.bs-popover-auto[data-popper-placement^="right"] > .popover-arrow:after,
-.bs-popover-end > .popover-arrow:after {
-    border-inline-end-color: var(--popover-bg);
+.content-help-message > :last-child {
+    margin-block-end: 0;
 }
-.popover.ea-content-help-popover.bs-popover-auto[data-popper-placement^="bottom"] > .popover-arrow,
-.bs-popover-bottom > .popover-arrow {
-    inset-block-start: calc(-1 * var(--ea-sp-4));
+.content-help-message ul,
+.content-help-message ol {
+    padding-inline-start: var(--ea-sp-10);
 }
-.popover.ea-content-help-popover.bs-popover-auto[data-popper-placement^="bottom"] > .popover-arrow:before,
-.bs-popover-bottom > .popover-arrow:before {
-    border-block-end-color: var(--popover-border-color);
+.content-help-message a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
-.popover.ea-content-help-popover.bs-popover-auto[data-popper-placement^="bottom"] > .popover-arrow:after,
-.bs-popover-bottom > .popover-arrow:after {
-    border-block-end-color: var(--popover-bg);
+.content-help-message a:hover {
+    color: var(--text-color);
 }
-.popover.ea-content-help-popover.bs-popover-auto[data-popper-placement^="left"] > .popover-arrow:before,
-.bs-popover-start > .popover-arrow:before {
-    border-inline-start-color: var(--popover-border-color);
+.content-help[data-state="collapsed"] .content-help-message {
+    /* only the prefixed line clamp shows an ellipsis when the help has several blocks */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
 }
-.popover.ea-content-help-popover.bs-popover-auto[data-popper-placement^="left"] > .popover-arrow:after,
-.bs-popover-start > .popover-arrow:after {
-    border-inline-start-color: var(--popover-bg);
+.content-help-expander {
+    align-items: center;
+    background: var(--content-help-expander-bg);
+    block-size: 16px;
+    border: 0;
+    border-radius: var(--border-radius-sm);
+    color: var(--text-color);
+    cursor: pointer;
+    display: inline-flex;
+    flex: none;
+    inline-size: 24px;
+    justify-content: center;
+    padding: 0;
 }
-
-.ea-content-help-popover.tooltip.show {
-    opacity: 1;
+.content-help-expander[hidden] {
+    display: none;
+}
+.content-help-expander:hover {
+    background: var(--content-help-expander-hover-bg);
+}
+.content-help-expander:focus-visible {
+    box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-focus-ring-color);
+    outline: 0;
+}
+.content-help-expander .icon,
+.content-help-expander svg {
+    block-size: var(--icon-size-sm);
+    display: block;
+    inline-size: var(--icon-size-sm);
 }
 
 .content-header .global-actions,
-.content-header .page-actions {
-    justify-content: right;
+.content-header .page-actions,
+.content-header .page-actions-default {
+    align-items: center;
     flex-wrap: wrap;
     gap: var(--ea-sp-5);
     display: flex;
     flex-direction: row;
 }
+@media (min-width: 768px) {
+    .content-header .global-actions,
+    .content-header .page-actions,
+    .content-header .page-actions-default {
+        justify-content: flex-end;
+    }
+}
 .content-header .page-actions {
-    margin: var(--ea-sp-5) 0 var(--ea-sp-8);
+    margin: var(--ea-sp-5) 0 0;
 }
 @media (min-width: 768px) {
     .content-header .page-actions {
-        margin: var(--ea-sp-1) 1px 0 var(--ea-sp-5);
+        margin-block: var(--ea-sp-1) 0;
+        margin-inline: auto 1px;
     }
 }
 .content-header .page-actions:empty {
     display: none;
+}
+/* hides the empty container so the gap of its parent doesn't add space; ':empty'
+   doesn't work because the template leaves whitespace inside it */
+.content-header .global-actions:not(:has(*)) {
+    display: none;
+}
+
+/* only the top edge is clipped, so the dropdowns of the actions (which open downwards)
+   are never cut */
+.page-actions-stack {
+    clip-path: inset(0 -100vw -100vh -100vw);
+    display: grid;
+    justify-items: start;
+    /* 'clip-path' creates a stacking context, so the z-index of the dropdowns opened
+       from these actions only works inside it; this puts the whole stack (and so its
+       dropdowns) above the rest of the page contents */
+    position: relative;
+    z-index: var(--zindex-900);
+}
+@media (min-width: 768px) {
+    .page-actions-stack {
+        justify-items: end;
+    }
+}
+/* on small screens the actions are aligned to the start, so the most important one goes first
+   and the rest fill the line in their usual order. 'display: contents' puts all of them in the
+   same flex container, so the less important ones are the first to move to the next line */
+@media (max-width: 767px) {
+    .content-header .global-actions {
+        display: contents;
+    }
+    .content-header .page-actions .btn-primary,
+    .content-header .page-actions .action-group:has(.btn-primary) {
+        order: -1;
+    }
+}
+.page-actions-stack > * {
+    grid-area: 1 / 1;
+    transition: transform 260ms cubic-bezier(0.3, 0.7, 0.2, 1), opacity 200ms ease-out, visibility 0s linear 0s;
+}
+.page-actions-stack > .batch-actions {
+    opacity: 0;
+    transform: translateY(100%);
+    transition-delay: 0s, 0s, 260ms;
+    visibility: hidden;
+}
+/* while hidden, the batch actions don't count for the width of the stack; otherwise, they
+   would take the space of the page title in pages with several batch actions */
+.page-actions-stack:not(.rows-are-selected) > .batch-actions {
+    inline-size: max-content;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    position: absolute;
+}
+.page-actions-stack.rows-are-selected > .page-actions-default {
+    transform: translateY(-100%);
+    transition-delay: 0s, 0s, 260ms;
+    visibility: hidden;
+}
+.page-actions-stack.rows-are-selected > .batch-actions {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0s;
+    visibility: visible;
+}
+@media (prefers-reduced-motion: reduce) {
+    .page-actions-stack > * {
+        transition: none;
+    }
 }
 
 .batch-actions form {
@@ -608,23 +956,21 @@ a.user-menu-wrapper .user-details:hover {
 
 .dropdown-menu {
     --dropdown-padding: var(--ea-sp-2);
-    --dropdown-radius: var(--border-radius-lg); /* 8px */
-    --dropdown-item-radius: var(--border-radius-lg); /* 8px */
+    --dropdown-radius: var(--form-control-border-radius);
+    --dropdown-item-radius: calc(var(--dropdown-radius) - var(--dropdown-padding));
 
     background-color: var(--dropdown-bg);
-    border-color: var(--dropdown-border-color);
+    border: 0;
     border-radius: var(--dropdown-radius);
-    box-shadow: var(--shadow-xl);
+    box-shadow: 0 0 0 var(--border-width) var(--dropdown-ring-color), var(--shadow-md);
     color: var(--dropdown-color);
     min-inline-size: 8rem;
     max-inline-size: 240px;
     padding: var(--dropdown-padding);
 }
-.dropdown-menu.dropdown-has-submenus {
-    padding-inline-start: var(--ea-sp-12);
-}
-.dropdown-menu li {
-    border-radius: var(--dropdown-item-radius);
+.dropdown-menu .dropdown-menu {
+    box-shadow: 0 0 0 var(--border-width) var(--dropdown-ring-color), var(--shadow-lg);
+    min-inline-size: 6rem;
 }
 .dropdown-menu a,
 .dropdown-menu a:hover,
@@ -634,11 +980,14 @@ a.user-menu-wrapper .user-details:hover {
 }
 .dropdown-menu .dropdown-item.disabled,
 .dropdown-menu .dropdown-item:disabled {
-    --dropdown-icon-color: var(--dropdown-link-disabled-color);
-    color: var(--dropdown-link-disabled-color);
+    opacity: 0.5;
+    pointer-events: none;
 }
-.dropdown-menu a:hover {
+.dropdown-menu .dropdown-item:is(:hover, :focus-visible, :active),
+.dropdown-menu .dropdown-submenu .dropdown-toggle.show {
     background: var(--dropdown-link-hover-bg);
+    color: var(--dropdown-link-color);
+    outline: 0;
 }
 .dropdown-menu i,
 .dropdown-menu .icon {
@@ -648,23 +997,10 @@ a.user-menu-wrapper .user-details:hover {
        so a slightly smaller size matches the visual weight. Off the icon scale on purpose. */
     font-size: var(--font-size-base);
 }
-.dropdown-menu .icon i {
-    margin: 0;
-    line-height: var(--line-height-none);
-}
 .dropdown-menu .icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    /* fixed-width icon column following FontAwesome's .fa-fw (1.25em): every FA glyph is
-       designed to fit within 1.25em, so icons render full-size, stay centered, never get
-       clipped, and labels line up. SVG icons are capped at 1em and centered in the same
-       column. */
     inline-size: 1.25em;
     block-size: var(--icon-size-sm);
     flex-shrink: 0;
-    /* reset the item's 20px line-height so glyphs aren't inflated vertically */
-    line-height: var(--line-height-none);
 }
 /* the fixed block size above would clip icons with an explicit size */
 .dropdown-menu .icon.ea-icon-sm,
@@ -683,8 +1019,24 @@ a.user-menu-wrapper .user-details:hover {
     overflow: hidden;
     padding: var(--ea-sp-2) var(--ea-sp-3);
     font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
     line-height: 1.25rem; /* fixed length: pins the item height for the ellipsis clamp, not a type ratio */
+}
+/* 'text-overflow' doesn't apply to flex containers, so the ellipsis goes on the label;
+   the padding and negative margin extend its clip box so glyphs taller than the line aren't cut */
+.dropdown-menu :is(.dropdown-item, .dropdown-header) > span:not(.icon, .dropdown-item-trailing) {
+    margin-block: calc(-1 * var(--ea-sp-2));
+    min-inline-size: 0;
+    overflow: hidden;
+    padding-block: var(--ea-sp-2);
     text-overflow: ellipsis;
+}
+.dropdown-menu .dropdown-header {
+    color: var(--dropdown-header-color);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    line-height: 1rem;
+    min-block-size: 24px;
 }
 .dropdown-menu .dropdown-divider {
     background: transparent;
@@ -692,35 +1044,11 @@ a.user-menu-wrapper .user-details:hover {
     border-radius: var(--border-radius-none);
     box-shadow: 0 -1px 0 var(--dropdown-border-color);
     block-size: 1px;
-    margin: var(--ea-sp-3) calc(-1 * var(--dropdown-padding));
+    margin: var(--ea-sp-2) calc(-1 * var(--dropdown-padding));
     opacity: 1;
-}
-.dropdown-menu .dropdown-item-color-scheme {
-    color: var(--dropdown-color);
-}
-.dropdown-menu .dropdown-item-color-scheme:hover {
-    background: transparent;
-}
-.dropdown-menu .dropdown-item-color-scheme label {
-    align-items: center;
-    display: flex;
-}
-.dropdown-menu .dropdown-item-color-scheme i {
-    margin-block-start: 0;
-}
-.dropdown-menu .dropdown-item-color-scheme select {
-    background: var(--dropdown-bg);
-    border: var(--border-width) solid var(--dropdown-border-color);
-    border-radius: var(--border-radius);
-    color: var(--dropdown-color);
-    margin-inline-start: var(--ea-sp-5);
-    outline: none;
-    padding: 0 var(--ea-sp-2);
 }
 .dropdown-menu .dropdown-submenu .dropdown-item.dropdown-toggle {
     border: 0;
-    display: flex;
-    padding: 0 var(--ea-sp-6) 0 var(--ea-sp-3);
     position: relative;
 }
 .dropdown-menu .dropdown-submenu .dropdown-item.dropdown-toggle:not(.dropdown-toggle-split):hover {
@@ -728,7 +1056,6 @@ a.user-menu-wrapper .user-details:hover {
     cursor: default;
 }
 
-/* Utilities */
 /* .text-primary, .text-secondary, .border-primary and .border-secondary are
    redefined in vendor-overrides.css because they collide with Bootstrap
    utilities declared with '!important' */

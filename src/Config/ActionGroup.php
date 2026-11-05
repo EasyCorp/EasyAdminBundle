@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionGroupDto;
 use EasyCorp\Bundle\EasyAdminBundle\Generator\LabelGenerator;
-use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonColor;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
@@ -170,7 +170,7 @@ final class ActionGroup implements \Stringable
     public function asDefaultActionGroup(bool $asDefaultActionGroup = true): self
     {
         if ($asDefaultActionGroup) {
-            $this->dto->setVariant(ButtonVariant::Default);
+            $this->dto->setColor(ButtonColor::Default);
         }
 
         return $this;
@@ -179,7 +179,7 @@ final class ActionGroup implements \Stringable
     public function asPrimaryActionGroup(bool $asPrimaryActionGroup = true): self
     {
         if ($asPrimaryActionGroup) {
-            $this->dto->setVariant(ButtonVariant::Primary);
+            $this->dto->setColor(ButtonColor::Primary);
         }
 
         return $this;
@@ -188,7 +188,7 @@ final class ActionGroup implements \Stringable
     public function asSuccessActionGroup(bool $asSuccessActionGroup = true): self
     {
         if ($asSuccessActionGroup) {
-            $this->dto->setVariant(ButtonVariant::Success);
+            $this->dto->setColor(ButtonColor::Success);
         }
 
         return $this;
@@ -197,7 +197,7 @@ final class ActionGroup implements \Stringable
     public function asWarningActionGroup(bool $asWarningActionGroup = true): self
     {
         if ($asWarningActionGroup) {
-            $this->dto->setVariant(ButtonVariant::Warning);
+            $this->dto->setColor(ButtonColor::Warning);
         }
 
         return $this;
@@ -206,7 +206,7 @@ final class ActionGroup implements \Stringable
     public function asDangerActionGroup(bool $asDangerActionGroup = true): self
     {
         if ($asDangerActionGroup) {
-            $this->dto->setVariant(ButtonVariant::Danger);
+            $this->dto->setColor(ButtonColor::Danger);
         }
 
         return $this;
@@ -215,7 +215,7 @@ final class ActionGroup implements \Stringable
     public function asInfoActionGroup(bool $asInfoActionGroup = true): self
     {
         if ($asInfoActionGroup) {
-            $this->dto->setVariant(ButtonVariant::Info);
+            $this->dto->setColor(ButtonColor::Info);
         }
 
         return $this;

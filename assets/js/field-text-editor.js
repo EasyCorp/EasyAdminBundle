@@ -1,49 +1,60 @@
 require('../css/form-type-text-editor.css');
 
-import DirtyForm from 'dirty-form';
 import Trix from 'trix/dist/trix.esm';
 
 // Provide Trix variable globally to allow custom backend pages to use it
 window.Trix = Trix;
 
-// Listening to the DOMLoadedContent event is too late because the Trix editor is already initialized.
-// To be sure to handle properly the custom configuration, we have to listen to the trix-before-initialize event.
+// DOMContentLoaded is too late because Trix editors are already initialized by then (and the custom
+// config must be applied before that); this event is fired once per editor, including the ones
+// added later (e.g. in collections), so the fields are processed again each time
+let textEditorField = null;
 document.addEventListener('trix-before-initialize', () => {
-    new TextEditorField();
+    textEditorField ??= new TextEditorField();
+    textEditorField.processFields();
 });
 
 class TextEditorField {
     constructor() {
-        this.#processRequiredAttribute();
         this.#enableFormChangesDetection();
         this.#handleFormSubmission();
+        document.addEventListener('trix-change', () => {
+            this.#markInvalidFormFields();
+        });
+    }
+
+    processFields() {
+        this.#processRequiredAttribute();
+        // without the 'required' attribute, the custom validity makes form.js mark the
+        // empty required fields (and their tabs) as invalid
+        this.#markInvalidFormFields();
     }
 
     #processRequiredAttribute() {
-        // TrixEditor works by storing the original content in a hidden <textarea> and creating a new <trix-editor> element
-        // When the original field is required and its content is empty, browsers try to add a validation error, but it
-        // fails because the element is hidden ("An invalid form control with name=”foo" is not focusable")
-        // That's why we remove the HTML required attribute and store it in a custom attribute that will be check later
+        // the content of Trix is stored in a hidden <textarea>; when it's required and empty, browsers fail
+        // to display the validation error ("An invalid form control with name='foo' is not focusable"),
+        // so the 'required' attribute is replaced by a custom attribute checked later
         document.querySelectorAll('textarea.ea-text-editor-content').forEach((trixContentElement) => {
             const trixEditorConfig = JSON.parse(trixContentElement.getAttribute('data-trix-editor-config'));
             if (null !== trixEditorConfig) {
                 Trix.config = this.#mergeObjects(trixEditorConfig, Trix.config);
             }
 
-            const isTrixFieldRequired = 'required' === trixContentElement.getAttribute('required') ? 'true' : 'false';
-            trixContentElement.setAttribute('data-ea-trix-is-required', isTrixFieldRequired);
-            trixContentElement.removeAttribute('required');
+            // the fields processed before no longer have the 'required' attribute
+            if (!trixContentElement.hasAttribute('data-ea-trix-is-required')) {
+                const isTrixFieldRequired =
+                    'required' === trixContentElement.getAttribute('required') ? 'true' : 'false';
+                trixContentElement.setAttribute('data-ea-trix-is-required', isTrixFieldRequired);
+                trixContentElement.removeAttribute('required');
+            }
 
-            // change number of rows
             if (trixContentElement.dataset.numberOfRows !== '') {
                 const escapedId = CSS.escape(trixContentElement.id);
                 const editor = document.querySelector(`trix-editor[input="${escapedId}"].trix-content`);
 
                 if (editor !== null) {
-                    // Apply the min-height via a dedicated <style> element instead of an
-                    // inline style attribute so strict CSPs (that disallow
-                    // `style-src-attr 'unsafe-inline'`) don't strip it.
-                    // Here we consider 21px as the average line height.
+                    // a <style> element instead of an inline style, so strict CSPs (that disallow
+                    // `style-src-attr 'unsafe-inline'`) don't strip it; 21px is the average line height
                     const styleElementId = `ea-trix-editor-size-${trixContentElement.id}`;
                     const styleElement = document.getElementById(styleElementId) ?? document.createElement('style');
                     styleElement.id = styleElementId;
@@ -59,26 +70,13 @@ class TextEditorField {
                 }
             }
         });
-
-        // Since the above code is needed to remove the HTML required attribute, we need to add a custom validity message
-        // for the required fields because otherwise the validation method will not add an error badge to the related tabs
-        // and the submit button will be disabled and never be enabled again.
-        this.#markInvalidFormFields();
-        document.addEventListener('trix-change', () => {
-            this.#markInvalidFormFields();
-        });
     }
 
+    // Trix updates the value of its <textarea> without firing an 'input' event, so DirtyForm
+    // (created by form.js) wouldn't detect the changes otherwise
     #enableFormChangesDetection() {
-        // Because of the way TrixEditor works, browsers cannot detect changes to these fields automatically,
-        // so we manually trigger the DirtyForm plugin when the content changes.
         document.addEventListener('trix-change', (event) => {
-            const form = event.target.closest('form');
-            if (null === form) {
-                return;
-            }
-
-            new DirtyForm(form);
+            event.target.inputElement?.dispatchEvent(new Event('input'));
         });
     }
 
@@ -100,7 +98,7 @@ class TextEditorField {
                         formGroup.removeEventListener('click', onFormGroupClick);
                     });
 
-                    const errorMessage = TextEditorField.#getLocalizedErrorMessage();
+                    const errorMessage = this.#getLocalizedErrorMessage();
                     const errorElement = document.createElement('div');
                     errorElement.classList.add('invalid-feedback', 'd-block');
                     errorElement.innerHTML = `<span class="form-error-message">${errorMessage}</span>`;

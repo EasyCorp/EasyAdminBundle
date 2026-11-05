@@ -5,23 +5,18 @@
 
 .dropdown-menu {
     --ea-action-menu-slide: 8px;
+    --ea-action-menu-zoom-from: 0.95;
 }
 
-/* ENTER: triggered when Bootstrap adds the `.show` class. We animate the
-   individual `scale`/`translate` properties (not `transform`) so they compose
-   on top of Popper's inline `transform: translate()` positioning instead of
-   clobbering it. `transform-origin` is anchored to the corner nearest the
-   toggle, mimicking shadcn's --radix-*-transform-origin. */
-.dropdown-menu.show {
-    /* `ease` (the CSS default) is exactly what shadcn/tw-animate-css uses. A strong
-       decelerate curve (e.g. --ea-ease-out) has a long, slow tail that reads as sluggish
-       at this short duration, so we deliberately match shadcn's `ease` here */
-    animation: ea-action-menu-enter var(--ea-duration-default) var(--ea-ease-in-out);
+/* the individual 'scale'/'translate' properties compose with the inline 'transform' set
+   by Popper instead of replacing it */
+.dropdown-menu .dropdown-menu.show {
+    animation: ea-action-menu-enter var(--ea-duration-fast) ease;
 }
 @keyframes ea-action-menu-enter {
     from {
         opacity: 0;
-        scale: 0.95;
+        scale: var(--ea-action-menu-zoom-from);
         translate: var(--ea-enter-x, 0) var(--ea-enter-y, 0);
     }
     to {
@@ -46,19 +41,23 @@
     transform-origin: left center;
     --ea-enter-x: calc(-1 * var(--ea-action-menu-slide));
 }
-.dropdown-menu[data-popper-placement$="-end"] {
-    transform-origin: top right;
-}
-.dropdown-menu[data-popper-placement$="-start"] {
+.dropdown-menu:is([data-popper-placement="bottom-start"], [data-popper-placement="right-start"]) {
     transform-origin: top left;
 }
+.dropdown-menu:is([data-popper-placement="bottom-end"], [data-popper-placement="left-start"]) {
+    transform-origin: top right;
+}
+.dropdown-menu:is([data-popper-placement="top-start"], [data-popper-placement="right-end"]) {
+    transform-origin: bottom left;
+}
+.dropdown-menu:is([data-popper-placement="top-end"], [data-popper-placement="left-end"]) {
+    transform-origin: bottom right;
+}
 
-/* EXIT: Bootstrap removes `.show` and destroys Popper synchronously, so a
-   CSS-only exit can't play. page-layout.js adds `.ea-dropdown-hiding` while
-   `.show` (and Popper positioning) is still in place, plays this, then lets
-   Bootstrap finish hiding */
+/* Bootstrap removes '.show' and destroys Popper synchronously, so a CSS-only exit
+   can't play; page-layout.js adds this class while the menu is still positioned */
 .dropdown-menu.ea-dropdown-hiding {
-    animation: ea-action-menu-exit var(--ea-duration-fast) var(--ea-ease-in) forwards;
+    animation: ea-action-menu-exit var(--ea-duration-fast) ease forwards;
     pointer-events: none;
 }
 @keyframes ea-action-menu-exit {
@@ -73,7 +72,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .dropdown-menu.show,
+    .dropdown-menu .dropdown-menu.show,
     .dropdown-menu.ea-dropdown-hiding {
         animation: none;
     }
@@ -90,7 +89,7 @@
     align-items: center;
 }
 .dropdown-menu .dropdown-item-check {
-    color: var(--color-primary);
+    color: currentColor;
     inline-size: var(--icon-size-sm);
     block-size: var(--icon-size-sm);
     opacity: 0;
@@ -101,46 +100,87 @@
     opacity: 1;
 }
 
-.dropdown-menu .dropdown-item-selectable.active,
-.dropdown-menu .dropdown-item-selectable[aria-checked="true"] {
-    background: var(--dropdown-settings-active-item-bg);
-    box-shadow: none;
-    color: var(--dropdown-link-color);
-}
-.dropdown-menu .dropdown-item-selectable.active .icon,
-.dropdown-menu .dropdown-item-selectable[aria-checked="true"] .icon {
-    color: var(--dropdown-icon-color);
-}
-.dropdown-menu .dropdown-item-selectable.active .dropdown-item-check {
-    color: var(--color-primary);
-}
-
 .dropdown-submenu .dropdown-toggle::after,
 .dropdown-submenu .dropdown-toggle::before {
-    display: none; /* hide Bootstrap's native caret; we render a chevron icon instead */
+    display: none;
 }
 .dropdown-menu .dropdown-submenu-chevron {
     margin-inline-start: auto;
-    color: var(--text-muted);
+    color: currentColor;
     inline-size: var(--icon-size-sm);
     block-size: var(--icon-size-sm);
 }
-/* the chevron follows the side the submenu actually opens to: right by default
-   (chevron-right, no flip), flipped to point left when the submenu opens to the
-   left (Bootstrap's .dropstart, e.g. datagrid row actions) */
-.dropstart > .dropdown-submenu-chevron,
-.dropstart > * .dropdown-submenu-chevron {
-    scale: -1 1; /* point left */
-    order: -1; /* and sit on the leading (left) edge, the side it opens to */
-    margin-inline-start: 0;
+[dir="rtl"] .dropdown-menu .dropdown-submenu-chevron {
+    scale: -1 1;
 }
-/* pull the toggle into the menu's reserved start gutter (see .dropdown-has-submenus)
-   so the chevron occupies that gutter and the icon + label stay aligned with the
-   sibling items; the offset is the chevron size plus the item's flex gap, and the
-   inline-size compensates the 100% sizing that Bootstrap gives to dropdown items,
-   so the item (and its hover background) still reaches the menu's end edge */
-.dropdown-has-submenus .dropstart > .dropdown-item.dropdown-toggle {
-    --submenu-chevron-gutter: calc(var(--icon-size-sm) + var(--ea-sp-3));
-    margin-inline-start: calc(-1 * var(--submenu-chevron-gutter));
-    inline-size: calc(100% + var(--submenu-chevron-gutter));
+
+.dropdown-menu .dropdown-item.dropdown-item-variant-danger {
+    --dropdown-icon-color: currentColor;
+    color: var(--dropdown-item-danger-color);
+}
+.dropdown-menu .dropdown-item.dropdown-item-variant-danger:is(:hover, :focus-visible, :active) {
+    background: var(--dropdown-item-danger-bg);
+    color: var(--dropdown-item-danger-color);
+}
+
+/* actions with button CSS classes (e.g. 'btn btn-primary') look like the rest of items; the
+   state rules of buttons.css are imported later in the same layer, so they're neutralized
+   through the variables they read */
+.dropdown-menu .btn.dropdown-item {
+    --button-bg: transparent;
+    --button-hover-bg: var(--dropdown-link-hover-bg);
+    --button-active-bg: var(--dropdown-link-hover-bg);
+    --button-color: var(--dropdown-link-color);
+    --button-hover-color: var(--dropdown-link-color);
+    --button-active-color: var(--dropdown-link-color);
+    --button-border-color: transparent;
+    --button-hover-border-color: transparent;
+    --button-active-border-color: transparent;
+    --button-active-box-shadow: none;
+    --button-height: 28px;
+    --button-border-radius: var(--dropdown-item-radius);
+    --button-line-height: 1.25rem;
+
+    border: 0;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    gap: var(--ea-sp-3);
+    justify-content: flex-start;
+    padding: var(--ea-sp-2) var(--ea-sp-3);
+    text-align: start;
+    user-select: auto;
+}
+.dropdown-menu .btn.dropdown-item:not(:disabled):not(.disabled):focus-visible {
+    outline: 0;
+}
+.dropdown-menu .btn.dropdown-item.dropdown-item-variant-danger {
+    --button-color: var(--dropdown-item-danger-color);
+    --button-hover-color: var(--dropdown-item-danger-color);
+    --button-active-color: var(--dropdown-item-danger-color);
+    --button-hover-bg: var(--dropdown-item-danger-bg);
+    --button-active-bg: var(--dropdown-item-danger-bg);
+}
+
+/* menus don't render blank icons: when some item of a list has an icon, the items without
+   icon leave its room so all labels are aligned. Each menu, submenu and selectable group
+   decides on its own, and headers are never indented (the chevron of submenu toggles and
+   the split toggles don't count). The flat items of a menu are a single list even when
+   dividers separate them, because CSS can't limit the check to the items between two dividers.
+   It's in this layer, not in base.css, to also beat the padding of items with button classes */
+.dropdown-menu:has(
+        > li > .dropdown-item > .icon:not(.dropdown-submenu-chevron),
+        > li > div > .dropdown-item:not(.dropdown-toggle-split) > .icon
+    )
+    > li
+    > .dropdown-item:not(:has(> .icon:not(.dropdown-submenu-chevron))),
+.dropdown-menu:has(
+        > li > .dropdown-item > .icon:not(.dropdown-submenu-chevron),
+        > li > div > .dropdown-item:not(.dropdown-toggle-split) > .icon
+    )
+    > li
+    > div
+    > .dropdown-item:not(.dropdown-toggle-split, :has(> .icon)),
+.dropdown-selectable-group:has(> li > .dropdown-item > .icon) > li > .dropdown-item:not(:has(> .icon)) {
+    /* the icon column is 1.25em of the icon font size (see .dropdown-menu .icon), not of the item font size */
+    padding-inline-start: calc(var(--ea-sp-3) + 1.25 * var(--font-size-base) + var(--ea-sp-3));
 }

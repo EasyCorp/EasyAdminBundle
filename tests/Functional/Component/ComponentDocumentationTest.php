@@ -58,7 +58,8 @@ class ComponentDocumentationTest extends KernelTestCase
 
         $buttonProps = array_column($reader->readClassProps(Button::class), null, 'name');
         // the type comes from mount() (which also accepts strings) and the default from the property
-        $this->assertSame(['ButtonVariant|string|null', "'default'", false], [$buttonProps['variant']['type'], $buttonProps['variant']['default'], $buttonProps['variant']['required']]);
+        $this->assertSame(['ButtonColor|string|null', "'default'", false], [$buttonProps['color']['type'], $buttonProps['color']['default'], $buttonProps['color']['required']]);
+        $this->assertSame(['ButtonVariant|string|null', 'null'], [$buttonProps['variant']['type'], $buttonProps['variant']['default']]);
         $this->assertSame(['string|null', "'POST'"], [$buttonProps['method']['type'], $buttonProps['method']['default']]);
         $this->assertSame(['bool', 'false'], [$buttonProps['isBlock']['type'], $buttonProps['isBlock']['default']]);
         $this->assertSame('Whether the button takes the full width of its container.', $buttonProps['isBlock']['description']);

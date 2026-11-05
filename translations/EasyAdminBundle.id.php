@@ -65,6 +65,7 @@ return [
         'save' => 'Simpan perubahan',
         'save_and_continue' => 'Simpan dan teruskan penyuntingan',
         'toggle_dropdown' => 'Alihkan menu dropdown',
+        'show_help' => 'Tampilkan seluruh bantuan',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Otomatis',
         ],
         'locale' => 'Bahasa',
+    ],
+
+    'layout' => [
+        'collapse' => 'Ciutkan',
+        'expand' => 'Perluas',
     ],
 
     'login_page' => [

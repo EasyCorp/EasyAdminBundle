@@ -35,6 +35,15 @@ Encore
     .addEntry('field-textarea', './assets/js/field-textarea.js')
     .addEntry('field-text-editor', './assets/js/field-text-editor.js')
     .addEntry('login', './assets/js/login.js')
+
+    // the font files are copied by the url() of assets/css/easyadmin-theme/fonts.css;
+    // their OFL license must be distributed with them
+    .copyFiles(['inter', 'ibm-plex-sans', 'rubik', 'atkinson-hyperlegible-next', 'jetbrains-mono'].map((font) => ({
+        from: `./node_modules/@fontsource-variable/${font}`,
+        pattern: /LICENSE$/,
+        includeSubdirectories: false,
+        to: `fonts/${font}-OFL.txt`,
+    })))
 ;
 
 module.exports = Encore.getWebpackConfig();

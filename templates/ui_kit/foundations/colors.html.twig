@@ -1,0 +1,59 @@
+{% types {gray_options: 'array', accent_color_options: 'array'} %}
+{% extends '@EasyAdmin/ui_kit/foundation.html.twig' %}
+
+{% block head_stylesheets %}
+    {{ parent() }}
+    {# the values come from the Theme class, which only defines strictly validated colors #}
+    {% guard function csp_nonce %}
+    <style nonce="{{ csp_nonce('style') }}">
+    {% else %}
+    <style>
+    {% endguard %}
+        {% for name, options in {grays: gray_options, 'accent-colors': accent_color_options} %}
+            {% for option in options %}
+                [data-ea-ui-kit-theme-picker="{{ name }}"] .ea-ui-kit-swatch[data-swatch="{{ loop.index }}"] { background: {{ option.swatch|raw }}; }
+            {% endfor %}
+        {% endfor %}
+    </style>
+{% endblock %}
+
+{% block main %}
+    <p class="ea-ui-kit-text-balance">The grays are used in backgrounds, borders and text, and the accent color highlights buttons, switches, tabs and the active menu item. Select any of them to preview it in this page.</p>
+
+    <div class="ea-ui-kit-colors">
+        <div>
+            <p class="ea-ui-kit-caption ea-ui-kit-caption-strong">Grays</p>
+            {{ include('@EasyAdmin/ui_kit/foundations/_theme_picker.html.twig', {theme_options: gray_options, name: 'grays', label: 'Grays'}) }}
+        </div>
+        <div>
+            <p class="ea-ui-kit-caption ea-ui-kit-caption-strong">Accent color</p>
+            {{ include('@EasyAdmin/ui_kit/foundations/_theme_picker.html.twig', {theme_options: accent_color_options, name: 'accent-colors', label: 'Accent color'}) }}
+        </div>
+    </div>
+
+    {{ include('@EasyAdmin/ui_kit/foundations/_theme_code.html.twig') }}
+
+    <p class="ea-ui-kit-caption">Index page</p>
+    {{ include('@EasyAdmin/ui_kit/foundations/_index_page_mockup.html.twig') }}
+
+    <p class="ea-ui-kit-caption">Form page</p>
+    {{ include('@EasyAdmin/ui_kit/foundations/_form_page_mockup.html.twig') }}
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+    {{ include('@EasyAdmin/ui_kit/foundations/_theme_picker_script.html.twig') }}
+    {% guard function csp_nonce %}
+    <script nonce="{{ csp_nonce('script') }}">
+    {% else %}
+    <script>
+    {% endguard %}
+        document.querySelectorAll('[data-ea-ui-kit-mockup]').forEach((mockup) => {
+            mockup.addEventListener('click', (event) => {
+                if (null !== event.target.closest('a[href^="#"]')) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+{% endblock %}

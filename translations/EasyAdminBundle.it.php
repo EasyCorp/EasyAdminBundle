@@ -65,6 +65,7 @@ return [
         'save' => 'Salva',
         'save_and_continue' => 'Salva e continua a modificare',
         'toggle_dropdown' => 'Attiva/disattiva menu a discesa',
+        'show_help' => 'Mostra tutto l\'aiuto',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Auto',
         ],
         'locale' => 'Lingua',
+    ],
+
+    'layout' => [
+        'collapse' => 'Comprimi',
+        'expand' => 'Espandi',
     ],
 
     'login_page' => [

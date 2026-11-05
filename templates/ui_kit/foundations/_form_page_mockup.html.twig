@@ -1,0 +1,68 @@
+<div class="ea-ui-kit-mockup ea-not-prose" data-ea-ui-kit-mockup>
+    {{ include('@EasyAdmin/ui_kit/foundations/_mockup_sidebar.html.twig') }}
+
+    <div class="ea-ui-kit-mockup-content">
+        <div class="ea-ui-kit-mockup-header">
+            <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-title"></div>
+            <twig:ea:Button type="button">Cancel</twig:ea:Button>
+            <twig:ea:Button color="primary" type="button">Save changes</twig:ea:Button>
+        </div>
+
+        <twig:ea:Tabs>
+            <twig:ea:Tabs:Item paneId="ea-ui-kit-mockup-details" label="Details" active />
+            <twig:ea:Tabs:Item paneId="ea-ui-kit-mockup-shipping" label="Shipping" />
+            <twig:ea:Tabs:Item paneId="ea-ui-kit-mockup-notes" label="Notes" />
+        </twig:ea:Tabs>
+
+        <div class="tab-content">
+            <div class="tab-pane ea-ui-kit-mockup-form active" id="ea-ui-kit-mockup-details">
+                <div class="ea-ui-kit-mockup-field">
+                    <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-w40"></div>
+                    <input class="form-control" type="text" aria-label="Text field">
+                </div>
+
+                <div class="ea-ui-kit-mockup-field">
+                    <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-w30"></div>
+                    {% for checked in [true, false] %}
+                        <div class="ea-ui-kit-mockup-choice">
+                            <input class="form-check-input" type="radio" name="ea-ui-kit-mockup-radio" {{ checked ? 'checked' }} aria-label="Option">
+                            <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-w{{ checked ? 45 : 60 }}"></div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="ea-ui-kit-mockup-field">
+                    <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-w30"></div>
+                    <div class="ea-ui-kit-mockup-choice">
+                        <input class="form-check-input" type="checkbox" checked aria-label="Option">
+                        <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-w55"></div>
+                    </div>
+                    <div class="ea-ui-kit-mockup-choice">
+                        <twig:ea:Switch ariaLabel="Option" checked />
+                        <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-w50"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane ea-ui-kit-mockup-form" id="ea-ui-kit-mockup-shipping">
+                <div class="ea-ui-kit-mockup-field">
+                    <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-w50"></div>
+                    <input class="form-control" type="text" aria-label="Text field">
+                </div>
+                <div class="ea-ui-kit-mockup-field">
+                    <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-w30"></div>
+                    <select class="form-select" aria-label="Choice field">
+                        <option></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="tab-pane ea-ui-kit-mockup-form" id="ea-ui-kit-mockup-notes">
+                <div class="ea-ui-kit-mockup-field">
+                    <div class="ea-ui-kit-skeleton ea-ui-kit-skeleton-w40"></div>
+                    <textarea class="form-control" rows="4" aria-label="Text area"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

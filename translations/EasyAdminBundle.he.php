@@ -65,6 +65,7 @@ return [
         'save' => 'שמור שינויים',
         'save_and_continue' => 'שמור והמשך עריכה',
         'toggle_dropdown' => 'החלף תפריט נפתח',
+        'show_help' => 'הצג את כל העזרה',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'אוטומטי',
         ],
         'locale' => 'שפה',
+    ],
+
+    'layout' => [
+        'collapse' => 'כיווץ',
+        'expand' => 'הרחבה',
     ],
 
     'login_page' => [

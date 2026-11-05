@@ -65,6 +65,7 @@ return [
         'save' => 'Išsaugoti',
         'save_and_continue' => 'Išsaugoti ir tęsti redagavimą',
         'toggle_dropdown' => 'Perjungti išskleidžiamąjį meniu',
+        'show_help' => 'Rodyti visą pagalbą',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automatinė',
         ],
         'locale' => 'Kalba',
+    ],
+
+    'layout' => [
+        'collapse' => 'Suskleisti',
+        'expand' => 'Išskleisti',
     ],
 
     'login_page' => [

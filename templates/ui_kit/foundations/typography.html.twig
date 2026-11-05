@@ -1,0 +1,21 @@
+{% types {sample_template: 'string', highlighted_sample: 'string'} %}
+{% extends '@EasyAdmin/ui_kit/foundation.html.twig' %}
+
+{% block main %}
+    <p class="ea-ui-kit-text-balance">EasyAdmin styles the HTML that you write yourself (in custom pages and in any element with the <code>ea-prose</code> CSS class) so it looks good without writing any CSS. This sample includes all the elements that get these styles.</p>
+
+    <twig:ea:Tabs>
+        <twig:ea:Tabs:Item paneId="ea-ui-kit-typography-preview" label="Preview" active />
+        <twig:ea:Tabs:Item paneId="ea-ui-kit-typography-html" label="HTML" />
+    </twig:ea:Tabs>
+
+    <div class="tab-content">
+        <div class="tab-pane active ea-ui-kit-readable" id="ea-ui-kit-typography-preview">
+            {{ include(sample_template) }}
+        </div>
+        <div class="tab-pane" id="ea-ui-kit-typography-html">
+            {# the highlighter escapes all the code, so its output is safe #}
+            <pre class="ea-ui-kit-source ea-ui-kit-source-standalone"><code>{{ highlighted_sample|raw }}</code></pre>
+        </div>
+    </div>
+{% endblock %}

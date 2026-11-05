@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig\Component;
 
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonColor;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonElement;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonType;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
@@ -17,11 +18,15 @@ use Symfony\UX\TwigComponent\Attribute\PreMount;
 class Button
 {
     /**
-     * The color of the button: 'default', 'primary', 'success', 'warning', 'danger' or 'info' (any other value is added as a 'btn-{variant}' CSS class).
+     * The color of the button: 'default' (a neutral gray), 'primary' (the primary color of the theme), 'success', 'warning', 'danger' or 'info' (any other value is added as a 'btn-{color}' CSS class).
      */
-    public ?ButtonVariant $variant = ButtonVariant::Default;
+    public ?ButtonColor $color = ButtonColor::Default;
     /**
-     * Whether to remove the background and borders of the button (useful for icon-only buttons).
+     * The visual style of the button: 'solid', 'outline', 'light', 'ghost' or 'link'; when null, it depends on the color ('solid' for primary buttons, 'outline' for default buttons and 'light' for the other colors).
+     */
+    public ?ButtonVariant $variant = null;
+    /**
+     * Deprecated: use variant="ghost" instead.
      */
     public bool $isInvisible = false;
     /**
@@ -72,6 +77,7 @@ class Button
      * The value attribute of the <button> element.
      */
     public ?string $value = null;
+    private ?string $customColor = null;
     private ?string $customVariant = null;
 
     public function __construct(
@@ -90,6 +96,10 @@ class Button
     #[PreMount]
     public function migrateHtmlAttributes(array $data): array
     {
+        if ((bool) ($data['isInvisible'] ?? false)) {
+            trigger_deprecation('easycorp/easyadmin-bundle', '5.9.0', 'The "isInvisible" prop of the <twig:ea:Button> component is deprecated, use variant="ghost" instead.');
+        }
+
         if (!\array_key_exists('htmlAttributes', $data)) {
             return $data;
         }
@@ -120,20 +130,10 @@ class Button
         return $data;
     }
 
-    public function mount(string|ButtonVariant|null $variant = null, string|ButtonElement|null $htmlElement = null, string|ButtonType|null $type = null, ?string $method = null, string|Size $size = Size::Medium): void
+    public function mount(string|ButtonVariant|null $variant = null, string|ButtonElement|null $htmlElement = null, string|ButtonType|null $type = null, ?string $method = null, string|Size $size = Size::Medium, string|ButtonColor|null $color = null): void
     {
-        if ($variant instanceof ButtonVariant) {
-            $this->variant = $variant;
-        } elseif (null === $variant || '' === $variant) {
-            $this->variant = ButtonVariant::Default;
-        } else {
-            $resolved = ButtonVariant::tryFrom($variant);
-            $this->variant = $resolved;
-            if (null === $resolved) {
-                // unknown variants are passed through as a custom 'btn-{variant}' CSS class
-                $this->customVariant = $variant;
-            }
-        }
+        $this->resolveColor($color);
+        $this->resolveVariant($variant, null !== $color && '' !== $color);
 
         if ($htmlElement instanceof ButtonElement) {
             $this->htmlElement = $htmlElement;
@@ -157,18 +157,20 @@ class Button
     {
         $cssClasses = ['btn'];
 
-        if (null !== $this->variant) {
-            $cssClasses[] = $this->variant->asCssClass();
-        } elseif (null !== $this->customVariant) {
+        if (null !== $this->color) {
+            $cssClasses[] = $this->color->asCssClass();
+        } elseif (null !== $this->customColor) {
+            $cssClasses[] = 'btn-'.$this->customColor;
+        }
+
+        if (null !== $this->customVariant) {
             $cssClasses[] = 'btn-'.$this->customVariant;
+        } else {
+            $cssClasses[] = $this->getResolvedVariant()->asCssClass();
         }
 
         if (Size::Medium !== $this->size) {
             $cssClasses[] = 'btn-'.$this->size->value;
-        }
-
-        if ($this->isInvisible) {
-            $cssClasses[] = 'btn-invisible';
         }
 
         if ($this->isBlock) {
@@ -182,6 +184,19 @@ class Button
         return implode(' ', $cssClasses);
     }
 
+    /**
+     * The variant used to render the button: the one passed to the component or,
+     * when there's none, the default variant of its color.
+     */
+    public function getResolvedVariant(): ButtonVariant
+    {
+        if ($this->isInvisible) {
+            return ButtonVariant::Ghost;
+        }
+
+        return $this->variant ?? ($this->color ?? ButtonColor::Default)->getDefaultVariant();
+    }
+
     // HTML forms only support GET and POST methods; other methods (PUT, DELETE, etc.)
     // require submitting a POST form with the real method in a '_method' hidden field
     public function usesMethodOverride(): bool
@@ -192,5 +207,59 @@ class Button
     public function getFormMethod(): string
     {
         return $this->usesMethodOverride() ? 'POST' : $this->method;
+    }
+
+    private function resolveColor(string|ButtonColor|null $color): void
+    {
+        if ($color instanceof ButtonColor) {
+            $this->color = $color;
+
+            return;
+        }
+
+        if (null === $color || '' === $color) {
+            $this->color = ButtonColor::Default;
+
+            return;
+        }
+
+        // 'secondary' is the CSS class of the default color, so it's accepted as an alias
+        $this->color = 'secondary' === $color ? ButtonColor::Default : ButtonColor::tryFrom($color);
+        if (null === $this->color) {
+            $this->customColor = $color;
+        }
+    }
+
+    private function resolveVariant(string|ButtonVariant|null $variant, bool $hasExplicitColor): void
+    {
+        if (null === $variant || '' === $variant) {
+            $this->variant = null;
+
+            return;
+        }
+
+        $resolvedVariant = $variant instanceof ButtonVariant ? $variant : ButtonVariant::tryFrom($variant);
+        if (null !== $resolvedVariant && !$resolvedVariant->isColor()) {
+            $this->variant = $resolvedVariant;
+
+            return;
+        }
+
+        $legacyColor = $variant instanceof ButtonVariant ? $variant->value : $variant;
+        if (null === $resolvedVariant && 'secondary' !== $legacyColor) {
+            $this->variant = null;
+            $this->customVariant = $variant instanceof ButtonVariant ? null : $variant;
+
+            return;
+        }
+
+        // in previous versions, the 'variant' prop defined the color of the button
+        trigger_deprecation('easycorp/easyadmin-bundle', '5.9.0', 'Passing a color ("%s") in the "variant" prop of the <twig:ea:Button> component is deprecated. Use the "color" prop instead (e.g. color="%s"); the "variant" prop now defines the visual style of the button ("solid", "outline", "light", "ghost" or "link").', $legacyColor, $legacyColor);
+
+        if (!$hasExplicitColor) {
+            $this->resolveColor($legacyColor);
+        }
+
+        $this->variant = null;
     }
 }

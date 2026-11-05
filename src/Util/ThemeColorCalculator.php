@@ -34,6 +34,18 @@ final class ThemeColorCalculator
     }
 
     /**
+     * Returns the given color in the 6-digit hexadecimal format (e.g. "#1a2b3c"),
+     * needed where CSS colors are not supported (e.g. inside data URIs).
+     */
+    public static function toHex(string $color): string
+    {
+        return '#'.implode('', array_map(
+            static fn (float $channel): string => sprintf('%02x', (int) round(self::delinearize($channel) * 255)),
+            self::toLinearRgb($color),
+        ));
+    }
+
+    /**
      * @return array{float, float, float} linear-light sRGB channels in [0, 1]
      */
     private static function toLinearRgb(string $color): array
@@ -77,6 +89,11 @@ final class ThemeColorCalculator
     private static function linearize(float $channel): float
     {
         return $channel <= 0.04045 ? $channel / 12.92 : (($channel + 0.055) / 1.055) ** 2.4;
+    }
+
+    private static function delinearize(float $channel): float
+    {
+        return $channel <= 0.0031308 ? $channel * 12.92 : 1.055 * $channel ** (1 / 2.4) - 0.055;
     }
 
     /**

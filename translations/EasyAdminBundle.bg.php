@@ -65,6 +65,7 @@ return [
         'save' => 'Запиши',
         'save_and_continue' => 'Запиши и продължи редакцията',
         'toggle_dropdown' => 'Превключване на падащото меню',
+        'show_help' => 'Покажи цялата помощ',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Автоматичен',
         ],
         'locale' => 'език',
+    ],
+
+    'layout' => [
+        'collapse' => 'Свиване',
+        'expand' => 'Разгъване',
     ],
 
     'login_page' => [

@@ -65,6 +65,7 @@ return [
         'save' => 'Save changes',
         'save_and_continue' => 'Save and continue editing',
         'toggle_dropdown' => 'Toggle dropdown',
+        'show_help' => 'Show the full help',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Auto',
         ],
         'locale' => 'Language',
+    ],
+
+    'layout' => [
+        'collapse' => 'Collapse',
+        'expand' => 'Expand',
     ],
 
     'login_page' => [

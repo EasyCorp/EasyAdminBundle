@@ -2,11 +2,12 @@
    Do not re-paste the upstream file over it: the original hardcodes Bootstrap's
    own palette (#0d6efd, #ced4da, #343a40...), which made the autocomplete the
    one widget that ignored the theme. Its colors now come from the EasyAdmin
-   tokens, so it follows --ea-primary and the dark scheme like everything else.
-   Port upstream changes by hand, keeping the tokens. */
+   form tokens, so it matches the other form controls and follows the dark
+   scheme. Port upstream changes by hand, keeping the tokens. */
 :root {
-    --ts-pr-clear-button: 0;
-    --ts-pr-caret: 0;
+    /* the unit is required: a unitless 0 is a <number> inside max() and makes it invalid */
+    --ts-pr-clear-button: 0px;
+    --ts-pr-caret: 0px;
     --ts-pr-min: var(--ea-sp-6);
 }
 .ts-wrapper.single .ts-control,
@@ -17,7 +18,6 @@
     padding-inline-end: max(var(--ts-pr-min), var(--ts-pr-clear-button) + var(--ts-pr-caret)) !important;
 }
 .ts-wrapper.plugin-drag_drop.multi > .ts-control > div.ui-sortable-placeholder {
-    background: var(--gray-100) !important;
     background: color-mix(in srgb, var(--black) 6%, transparent) !important;
     border: 0 !important;
     box-shadow: inset 0 0 12px 4px var(--form-control-bg);
@@ -33,28 +33,54 @@
 .plugin-checkbox_options .option input {
     margin-inline-end: var(--ea-sp-4);
 }
+
 .plugin-clear_button {
-    --ts-pr-clear-button: 1em;
+    --ts-pr-clear-button: calc(var(--icon-size-md) + var(--ea-sp-2));
 }
 .plugin-clear_button .clear-button {
-    background: transparent !important;
+    align-items: center;
+    background: transparent;
+    block-size: var(--icon-size-md);
+    border-radius: calc(var(--form-control-border-radius) - var(--ea-sp-3));
+    color: var(--text-muted);
     cursor: pointer;
-    margin-inline-end: 0 !important;
+    display: flex;
+    /* hides the TomSelect glyph; font-size-adjust (set on body) would otherwise scale it back up */
+    font-size: 0;
+    font-size-adjust: none;
+    inline-size: var(--icon-size-md);
+    inset-block-start: calc(50% - var(--icon-size-md) / 2);
+    inset-inline-end: var(--ea-sp-3);
+    justify-content: center;
+    line-height: var(--line-height-none);
+    margin-inline-end: 0;
     opacity: 0;
     position: absolute;
-    inset-inline-end: var(--ea-sp-4);
-    inset-block-start: 50%;
-    transform: translateY(-50%);
     transition: opacity var(--ea-duration-slower);
 }
-.plugin-clear_button.form-select .clear-button,
-.plugin-clear_button.single .clear-button {
-    inset-inline-end: max(var(--ts-pr-caret), var(--ea-sp-6));
+.plugin-clear_button.form-select .clear-button {
+    inset-inline-end: calc(var(--ts-pr-caret) - var(--ea-sp-2));
+}
+.plugin-clear_button .clear-button::before {
+    background-color: currentColor;
+    block-size: var(--icon-size-xs);
+    content: "";
+    flex-shrink: 0;
+    inline-size: var(--icon-size-xs);
+    mask-image: var(--form-widget-icon-x);
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+}
+.plugin-clear_button .clear-button:hover {
+    background: var(--form-tag-hover-bg);
+    color: var(--text-color);
 }
 .plugin-clear_button.focus.has-items .clear-button,
 .plugin-clear_button:not(.disabled):hover.has-items .clear-button {
     opacity: 1;
 }
+
 .ts-wrapper .dropdown-header {
     background: var(--gray-50);
     border-block-end: var(--border-width) solid var(--border-color);
@@ -75,24 +101,42 @@
 .ts-wrapper .dropdown-header-close:hover {
     color: var(--gray-900);
 }
-.plugin-dropdown_input.focus.dropdown-active .ts-control {
-    border: var(--border-width) solid var(--form-input-border-color);
-    box-shadow: none;
-    box-shadow: inset 0 1px 2px color-mix(in srgb, var(--black) 8%, transparent);
-}
-.plugin-dropdown_input .dropdown-input {
+
+.dropdown-input-wrap {
+    align-items: center;
     background: transparent;
-    border: solid var(--border-color);
-    border-width: 0 0 var(--border-width);
-    box-shadow: none;
-    display: block;
-    padding: var(--ea-sp-3) var(--ea-sp-6);
-    inline-size: 100%;
+    display: flex;
+    gap: var(--ea-sp-3);
+    padding: 0 var(--form-control-padding-x);
 }
-.plugin-dropdown_input.focus .ts-dropdown .dropdown-input {
-    border-color: var(--ea-primary);
-    box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--ea-primary-ring);
+.dropdown-input-wrap::before {
+    background-color: var(--text-muted);
+    block-size: var(--icon-size-sm);
+    content: "";
+    flex-shrink: 0;
+    inline-size: var(--icon-size-sm);
+    mask-image: var(--form-widget-icon-search);
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+}
+.plugin-dropdown_input .dropdown-input,
+.plugin-dropdown_input .dropdown-input:focus {
+    background: transparent;
+    block-size: calc(var(--form-control-height) + var(--ea-sp-2));
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    color: var(--form-input-text-color);
+    display: block;
+    flex: 1;
+    font-size: var(--font-size-base);
+    min-inline-size: 0;
     outline: 0;
+    padding: 0;
+}
+.plugin-dropdown_input .dropdown-input::placeholder {
+    color: var(--form-input-placeholder-color);
 }
 .plugin-dropdown_input .items-placeholder {
     border: 0 !important;
@@ -109,9 +153,6 @@
 .ts-wrapper.plugin-input_autogrow.has-items.focus .ts-control > input {
     flex: none;
     min-inline-size: 4px;
-}
-.ts-wrapper.plugin-input_autogrow.has-items.focus .ts-control > input::-ms-input-placeholder {
-    color: transparent;
 }
 .ts-wrapper.plugin-input_autogrow.has-items.focus .ts-control > input::placeholder {
     color: transparent;
@@ -135,25 +176,48 @@
 .ts-dropdown.plugin-optgroup_columns .optgroup-header {
     border-block-start: 0;
 }
+
 .ts-wrapper.plugin-remove_button .item {
     align-items: center;
     display: inline-flex;
     padding-inline-end: 0 !important;
 }
 .ts-wrapper.plugin-remove_button .item .remove {
-    border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+    align-items: center;
+    block-size: var(--icon-size-sm);
+    border: 0;
+    border-radius: calc(var(--form-control-border-radius) - var(--ea-sp-3));
     box-sizing: border-box;
-    color: inherit;
-    display: inline-block;
-    padding: 0 var(--ea-sp-2);
+    color: var(--text-muted);
+    display: inline-flex;
+    /* hides the TomSelect glyph; font-size-adjust (set on body) would otherwise scale it back up */
+    font-size: 0;
+    font-size-adjust: none;
+    inline-size: var(--icon-size-sm);
+    justify-content: center;
+    margin: 0;
+    margin-inline-end: var(--ea-sp-1);
+    padding: 0;
     text-decoration: none;
-    vertical-align: middle;
+}
+.ts-wrapper.plugin-remove_button .item .remove::before {
+    background-color: currentColor;
+    block-size: var(--icon-size-xs);
+    content: "";
+    flex-shrink: 0;
+    inline-size: var(--icon-size-xs);
+    mask-image: var(--form-widget-icon-x);
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
 }
 .ts-wrapper.plugin-remove_button .item .remove:hover {
-    background: color-mix(in srgb, var(--black) 5%, transparent);
+    background: var(--form-tag-hover-bg);
+    color: var(--text-color);
 }
 .ts-wrapper.plugin-remove_button.disabled .item .remove:hover {
     background: none;
+    color: var(--text-muted);
 }
 .ts-wrapper.plugin-remove_button .remove-single {
     font-size: var(--icon-size-lg);
@@ -161,34 +225,16 @@
     inset-inline-end: 0;
     inset-block-start: 0;
 }
-.ts-wrapper.plugin-remove_button:not(.rtl) .item .remove {
-    border-inline-start: var(--border-width) solid var(--border-color);
-    margin-inline-start: var(--ea-sp-2);
-}
-.ts-wrapper.plugin-remove_button:not(.rtl) .item.active .remove {
-    border-inline-start-color: transparent;
-}
-.ts-wrapper.plugin-remove_button:not(.rtl).disabled .item .remove {
-    border-inline-start-color: var(--form-control-bg);
-}
-.ts-wrapper.plugin-remove_button.rtl .item .remove {
-    border-inline-end: var(--border-width) solid var(--border-color);
-    margin-inline-end: var(--ea-sp-2);
-}
-.ts-wrapper.plugin-remove_button.rtl .item.active .remove {
-    border-inline-end-color: transparent;
-}
-.ts-wrapper.plugin-remove_button.rtl.disabled .item .remove {
-    border-inline-end-color: var(--form-control-bg);
-}
+
 .ts-wrapper {
+    display: flex;
     position: relative;
 }
 .ts-control,
 .ts-control input,
 .ts-dropdown {
     -webkit-font-smoothing: inherit;
-    color: var(--text-color);
+    color: var(--form-input-text-color);
     font-family: inherit;
     font-size: inherit;
     line-height: var(--line-height-normal);
@@ -199,53 +245,77 @@
     cursor: text;
 }
 .ts-control {
+    align-items: center;
     border: var(--border-width) solid var(--form-input-border-color);
-    border-radius: var(--border-radius);
+    border-radius: var(--form-control-border-radius);
     box-shadow: none;
     box-sizing: border-box;
+    display: flex;
     flex-wrap: wrap;
+    gap: var(--ea-sp-2);
+    line-height: calc(var(--form-control-height) - 6 * var(--ea-sp-1));
+    min-block-size: var(--form-control-height);
     overflow: hidden;
-    padding: var(--ea-sp-3) var(--ea-sp-6);
+    padding-block: var(--form-control-padding-y);
+    padding-inline-start: var(--form-control-padding-x);
     position: relative;
     inline-size: 100%;
+    transition: border-color var(--ea-duration-fast) var(--ea-ease-in-out);
     z-index: 1;
 }
-.ts-wrapper.multi.has-items .ts-control {
-    padding: calc(var(--ea-sp-3) - var(--border-width)) var(--ea-sp-6) var(--ea-sp-1);
+@media (prefers-reduced-motion: reduce) {
+    .ts-control {
+        transition: none;
+    }
 }
 .full .ts-control {
     background-color: var(--form-control-bg);
 }
 .disabled .ts-control,
 .disabled .ts-control * {
-    cursor: default !important;
+    cursor: not-allowed !important;
 }
 .focus .ts-control {
-    box-shadow: none;
+    border-color: var(--form-input-focus-border-color);
+    box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-focus-ring-color);
+    outline: 0;
 }
 .ts-control > * {
     display: inline-block;
     vertical-align: baseline;
 }
-.ts-wrapper.multi .ts-control > div {
-    background: var(--gray-100);
-    border: 0 solid var(--border-color);
+.ts-control .item {
+    align-items: center;
+    display: flex;
+}
+
+.ts-wrapper.multi.has-items .ts-control {
+    --ts-pr-min: var(--ea-sp-2);
+    padding-inline-start: var(--form-control-padding-y);
+}
+/* the items, not every child: the clear button is also a <div> inside the control */
+.ts-wrapper.multi .ts-control > .item {
+    align-items: center;
+    background: var(--form-tag-bg);
+    border: 0;
+    border-radius: calc(var(--form-control-border-radius) - var(--ea-sp-2));
     color: var(--text-color);
     cursor: pointer;
-    margin: 0 var(--ea-sp-2) var(--ea-sp-2) 0;
-    padding: 1px var(--ea-sp-2);
+    display: inline-flex;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    gap: var(--ea-sp-1);
+    line-height: var(--line-height-none);
+    margin: 0;
+    /* the size isn't fixed because items can use custom HTML templates (e.g. an avatar and two lines of text) */
+    min-block-size: calc(var(--form-control-height) - 2 * var(--border-width) - 2 * var(--form-control-padding-y));
+    padding: 0 var(--ea-sp-3);
 }
-.ts-wrapper.multi .ts-control > div.active {
-    background: var(--ea-primary);
-    border: 0 solid transparent;
-    color: var(--text-on-primary);
+.ts-wrapper.multi .ts-control > .item.active {
+    background: var(--form-tag-hover-bg);
+    color: var(--text-color);
 }
-.ts-wrapper.multi.disabled .ts-control > div,
-.ts-wrapper.multi.disabled .ts-control > div.active {
-    background: var(--form-control-disabled-bg);
-    border: 0 solid var(--form-control-disabled-bg);
-    color: var(--form-control-disabled-color);
-}
+
 .ts-control > input {
     background: none !important;
     border: 0 !important;
@@ -261,12 +331,10 @@
     padding: 0 !important;
     text-indent: 0 !important;
     -webkit-user-select: auto !important;
-    -moz-user-select: auto !important;
-    -ms-user-select: auto !important;
     user-select: auto !important;
 }
-.ts-control > input::-ms-clear {
-    display: none;
+.ts-control > input::placeholder {
+    color: var(--form-input-placeholder-color);
 }
 .ts-control > input:focus {
     outline: none !important;
@@ -277,35 +345,158 @@
 .ts-control.rtl {
     text-align: right;
 }
-.ts-control.rtl.single .ts-control:after {
-    inset-inline-start: var(--ea-sp-8);
-    inset-inline-end: auto;
-}
-.ts-control.rtl .ts-control > input {
-    margin: 0 var(--ea-sp-2) 0 calc(-1 * var(--ea-sp-1)) !important;
-}
 .disabled .ts-control {
     background-color: var(--form-control-disabled-bg);
-    opacity: 0.5;
+    opacity: var(--form-control-disabled-opacity);
 }
 .input-hidden .ts-control > input {
     inset-inline-start: -10000px;
     opacity: 0;
     position: absolute;
 }
+
+/* TomSelect copies the classes of the <select> to its wrapper, so the wrapper
+   (not .ts-control) is the visible box and .ts-control is a borderless and
+   transparent area inside it */
+.ts-wrapper.form-control,
+.ts-wrapper.form-select {
+    --ts-pr-caret: 0px;
+    --ts-pr-min: var(--form-control-padding-x);
+    background-color: var(--form-control-bg);
+    background-image: none;
+    block-size: auto;
+    border: var(--border-width) solid var(--form-input-border-color);
+    border-radius: var(--form-control-border-radius);
+    box-shadow: none;
+    color: var(--form-input-text-color);
+    /* the wrapper has the 'form-select' class but forms.css excludes it, so it would get the font size of Bootstrap */
+    font-size: var(--font-size-base);
+    line-height: 20px;
+    min-block-size: var(--form-control-height);
+    padding: 0;
+    transition: border-color var(--ea-duration-fast) var(--ea-ease-in-out);
+    white-space: normal;
+}
+.ts-wrapper.form-select {
+    --ts-pr-caret: calc(var(--ea-sp-4) + var(--icon-size-sm) + var(--ea-sp-3));
+}
+@media (prefers-reduced-motion: reduce) {
+    .ts-wrapper.form-control,
+    .ts-wrapper.form-select {
+        transition: none;
+    }
+}
+.ts-wrapper.form-select::after {
+    background-color: var(--text-muted);
+    block-size: var(--icon-size-sm);
+    content: "";
+    inline-size: var(--icon-size-sm);
+    inset-block-start: calc(50% - var(--icon-size-sm) / 2);
+    inset-inline-end: var(--ea-sp-4);
+    mask-image: var(--form-widget-icon-chevron);
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    pointer-events: none;
+    position: absolute;
+    z-index: 2;
+}
+.ts-wrapper:is(.form-select, .form-control) .ts-control {
+    background: transparent;
+    border: 0;
+    border-radius: inherit;
+    box-shadow: none;
+    min-block-size: calc(var(--form-control-height) - 2 * var(--border-width));
+    transition: none;
+}
+.ts-wrapper:is(.form-select, .form-control):is(.focus, .input-active) {
+    border-color: var(--form-input-focus-border-color);
+    box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-focus-ring-color);
+    outline: 0;
+}
+/* TomSelect adds 'invalid' as soon as a required field is empty (even on page load),
+   so it's only displayed after the form was validated, like Bootstrap does */
+.has-error .ts-wrapper:is(.form-select, .form-control),
+.ts-wrapper:is(.form-select, .form-control).is-invalid,
+.was-validated .ts-wrapper:is(.form-select, .form-control).invalid {
+    border-color: var(--form-input-error-border-color);
+    box-shadow: none;
+}
+.has-error .ts-wrapper:is(.form-select, .form-control):is(.focus, .input-active),
+.ts-wrapper:is(.form-select, .form-control).is-invalid:is(.focus, .input-active),
+.was-validated .ts-wrapper:is(.form-select, .form-control).invalid:is(.focus, .input-active) {
+    border-color: var(--form-input-error-border-color);
+    box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-input-error-ring-color);
+}
+.ts-wrapper:is(.form-select, .form-control).disabled {
+    background-color: var(--form-control-disabled-bg);
+    cursor: not-allowed;
+    opacity: var(--form-control-disabled-opacity);
+}
+.ts-wrapper:is(.form-select, .form-control).disabled .ts-control {
+    opacity: 1;
+}
+
+.ts-wrapper:not(.form-control):not(.form-select) {
+    background: none;
+    border: none;
+    box-shadow: none;
+    block-size: auto;
+    padding: 0;
+}
+.input-group > .ts-wrapper {
+    flex-grow: 1;
+}
+.input-group > .ts-wrapper:not(:nth-child(2)) > .ts-control {
+    border-end-start-radius: 0;
+    border-start-start-radius: 0;
+}
+.input-group > .ts-wrapper:not(:last-child) > .ts-control {
+    border-end-end-radius: 0;
+    border-start-end-radius: 0;
+}
+
 .ts-dropdown {
     background: var(--dropdown-bg);
-    border: var(--border-width) solid var(--dropdown-border-color);
-    border-radius: 0 0 var(--border-radius) var(--border-radius);
-    border-block-start: 0;
-    box-shadow: 0 1px 3px color-mix(in srgb, var(--black) 10%, transparent);
+    border: var(--border-width) solid var(--form-input-border-color);
+    border-radius: var(--form-control-border-radius);
+    box-shadow: var(--shadow-md);
     box-sizing: border-box;
-    inset-inline-start: 0;
-    margin: var(--ea-sp-2) 0 0;
-    position: absolute;
+    color: var(--text-color);
     inset-block-start: 100%;
+    inset-inline-start: 0;
     inline-size: 100%;
-    z-index: 10;
+    margin: var(--ea-sp-2) 0 0;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    z-index: 1000;
+}
+/* the dropdown is positioned inside the wrapper's border, so without this
+   it'd be 2px narrower than the trigger and 1px closer to it */
+.ts-wrapper:is(.form-select, .form-control) > .ts-dropdown {
+    inline-size: calc(100% + 2 * var(--border-width));
+    inset-inline-start: calc(-1 * var(--border-width));
+    margin-block-start: calc(var(--ea-sp-2) + var(--border-width));
+}
+.ts-dropdown-content {
+    max-block-size: 200px;
+    /* overflow-inline/-block need Chrome 135 and Safari 26 */
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: var(--ea-sp-2);
+    scroll-behavior: smooth;
+    scroll-padding-block: var(--ea-sp-2);
+}
+/* without options (e.g. an autocomplete before typing), the padding of the empty list
+   looks like an empty row below the search input ('no results' and the loading
+   indicator are elements, so they are still displayed); the separator is on the list,
+   not on the search input, so it hides with it (':has()' can't be nested) */
+.ts-dropdown-content:not(:has(*)) {
+    display: none;
+}
+.dropdown-input-wrap + .ts-dropdown-content {
+    border-block-start: var(--border-width) solid var(--dropdown-border-color);
 }
 .ts-dropdown [data-selectable] {
     cursor: pointer;
@@ -314,12 +505,23 @@
 .ts-dropdown [data-selectable] .highlight {
     background: var(--highlight-bg);
     border-radius: var(--border-radius-sm);
+    color: var(--highlight-color);
+}
+.ts-dropdown .option,
+.ts-dropdown .create,
+.ts-dropdown .no-results,
+.ts-dropdown .loading-more-results,
+.ts-dropdown .no-more-results {
+    border-radius: calc(var(--form-control-border-radius) - var(--ea-sp-2));
+    line-height: calc(var(--form-control-height) - 6 * var(--ea-sp-1));
+    margin: 0;
+    padding: var(--ea-sp-3) var(--ea-sp-4);
 }
 .ts-dropdown .create,
 .ts-dropdown .no-results,
-.ts-dropdown .optgroup-header,
-.ts-dropdown .option {
-    padding: var(--ea-sp-2) var(--ea-sp-6);
+.ts-dropdown .loading-more-results,
+.ts-dropdown .no-more-results {
+    color: var(--text-muted);
 }
 .ts-dropdown .option,
 .ts-dropdown [data-disabled],
@@ -331,23 +533,55 @@
     cursor: pointer;
     opacity: 1;
 }
-.ts-dropdown .optgroup:first-child .optgroup-header {
-    border-block-start: 0;
-}
-.ts-dropdown .optgroup-header {
-    background: var(--dropdown-bg);
-    color: var(--text-muted);
-    cursor: default;
-}
-.ts-dropdown .active {
+.ts-dropdown .option.active,
+.ts-dropdown .option:hover,
+.ts-dropdown .create.active,
+.ts-dropdown .create:hover {
     background-color: var(--dropdown-link-hover-bg);
     color: var(--text-color);
 }
-.ts-dropdown .active.create {
-    color: var(--text-color);
+.ts-wrapper.single .ts-dropdown .option {
+    padding-inline-end: calc(var(--ea-sp-4) + var(--icon-size-sm) + var(--ea-sp-3));
+    position: relative;
 }
-.ts-dropdown .create {
+.ts-wrapper.single .ts-dropdown .option.selected::after {
+    background-color: currentColor;
+    block-size: var(--icon-size-sm);
+    content: "";
+    inline-size: var(--icon-size-sm);
+    inset-block-start: calc(50% - var(--icon-size-sm) / 2);
+    inset-inline-end: var(--ea-sp-4);
+    mask-image: var(--form-widget-icon-check);
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    position: absolute;
+}
+.ts-dropdown .optgroup-header {
+    background: transparent;
     color: var(--text-muted);
+    cursor: default;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    padding: var(--ea-sp-3) var(--ea-sp-4);
+}
+.ts-dropdown .optgroup:first-child .optgroup-header {
+    border-block-start: 0;
+}
+/* when using preferred choices, an empty group header is added; hide it to not add extra vertical space */
+.ts-dropdown .optgroup-header:empty {
+    display: none;
+}
+.ts-dropdown .optgroup:first-child:before {
+    display: none;
+}
+.ts-dropdown .optgroup:before {
+    border-block-start: var(--border-width) solid var(--dropdown-border-color);
+    content: " ";
+    display: block;
+    block-size: 0;
+    margin: var(--ea-sp-2) calc(-1 * var(--ea-sp-2));
+    overflow: hidden;
 }
 .ts-dropdown .spinner {
     display: inline-block;
@@ -375,371 +609,13 @@
         transform: rotate(1turn);
     }
 }
-.ts-dropdown-content {
-    -webkit-overflow-scrolling: touch;
-    max-block-size: 200px;
-    overflow-inline: hidden;
-    overflow-block: auto;
-    scroll-behavior: smooth;
-}
 .ts-hidden-accessible {
     clip: rect(0 0 0 0) !important;
     border: 0 !important;
-    -webkit-clip-path: inset(50%) !important;
     clip-path: inset(50%) !important;
     overflow: hidden !important;
     padding: 0 !important;
     position: absolute !important;
     white-space: nowrap !important;
     inline-size: 1px !important;
-}
-.ts-wrapper.form-control,
-.ts-wrapper.form-select {
-    box-shadow: none;
-    display: flex;
-    block-size: auto;
-    padding: 0 !important;
-}
-.ts-dropdown,
-.ts-dropdown.form-control,
-.ts-dropdown.form-select {
-    background: var(--dropdown-bg);
-    border: var(--border-width) solid var(--bs-border-color-translucent);
-    border-radius: var(--border-radius);
-    box-shadow: 0 6px 12px color-mix(in srgb, var(--black) 18%, transparent);
-    block-size: auto;
-    padding: 0;
-    z-index: 1000;
-}
-.ts-dropdown .optgroup-header {
-    font-size: var(--font-size-base);
-    line-height: var(--line-height-normal);
-}
-.ts-dropdown .optgroup:first-child:before {
-    display: none;
-}
-.ts-dropdown .optgroup:before {
-    border-block-start: var(--border-width) solid var(--bs-border-color-translucent);
-    content: " ";
-    display: block;
-    block-size: 0;
-    margin: var(--ea-sp-4) calc(var(--ea-sp-6) * -1);
-    overflow: hidden;
-}
-.ts-dropdown .create {
-    padding-inline-start: var(--ea-sp-6);
-}
-.ts-dropdown-content {
-    padding: var(--ea-sp-2) 0;
-}
-.ts-control {
-    align-items: center;
-    display: flex;
-    transition: border-color var(--ea-duration-default) var(--ea-ease-in-out), box-shadow var(--ea-duration-default)
-        var(--ea-ease-in-out);
-}
-@media (prefers-reduced-motion: reduce) {
-    .ts-control {
-        transition: none;
-    }
-}
-.ts-control.dropdown -active {
-    border-radius: var(--border-radius);
-}
-.focus .ts-control {
-    border-color: var(--ea-primary);
-    box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--ea-primary-ring);
-    outline: 0;
-}
-.ts-control .item {
-    align-items: center;
-    display: flex;
-}
-.ts-wrapper.is-invalid,
-.was-validated .invalid,
-.was-validated :invalid + .ts-wrapper {
-    border-color: var(--color-danger);
-}
-.ts-wrapper.is-invalid:not(.single),
-.was-validated .invalid:not(.single),
-.was-validated :invalid + .ts-wrapper:not(.single) {
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' inline-size='12' block-size='12' fill='none' stroke='%23cf222e'%3E%3Ccircle cx='6' cy='6' r='4.5'/%3E%3Cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3E%3Ccircle cx='6' cy='8.2' r='.6' fill='%23cf222e' stroke='none'/%3E%3C/svg%3E");
-    background-position: right calc(.375em + .1875rem) center;
-    background-repeat: no-repeat;
-    background-size: calc(.75em + .375rem) calc(.75em + .375rem);
-}
-.ts-wrapper.is-invalid.single,
-.was-validated .invalid.single,
-.was-validated :invalid + .ts-wrapper.single {
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E"),
-        url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' inline-size='12' block-size='12' fill='none' stroke='%23cf222e'%3E%3Ccircle cx='6' cy='6' r='4.5'/%3E%3Cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3E%3Ccircle cx='6' cy='8.2' r='.6' fill='%23cf222e' stroke='none'/%3E%3C/svg%3E");
-    background-position: right .75rem center, center right 2.25rem;
-    background-repeat: no-repeat;
-    background-size: 16px 12px, calc(.75em + .375rem) calc(.75em + .375rem);
-}
-.ts-wrapper.is-invalid.focus .ts-control,
-.was-validated .invalid.focus .ts-control,
-.was-validated :invalid + .ts-wrapper.focus .ts-control {
-    border-color: var(--color-danger);
-    box-shadow: 0 0 0 var(--ea-focus-ring-width) color-mix(in srgb, var(--color-danger) 25%, transparent);
-}
-.ts-wrapper.is-valid,
-.was-validated .valid,
-.was-validated :valid + .ts-wrapper {
-    border-color: var(--color-success);
-}
-.ts-wrapper.is-valid:not(.single),
-.was-validated .valid:not(.single),
-.was-validated :valid + .ts-wrapper:not(.single) {
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23198754' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3E%3C/svg%3E");
-    background-position: right calc(.375em + .1875rem) center;
-    background-repeat: no-repeat;
-    background-size: calc(.75em + .375rem) calc(.75em + .375rem);
-}
-.ts-wrapper.is-valid.single,
-.was-validated .valid.single,
-.was-validated :valid + .ts-wrapper.single {
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E"),
-        url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23198754' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3E%3C/svg%3E");
-    background-position: right .75rem center, center right 2.25rem;
-    background-repeat: no-repeat;
-    background-size: 16px 12px, calc(.75em + .375rem) calc(.75em + .375rem);
-}
-.ts-wrapper.is-valid.focus .ts-control,
-.was-validated .valid.focus .ts-control,
-.was-validated :valid + .ts-wrapper.focus .ts-control {
-    border-color: var(--color-success);
-    box-shadow: 0 0 0 var(--ea-focus-ring-width) color-mix(in srgb, var(--color-success) 25%, transparent);
-}
-.ts-wrapper {
-    display: flex;
-    min-block-size: calc(1.5em + .75rem + 2px);
-}
-.input-group-sm > .ts-wrapper,
-.ts-wrapper.form-control-sm,
-.ts-wrapper.form-select-sm {
-    min-block-size: calc(1.5em + .5rem + 2px);
-}
-.input-group-sm > .ts-wrapper .ts-control,
-.ts-wrapper.form-control-sm .ts-control,
-.ts-wrapper.form-select-sm .ts-control {
-    border-radius: var(--border-radius);
-    font-size: var(--font-size-base);
-}
-.input-group-sm > .ts-wrapper.has-items .ts-control,
-.ts-wrapper.form-control-sm.has-items .ts-control,
-.ts-wrapper.form-select-sm.has-items .ts-control {
-    font-size: var(--font-size-base);
-    padding-block-end: 0;
-}
-.input-group-sm > .ts-wrapper.multi.has-items .ts-control,
-.ts-wrapper.form-control-sm.multi.has-items .ts-control,
-.ts-wrapper.form-select-sm.multi.has-items .ts-control {
-    padding-block-start: calc(.75em - .40625rem - 1px) !important;
-}
-.ts-wrapper.multi.has-items .ts-control {
-    --ts-pr-min: var(--ea-sp-4);
-    padding-inline-start: var(--ea-sp-4);
-}
-.ts-wrapper.multi .ts-control > div {
-    border-radius: calc(var(--border-radius) - var(--border-width));
-}
-.input-group-lg > .ts-wrapper,
-.ts-wrapper.form-control-lg,
-.ts-wrapper.form-select-lg {
-    min-block-size: calc(1.5em + 1rem + 2px);
-}
-.input-group-lg > .ts-wrapper .ts-control,
-.ts-wrapper.form-control-lg .ts-control,
-.ts-wrapper.form-select-lg .ts-control {
-    border-radius: var(--border-radius-lg);
-    font-size: var(--font-size-xl);
-}
-.ts-wrapper:not(.form-control):not(.form-select) {
-    background: none;
-    border: none;
-    box-shadow: none;
-    block-size: auto;
-    padding: 0;
-}
-.ts-wrapper:not(.form-control):not(.form-select).single .ts-control {
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
-    background-position: right .75rem center;
-    background-repeat: no-repeat;
-    background-size: 16px 12px;
-}
-.ts-wrapper.form-select,
-.ts-wrapper.single {
-    --ts-pr-caret: var(--ea-sp-18);
-}
-.ts-wrapper.form-control .ts-control,
-.ts-wrapper.form-control.single.input-active .ts-control,
-.ts-wrapper.form-select .ts-control,
-.ts-wrapper.form-select.single.input-active .ts-control {
-    border: none !important;
-}
-.ts-wrapper.form-control:not(.disabled) .ts-control,
-.ts-wrapper.form-control:not(.disabled).single.input-active .ts-control,
-.ts-wrapper.form-select:not(.disabled) .ts-control,
-.ts-wrapper.form-select:not(.disabled).single.input-active .ts-control {
-    background: transparent !important;
-}
-.input-group > .ts-wrapper {
-    flex-grow: 1;
-}
-.input-group > .ts-wrapper:not(:nth-child(2)) > .ts-control {
-    border-end-start-radius: 0;
-    border-start-start-radius: 0;
-}
-.input-group > .ts-wrapper:not(:last-child) > .ts-control {
-    border-end-end-radius: 0;
-    border-start-end-radius: 0;
-}
-
-.ts-wrapper {
-    min-block-size: unset;
-}
-.ts-wrapper .ts-control {
-    block-size: unset;
-    min-block-size: 28px;
-    padding: var(--ea-sp-2) var(--ea-sp-14) var(--ea-sp-2) var(--ea-sp-4);
-}
-.ts-wrapper.input-active {
-    border-color: var(--form-input-hover-border-color);
-    box-shadow: var(--form-input-hover-shadow);
-    outline: 0;
-}
-.ts-wrapper.focus .ts-control {
-    box-shadow: none;
-    outline: 0;
-}
-
-.dropdown-input-wrap {
-    background: var(--form-type-autocomplete-dropdown-input-wrapper-bg);
-    border-block-end: var(--border-width) solid var(--form-input-border-color);
-    border-start-start-radius: var(--border-radius);
-    border-start-end-radius: var(--border-radius);
-    padding: var(--ea-sp-4) var(--ea-sp-5);
-}
-.dropdown-input,
-.plugin-dropdown_input.focus .dropdown-input {
-    background: var(--form-control-bg);
-    border: var(--border-width) solid var(--form-type-autocomplete-dropdown-input-border-color);
-    border-radius: var(--border-radius);
-    box-shadow: var(--form-input-box-shadow);
-    color: var(--form-input-text-color);
-    block-size: 30px; /* matches the fixed form-control height in forms.css */
-    position: relative;
-}
-.dropdown-input:focus {
-    border: 0;
-    box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--ea-primary-ring), 0 1px 1px
-        color-mix(in srgb, var(--black) 8%, transparent);
-    outline: 0;
-}
-
-.ts-dropdown,
-.ts-dropdown.form-control,
-.ts-dropdown.form-select {
-    background: var(--form-type-autocomplete-dropdown-bg);
-    border: var(--border-width) solid var(--form-input-border-color);
-    box-shadow: var(--shadow-xl);
-    color: var(--form-input-text-color);
-}
-.ts-dropdown .active,
-.ts-dropdown .create:hover,
-.ts-dropdown .option:hover {
-    background-color: var(--form-type-autocomplete-dropdown-active-item-bg);
-    color: var(--form-input-text-color);
-}
-.ts-dropdown [data-selectable] .highlight {
-    background: var(--highlight-bg);
-    color: var(--highlight-color);
-}
-
-.ts-control,
-.ts-control input,
-.ts-dropdown {
-    color: var(--form-input-text-color);
-}
-
-.ts-dropdown-content {
-    padding: var(--ea-sp-2) var(--ea-sp-2);
-}
-.ts-dropdown [data-selectable].option {
-    border-radius: var(--border-radius);
-    margin: var(--ea-sp-1) 0;
-}
-
-.ts-dropdown .optgroup-header {
-    background: var(--form-type-autocomplete-optgroup-bg);
-    color: var(--form-type-autocomplete-optgroup-color);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
-}
-
-.ts-wrapper.multi,
-.ts-wrapper.multi.has-items .ts-control {
-    block-size: auto;
-}
-.ts-wrapper.multi .ts-control,
-.ts-wrapper.multi.has-items .ts-control {
-    padding: var(--ea-sp-1) var(--ea-sp-8) var(--ea-sp-2) var(--ea-sp-4);
-}
-.ts-wrapper.plugin-remove_button.multi.has-items .ts-control {
-    padding-inline-end: var(--ea-sp-28);
-}
-.ts-wrapper.multi .ts-control > div {
-    background: var(--form-type-autocomplete-multi-item-bg);
-    border-radius: var(--border-radius);
-    box-shadow: 0 0 0 1px var(--form-type-autocomplete-multi-item-border-color);
-    color: var(--form-input-text-color);
-    margin: var(--ea-sp-1) var(--ea-sp-2) var(--ea-sp-1) 0;
-    padding: 0 var(--ea-sp-2);
-}
-.ts-wrapper.plugin-remove_button .item .remove,
-.ts-wrapper.plugin-remove_button:not(.rtl) .item .remove {
-    border-inline-start: var(--border-width) solid var(--form-type-autocomplete-multi-item-border-color);
-    border-radius: 0 var(--border-radius) var(--border-radius) 0;
-}
-.ts-wrapper.plugin-remove_button .item .remove:hover {
-    background: var(--form-type-autocomplete-multi-item-remove-button-hover-bg);
-}
-
-.plugin-clear_button.ts-wrapper .clear-button,
-.plugin-clear_button.ts-wrapper.multi .clear-button {
-    background: var(--form-type-autocomplete-close-button-bg) !important;
-    border-radius: var(--border-radius-full);
-    color: var(--white);
-    cursor: pointer;
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-bold);
-    block-size: var(--ea-sp-7);
-    line-height: 0.65;
-    padding: 0;
-    inset-inline-end: var(--ea-sp-16);
-    inset-block-start: calc(50% - var(--ea-sp-1));
-    inline-size: var(--ea-sp-7);
-}
-.ts-wrapper.plugin-clear_button.multi .clear-button {
-    inset-inline-end: var(--ea-sp-5);
-}
-.ts-wrapper.plugin-remove_button.plugin-clear_button.multi.has-items .clear-button {
-    inset-inline-end: var(--ea-sp-16);
-}
-.plugin-clear_button.ts-wrapper .clear-button:hover,
-.plugin-clear_button.ts-wrapper.multi .clear-button:hover {
-    background: var(--form-type-autocomplete-close-button-hover-bg) !important;
-}
-
-.ts-wrapper.disabled .ts-control {
-    background-color: var(--form-control-disabled-bg);
-}
-
-/* when using preferred choices, an empty group header is added; hide it to not add extra vertical space */
-.ts-dropdown .optgroup-header:empty {
-    display: none;
 }

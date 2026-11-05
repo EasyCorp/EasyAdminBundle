@@ -2,71 +2,71 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.98b03d1a.css"
+        "/app.a236fc2f.css"
       ],
       "js": [
-        "/app.e4c11ab9.js"
+        "/app.ec5e9b90.js"
       ]
     },
     "form": {
       "js": [
-        "/form.8345ec28.js"
+        "/form.e609da1d.js"
       ]
     },
     "page-layout": {
       "js": [
-        "/page-layout.696f1816.js"
+        "/page-layout.2aee6c36.js"
       ]
     },
     "page-color-scheme": {
       "js": [
-        "/page-color-scheme.e9aaf2f0.js"
+        "/page-color-scheme.230d764a.js"
       ]
     },
     "field-boolean": {
       "js": [
-        "/field-boolean.ee506653.js"
+        "/field-boolean.fff5e0d0.js"
       ]
     },
     "field-code-editor": {
       "css": [
-        "/field-code-editor.dd215930.css"
+        "/field-code-editor.629ebf7b.css"
       ],
       "js": [
-        "/field-code-editor.a0cd3c60.js"
+        "/field-code-editor.5d07f408.js"
       ]
     },
     "field-collection": {
       "js": [
-        "/field-collection.dc5f651b.js"
+        "/field-collection.3167fb7e.js"
       ]
     },
     "field-file-upload": {
       "js": [
-        "/field-file-upload.4dbdd033.js"
+        "/field-file-upload.f2941e3a.js"
       ]
     },
     "field-image": {
       "js": [
-        "/field-image.a54783a6.js"
+        "/field-image.376d4053.js"
       ]
     },
     "field-slug": {
       "js": [
-        "/field-slug.fd968cb0.js"
+        "/field-slug.753bb964.js"
       ]
     },
     "field-textarea": {
       "js": [
-        "/field-textarea.485f5ae6.js"
+        "/field-textarea.f1527a55.js"
       ]
     },
     "field-text-editor": {
       "css": [
-        "/field-text-editor.618ed450.css"
+        "/field-text-editor.0a39cb2f.css"
       ],
       "js": [
-        "/field-text-editor.b6c9eb40.js"
+        "/field-text-editor.e8abd05d.js"
       ]
     },
     "login": {

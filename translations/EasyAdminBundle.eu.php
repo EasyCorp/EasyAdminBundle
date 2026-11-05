@@ -65,6 +65,7 @@ return [
         'save' => 'Gorde',
         'save_and_continue' => 'Gorde eta jarraitu',
         'toggle_dropdown' => 'Txandakatu goitibeherako menua',
+        'show_help' => 'Erakutsi laguntza osoa',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automatikoa',
         ],
         'locale' => 'Hizkuntza',
+    ],
+
+    'layout' => [
+        'collapse' => 'Tolestu',
+        'expand' => 'Zabaldu',
     ],
 
     'login_page' => [

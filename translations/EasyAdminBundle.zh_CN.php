@@ -65,6 +65,7 @@ return [
         'save' => '保存',
         'save_and_continue' => '保存并继续',
         'toggle_dropdown' => '切换下拉菜单',
+        'show_help' => '显示全部帮助',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => '自动',
         ],
         'locale' => '语',
+    ],
+
+    'layout' => [
+        'collapse' => '收起',
+        'expand' => '展开',
     ],
 
     'login_page' => [

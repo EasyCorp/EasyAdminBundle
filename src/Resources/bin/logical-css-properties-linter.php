@@ -3,6 +3,8 @@
 
 // format: 'old property that can't be used' => 'alternative logical property'
 // see https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_logical_properties_and_values
+// overflow-x and overflow-y are allowed because overflow-inline and overflow-block need
+// Chrome 135 and Safari 26, and the x and y axes don't change in right-to-left languages
 $logicalCssProperties = [
     'border-bottom' => 'border-block-end',
     'border-bottom-color' => 'border-block-end-color',
@@ -39,8 +41,6 @@ $logicalCssProperties = [
     'min-width' => 'min-inline-size',
     'overscroll-behavior-x' => 'overscroll-behavior-inline',
     'overscroll-behavior-y' => 'overscroll-behavior-block',
-    'overflow-x' => 'overflow-inline',
-    'overflow-y' => 'overflow-block',
     'padding-bottom' => 'padding-block-end',
     'padding-left' => 'padding-inline-start',
     'padding-right' => 'padding-inline-end',

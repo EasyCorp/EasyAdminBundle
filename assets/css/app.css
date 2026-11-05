@@ -11,4 +11,5 @@
 @import "~@fortawesome/fontawesome-free/css/v5-font-face.css" layer(vendor.fontawesome);
 
 @import "./easyadmin-theme/vendor-overrides.css" layer(ea-overrides);
+@import "./easyadmin-theme/prose-defaults.css" layer(ea-defaults);
 @import "./easyadmin-theme/theme.css" layer(ea);

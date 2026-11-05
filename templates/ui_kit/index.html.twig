@@ -1,4 +1,4 @@
-{% types {components: 'array<string, string>'} %}
+{% types {foundations: 'array<string, string>', components: 'array<string, string>'} %}
 {% extends '@EasyAdmin/ui_kit/layout.html.twig' %}
 
 {% block content_title %}EasyAdmin UI Kit{% endblock %}
@@ -9,11 +9,27 @@
 {% endblock %}
 
 {% block main %}
-    <p>Here you can find all the Twig components included in EasyAdmin. Each one comes with live examples and their full code. All examples use the assets and the configuration of your dashboard.</p>
+    <p>Live examples and code of the EasyAdmin design, rendered with the configuration of your dashboard.</p>
 
-    <ul>
-        {% for dir_name, component_name in components %}
-            <li><a href="{{ path(ea().dashboardRouteName ~ '_ea_ui_kit_component', {name: dir_name}) }}">{{ component_name }}</a></li>
-        {% endfor %}
-    </ul>
+    <div class="ea-ui-kit-index">
+        <section>
+            <h2>Foundations</h2>
+            <p>The typography of your contents and a preview of the theme colors and fonts.</p>
+            <ul>
+                {% for dir_name, foundation_name in foundations %}
+                    <li><a href="{{ path(ea().dashboardRouteName ~ '_ea_ui_kit_foundation', {name: dir_name}) }}">{{ foundation_name }}</a></li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section>
+            <h2>Components</h2>
+            <p>The Twig components that build the EasyAdmin interface and that you can use in your own templates.</p>
+            <ul class="ea-ui-kit-index-components">
+                {% for dir_name, component_name in components %}
+                    <li><a href="{{ path(ea().dashboardRouteName ~ '_ea_ui_kit_component', {name: dir_name}) }}">{{ component_name }}</a></li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
 {% endblock %}

@@ -1,7 +1,6 @@
 /* Properties (the styles applied to properties in INDEX and DETAIL pages)
 /* -------------------------------------------------------------------------  */
 
-/* Array field */
 .field-array ul {
     margin-block-end: 0;
     padding-inline-start: 1.2em;
@@ -10,30 +9,21 @@
     margin-block-start: var(--ea-sp-2);
 }
 
-/* Avatar field */
 .field-avatar .image-avatar {
     border-radius: var(--border-radius);
     border: 0;
     box-shadow: none;
 }
 
-/* Boolean field */
 .field-boolean .badge {
-    justify-content: center;
     min-inline-size: 33px;
     text-transform: uppercase;
 }
 
-/* CodeEditor field */
 .field-code_editor .form-widget {
     flex: 1;
 }
-.field-code_editor dt {
-    max-block-size: 480px;
-    overflow-block: auto;
-}
 
-/* Collection field */
 .form-widget-compound .collection-empty {
     margin-block-end: var(--ea-sp-5);
     padding-block-start: var(--ea-sp-2);
@@ -42,7 +32,6 @@
     display: none;
 }
 
-/* this is the label of each array elements (it's probably OK to always hide it) */
 .form-group.field-array .form-widget .form-group {
     padding: var(--ea-sp-3) 0;
 }
@@ -54,12 +43,14 @@
     margin-block-start: var(--ea-sp-2);
 }
 .form-group.field-array .field-collection-item {
+    align-items: center;
     display: flex;
+    gap: var(--ea-sp-2);
 }
 
 .form-group.field-collection .accordion {
-    border-radius: var(--border-radius);
-    box-shadow: inset 0 0 0 1px var(--form-input-border-color);
+    border-radius: var(--form-control-border-radius);
+    box-shadow: inset 0 0 0 var(--border-width) var(--form-input-border-color);
 }
 .form-group.field-collection .accordion .form-group {
     padding: 0;
@@ -86,17 +77,20 @@
 
 .form-group.field-collection .field-collection-item-first .accordion-item,
 .form-group.field-collection .field-collection-item-first .accordion-header {
-    border-start-start-radius: var(--border-radius);
-    border-start-end-radius: var(--border-radius);
+    border-start-start-radius: var(--form-control-border-radius);
+    border-start-end-radius: var(--form-control-border-radius);
 }
 .form-group.field-collection .field-collection-item-last .accordion-item,
 .form-group.field-collection .field-collection-item-last .accordion-header {
-    border-end-start-radius: var(--border-radius);
-    border-end-end-radius: var(--border-radius);
+    border-end-start-radius: var(--form-control-border-radius);
+    border-end-end-radius: var(--form-control-border-radius);
 }
 
 .form-group.field-collection .field-collection-item.field-collection-item-last .accordion-item {
     box-shadow: none;
+}
+.form-group.field-collection .field-collection-item.field-collection-item-complex.is-invalid > .accordion-item {
+    box-shadow: inset 0 0 0 var(--border-width) var(--form-input-error-border-color);
 }
 
 .form-group.field-collection .accordion-item .form-group {
@@ -118,15 +112,18 @@
 .form-group.field-collection .accordion-button,
 .form-group.field-collection .accordion-button:hover {
     background: transparent;
-    border-radius: var(--border-radius-none);
+    border-radius: inherit;
     box-shadow: none;
     color: var(--text-color);
     flex: 1;
     padding: var(--ea-sp-4) var(--ea-sp-4);
 }
+.form-group.field-collection .accordion-button:focus-visible {
+    outline: var(--ea-focus-ring-width) solid var(--form-focus-ring-color);
+    outline-offset: calc(-1 * var(--ea-focus-ring-width));
+}
 
 .form-group.field-collection .accordion-button:after {
-    /* hides the default collapse marker */
     display: none;
 }
 .form-group.field-collection .accordion-button i {
@@ -149,7 +146,20 @@
     inset-inline-end: 5px;
 }
 
-/* Color field */
+.form-widget input.form-control.form-control-color {
+    block-size: var(--form-control-height);
+    inline-size: calc(var(--form-control-height) * 1.5);
+    padding: var(--ea-sp-2);
+}
+.form-widget input.form-control.form-control-color::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+.form-widget input.form-control.form-control-color::-webkit-color-swatch {
+    border-radius: calc(var(--form-control-border-radius) - var(--ea-sp-2) - var(--border-width));
+}
+.form-widget input.form-control.form-control-color::-moz-color-swatch {
+    border-radius: calc(var(--form-control-border-radius) - var(--ea-sp-2) - var(--border-width));
+}
 .field-color .color-sample {
     border-radius: var(--border-radius);
     box-shadow: 0 0 0 2px var(--border-tertiary-color), 0 0 0 3px var(--border-secondary-color);
@@ -158,44 +168,51 @@
     inline-size: 45px;
 }
 
-/* Country field */
-.field-country .country-flag {
+.country-flag {
     border-radius: var(--border-radius-sm);
     outline: var(--border-width) solid color-mix(in srgb, var(--black) 20%, transparent);
     outline-offset: -1px;
+}
+.ea-dark-scheme .country-flag {
+    outline-color: var(--border-secondary-color);
+    outline-offset: 0;
+}
+.country-flag-with-name .country-flag {
+    margin: 0 var(--ea-sp-3) 1px 0;
+    vertical-align: text-top;
+}
+.field-country .country-flag {
     margin: 0 var(--ea-sp-3) 1px 0;
     max-block-size: var(--icon-size-sm);
     vertical-align: text-top;
-}
-.ea-dark-scheme .field-country .country-flag {
-    outline-color: var(--border-secondary-color);
-    outline-offset: 0;
 }
 .datagrid .field-country > span + span,
 .datalist .field-country dd > span + span {
     margin-inline-start: var(--ea-sp-5);
 }
 
+/* the flag is aligned with 'vertical-align: text-top' plus a bottom margin (meant for
+   tables), which leaves it about 1px above the text; flex centers it on the line instead */
 .field-country .ts-control .country-name-flag,
-.field-country .ts-dropdown-content .country-name-flag .country-flag {
-    margin-block-end: 0;
+.field-country .ts-dropdown .country-name-flag {
+    align-items: center;
+    display: flex;
+    gap: var(--ea-sp-3);
 }
-.field-country .ts-wrapper.multi .ts-control > div {
-    margin-block-end: var(--ea-sp-2);
+.field-country .ts-control .country-flag-wrapper,
+.field-country .ts-dropdown .country-flag-wrapper {
+    display: flex;
 }
-.field-country .ts-wrapper.multi .ts-control .country-name-flag {
-    margin-inline-end: var(--ea-sp-12);
-}
-.field-country .ts-wrapper.multi.plugin-remove_button .item .remove {
-    border-color: var(--form-type-autocomplete-multi-item-border-color);
+.field-country .ts-control .country-flag,
+.field-country .ts-dropdown .country-flag {
+    display: block;
+    margin: 0;
 }
 
-/* Currency field */
 .field-currency .badge-currency {
     text-transform: uppercase;
 }
 
-/* Date, Time and DateTime fields */
 .field-datetime input[type="datetime-local"].form-control,
 .field-date input[type="date"].form-control,
 .field-time input[type="time"].form-control {
@@ -203,13 +220,6 @@
     max-inline-size: 100%;
 }
 
-/* Language field */
 .field-language .badge-language {
     text-transform: uppercase;
-}
-
-/* Text editor field */
-.field-text_editor dt {
-    max-block-size: 480px;
-    overflow-block: auto;
 }

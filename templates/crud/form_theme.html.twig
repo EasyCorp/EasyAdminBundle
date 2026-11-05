@@ -513,7 +513,7 @@
 
 {% block ea_form_fieldset_open_ealabel %}
     {% if ea_is_collapsible %}
-        <twig:ea:Icon name="internal:chevron-right" class="form-fieldset-collapse-marker" />
+        <twig:ea:Icon name="internal:chevron-right" class="form-fieldset-collapse-marker" aria-hidden="true" />
     {% endif %}
 
     {% if ea_icon %}
@@ -624,7 +624,7 @@
         <div class="col-12">
             <div class="filter-field px-3" data-filter-property="{{ field.vars.name }}">
                 <div class="filter-heading" id="filter-heading-{{ loop.index }}">
-                    <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
+                    <input type="checkbox" class="form-check-input filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
                     <a data-bs-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}"
                         {% for name, value in field.vars.label_attr|default([]) %}{{ name }}="{{ value|e('html') }}" {% endfor %}>
                         {% set has_filter_label = field.vars.label is ea_is_not_empty %}

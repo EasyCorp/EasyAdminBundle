@@ -1,0 +1,10 @@
+{% types {foundation_dir_name: 'string', foundation_name: 'string'} %}
+{% extends '@EasyAdmin/ui_kit/layout.html.twig' %}
+
+{% block content_title %}{{ foundation_name }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path(ea().dashboardRouteName) }}">{{ ea().dashboardTitle|striptags }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path(ea().dashboardRouteName ~ '_ea_ui_kit_index') }}">UI Kit</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ foundation_name }}</li>
+{% endblock %}

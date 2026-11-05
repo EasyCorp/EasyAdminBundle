@@ -65,6 +65,7 @@ return [
         'save' => 'Opslaan',
         'save_and_continue' => 'Opslaan en verdergaan',
         'toggle_dropdown' => 'Schakel vervolgkeuzemenu',
+        'show_help' => 'Volledige hulp tonen',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automatisch',
         ],
         'locale' => 'Taal',
+    ],
+
+    'layout' => [
+        'collapse' => 'Inklappen',
+        'expand' => 'Uitklappen',
     ],
 
     'login_page' => [

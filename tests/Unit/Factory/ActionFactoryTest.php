@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonColor;
 use PHPUnit\Framework\TestCase;
 
 class ActionFactoryTest extends TestCase
@@ -48,7 +48,7 @@ class ActionFactoryTest extends TestCase
 
         $roundTripped = $action->getAsDto()->getAsConfigObject();
 
-        $this->assertSame(ButtonVariant::Info, $roundTripped->getAsDto()->getVariant());
+        $this->assertSame(ButtonColor::Info, $roundTripped->getAsDto()->getColor());
     }
 
     public function testDisableAutomaticOrdering(): void

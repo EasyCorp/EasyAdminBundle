@@ -118,9 +118,8 @@ class BatchActionsTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
         self::assertResponseIsSuccessful();
 
-        // the batch actions container should have d-none class (hidden by default)
-        $batchActionsContainer = $crawler->filter('.batch-actions');
-        self::assertStringContainsString('d-none', $batchActionsContainer->attr('class'), 'Batch actions should be hidden initially');
+        $batchActionsContainer = $crawler->filter('.page-actions-stack .batch-actions');
+        self::assertNotNull($batchActionsContainer->attr('inert'), 'Batch actions should be inert initially');
     }
 
     public function testCheckboxesHaveCorrectEntityIds(): void

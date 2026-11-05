@@ -1,0 +1,43 @@
+{# rendered at the end of the page, so its <style> element overrides the dashboard theme #}
+{% guard function csp_nonce %}
+    <style nonce="{{ csp_nonce('style') }}" data-ea-ui-kit-theme-css></style>
+    <script nonce="{{ csp_nonce('script') }}">
+{% else %}
+    <style data-ea-ui-kit-theme-css></style>
+    <script>
+{% endguard %}
+        (() => {
+            const pickers = document.querySelectorAll('[data-ea-ui-kit-theme-picker]');
+            const style = document.querySelector('[data-ea-ui-kit-theme-css]');
+            const code = document.querySelector('[data-ea-ui-kit-theme-code]');
+
+            const update = () => {
+                const selectedOptions = [...pickers].map((picker) => picker.querySelector('[aria-pressed="true"]'));
+                style.textContent = selectedOptions.map((option) => option.dataset.css).join('\n');
+
+                const methodCalls = selectedOptions.map((option) => option.dataset.php).filter((php) => '' !== php);
+                if (0 === methodCalls.length) {
+                    code.textContent = code.dataset.default;
+
+                    return;
+                }
+
+                const theme = 1 === methodCalls.length
+                    ? `Theme::new()${methodCalls[0]}`
+                    : `Theme::new()\n${methodCalls.map((methodCall) => `            ${methodCall}`).join('\n')}\n        `;
+                code.textContent = `public function configureDashboard(): Dashboard\n{\n    return Dashboard::new()\n        // ...\n        ->setTheme(${theme});\n}`;
+            };
+
+            pickers.forEach((picker) => {
+                picker.addEventListener('click', (event) => {
+                    const option = event.target.closest('.ea-ui-kit-theme-option');
+                    if (null === option) {
+                        return;
+                    }
+
+                    picker.querySelectorAll('.ea-ui-kit-theme-option').forEach((button) => button.setAttribute('aria-pressed', button === option ? 'true' : 'false'));
+                    update();
+                });
+            });
+        })();
+    </script>

@@ -55,55 +55,60 @@
 {% set has_entity_actions = entities|filter(entity => entity.isAccessible and entity.actions.count > 0)|length > 0 %}
 {% set sortable_fields = (entities|filter(entity => entity.isAccessible)|first.fields ?? [])|filter(field => field.isSortable) %}
 {% block page_actions %}
-    {% if filters|length > 0 %}
-        <div class="datagrid-filters">
-            {% block filters %}
-                {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
-                <div class="btn-group action-filters">
-                    <a href="#" data-href="{{ ea_url().setAction('renderFilters') }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-bs-toggle="modal" data-bs-target="#modal-filters">
-                        <twig:ea:Icon name="internal:filter" /> {{ t('filter.title', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}{% if applied_filters %} <span class="action-filters-button-count">({{ applied_filters|length }})</span>{% endif %}
-                    </a>
-                    {% if applied_filters %}
-                        <a href="{{ ea_url().unset('filters').setAction('index') }}" class="btn btn-secondary action-filters-reset">
-                            {# the 'btn-icon' class is needed to make the icon-only button render as a square with a centered icon #}
-                            <twig:ea:Icon name="internal:xmark" class="btn-icon" />
-                        </a>
-                    {% endif %}
+    <div class="page-actions-stack">
+        <div class="page-actions-default">
+            {% if filters|length > 0 %}
+                <div class="datagrid-filters">
+                    {% block filters %}
+                        {% set applied_filters = ea.request.query.all['filters']|default([])|keys %}
+                        <div class="btn-group action-filters">
+                            <a href="#" data-href="{{ ea_url().setAction('renderFilters') }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button disabled {{ applied_filters ? 'action-filters-applied' }}" data-bs-toggle="modal" data-bs-target="#modal-filters">
+                                <twig:ea:Icon name="internal:filter" /> {{ t('filter.title', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}{% if applied_filters %} <span class="action-filters-button-count">({{ applied_filters|length }})</span>{% endif %}
+                            </a>
+                            {% if applied_filters %}
+                                <a href="{{ ea_url().unset('filters').setAction('index') }}" class="btn btn-secondary action-filters-reset">
+                                    {# the 'btn-icon' class is needed to make the icon-only button render as a square with a centered icon #}
+                                    <twig:ea:Icon name="internal:xmark" class="btn-icon" />
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endblock filters %}
                 </div>
-            {% endblock filters %}
-        </div>
-    {% endif %}
+            {% endif %}
 
-    {% block sort_actions %}
-        {% if sortable_fields|length > 0 %}
-            <div class="datagrid-sort d-md-none">
-                <twig:ea:Modal:Trigger target="#modal-sort" variant="secondary" icon="internal:sort-arrows">
-                    {{ t('datagrid.sort', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}
-                </twig:ea:Modal:Trigger>
-            </div>
-        {% endif %}
-    {% endblock sort_actions %}
-
-    {% block global_actions %}
-        <div class="global-actions">
-            {% for item in global_actions|reverse %}
-                {% if item.isActionGroup %}
-                    {{ include(item.templatePath, {group: item, entity: null}, with_context: false) }}
-                {% else %}
-                    {{ include(item.templatePath, {action: item}, with_context: false) }}
+            {% block sort_actions %}
+                {% if sortable_fields|length > 0 %}
+                    <div class="datagrid-sort d-md-none">
+                        <twig:ea:Modal:Trigger target="#modal-sort" icon="internal:sort-arrows">
+                            {{ t('datagrid.sort', ea.i18n.translationParameters, 'EasyAdminBundle')|trans }}
+                        </twig:ea:Modal:Trigger>
+                    </div>
                 {% endif %}
-            {% endfor %}
+            {% endblock sort_actions %}
+
+            {% block global_actions %}
+                <div class="global-actions">
+                    {% for item in global_actions|reverse %}
+                        {% if item.isActionGroup %}
+                            {{ include(item.templatePath, {group: item, entity: null}, with_context: false) }}
+                        {% else %}
+                            {{ include(item.templatePath, {action: item}, with_context: false) }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endblock global_actions %}
         </div>
-    {% endblock global_actions %}
-    {% block batch_actions %}
-        {% if has_batch_actions %}
-            <div class="batch-actions d-none">
-                {% for action in batch_actions %}
-                    {{ include(action.templatePath, {action: action}, with_context: false) }}
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endblock %}
+
+        {% block batch_actions %}
+            {% if has_batch_actions %}
+                <div class="batch-actions" inert>
+                    {% for action in batch_actions %}
+                        {{ include(action.templatePath, {action: action}, with_context: false) }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endblock %}
+    </div>
 {% endblock page_actions %}
 
 {% block main %}
@@ -118,6 +123,7 @@
     {% set num_results = entities|length %}
 
     {% block datagrid %}
+    <div class="datagrid-scroll">
     <table class="table datagrid {{ entities is empty ? 'datagrid-empty' }}" data-default-action-trigger="{{ ea.crud.defaultRowActionTrigger }}">
         {% if num_results > 0 %}
             <thead>
@@ -134,7 +140,7 @@
                     {% set ea_sort_asc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::ASC') %}
                     {% set ea_sort_desc = constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Option\\SortOrder::DESC') %}
                     {% for field in entities|filter(e => e.isAccessible)|first.fields ?? [] %}
-                        {% set is_searchable = null == ea.crud.searchFields or field.property in ea.crud.searchFields %}
+                        {% set is_searchable = null == ea.crud.searchFields or field.property in ea.crud.searchFields or ea.crud.searchFields|filter(search_field => search_field starts with field.property ~ '.')|length > 0 %}
                         {% set is_sorting_field = ea.search.isSortingField(field.property) %}
                         {% set next_sort_direction = is_sorting_field ? (ea.search.sortDirection(field.property) == ea_sort_desc ? ea_sort_asc : ea_sort_desc) : ea_sort_desc %}
                         {% set column_icon = is_sorting_field ? (next_sort_direction == ea_sort_desc ? 'internal:sort-arrow-up' : 'internal:sort-arrow-down') : 'internal:sort-arrows' %}
@@ -167,7 +173,7 @@
             {% for entity in entities %}
                 {% block table_body_row %}
                 {% if entity.isAccessible %}
-                    <tr data-id="{{ entity.primaryKeyValueAsString }}" {% if entity.defaultActionUrl %}data-default-action-url="{{ entity.defaultActionUrl }}" role="link" tabindex="0"{% endif %} {% block entity_row_attributes %}{% endblock %}>
+                    <tr data-id="{{ entity.primaryKeyValueAsString }}" {% if entity.defaultActionUrl %}data-default-action-url="{{ entity.defaultActionUrl }}" tabindex="0"{% endif %} {% block entity_row_attributes %}{% endblock %}>
                         {% if has_batch_actions %}
                             <td class="batch-actions-selector">
                                 <div class="form-check">
@@ -177,7 +183,7 @@
                         {% endif %}
 
                         {% for field in entity.fields %}
-                            {% set is_searchable = null == ea.crud.searchFields or field.property in ea.crud.searchFields %}
+                            {% set is_searchable = null == ea.crud.searchFields or field.property in ea.crud.searchFields or ea.crud.searchFields|filter(search_field => search_field starts with field.property ~ '.')|length > 0 %}
 
                             <td data-column="{{ field.property }}" data-label="{{ field.label|trans|e('html') }}" class="{{ is_searchable ? 'searchable' }} {{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}" {% for name, value in field.htmlAttributes %}{{ name }}="{{ value|e('html_attr') }}" {% endfor %}>
                                 {{ include(field.templatePath, {field: field, entity: entity}, with_context: false) }}
@@ -189,28 +195,25 @@
                                 <td class="actions {{ ea.crud.showEntityActionsAsDropdown ? 'actions-as-dropdown' }}">
                                     {% if entity.actions.count > 0 %}
                                         {% if ea.crud.showEntityActionsAsDropdown %}
-                                            {% set hasAnyActionWithIcon = entity.actions|filter(item => item.isActionGroup ? false : item.icon is not null)|length > 0 %}
                                             <twig:ea:ActionMenu class="dropdown-actions">
-                                                <twig:ea:ActionMenu:Button withoutDropdownToggleMarker>
+                                                <twig:ea:ActionMenu:Button withoutDropdownToggleMarker data-bs-popper-config='{"strategy":"fixed"}' aria-label="{{ 'action.entity_actions'|trans(domain: 'EasyAdminBundle') }}">
                                                     <twig:ea:Icon name="internal:dots-horizontal" />
                                                 </twig:ea:ActionMenu:Button>
 
                                                 <twig:ea:ActionMenu:Overlay>
-                                                    <twig:ea:ActionMenu:ActionList hasSubmenus="{{ entity.actions|filter(item => item.isActionGroup)|length > 0 }}">
+                                                    <twig:ea:ActionMenu:ActionList hasSubmenus="{{ entity.actions|filter(item => item.isActionGroup)|length > 0 }}" align="end">
                                                         {% for item in entity.actions %}
                                                             {% if item.isActionGroup %}
                                                                 <twig:ea:ActionMenu:ActionList:ItemGroup
                                                                     group="{{ item }}"
-                                                                    showBlankIcons="{{ hasAnyActionWithIcon }}"
                                                                     entity="{{ entity }}" />
                                                             {% else %}
                                                                 <twig:ea:ActionMenu:ActionList:Item
-                                                                    class="{{ item.cssClass }} dropdown-item-variant-{{ item.variant.value }}" url="{{ item.linkUrl }}"
+                                                                    class="{{ item.cssClass }} dropdown-item-variant-{{ item.color.value }}" url="{{ item.linkUrl }}"
                                                                     icon="{{ item.icon }}" icon:class="action-icon"
                                                                     htmlAttributes="{{ item.htmlAttributes|ea_html_attrs }}"
                                                                     renderAsForm="{{ item.isRenderedAsForm }}"
-                                                                    label="{{ item.label|trans }}" label:class="action-label" renderLabelRaw
-                                                                    showBlankIcons="{{ hasAnyActionWithIcon }}" />
+                                                                    label="{{ item.label|trans }}" label:class="action-label" renderLabelRaw />
                                                             {% endif %}
                                                         {% endfor %}
                                                     </twig:ea:ActionMenu:ActionList>
@@ -271,6 +274,7 @@
         {% endblock table_footer %}
         </tfoot>
     </table>
+    </div>
     {% endblock datagrid %}
 
     {% if entities|length > 0 %}

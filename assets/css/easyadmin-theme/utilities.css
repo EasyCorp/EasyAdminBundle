@@ -5,17 +5,18 @@
    New primitives use the --ea- prefix to avoid clashes with host-app / Bootstrap /
    third-party CSS variables.*/
 :root {
-    /* Components reference these for all animations instead of defining their own timing. */
-    /* Easing curves */
     --ea-ease-in: cubic-bezier(0.4, 0, 1, 1);
     --ea-ease-out: cubic-bezier(0, 0, 0.2, 1);
     --ea-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ea-ease-drawer: cubic-bezier(0.22, 1, 0.36, 1);
+    --ea-ease-drawer-backdrop: cubic-bezier(0.32, 0.72, 0, 1);
 
-    /* Duration scale */
     --ea-duration-fast: 100ms; /* overlay fades */
     --ea-duration-default: 150ms; /* default — colors / interactive controls */
     --ea-duration-slow: 200ms; /* rotations, transforms */
-    --ea-duration-slower: 300ms; /* drawer / panel slides */
+    --ea-duration-slower: 300ms;
+    --ea-duration-drawer-open: 450ms;
+    --ea-duration-drawer-close: 400ms;
 
     /* Convenience defaults (used when a component doesn't need to pick) */
     --ea-transition-duration: var(--ea-duration-default);

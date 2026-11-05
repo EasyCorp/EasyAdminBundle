@@ -16,12 +16,10 @@
     flex-wrap: wrap;
     gap: var(--ea-sp-6);
     margin: 0;
-    /* the tabs (and their hover chip) don't touch the bottom line; the indicator of the selected tab bridges this gap (see ::after below) */
     padding: 0 0 var(--ea-sp-4);
     white-space: nowrap;
 }
 
-/* blockifies the <a> so its bottom edge (and the indicator) lands exactly on the wrapper line */
 .form-tabs-tablist .nav-tabs .nav-item {
     display: flex;
 }
@@ -46,7 +44,6 @@
 
 .form-tabs-tablist .nav-tabs .nav-link:hover {
     background-color: var(--form-tabs-item-hover-bg);
-    border-color: transparent;
     color: var(--text-color);
 }
 
@@ -57,13 +54,11 @@
     outline-offset: calc(-1 * var(--ea-focus-ring-width));
 }
 
-/* the selected tab only changes its font weight (never its color) */
 .form-tabs-tablist .nav-tabs .nav-link.active {
     background-color: transparent;
     color: var(--text-color);
     font-weight: var(--font-weight-semibold);
 }
-/* every tab owns a (collapsed) indicator, so that selecting a tab can animate it */
 .form-tabs-tablist .nav-tabs .nav-link::after {
     background-color: var(--form-tabs-indicator-color);
     block-size: var(--form-tabs-indicator-size);
@@ -83,13 +78,12 @@
     background-color: var(--form-tabs-item-hover-bg);
 }
 
-/* In browsers with CSS anchor positioning, the per-tab indicators become a single indicator per tab list
-   that slides to the selected tab. Each tab gets its own enumerated anchor name because
-   transitions only run when the anchor() argument changes; a single anchor-name moving between
-   tabs wouldn't animate (it's a used-value change) and even sticks in some Chrome versions.
-   Tabs after the 10th (very rare) keep the non-sliding per-tab indicator.
-   The test targets 'anchor-scope' because scoping keeps multiple tab lists on the same page
-   from anchoring to each other's tabs. */
+/* with anchor positioning, a single indicator per tab list slides to the selected
+   tab. Each tab has its own anchor name because transitions only run when the
+   anchor() argument changes (moving one anchor-name between tabs doesn't animate
+   and even sticks in some Chrome versions); tabs after the 10th keep the per-tab
+   indicator. The test checks 'anchor-scope' because without it several tab lists
+   on the same page would anchor to each other's tabs */
 /* biome-ignore lint/correctness/noUnknownProperty: Biome doesn't know 'anchor-scope' yet */
 @supports (anchor-scope: --ea-tabs) {
     .form-tabs-tablist {
@@ -144,8 +138,6 @@
         anchor-name: --ea-tab-10;
     }
 
-    /* the block position is anchored per tab too, so when tabs wrap into several rows
-       the indicator lands under its own tab's row (matching the fallback indicator geometry) */
     .form-tabs-tablist .nav-tabs:has(.nav-item:nth-child(1) > .nav-link.active)::after {
         inset-block-start: calc(anchor(--ea-tab-1 end) + var(--ea-sp-4) - var(--form-tabs-indicator-size));
         inset-inline-start: anchor(--ea-tab-1 start);
@@ -200,7 +192,7 @@
 
 @media (prefers-reduced-motion: reduce) {
     .form-tabs-tablist .nav-tabs .nav-link::after,
-    .form-tabs-tablist .nav-tabs::after {
+    .form-tabs-tablist .nav-tabs:has(.nav-item:nth-child(-n + 10) > .nav-link.active)::after {
         transition: none;
     }
 }
@@ -224,7 +216,7 @@
     color: var(--text-muted);
 }
 
-/* scoped to '.nav-item .badge' (not to a component class) so the error badge built by form.js looks identical to the server-rendered ones */
+/* '.badge' instead of a component class, so it also matches the error badges created by form.js */
 .form-tabs-tablist .nav-tabs .nav-item .badge {
     border-radius: var(--border-radius-full);
     line-height: var(--line-height-none);

@@ -65,6 +65,7 @@ return [
         'save' => 'حفظ',
         'save_and_continue' => 'حفظ و متابعة',
         'toggle_dropdown' => 'تبديل القائمة المنسدلة',
+        'show_help' => 'عرض المساعدة كاملة',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'تلقائي',
         ],
         'locale' => 'لغة',
+    ],
+
+    'layout' => [
+        'collapse' => 'طي',
+        'expand' => 'توسيع',
     ],
 
     'login_page' => [

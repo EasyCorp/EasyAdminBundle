@@ -65,6 +65,7 @@ return [
         'save' => 'Speichern',
         'save_and_continue' => 'Speichern und weiter bearbeiten',
         'toggle_dropdown' => 'Dropdown umschalten',
+        'show_help' => 'Ganze Hilfe anzeigen',
     ],
 
     'batch_action_modal' => [
@@ -131,6 +132,11 @@ return [
             'auto' => 'Automatisch',
         ],
         'locale' => 'Sprache',
+    ],
+
+    'layout' => [
+        'collapse' => 'Einklappen',
+        'expand' => 'Ausklappen',
     ],
 
     'login_page' => [

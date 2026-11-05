@@ -1,0 +1,10 @@
+{% types {theme_options: 'array', name: 'string', label: 'string'} %}
+<div class="ea-ui-kit-theme-picker ea-ui-kit-theme-picker-{{ name }}" role="group" aria-label="{{ label }}" data-ea-ui-kit-theme-picker="{{ name }}">
+    <button type="button" class="ea-ui-kit-theme-option" aria-pressed="true" data-css="" data-php="">Your theme</button>
+    {% for option in theme_options %}
+        <button type="button" class="ea-ui-kit-theme-option" aria-pressed="false" data-css="{{ option.css }}" data-php="{{ option.php }}">
+            {%- if option.swatch is defined %}<span class="ea-ui-kit-swatch" data-swatch="{{ loop.index }}" aria-hidden="true"></span>{% endif -%}
+            {{ option.label }}
+        </button>
+    {% endfor %}
+</div>

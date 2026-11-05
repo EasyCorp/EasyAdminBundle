@@ -1,39 +1,65 @@
 /* Search input of the content header */
 /* ------------------------------------------------------------------------- */
 
-/* This widget reuses the generic form markup (.form-group, .form-control, ...)
-   but neutralizes most of its styles (stacked-form paddings, input border...).
-   It must live in the 'components' layer next to forms.css: in an earlier layer
-   these higher-specificity overrides would lose to the generic form styles,
-   because layer order beats selector specificity. */
+/* these rules undo the generic form styles of forms.css, so they must stay in
+   the same 'components' layer: in an earlier layer they'd lose to forms.css
+   whatever their specificity */
 
 .content-top .content-search {
     flex: 1;
 }
 .content-top .content-search .form-group {
     flex-basis: 100%;
-    padding: var(--ea-sp-1) 0;
+    padding: var(--ea-sp-4) 0;
+}
+@media (min-width: 992px) {
+    .content-top .content-search .form-group {
+        padding: var(--ea-sp-1) 0;
+    }
 }
 .content-top .content-search .form-widget {
     align-items: center;
+    border-radius: var(--border-radius-lg);
     display: flex;
     flex: unset;
+    gap: var(--ea-sp-2);
+    padding-inline: var(--ea-sp-5) var(--ea-sp-3);
 }
 @media (min-width: 992px) {
     .content-top .content-search .form-widget {
-        display: block;
+        display: inline-flex;
     }
+}
+.content-top .content-search .form-widget:hover,
+.content-top .content-search .form-widget:focus-within,
+.content-top .content-search .form-widget:has(input:not(:placeholder-shown)) {
+    background: var(--content-search-bg);
+}
+@media (max-width: 991px) {
+    .content-top .content-search .form-widget {
+        background: var(--content-search-bg);
+    }
+}
+.content-top .content-search .form-widget:focus-within {
+    box-shadow: 0 0 0 var(--ea-focus-ring-width) var(--form-focus-ring-color);
 }
 .content-top .content-search .content-search-icon {
     color: var(--content-search-icon-color);
     margin-inline-end: 0;
 }
 .content-top .content-search .content-search-reset {
+    align-items: center;
     background: var(--content-search-reset-button-bg);
-    border-radius: var(--border-radius);
+    block-size: var(--ea-sp-12);
+    border-radius: calc(var(--border-radius-lg) - var(--ea-sp-1));
     color: var(--content-search-reset-button-color);
+    display: flex;
+    flex-shrink: 0;
     font-size: var(--font-size-sm);
-    padding: var(--ea-sp-1) var(--ea-sp-1);
+    inline-size: var(--ea-sp-12);
+    justify-content: center;
+    margin-inline-end: calc(var(--ea-sp-1) - var(--ea-sp-3));
+    padding: 0;
 }
 .content-top .content-search .content-search-reset:hover {
     background: var(--content-search-reset-button-hover-bg);
@@ -46,7 +72,6 @@
     box-shadow: none;
     max-inline-size: unset;
 }
-/* needed to hide the default [X] mark showed by Webkit browsers in these fields */
 .content-top .content-search input[type="search"][name="query"]::-webkit-search-decoration,
 .content-top .content-search input[type="search"][name="query"]::-webkit-search-cancel-button,
 .content-top .content-search input[type="search"][name="query"]::-webkit-search-results-button,
@@ -63,27 +88,35 @@
 /* copied from https://css-tricks.com/auto-growing-inputs-textareas/#other-ideas */
 .content-top .content-search .content-search-label {
     align-items: center;
-    display: inline-grid;
+    display: grid;
+    flex: 1;
+    grid-template-columns: 0 minmax(0, 1fr);
     margin: 0;
+    min-inline-size: 0;
     padding: 0;
-
-    @media (min-width: 992px) {
+}
+@media (min-width: 992px) {
+    .content-top .content-search .content-search-label {
+        display: inline-grid;
+        flex: none;
+        grid-template-columns: none;
         max-inline-size: 600px;
     }
 }
 .content-top .content-search .content-search-label::after,
 .content-top .content-search .content-search-label input {
     grid-area: 1 / 2;
-    resize: none;
     inline-size: auto;
 }
-.content-top .content-search .content-search-label input.is-blank {
-    min-inline-size: 300px;
+@media (min-width: 992px) {
+    .content-top .content-search .content-search-label input.is-blank {
+        min-inline-size: 300px;
+    }
 }
 .content-top .content-search .content-search-label::after {
-    /* the extra blank space is needed to make it look good */
+    /* the trailing spaces make the input a bit wider than its text */
     content: attr(data-value) "    ";
-    block-size: 30px;
+    block-size: var(--form-control-height);
     visibility: hidden;
     white-space: pre-wrap;
 }

@@ -54,4 +54,19 @@ class ThemeColorCalculatorTest extends TestCase
             0.01
         );
     }
+
+    #[DataProvider('provideHexConversions')]
+    public function testToHex(string $color, string $expectedHex): void
+    {
+        $this->assertSame($expectedHex, ThemeColorCalculator::toHex($color));
+    }
+
+    public static function provideHexConversions(): iterable
+    {
+        yield ['#15803d', '#15803d'];
+        yield ['#abc', '#aabbcc'];
+        yield ['rgb(21, 128, 61)', '#15803d'];
+        yield ['oklch(0.205 0 0)', '#171717'];
+        yield ['oklch(0.421 0.095 57.708)', '#733e0a'];
+    }
 }

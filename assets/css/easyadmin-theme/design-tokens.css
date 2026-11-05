@@ -17,15 +17,19 @@
     /* base spacing unit; all padding/margin/gap values are multiples of it */
     --ea-spacing: 0.125rem; /* 2px */
 
-    /* the accent color of interactive and highlighted elements */
-    --ea-primary: hsl(230, 61%, 58%); /* custom shade between indigo-400 and indigo-500 */
+    --ea-primary: oklch(0.205 0 0);
 
     /* the color of text and icons that sit ON a solid --ea-primary fill (primary
-       buttons, active pagination...). White suits the default indigo; a light
-       themed primary (e.g. yellow) would need this set to a dark color, so it is
-       its own per-scheme token ready for a future setTheme() to compute from the
-       primary's luminance, rather than a hardcoded white. */
-    --ea-primary-foreground: var(--white);
+       buttons, active pagination...); it's its own per-scheme token because a
+       light primary (e.g. yellow, or the near-white of the dark scheme) needs a
+       dark foreground */
+    --ea-primary-foreground: oklch(0.985 0 0);
+    /* the icons of checked checkboxes and radio buttons, in the --ea-primary-foreground
+       color (hexadecimal, because SVG data URIs can't use CSS variables) */
+    --ea-primary-foreground-check-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fafafa' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+    --ea-primary-foreground-radio-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fafafa'/%3e%3c/svg%3e");
+
+    --ea-primary-on-surface: var(--ea-primary);
 
     /* how thick the focus indicator is, for every focusable element. Keep it at
        2px or more: WCAG 2.2 requires focus to stay clearly perceivable */
@@ -37,13 +41,22 @@
        set of recipes serve light and dark. */
     --ea-primary-mix-base: var(--white);
     --ea-primary-contrast-base: var(--black);
+
+    /* literal values on purpose: a var() here would be resolved on :root and would ignore
+       overrides of the referenced variable on other elements */
+    --ea-prose-font-size: calc(15em / 14);
+    --ea-prose-line-height: 1.75;
+    --ea-prose-spacing: 1.143em;
 }
 
 .ea-dark-scheme {
     /* the fill color, as in light: accent *text* is derived from it via
        --ea-primary-text, which lightens against the dark surface */
-    --ea-primary: hsl(224, 84%, 49%);
-    --ea-primary-foreground: var(--white);
+    --ea-primary: oklch(0.922 0 0);
+    --ea-primary-foreground: oklch(0.205 0 0);
+    --ea-primary-foreground-check-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23171717' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+    --ea-primary-foreground-radio-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23171717'/%3e%3c/svg%3e");
+    --ea-primary-on-surface: var(--ea-primary-text);
     --ea-primary-mix-base: var(--gray-900);
     --ea-primary-contrast-base: var(--white);
 }
@@ -93,4 +106,13 @@
     --ea-sp-24: calc(var(--ea-spacing) * 24); /* 48px */
     --ea-sp-28: calc(var(--ea-spacing) * 28); /* 56px */
     --ea-sp-32: calc(var(--ea-spacing) * 32); /* 64px */
+
+    /* controls don't follow the whole spacing scale because they look wrong when their
+       padding changes but the size of their text doesn't: they only have their regular size
+       and one smaller size, for spacings below the default one */
+    --ea-control-height: clamp(1.75rem, calc(var(--ea-spacing) * 16), 2rem);
+    --ea-control-height-sm: clamp(1.5rem, calc(var(--ea-spacing) * 14), 1.75rem);
+    --ea-control-height-lg: clamp(2rem, calc(var(--ea-spacing) * 18), 2.25rem);
+    --ea-control-padding-x: clamp(0.5rem, calc(var(--ea-spacing) * 5), 0.625rem);
+    --ea-control-padding-x-lg: clamp(0.75rem, calc(var(--ea-spacing) * 8), 1rem);
 }

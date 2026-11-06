@@ -3,6 +3,7 @@
 /.gitattributes export-ignore
 /.github export-ignore
 /.gitignore export-ignore
+/.oss-scanner export-ignore
 /.php-cs-fixer.dist.php export-ignore
 /.symfony.bundle.yaml export-ignore
 /AGENTS.md export-ignore

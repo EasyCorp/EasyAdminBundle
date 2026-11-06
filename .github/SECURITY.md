@@ -13,7 +13,8 @@
 ## Reporting a Vulnerability
 
 Use GitHub's [private vulnerability reporting][1] to share the security
-issue details privately.
+issue details privately. If you can't use it, email the details to
+javier.eguiluz@gmail.com instead.
 
 If your report is related to one of the Symfony security features that
 we use in this project (voters, authorization, role checks, etc.) we'll

@@ -1172,6 +1172,43 @@ its ``{id}`` alias):
     be added in the next major version of EasyAdmin). If you generate URLs in PHP code
     and type-hint the ``AdminUrlGeneratorInterface``, use ``setEntityId()`` instead.
 
+To link to the ``index`` page with some :doc:`filters </filters>` already
+applied, use the ``setFilter()`` method. Its arguments are the name of the
+filtered property, the filter value and, for the filters that compare values,
+one of the comparison operators defined as constants in the
+``EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType`` class::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+
+    $url = $this->adminUrlGenerator
+        ->setController(ProductCrudController::class)
+        ->setAction(Action::INDEX)
+        // shows the products of the given seller...
+        ->setFilter('seller', $seller->getId(), ComparisonType::EQ)
+        // ...that are published (BooleanFilter doesn't compare values)
+        ->setFilter('isPublished', true)
+        // ...and whose price is between 10 and 100
+        ->setFilter('price', 10, ComparisonType::BETWEEN, 100)
+        ->generateUrl();
+
+The other filters of the URL are kept, and calling ``setFilter()`` again for
+the same property replaces its filter. Use ``unsetFilter('seller')`` to remove
+the filter of a property. In templates, the comparison operators are passed
+as strings:
+
+.. code-block:: twig
+
+    {% set url = ea_url()
+        .setController('App\\Controller\\Admin\\ProductCrudController')
+        .setAction('index')
+        .setFilter('seller', seller.id, '=') %}
+
+.. note::
+
+    Like ``setId()``, the ``setFilter()`` and ``unsetFilter()`` methods are not
+    part of ``AdminUrlGeneratorInterface`` yet (they will be added in the next
+    major version of EasyAdmin).
+
 Generating CRUD URLs From Outside EasyAdmin
 ...........................................
 

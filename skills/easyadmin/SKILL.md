@@ -88,7 +88,7 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 | Theme, UI Kit, CSS variables, template overrides, icons, cascade layers, typography of custom pages | `vendor/easycorp/easyadmin-bundle/doc/design.rst` |
 | Twig components (`<twig:ea:*>`) | `vendor/easycorp/easyadmin-bundle/doc/components.rst` |
 | Events and entity lifecycle | `vendor/easycorp/easyadmin-bundle/doc/events.rst` |
-| Adapting a backend to a new EasyAdmin version; anything that "used to work" in EasyAdmin 4 | `vendor/easycorp/easyadmin-bundle/UPGRADE-AI.md`; `vendor/easycorp/easyadmin-bundle/UPGRADE.md` |
+| Upgrading a backend to a newer EasyAdmin version (follow every `<upgrade-prompt>` block newer than the old version, oldest first); anything that "used to work" in EasyAdmin 4 | `vendor/easycorp/easyadmin-bundle/UPGRADE-AI.md`; `vendor/easycorp/easyadmin-bundle/UPGRADE.md` |
 
 ## Dashboard and menu
 

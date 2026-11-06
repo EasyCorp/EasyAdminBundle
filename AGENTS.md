@@ -44,6 +44,12 @@ Don't modify the public API in `Contracts/` lightly — it's a stable, versioned
 ### Backward Compatibility
 Follow [Symfony's BC policy](https://symfony.com/bc): never break public API — deprecate first, keep the old path working, remove only in the next major. Emit deprecations with `@trigger_deprecation('easycorp/easyadmin-bundle', '<version>', '<message>')`, naming the replacement and removal version.
 
+### Upgrade Guides
+- `UPGRADE.md` is for humans. It lists only changes that need action from the user; a silent addition gets no entry
+- `UPGRADE-AI.md` is for AI agents that upgrade a backend. It has one `<upgrade-prompt version="X.Y.Z">` block per version, under a `## EasyAdmin X.Y.Z` heading, newest first
+- Every change that gets an entry in `UPGRADE.md` also gets an instruction in the `<upgrade-prompt>` block of that version (add the heading and the block at the top when the version has none yet)
+- Write each block as a prompt that works on its own (the agent doesn't read `UPGRADE.md`): `## Required changes` and `## Optional changes` sections with numbered items, imperative mood, the exact classes, methods, templates, CSS classes and variables to search for, `old -> new` or before/after snippets, and no explanations of why
+
 ### Configuration Model
 User-facing config uses fluent **builders** (`Config/`, `Field/`): static `new()` + chainable setters returning `self`. Each builder converts via `getAsDto()` into an immutable **DTO** (`Dto/`) for internal use. New configurable concepts follow this split — fluent builder for users, DTO internally; never expose a DTO as the config surface.
 
@@ -203,6 +209,9 @@ generated code working on the current version, so it changes together with the c
   the regenerated `skills/easyadmin/references/api.md` (a unit test fails otherwise)
 - After adding an entry to `UPGRADE.md`, review the "Legacy" table and the rules of
   `skills/easyadmin/SKILL.md` that the change contradicts
+- A new entry at the top of `UPGRADE.md` shifts the `UPGRADE.md:NN-MM` provenance
+  comments of `SKILL.md`; remap them in the same change, because the unit test only
+  checks that those lines exist, not that they still point to the right entry
 - Every bullet inside a `<!-- rules:start -->` / `<!-- rules:end -->` block ends
   with a provenance comment (`<!-- path::symbol; path:line -->`) that a unit test
   resolves against the source; a rule without provenance is not merged

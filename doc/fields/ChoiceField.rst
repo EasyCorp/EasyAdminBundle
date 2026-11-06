@@ -123,6 +123,22 @@ If ``allowMultipleChoices`` is ``true``, the expanded field will display checkbo
 .. image:: ../images/fields/field-choice-checkbox.png
    :alt: Default style of EasyAdmin choice field with checkboxes
 
+``setBadgeVariant``
+~~~~~~~~~~~~~~~~~~~
+
+When you use the ``renderAsBadges`` option, the selected values are displayed
+as badges. Use this option to change the visual style of those badges (their
+color is still defined by the ``renderAsBadges`` option).
+
+By default, it uses the badge variant configured with the ``setBadgeVariant()``
+method of the :ref:`CRUD design options <crud-design-options>` (``light`` if
+you don't configure it). The other values are ``solid``, ``outline`` and ``dot``.
+
+This option only changes the badges of this field, not the badges of other
+fields::
+
+    yield ChoiceField::new('...')->renderAsBadges([...])->setBadgeVariant('dot');
+
 ``setChoices``
 ~~~~~~~~~~~~~~
 

@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\BadgeVariant;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -22,6 +23,7 @@ final class ChoiceField implements FieldInterface
     public const OPTION_WIDGET = 'widget';
     public const OPTION_ESCAPE_HTML_CONTENTS = 'escapeHtml';
     public const OPTION_PREFERRED_CHOICES = 'preferredChoices';
+    public const OPTION_BADGE_VARIANT = 'badgeVariant';
 
     public const VALID_BADGE_TYPES = ['success', 'warning', 'danger', 'info', 'primary', 'secondary', 'light', 'dark'];
 
@@ -44,7 +46,8 @@ final class ChoiceField implements FieldInterface
             ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)
             ->setCustomOption(self::OPTION_WIDGET, null)
             ->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, true)
-            ->setCustomOption(self::OPTION_PREFERRED_CHOICES, null);
+            ->setCustomOption(self::OPTION_PREFERRED_CHOICES, null)
+            ->setCustomOption(self::OPTION_BADGE_VARIANT, null);
     }
 
     public function allowMultipleChoices(bool $allow = true): self
@@ -164,6 +167,18 @@ final class ChoiceField implements FieldInterface
     public function setPreferredChoices(array|callable $preferredChoices): self
     {
         $this->setCustomOption(self::OPTION_PREFERRED_CHOICES, $preferredChoices);
+
+        return $this;
+    }
+
+    /**
+     * Sets the visual style of the badges used to display the selected choices (see renderAsBadges()).
+     * Use one of these values: 'light', 'solid', 'outline' or 'dot'. By default,
+     * it uses the badge variant configured with Crud::setBadgeVariant() ('light' if not set).
+     */
+    public function setBadgeVariant(string|BadgeVariant $variant): self
+    {
+        $this->setCustomOption(self::OPTION_BADGE_VARIANT, BadgeVariant::fromStyle($variant)->value);
 
         return $this;
     }

@@ -289,7 +289,8 @@ Design Options
 
             // the visual style of all the badges ('light' by default; other values
             // are 'solid', 'outline' and 'dot'). Badges that set their own
-            // variant (e.g. <twig:ea:Badge variant="solid">) don't change
+            // variant (e.g. <twig:ea:Badge variant="solid"> or the fields that
+            // call setBadgeVariant()) don't change
             ->setBadgeVariant('outline')
         ;
     }

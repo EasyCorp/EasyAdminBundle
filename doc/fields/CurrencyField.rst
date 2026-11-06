@@ -30,6 +30,22 @@ Basic Information
 Options
 -------
 
+``setBadgeVariant``
+~~~~~~~~~~~~~~~~~~~
+
+When you use the ``showCode`` or ``showSymbol`` options, the currency code and
+symbol are displayed as badges. Use this option to change the visual style of
+those badges.
+
+By default, it uses the badge variant configured with the ``setBadgeVariant()``
+method of the :ref:`CRUD design options <crud-design-options>` (``light`` if
+you don't configure it). The other values are ``solid``, ``outline`` and ``dot``.
+
+This option only changes the badges of this field, not the badges of other
+fields::
+
+    yield CurrencyField::new('...')->setBadgeVariant('dot');
+
 ``showCode``
 ~~~~~~~~~~~~
 

@@ -362,16 +362,16 @@ body.ea-content-width-full .content-wrapper {
 }
 
 .user-menu-wrapper .user-avatar {
+    align-items: center;
     background: var(--user-avatar-icon-bg);
     border-radius: var(--border-radius);
     color: var(--user-avatar-icon-color);
-    display: block;
+    display: flex;
     block-size: 21px;
     max-inline-size: 21px;
     inline-size: 2em;
-    text-align: center;
+    justify-content: center;
 }
-.user-menu-wrapper .user-details span.user-avatar,
 .dropdown-settings .dropdown-settings-button {
     align-items: center;
     display: flex;

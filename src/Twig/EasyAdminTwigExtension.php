@@ -227,12 +227,12 @@ class EasyAdminTwigExtension extends AbstractExtension
                 }
             }
 
-            if (method_exists($value, 'getId')) {
+            if (null !== $id = $this->getObjectId($value)) {
                 return sprintf(
                     '%s #%s',
                     // remove null bytes from class name (this happens in anonymous classes)
                     str_replace("\0", '', $value::class),
-                    $value->getId()
+                    $id
                 );
             }
 
@@ -245,6 +245,38 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         return '';
+    }
+
+    /**
+     * Returns the identifier of the object as a string, read from its getId() method
+     * or from its public $id property (e.g. when using asymmetric visibility or property
+     * hooks). Returns null when the object has no identifier that can be displayed.
+     */
+    private function getObjectId(object $object): ?string
+    {
+        if (method_exists($object, 'getId')) {
+            $id = $object->getId();
+        } else {
+            $reflection = new \ReflectionObject($object);
+
+            if (!$reflection->hasProperty('id')) {
+                return null;
+            }
+
+            $property = $reflection->getProperty('id');
+
+            if (!$property->isPublic() || !$property->isInitialized($object)) {
+                return null;
+            }
+
+            $id = $object->id;
+        }
+
+        if (null === $id || \is_array($id) || (\is_object($id) && !$id instanceof \Stringable)) {
+            return null;
+        }
+
+        return (string) $id;
     }
 
     /**

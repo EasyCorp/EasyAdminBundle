@@ -20,6 +20,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @template TEntity of object
  *
  * @method ComponentDefaultsDto getDashboardComponentDefaults()
+ * @method void                 overrideTemplate(string $templateName, string $templatePath)
  */
 interface AdminContextInterface
 {

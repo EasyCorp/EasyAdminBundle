@@ -505,6 +505,7 @@ return static function (ContainerConfigurator $container) {
         ->set(TimezoneConfigurator::class)
 
         ->set(UrlConfigurator::class)
+            ->arg(0, service('form.registry'))
 
         ->set(EntityTranslationIdGenerator::class)
 

@@ -30,8 +30,10 @@ class AutocompleteCustomizationTest extends AbstractCrudTestCase
 
     public function testAutocompleteWithFieldLevelCallback(): void
     {
-        $category = CategoryFactory::createOne(['name' => 'Category 1']);
-        CategoryFactory::createOne(['name' => 'Category 2']);
+        // the slugs are set explicitly because the default ones contain a sequence
+        // number, which can contain the searched term (e.g. 'Category 41 slug')
+        $category = CategoryFactory::createOne(['name' => 'Category 1', 'slug' => 'category-1']);
+        CategoryFactory::createOne(['name' => 'Category 2', 'slug' => 'category-2']);
 
         $autocompleteUrl = $this->adminUrlGenerator
             ->setDashboard(DashboardController::class)

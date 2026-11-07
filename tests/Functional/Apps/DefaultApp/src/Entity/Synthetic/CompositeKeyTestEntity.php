@@ -6,7 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * EasyAdmin doesn't support composite primary keys, so this entity is only used to
- * check that they are rejected. Tests only read its metadata and never persist it.
+ * check that they are rejected and that the entities associated with it still work.
+ * Tests only read its metadata and never persist it.
  */
 #[ORM\Entity]
 class CompositeKeyTestEntity
@@ -18,4 +19,7 @@ class CompositeKeyTestEntity
     #[ORM\Id]
     #[ORM\Column]
     private ?int $year = null;
+
+    #[ORM\ManyToOne(inversedBy: 'compositeKeyEntities')]
+    private ?CompositeKeyCollectionTestEntity $parent = null;
 }

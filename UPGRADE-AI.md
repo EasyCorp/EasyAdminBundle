@@ -3,6 +3,78 @@ AI Upgrade Guide
 
 This guide is for AI agents. If you are a human, read [UPGRADE.md](UPGRADE.md) instead.
 
+## EasyAdmin 5.10.0
+
+Use this prompt to upgrade backends for the flag and security changes made in EasyAdmin 5.10.0.
+
+<upgrade-prompt version="5.10.0">
+
+EasyAdmin 5.10.0 changes the look of the `<twig:ea:Flag>` component and checks
+`Actions::setPermission()` and `Actions::disable()` also when running custom action
+methods (the ones used in `linkToCrudAction()`, or in `linkToRoute()` with a custom
+action route of the same CRUD controller). Opening the URL of a disabled or not
+granted action now returns a 403 error. Search the project (templates, CSS, PHP) and
+apply what's relevant. Skip what doesn't apply.
+
+## Required changes
+
+1. Find custom action methods used by several actions (for example, the same
+   `linkToCrudAction('renderInvoice')` on two pages). Users can run the method when
+   one of those actions is enabled and granted, and an action without permission lets
+   everyone run it. Set the same permission on all those actions, or add
+   `#[IsGranted('ROLE_...')]` to the method.
+
+2. Find code that opens the URL of a custom action that is disabled or has a
+   permission (e.g. links built with `ea_url()` or `AdminUrlGenerator` in templates or
+   controllers). Those URLs now return a 403 error: enable the action, grant its
+   permission, or remove the link.
+
+3. `<twig:ea:Flag>` now renders flags with rounded corners and an outline also outside
+   EasyAdmin. Where a flag must keep the old look (square and without outline), add
+   these props:
+
+   ```twig
+   {# before #} <twig:ea:Flag countryCode="JP"/>
+   {# after #}  <twig:ea:Flag countryCode="JP" radius="none" bordered="{{ false }}"/>
+   ```
+
+4. With `showName`, the country name is now wrapped in a
+   `<span class="country-flag-name">` element. Update the CSS that styled that name.
+
+5. The `--field-country-flag-border-color` CSS variable was removed (it wasn't used).
+   Remove it, or use `--flag-outline-color` instead.
+
+## Optional changes
+
+1. Remove the permission checks inside custom action methods that repeat the
+   permission of their action, because EasyAdmin checks it now:
+
+   ```php
+   // before
+   $actions->setPermission('publish', 'ROLE_EDITOR');
+   // ...
+   public function publish(Product $product): Response
+   {
+       $this->denyAccessUnlessGranted('ROLE_EDITOR');
+       // ...
+   }
+
+   // after: remove the denyAccessUnlessGranted() call
+   ```
+
+   Keep the checks of actions that use `linkToUrl()` or routes that aren't custom
+   actions of the same CRUD controller: EasyAdmin doesn't check those URLs.
+
+2. Replace hand-written URLs like `/admin?routeName=admin_product_publish` with the
+   URL of the admin route (generated with `path()` or `ea_url()`). The old URLs still work,
+   but now redirect with a `307` status code.
+
+3. Replace custom CSS that rounds or outlines flags with the `radius` (`none`, `sm`,
+   `md`, `lg`, `full`) and `bordered` props of `<twig:ea:Flag>`, or with the
+   `--flag-radius` and `--flag-outline-color` CSS variables.
+
+</upgrade-prompt>
+
 ## EasyAdmin 5.9.0
 
 Use this prompt to upgrade backends for the design changes made in EasyAdmin 5.9.0.

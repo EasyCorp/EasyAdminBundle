@@ -106,7 +106,7 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 - Link CRUD controllers with
   `MenuItem::linkTo(ProductCrudController::class, 'Products', 'fa fa-box')`:
   controller class first, then label, then icon. `MenuItem::linkToCrud()` was
-  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:248-264 -->
+  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:274-290 -->
 - The other factories put the label first:
   `MenuItem::linkToRoute('Reports', 'fa fa-chart-bar', 'app_reports', ['year' => 2026])`,
   `MenuItem::linkToUrl('Website', 'fa fa-globe', 'https://example.com')`,
@@ -136,7 +136,7 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 <!-- rules:start -->
 - Declare `public static function getEntityFqcn(): string` (the base class
   does not) and add `/** @extends AbstractCrudController<Product> */` above
-  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:457-474 -->
+  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:483-500 -->
 - Overrides must keep the interface signatures: `createEntity(string $entityFqcn): ?object`
   (overrides may keep `: object`),
   `persistEntity(EntityManagerInterface $entityManager, object $entityInstance): void`,
@@ -158,10 +158,10 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
   (`public function publish(Product $product)`, with `{id}` in the route path;
   see Actions below). Only when that is impossible, inject `AdminContext $context`
   and read `$context->getEntity()->getInstance()`, which is nullable and
-  untyped. <!-- src/Dto/EntityDto.php::getInstance; doc/actions.rst:721-747 -->
+  untyped. <!-- src/Dto/EntityDto.php::getInstance; doc/actions.rst:731-757 -->
 - Route names join controller and action names with underscores, so an entity
   whose name is a prefix of another can produce duplicate route names; the
-  exception names both controllers. New routes appear after `cache:clear`. <!-- src/Router/AdminRouteGenerator.php::getDuplicatedRouteNameErrorMessage; doc/crud.rst:80-88; doc/actions.rst:1010-1014 -->
+  exception names both controllers. New routes appear after `cache:clear`. <!-- src/Router/AdminRouteGenerator.php::getDuplicatedRouteNameErrorMessage; doc/crud.rst:80-88; doc/actions.rst:1020-1024 -->
 - Frequent `Crud` options: `setEntityLabelInSingular()`, `setEntityLabelInPlural()`,
   `setPageTitle(Crud::PAGE_INDEX, 'Products')`, `setDefaultSort(['createdAt' => 'DESC'])`,
   `setSearchFields([...])`, `setPaginatorPageSize()`, `setFormOptions()`,
@@ -198,7 +198,7 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 - Form layout uses the static methods `FormField::addTab('Details')`,
   `FormField::addFieldset('Pricing')`, `FormField::addColumn(6)` and
   `FormField::addRow()`. `FormField::addPanel()` was removed in 5.0. The first
-  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:372-384 -->
+  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:398-410 -->
 - `ChoiceField`: `setChoices(['Draft' => 'draft'])`,
   `renderAsBadges(['draft' => 'warning', 'published' => 'success'])` (types:
   success, warning, danger, info, primary, secondary, light, dark),
@@ -235,7 +235,7 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
   linked with `Action::new('publish', 'Publish', 'fa fa-check')->linkToCrudAction('publish')`
   and added with `$actions->add(Crud::PAGE_INDEX, $publish)`. Without the
   attribute, rendering the page throws
-  `is missing the #[AdminRoute] attribute`. <!-- src/Factory/ActionFactory.php::generateActionUrl; src/Attribute/AdminRoute.php::__construct; doc/actions.rst:721-731 -->
+  `is missing the #[AdminRoute] attribute`. <!-- src/Factory/ActionFactory.php::generateActionUrl; src/Attribute/AdminRoute.php::__construct; doc/actions.rst:731-741 -->
 - `#[AdminRoute]` accepts only `path`, `name`, `options`, `allowedDashboards`
   and `deniedDashboards`. There is no `methods` argument: HTTP methods,
   requirements and defaults go inside `options`. Allowed methods are GET,
@@ -248,13 +248,13 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
   `#[MapEntity]` to the argument; with `{entityId}` use the mapped form
   `{entityId:product.id}`. EasyAdmin throws for a missing placeholder only
   when the route path of the built-in `edit`, `detail` or `delete` action is
-  customized. <!-- src/Router/AdminRouteGenerator.php:648-651; src/Router/AdminRouteGenerator.php::getEntityIdPlaceholderName; doc/actions.rst:734-747 -->
+  customized. <!-- src/Router/AdminRouteGenerator.php:648-651; src/Router/AdminRouteGenerator.php::getEntityIdPlaceholderName; doc/actions.rst:744-757 -->
 - Batch actions also need `#[AdminRoute('/approve', name: 'approve', options: ['methods' => ['POST']])]`
   on the method, receive `BatchActionDto $batchActionDto`
   (`getEntityIds()`, `getEntityFqcn()`, `getCsrfToken()`), are created with
   `Action::new('approve')->linkToCrudAction('approve')->createAsBatchAction()`
   and are added with `$actions->addBatchAction($approve)`; they exist only on
-  the index page. <!-- src/Factory/ActionFactory.php::processGlobalActions; src/Dto/BatchActionDto.php::getEntityIds; src/Config/Actions.php::addBatchAction; doc/actions.rst:815-835 -->
+  the index page. <!-- src/Factory/ActionFactory.php::processGlobalActions; src/Dto/BatchActionDto.php::getEntityIds; src/Config/Actions.php::addBatchAction; doc/actions.rst:825-845 -->
 - EasyAdmin adds no CSRF token to a custom action rendered with
   `->renderAsForm()`: the `<form method="POST">` holds only the button. Only
   the built-in delete action (`ea-delete`, through a shared confirmation form),
@@ -268,18 +268,18 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
   `$actions->setPermission('publish', 'ROLE_EDITOR')` and
   `$actions->setPermission(Action::DELETE, 'ROLE_ADMIN')`.
   `Action::setPermission()` does not exist. Both accept a string role or a
-  Symfony `Expression`. <!-- src/Config/Actions.php::setPermission; src/Config/Actions.php::setPermissions; doc/security.rst:208-232 -->
+  Symfony `Expression`. <!-- src/Config/Actions.php::setPermission; src/Config/Actions.php::setPermissions; doc/security.rst:227-251 -->
 - Rendering methods are `renderAsLink()`, `renderAsButton()` and
   `renderAsForm()`; the `displayAs*()` names were removed in 5.0. Styling:
   `asPrimaryAction()`, `asSuccessAction()`, `asWarningAction()`,
   `asDangerAction()`, `asInfoAction()`, `asTextLink()`, and
   `askConfirmation()` for a confirmation modal. Groups use `ActionGroup::new()`
-  with `asPrimaryActionGroup()` and friends. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; src/Config/ActionGroup.php::asPrimaryActionGroup; UPGRADE.md:335-351 -->
+  with `asPrimaryActionGroup()` and friends. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; src/Config/ActionGroup.php::asPrimaryActionGroup; UPGRADE.md:361-377 -->
 - `reorder()` disables automatic ordering; `setCssClass()` drops the default
   `.btn-*` and `.action-<name>` classes (and with them the selectors used by the
   test helpers), `addCssClass()` keeps them; `displayIf()` on a global action
   receives no entity; removing or disabling `Action::DELETE` also removes
-  `Action::BATCH_DELETE`. <!-- src/Config/Actions.php::remove; src/Config/Actions.php::disable; src/Factory/ActionFactory.php::applyCssClasses; doc/actions.rst:382-385; doc/actions.rst:654-659; doc/actions.rst:205-208 -->
+  `Action::BATCH_DELETE`. <!-- src/Config/Actions.php::remove; src/Config/Actions.php::disable; src/Factory/ActionFactory.php::applyCssClasses; doc/actions.rst:392-395; doc/actions.rst:664-669; doc/actions.rst:205-208 -->
 - `autocomplete` and `renderFilters` are built-in action names: do not use
   them for custom actions. <!-- src/Router/AdminRouteGenerator.php::BUILT_IN_ACTION_NAMES -->
 <!-- rules:end -->
@@ -306,19 +306,19 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
   cannot see (and shows a notice that some results are hidden), and the
   detail, edit, new, delete and batch delete actions throw
   `InsufficientEntityPermissionException`. It does not restrict custom actions
-  or the index page itself. <!-- src/Controller/AbstractCrudController.php::detail; src/Controller/AbstractCrudController.php::edit; src/Controller/AbstractCrudController.php::new; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; doc/security.rst:172-203; tests/Functional/Security/EntityPermissionAccessTest.php -->
-- Action permissions are checked per action: `$actions->setPermission(Action::INDEX, 'ROLE_ADMIN')`
-  blocks the index page (and the autocomplete and filter endpoints, which
-  check the same permission) but leaves detail, edit, new, delete and custom
-  actions reachable by URL. To restrict a whole CRUD controller, use Symfony's
-  `security.access_control` on its URL prefix or `#[IsGranted('ROLE_ADMIN')]`
-  on the class. <!-- src/Controller/AbstractCrudController.php::index; src/Controller/AbstractCrudController.php::detail; src/Controller/AbstractCrudController.php::autocomplete; tests/Functional/Security/RolePermissionTest.php; doc/security.rst:26 -->
+  or the index page itself. <!-- src/Controller/AbstractCrudController.php::detail; src/Controller/AbstractCrudController.php::edit; src/Controller/AbstractCrudController.php::new; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; doc/security.rst:243-274; tests/Functional/Security/EntityPermissionAccessTest.php; tests/Functional/Security/BatchDeleteAccessTest.php -->
+- Action permissions and `disable()` are checked per action, on the button and on the URL.
+  `setPermission(Action::INDEX, 'ROLE_ADMIN')` blocks index, autocomplete and filters, not detail, edit, new or delete.
+  A custom action URL (`linkToCrudAction()`, or `linkToRoute()` to an admin route of the same CRUD controller)
+  throws `ForbiddenActionException` unless one action linked to it is enabled and granted: no check needed in the method.
+  `linkToUrl()` and other routes only lose the button: protect them, or a whole CRUD controller,
+  with `security.access_control` or `#[IsGranted('ROLE_ADMIN')]`. <!-- src/Controller/AbstractCrudController.php::index; src/Controller/AbstractCrudController.php::detail; src/Controller/AbstractCrudController.php::autocomplete; src/EventListener/AdminRouterSubscriber.php::assertCustomCrudActionIsGranted; src/Router/AdminUrlGenerator.php::setRoute; tests/Functional/Security/RolePermissionTest.php; tests/Functional/Security/CustomActionAccessTest.php; doc/security.rst:26; doc/security.rst:131-177; doc/actions.rst:331-338 -->
 - `MenuItem::setPermission()` only hides the menu item; the linked pages stay
   reachable unless their actions are protected too. <!-- src/Config/Menu/MenuItemTrait.php::setPermission; doc/security.rst:99-104 -->
 - Field-level access: `IntegerField::new('sales')->setPermission('ROLE_ADMIN')`
-  hides the field on every page for other users. <!-- src/Field/FieldTrait.php::setPermission; doc/security.rst:157-170 -->
+  hides the field on every page for other users. <!-- src/Field/FieldTrait.php::setPermission; doc/security.rst:233-249 -->
 - Every `setPermission()` accepts a
-  `new Expression('"ROLE_EDITOR" in role_names')` besides a role string. <!-- src/Config/Menu/MenuItemTrait.php::setPermission; doc/security.rst:212-232 -->
+  `new Expression('"ROLE_EDITOR" in role_names')` besides a role string. <!-- src/Config/Menu/MenuItemTrait.php::setPermission; doc/security.rst:283-303 -->
 <!-- rules:end -->
 
 ## Functional tests
@@ -346,13 +346,13 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 
 <!-- rules:start -->
 - The `ea` Twig global was removed; call the `ea()` function, which returns
-  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:110-129 -->
+  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:136-155 -->
 - Override page templates with `Crud::overrideTemplate('crud/index', 'admin/product/index.html.twig')`
   and field templates with `->setTemplatePath()`. The `new` and `edit` pages render form fields
   through Symfony form themes (`Crud::addFormTheme()`), not through field templates. <!-- src/Config/Crud.php::overrideTemplate; src/Config/Crud.php::addFormTheme; src/Field/FieldTrait.php::setTemplatePath; doc/fields.rst:1066-1069 -->
 - Backend CSS lives in cascade layers (`vendor`, `ea`, `ea-overrides`), so
   unlayered custom CSS wins without `!important`. Override design tokens on
-  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:171-195; doc/design.rst:314-316; doc/design.rst:1400-1404 -->
+  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:197-221; doc/design.rst:314-316; doc/design.rst:1400-1404 -->
 - Custom pages extend `@EasyAdmin/page/content.html.twig`, not `@EasyAdmin/layout.html.twig`: only the former styles the
   HTML of the `main` block (headings, lists, tables, blue links). Elsewhere, add the `ea-prose` class (`ea-not-prose` opts out).
   Don't write CSS for those elements: unlayered CSS beats these styles. <!-- templates/page/content.html.twig; doc/design.rst:718-821 -->
@@ -393,7 +393,7 @@ described in `vendor/easycorp/easyadmin-bundle/UPGRADE.md`.
 
 `linkToCrudAction()` itself still exists: 4.x code that uses it compiles and
 fails at render time until the target method gets `#[AdminRoute]`.
-<!-- UPGRADE.md:110-129; UPGRADE.md:221-233; UPGRADE.md:219-474 -->
+<!-- UPGRADE.md:136-155; UPGRADE.md:247-259; UPGRADE.md:245-500 -->
 
 ## If you see this error, do this
 

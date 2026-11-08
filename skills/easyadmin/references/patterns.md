@@ -216,7 +216,6 @@ class ProductCrudController extends AbstractCrudController
     #[AdminRoute('/{id}/publish', name: 'publish', options: ['methods' => ['POST']])]
     public function publish(Product $product, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_EDITOR');
         if (!$this->isCsrfTokenValid('publish'.$product->getId(), $request->query->get('token'))) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
@@ -230,8 +229,9 @@ class ProductCrudController extends AbstractCrudController
 }
 ```
 
-`setPermission('publish', ...)` hides the button from other users; the
-`denyAccessUnlessGranted()` call protects the route itself. `{id}` in the path
+`setPermission('publish', ...)` hides the button from other users and, because
+`admin_product_publish` is a custom action route of this same CRUD controller,
+EasyAdmin also returns a 403 error when they open its URL. `{id}` in the path
 lets Symfony inject the typed `Product` argument; without DoctrineBundle's
 `controller_resolver.auto_mapping`, add `#[MapEntity]` to that argument.
 
@@ -257,7 +257,6 @@ public function configureActions(Actions $actions): Actions
 #[AdminRoute('/mark-as-draft', name: 'mark_as_draft', options: ['methods' => ['POST']])]
 public function markAsDraft(BatchActionDto $batchActionDto, EntityManagerInterface $entityManager): Response
 {
-    $this->denyAccessUnlessGranted('ROLE_EDITOR');
     if (!$this->isCsrfTokenValid('ea-batch-action-markAsDraft-'.Product::class, $batchActionDto->getCsrfToken())) {
         throw $this->createAccessDeniedException('Invalid CSRF token.');
     }

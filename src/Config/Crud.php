@@ -480,12 +480,7 @@ final class Crud
      */
     public function setBadgeVariant(string|BadgeVariant $variant): self
     {
-        $badgeVariant = $variant instanceof BadgeVariant ? $variant : BadgeVariant::tryFrom($variant);
-        if (null === $badgeVariant || $badgeVariant->isColor()) {
-            throw new \InvalidArgumentException(sprintf('The "%s" badge variant is not valid. Use one of these values: "%s".', $variant instanceof BadgeVariant ? $variant->value : $variant, implode('", "', array_map(static fn (BadgeVariant $variant): string => $variant->value, BadgeVariant::styles()))));
-        }
-
-        $this->dto->setComponentDefaults($this->dto->getComponentDefaults()->withBadgeVariant($badgeVariant));
+        $this->dto->setComponentDefaults($this->dto->getComponentDefaults()->withBadgeVariant(BadgeVariant::fromStyle($variant)));
 
         return $this;
     }

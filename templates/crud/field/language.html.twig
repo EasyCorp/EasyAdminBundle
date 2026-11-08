@@ -3,7 +3,7 @@
     entity: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto',
 } %}
 {% if field.customOptions.get('showCode') %}
-    <twig:ea:Badge color="language" title="{{ field.formattedValue }}">{{ field.value }}</twig:ea:Badge>
+    <twig:ea:Badge color="language" variant="{{ field.customOptions.get('badgeVariant') }}" title="{{ field.formattedValue }}">{{ field.value }}</twig:ea:Badge>
 {% endif %}
 {% if field.customOptions.get('showName') %}
     {{ field.formattedValue ?? '' }}

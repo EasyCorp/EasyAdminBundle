@@ -35,6 +35,22 @@ enum BadgeVariant: string
         return [self::Light, self::Solid, self::Outline, self::Dot];
     }
 
+    /**
+     * Returns the variant that matches the given style and rejects unknown values
+     * and the deprecated color cases, which are not visual styles of the badge.
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromStyle(string|self $variant): self
+    {
+        $badgeVariant = $variant instanceof self ? $variant : self::tryFrom($variant);
+        if (null === $badgeVariant || $badgeVariant->isColor()) {
+            throw new \InvalidArgumentException(sprintf('The "%s" badge variant is not valid. Use one of these values: "%s".', $variant instanceof self ? $variant->value : $variant, implode('", "', array_map(static fn (self $variant): string => $variant->value, self::styles()))));
+        }
+
+        return $badgeVariant;
+    }
+
     public function isColor(): bool
     {
         return !\in_array($this, self::styles(), true);

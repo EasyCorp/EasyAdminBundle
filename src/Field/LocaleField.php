@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\BadgeVariant;
 use Symfony\Component\Form\Extension\Core\Type\LocaleType;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -17,6 +18,7 @@ final class LocaleField implements FieldInterface
     public const OPTION_SHOW_NAME = 'showName';
     public const OPTION_LOCALE_CODES_TO_KEEP = 'localeCodesToKeep';
     public const OPTION_LOCALE_CODES_TO_REMOVE = 'localeCodesToRemove';
+    public const OPTION_BADGE_VARIANT = 'badgeVariant';
 
     public static function new(string $propertyName, TranslatableInterface|string|bool|null $label = null): self
     {
@@ -30,7 +32,8 @@ final class LocaleField implements FieldInterface
             ->setCustomOption(self::OPTION_SHOW_CODE, false)
             ->setCustomOption(self::OPTION_SHOW_NAME, true)
             ->setCustomOption(self::OPTION_LOCALE_CODES_TO_KEEP, null)
-            ->setCustomOption(self::OPTION_LOCALE_CODES_TO_REMOVE, null);
+            ->setCustomOption(self::OPTION_LOCALE_CODES_TO_REMOVE, null)
+            ->setCustomOption(self::OPTION_BADGE_VARIANT, null);
     }
 
     public function showCode(bool $isShown = true): self
@@ -69,6 +72,18 @@ final class LocaleField implements FieldInterface
     public function remove(array $countryCodesToRemove): self
     {
         $this->setCustomOption(self::OPTION_LOCALE_CODES_TO_REMOVE, $countryCodesToRemove);
+
+        return $this;
+    }
+
+    /**
+     * Sets the visual style of the badge that displays the locale code.
+     * Use one of these values: 'light', 'solid', 'outline' or 'dot'. By default,
+     * it uses the badge variant configured with Crud::setBadgeVariant() ('light' if not set).
+     */
+    public function setBadgeVariant(string|BadgeVariant $variant): self
+    {
+        $this->setCustomOption(self::OPTION_BADGE_VARIANT, BadgeVariant::fromStyle($variant)->value);
 
         return $this;
     }

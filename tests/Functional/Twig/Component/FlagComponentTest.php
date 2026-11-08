@@ -52,7 +52,8 @@ class FlagComponentTest extends KernelTestCase
             'showName' => true,
         ]);
 
-        $this->assertStringContainsString('</svg>Spain</span>', $html);
+        $this->assertStringContainsString('class="country-flag-wrapper country-flag-with-name"', $html);
+        $this->assertStringContainsString('</svg><span class="country-flag-name" style="margin-inline-start: var(--flag-name-gap, 0.375em)">Spain</span></span>', $html);
     }
 
     #[DataProvider('provideLocalizedCountryNames')]
@@ -65,7 +66,7 @@ class FlagComponentTest extends KernelTestCase
         ]);
 
         $this->assertStringContainsString(sprintf('<title>%s</title>', $localizedName), $html);
-        $this->assertStringContainsString(sprintf('</svg>%s</span>', $localizedName), $html);
+        $this->assertStringContainsString(sprintf('<span class="country-flag-name" style="margin-inline-start: var(--flag-name-gap, 0.375em)">%s</span>', $localizedName), $html);
     }
 
     public static function provideLocalizedCountryNames(): iterable
@@ -83,6 +84,37 @@ class FlagComponentTest extends KernelTestCase
         ]);
 
         $this->assertStringContainsString('</svg></span>', $html);
+        $this->assertStringNotContainsString('country-flag-with-name', $html);
+        $this->assertStringNotContainsString('country-flag-name', $html);
+    }
+
+    public function testFlagIsRoundedAndOutlinedByDefault(): void
+    {
+        $html = (string) $this->renderTwigComponent('ea:Flag', ['countryCode' => 'JP']);
+
+        $this->assertStringContainsString('class="country-flag" style="border-radius: var(--flag-radius, 2px); outline: 1px solid var(--flag-outline-color, color-mix(in srgb, currentColor 20%, transparent)); outline-offset: var(--flag-outline-offset, -1px)"', $html);
+    }
+
+    public function testRadiusAndBorderedProps(): void
+    {
+        $html = (string) $this->renderTwigComponent('ea:Flag', ['countryCode' => 'JP', 'radius' => 'lg', 'bordered' => false]);
+
+        $this->assertStringContainsString('class="country-flag" style="border-radius: var(--border-radius-lg, 8px)"', $html);
+    }
+
+    public function testRawFlagHasNoStyles(): void
+    {
+        $html = (string) $this->renderTwigComponent('ea:Flag', ['countryCode' => 'JP', 'radius' => 'none', 'bordered' => false]);
+
+        $this->assertStringContainsString('class="country-flag" height="17"', $html);
+        $this->assertStringNotContainsString('style=', $html);
+    }
+
+    public function testStyleAttributeIsAppliedToTheWrapper(): void
+    {
+        $html = (string) $this->renderTwigComponent('ea:Flag', ['countryCode' => 'JP', 'style' => '--flag-radius: 6px']);
+
+        $this->assertStringContainsString('<span class="country-flag-wrapper" style="--flag-radius: 6px">', $html);
     }
 
     public function testUnknownCountryRendersTheDefaultFallback(): void

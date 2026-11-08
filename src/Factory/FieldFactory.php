@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -187,7 +188,13 @@ final class FieldFactory
                 }
                 /** @phpstan-ignore-next-line function.alreadyNarrowedType */
                 $fieldType = property_exists($fieldMapping, 'type') ? $fieldMapping->type : $fieldMapping['type'];
-                $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$fieldType] ?? null;
+
+                // Special handling for enums, that are represented as string or as a simple array of strings
+                if ((Types::STRING === $fieldType || Types::SIMPLE_ARRAY === $fieldType) && isset($fieldMapping['enumType'])) {
+                    $guessedFieldFqcn = ChoiceField::class;
+                } else {
+                    $guessedFieldFqcn = self::$doctrineTypeToFieldFqcn[$fieldType] ?? null;
+                }
                 if (null === $guessedFieldFqcn) {
                     throw new \RuntimeException(sprintf('The Doctrine type of the "%s" field is "%s", which is not supported by EasyAdmin. For Doctrine\'s Custom Mapping Types have a look at EasyAdmin\'s field docs.', $fieldDto->getProperty(), $fieldType));
                 }

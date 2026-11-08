@@ -236,6 +236,13 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                     ];
 
                     $adminRoute = new Route($adminRoutePath, defaults: $defaults, methods: $actionRouteConfig['methods']);
+
+                    if (null !== $dashboardRouteConfig['routeHost']) {
+                        $adminRoute->setHost($dashboardRouteConfig['routeHost']);
+                        $adminRoute->addDefaults($dashboardRouteConfig['routeHostDefaults']);
+                        $adminRoute->addRequirements($dashboardRouteConfig['routeHostRequirements']);
+                    }
+
                     $adminRoutes[$adminRouteName] = $adminRoute;
                     $addedRouteNames[] = $adminRouteName;
                 }
@@ -425,12 +432,21 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         $route = new Route($routePath);
 
         $routeOptions = $adminRouteAttribute->options;
+        $dashboardRouteConfig = $this->getDashboardsRouteConfig()[$dashboardFqcn];
 
-        if (isset($routeOptions['requirements'])) {
-            $route->setRequirements($routeOptions['requirements']);
-        }
+        $hostDefaults = [];
+        $hostRequirements = [];
         if (isset($routeOptions['host'])) {
             $route->setHost($routeOptions['host']);
+        } elseif (null !== $dashboardRouteConfig['routeHost']) {
+            $route->setHost($dashboardRouteConfig['routeHost']);
+            $hostDefaults = $dashboardRouteConfig['routeHostDefaults'];
+            $hostRequirements = $dashboardRouteConfig['routeHostRequirements'];
+        }
+
+        $requirements = array_merge($hostRequirements, $routeOptions['requirements'] ?? []);
+        if ([] !== $requirements) {
+            $route->setRequirements($requirements);
         }
         if (isset($routeOptions['methods'])) {
             $route->setMethods($routeOptions['methods']);
@@ -442,7 +458,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             $route->setCondition($routeOptions['condition']);
         }
 
-        $defaults = $routeOptions['defaults'] ?? [];
+        $defaults = array_merge($hostDefaults, $routeOptions['defaults'] ?? []);
         if (isset($routeOptions['locale'])) {
             $defaults['_locale'] = $routeOptions['locale'];
         }
@@ -520,7 +536,36 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     }
 
     /**
-     * @return array<string, array{routeName: string, routePath: string}>
+     * Returns the host of the dashboard route and the defaults and requirements of the
+     * variables used by that host, which must be applied to all the routes that inherit it.
+     *
+     * @param array<string, mixed> $routeOptions
+     *
+     * @return array{host: string|null, defaults: array<string, mixed>, requirements: array<string, string>}
+     */
+    private function getRouteHostConfig(array $routeOptions): array
+    {
+        $host = $routeOptions['host'] ?? null;
+        if (null === $host || '' === $host) {
+            return ['host' => null, 'defaults' => [], 'requirements' => []];
+        }
+
+        $defaults = [];
+        $requirements = [];
+        foreach ((new Route('/', host: $host))->compile()->getHostVariables() as $variableName) {
+            if (\array_key_exists($variableName, $routeOptions['defaults'] ?? [])) {
+                $defaults[$variableName] = $routeOptions['defaults'][$variableName];
+            }
+            if (isset($routeOptions['requirements'][$variableName])) {
+                $requirements[$variableName] = $routeOptions['requirements'][$variableName];
+            }
+        }
+
+        return ['host' => $host, 'defaults' => $defaults, 'requirements' => $requirements];
+    }
+
+    /**
+     * @return array<string, array{routeName: string, routePath: string, routeHost: string|null, routeHostDefaults: array<string, mixed>, routeHostRequirements: array<string, string>}>
      */
     private function getDashboardsRouteConfig(): array
     {
@@ -537,6 +582,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                 $adminDashboardAttribute = $attributes[0]->newInstance();
                 $routeName = $adminDashboardAttribute->routeName;
                 $routePath = $adminDashboardAttribute->routePath;
+                $routeHostConfig = $this->getRouteHostConfig($adminDashboardAttribute->routeOptions);
                 if (null !== $routePath) {
                     $routePath = rtrim($adminDashboardAttribute->routePath, '/');
                 }
@@ -545,6 +591,9 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                     $config[$reflectionClass->getName()] = [
                         'routeName' => $routeName,
                         'routePath' => $routePath,
+                        'routeHost' => $routeHostConfig['host'],
+                        'routeHostDefaults' => $routeHostConfig['defaults'],
+                        'routeHostRequirements' => $routeHostConfig['requirements'],
                     ];
 
                     continue;
@@ -583,12 +632,24 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             }
 
             $routeAttribute = $attributes[0]->newInstance();
+            $routeHostConfig = $this->getRouteHostConfig([
+                /** @phpstan-ignore-next-line */
+                'host' => (method_exists($routeAttribute, 'getHost') ? $routeAttribute->getHost() : $routeAttribute->host) ?: null,
+                /** @phpstan-ignore-next-line */
+                'defaults' => method_exists($routeAttribute, 'getDefaults') ? $routeAttribute->getDefaults() : $routeAttribute->defaults,
+                /** @phpstan-ignore-next-line */
+                'requirements' => method_exists($routeAttribute, 'getRequirements') ? $routeAttribute->getRequirements() : $routeAttribute->requirements,
+            ]);
+
             $config[$reflectionClass->getName()] = [
                 // Symfony 8 removed the getName() and getPath() methods in favor of public properties
                 /** @phpstan-ignore-next-line */
                 'routeName' => method_exists($routeAttribute, 'getName') ? $routeAttribute->getName() : $routeAttribute->name,
                 /** @phpstan-ignore-next-line */
                 'routePath' => rtrim(method_exists($routeAttribute, 'getPath') ? $routeAttribute->getPath() : $routeAttribute->path, '/'),
+                'routeHost' => $routeHostConfig['host'],
+                'routeHostDefaults' => $routeHostConfig['defaults'],
+                'routeHostRequirements' => $routeHostConfig['requirements'],
             ];
         }
 

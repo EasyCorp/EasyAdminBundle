@@ -109,6 +109,14 @@ final class ActionConfigDto
     }
 
     /**
+     * @param array<string> $actionNames
+     */
+    public function enableActions(array $actionNames): void
+    {
+        $this->disabledActions = array_values(array_diff($this->disabledActions, $actionNames));
+    }
+
+    /**
      * @return ActionCollection|array<string,array<string,ActionDto|ActionGroupDto>>
      */
     public function getActions(): ActionCollection|array

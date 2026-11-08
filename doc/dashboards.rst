@@ -148,6 +148,18 @@ of this route will also be used by all the dashboard routes (e.g. if the path is
 That's it. Later, when you start adding :doc:`CRUD controllers </crud>`, the route
 loader will create all the needed routes for each of them.
 
+.. tip::
+
+    The number of generated routes is the number of dashboards multiplied by
+    the number of CRUD controllers multiplied by the number of actions (eight
+    built-in actions plus your custom actions). For example, an application
+    with 10 dashboards and 64 CRUD controllers has more than 5,000 routes,
+    and the files that Symfony loads to match and generate URLs grow to
+    several megabytes. If you have several dashboards, use the
+    ``allowedControllers`` or ``deniedControllers`` options of the
+    ``#[AdminDashboard]`` attribute to generate only the routes that each
+    dashboard needs (:ref:`see details <security-controllers>`).
+
 .. _dashboard-configuration:
 
 Dashboard Configuration

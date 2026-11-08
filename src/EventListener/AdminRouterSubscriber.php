@@ -18,6 +18,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,17 +57,45 @@ use Symfony\Component\Security\Http\AccessMapInterface;
  */
 readonly class AdminRouterSubscriber implements EventSubscriberInterface
 {
+    // the event dispatcher instantiates every listener of an event the first time that event
+    // is dispatched, so the dependencies are resolved lazily to not build them on requests
+    // that are not related to EasyAdmin
+    private ContainerInterface $locator;
+
     public function __construct(
-        private AdminContextFactory $adminContextFactory,
-        private ControllerFactory $controllerFactory,
-        private ControllerResolverInterface $controllerResolver,
-        private UrlGeneratorInterface $urlGenerator,
-        private RequestMatcherInterface $requestMatcher,
-        private CacheItemPoolInterface $cache,
-        private AdminRouteGeneratorInterface $adminRouteGenerator,
-        private ?AccessMapInterface $accessMap = null,
-        private ?AuthorizationCheckerInterface $authorizationChecker = null,
+        ContainerInterface|AdminContextFactory $locator,
+        ?ControllerFactory $controllerFactory = null,
+        ?ControllerResolverInterface $controllerResolver = null,
+        ?UrlGeneratorInterface $urlGenerator = null,
+        ?RequestMatcherInterface $requestMatcher = null,
+        ?CacheItemPoolInterface $cache = null,
+        ?AdminRouteGeneratorInterface $adminRouteGenerator = null,
+        ?AccessMapInterface $accessMap = null,
+        ?AuthorizationCheckerInterface $authorizationChecker = null,
     ) {
+        if ($locator instanceof ContainerInterface) {
+            $this->locator = $locator;
+
+            return;
+        }
+
+        @trigger_deprecation('easycorp/easyadmin-bundle', '5.10.0', 'Passing the services of "%s" as separate constructor arguments is deprecated and it will not be possible in EasyAdmin 6.0. Pass a service locator that contains them instead.', self::class);
+
+        if (null === $controllerFactory || null === $controllerResolver || null === $urlGenerator || null === $requestMatcher || null === $cache || null === $adminRouteGenerator) {
+            throw new \InvalidArgumentException(sprintf('When the first argument of "%s::__construct()" is not a service locator, the arguments 2 to 7 are required.', self::class));
+        }
+
+        $this->locator = new ServiceLocator(array_filter([
+            AdminContextFactory::class => static fn () => $locator,
+            ControllerFactory::class => static fn () => $controllerFactory,
+            ControllerResolverInterface::class => static fn () => $controllerResolver,
+            UrlGeneratorInterface::class => static fn () => $urlGenerator,
+            RequestMatcherInterface::class => static fn () => $requestMatcher,
+            CacheItemPoolInterface::class => static fn () => $cache,
+            AdminRouteGeneratorInterface::class => static fn () => $adminRouteGenerator,
+            AccessMapInterface::class => null === $accessMap ? null : static fn () => $accessMap,
+            AuthorizationCheckerInterface::class => null === $authorizationChecker ? null : static fn () => $authorizationChecker,
+        ]));
     }
 
     public static function getSubscribedEvents(): array
@@ -91,9 +121,9 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
         // 'rm -fr var/cache/* && bin/console cache:clear'). If that's the case, regenerate the
         // admin routes to force saving them in the cache again.
         // see https://github.com/EasyCorp/EasyAdminBundle/issues/6680
-        $adminRoutes = $this->cache->getItem(CacheKey::ROUTE_NAME_TO_ATTRIBUTES)->get();
+        $adminRoutes = $this->get(CacheItemPoolInterface::class)->getItem(CacheKey::ROUTE_NAME_TO_ATTRIBUTES)->get();
         if (null === $adminRoutes) {
-            $this->adminRouteGenerator->generateAll();
+            $this->get(AdminRouteGeneratorInterface::class)->generateAll();
         }
 
         if (null !== $redirectResponse = $this->getRedirectionToAdminRoute($request)) {
@@ -113,10 +143,10 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
             $crudControllerFqcn = $request->attributes->get(EA::CRUD_CONTROLLER_FQCN);
             $actionName = $request->attributes->get(EA::CRUD_ACTION);
 
-            $crudControllerInstance = $this->controllerFactory->getCrudControllerInstance($crudControllerFqcn, $actionName, $request);
+            $crudControllerInstance = $this->get(ControllerFactory::class)->getCrudControllerInstance($crudControllerFqcn, $actionName, $request);
 
             try {
-                $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, $crudControllerInstance, $actionName);
+                $adminContext = $this->get(AdminContextFactory::class)->create($request, $dashboardControllerInstance, $crudControllerInstance, $actionName);
             } catch (BaseException $e) {
                 // if context creation fails (e.g. entity not found), create a context
                 // without the entity so the ExceptionListener can still render the
@@ -143,7 +173,7 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
                 }
 
                 try {
-                    $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, $crudControllerInstance, $actionName);
+                    $adminContext = $this->get(AdminContextFactory::class)->create($request, $dashboardControllerInstance, $crudControllerInstance, $actionName);
                     $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $adminContext);
                 } catch (\Throwable) {
                     // creating the fallback context runs user-defined code (e.g. configureActions())
@@ -209,7 +239,7 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
 
     private function getDashboardControllerInstance(string $dashboardControllerFqcn, Request $request): ?DashboardControllerInterface
     {
-        return $this->controllerFactory->getDashboardControllerInstance($dashboardControllerFqcn, $request);
+        return $this->get(ControllerFactory::class)->getDashboardControllerInstance($dashboardControllerFqcn, $request);
     }
 
     /**
@@ -278,7 +308,7 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
         $newRequest->server->set('REQUEST_URI', $pathToMatch);
 
         try {
-            $parameters = $this->requestMatcher->matchRequest($newRequest);
+            $parameters = $this->get(RequestMatcherInterface::class)->matchRequest($newRequest);
         } catch (MethodNotAllowedException $e) {
             throw new MethodNotAllowedHttpException($e->getAllowedMethods(), sprintf('The route "%s" does not allow the "%s" method (allowed methods: %s).', $routeName, $newRequest->getMethod(), implode(', ', $e->getAllowedMethods())), $e);
         } catch (ResourceNotFoundException $e) {
@@ -294,7 +324,7 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
     private function generateTargetRouteUrl(string $routeName, array $routeParams): string
     {
         try {
-            return $this->urlGenerator->generate($routeName, $routeParams, UrlGeneratorInterface::ABSOLUTE_PATH);
+            return $this->get(UrlGeneratorInterface::class)->generate($routeName, $routeParams, UrlGeneratorInterface::ABSOLUTE_PATH);
         } catch (RouteNotFoundException $e) {
             // 'routeName' and 'routeParams' come from the query string, so a
             // typo (or a bot probing legacy ?routeName= URLs) is a client
@@ -323,18 +353,18 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
      */
     private function assertTargetRouteAccessIsGranted(Request $request): void
     {
-        if (null === $this->accessMap || null === $this->authorizationChecker) {
+        if (!$this->locator->has(AccessMapInterface::class) || !$this->locator->has(AuthorizationCheckerInterface::class)) {
             return;
         }
 
-        [$attributes] = $this->accessMap->getPatterns($request);
+        [$attributes] = $this->get(AccessMapInterface::class)->getPatterns($request);
 
         if (null === $attributes || [] === $attributes || [AuthenticatedVoter::PUBLIC_ACCESS] === $attributes) {
             return;
         }
 
         foreach ($attributes as $attribute) {
-            if ($this->authorizationChecker->isGranted($attribute)) {
+            if ($this->get(AuthorizationCheckerInterface::class)->isGranted($attribute)) {
                 return;
             }
         }
@@ -353,7 +383,7 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
     {
         $crudDto = $adminContext->getCrud();
         $crudActionName = $crudDto?->getCurrentAction();
-        if (null === $this->authorizationChecker || null === $crudActionName || \in_array($crudActionName, AdminRouteGenerator::BUILT_IN_ACTION_NAMES, true)) {
+        if (!$this->locator->has(AuthorizationCheckerInterface::class) || null === $crudActionName || \in_array($crudActionName, AdminRouteGenerator::BUILT_IN_ACTION_NAMES, true)) {
             return;
         }
 
@@ -365,7 +395,7 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
         foreach ($linkedActions as [$actionDto, $isEntityAction]) {
             // use the same subject as when rendering the action (see ActionFactory)
             $entityDto = $isEntityAction ? $adminContext->getEntity() : null;
-            if ($this->authorizationChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['crud' => $crudDto, 'action' => $actionDto, 'entity' => $entityDto])) {
+            if ($this->get(AuthorizationCheckerInterface::class)->isGranted(Permission::EA_EXECUTE_ACTION, ['crud' => $crudDto, 'action' => $actionDto, 'entity' => $entityDto])) {
                 return;
             }
         }
@@ -410,7 +440,9 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
         $currentRouteParams = $request->attributes->get('_route_params', []);
 
         try {
-            return $this->urlGenerator->generate($routeName, $currentRouteParams) === $this->urlGenerator->generate($currentRouteName, $currentRouteParams);
+            $urlGenerator = $this->get(UrlGeneratorInterface::class);
+
+            return $urlGenerator->generate($routeName, $currentRouteParams) === $urlGenerator->generate($currentRouteName, $currentRouteParams);
         } catch (RouteNotFoundException|MissingMandatoryParametersException|InvalidParameterException) {
             // the action route doesn't exist or needs other parameters, so it can't be the current route
             return false;
@@ -424,6 +456,18 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
     {
         $newRequest = new Request([], [], ['_controller' => $controllerFqcn, '_route_params' => $routeParams], [], [], []);
 
-        return $this->controllerResolver->getController($newRequest);
+        return $this->get(ControllerResolverInterface::class)->getController($newRequest);
+    }
+
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $id
+     *
+     * @return T
+     */
+    private function get(string $id): object
+    {
+        return $this->locator->get($id);
     }
 }

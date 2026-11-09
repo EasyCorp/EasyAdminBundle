@@ -86,6 +86,40 @@ class ActionsCustomizationTest extends AbstractCrudTestCase
         static::assertSame('Visitors will not see this item anymore.', $action->attr('data-action-confirmation-message'));
     }
 
+    public function testConfirmationDefinedWithClosure(): void
+    {
+        $category1 = CategoryFactory::createOne(['name' => 'Category 1']);
+        $category2 = CategoryFactory::createOne(['name' => 'Category 2']);
+        $category3 = CategoryFactory::createOne(['name' => 'Category 3']);
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $actionSelector = 'tr[data-id="%s"] a.dropdown-item[data-action-name="action12"]';
+
+        $action = $crawler->filter(sprintf($actionSelector, $category1->getId()));
+        static::assertSame('true', $action->attr('data-action-confirmation'));
+        static::assertSame('Visitors will not see Category 1 anymore.', $action->attr('data-action-confirmation-message'));
+
+        $action = $crawler->filter(sprintf($actionSelector, $category2->getId()));
+        static::assertSame('true', $action->attr('data-action-confirmation'));
+        static::assertNull($action->attr('data-action-confirmation-message'));
+
+        $action = $crawler->filter(sprintf($actionSelector, $category3->getId()));
+        static::assertCount(1, $action);
+        static::assertNull($action->attr('data-action-confirmation'));
+        static::assertNull($action->attr('data-action-confirmation-message'));
+    }
+
+    public function testConfirmationDefinedWithClosureInGlobalAction(): void
+    {
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $action = $crawler->filter('.global-actions [data-action-name="action13"]');
+
+        static::assertCount(1, $action);
+        static::assertSame('true', $action->attr('data-action-confirmation'));
+        static::assertSame('The closure received 0 arguments.', $action->attr('data-action-confirmation-message'));
+        static::assertNull($action->attr('data-action-entity-id'));
+    }
+
     public function testDefaultDeleteConfirmation(): void
     {
         CategoryFactory::createOne();

@@ -1,0 +1,70 @@
+{% types {
+    form: '\\Symfony\\Component\\Form\\FormView',
+    states: 'array<string, string>',
+    current_state: 'string',
+} %}
+{% extends '@EasyAdmin/ui_kit/layout.html.twig' %}
+{% form_theme form with ea().crud.formThemes only %}
+
+{% set ea_field_assets = ea().crud.fieldAssets(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::PAGE_NEW')) %}
+
+{% block body_class 'page-content ea-ui-kit ea-new' %}
+
+{% block head_javascript %}
+    {{ parent() }}
+    {% guard function csp_nonce %}
+        <script src="{{ asset('form.js', ea().assets.defaultAssetPackageName) }}" nonce="{{ csp_nonce('script') }}"></script>
+    {% else %}
+        <script src="{{ asset('form.js', ea().assets.defaultAssetPackageName) }}"></script>
+    {% endguard %}
+{% endblock head_javascript %}
+
+{% block configured_head_contents %}
+    {{ parent() }}
+    {% for htmlContent in ea_field_assets.headContents %}
+        {{ htmlContent|raw }}
+    {% endfor %}
+{% endblock %}
+
+{% block configured_body_contents %}
+    {{ parent() }}
+    {% for htmlContent in ea_field_assets.bodyContents %}
+        {{ htmlContent|raw }}
+    {% endfor %}
+{% endblock %}
+
+{% block configured_stylesheets %}
+    {{ parent() }}
+    {{ include('@EasyAdmin/includes/_css_assets.html.twig', {assets: ea_field_assets.cssAssets}, with_context: false) }}
+    {{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', {assets: ea_field_assets.webpackEncoreAssets}, with_context: false) }}
+    {{ include('@EasyAdmin/includes/_reprise_link_tags.html.twig', {assets: ea_field_assets.repriseAssets}, with_context: false) }}
+{% endblock %}
+
+{% block configured_javascripts %}
+    {{ parent() }}
+    {{ include('@EasyAdmin/includes/_js_assets.html.twig', {assets: ea_field_assets.jsAssets}, with_context: false) }}
+    {{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', {assets: ea_field_assets.webpackEncoreAssets}, with_context: false) }}
+    {{ include('@EasyAdmin/includes/_reprise_script_tags.html.twig', {assets: ea_field_assets.repriseAssets}, with_context: false) }}
+{% endblock %}
+
+{% block content_title %}Form fields{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path(ea().dashboardRouteName) }}">{{ ea().dashboardTitle|striptags }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path(ea().dashboardRouteName ~ '_ea_ui_kit_index') }}">UI Kit</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Form fields</li>
+{% endblock %}
+
+{% block main %}
+    <p class="ea-ui-kit-readable">The form fields of EasyAdmin, rendered with the same code as the forms of your CRUD controllers. The form is only a preview, so it can't be saved. <code>AssociationField</code> isn't included because it needs a Doctrine entity; its widget looks like the <code>ChoiceField</code> with autocomplete.</p>
+
+    <nav class="ea-ui-kit-theme-picker" aria-label="Field state">
+        {% for state_name, state_label in states %}
+            <a class="ea-ui-kit-theme-option" href="{{ path(ea().dashboardRouteName ~ '_ea_ui_kit_form_fields', 'default' == state_name ? {} : {state: state_name}) }}" {{ state_name == current_state ? 'aria-current="page"' }}>{{ state_label }}</a>
+        {% endfor %}
+    </nav>
+
+    <div class="ea-ui-kit-form-fields">
+        {{ form(form) }}
+    </div>
+{% endblock %}

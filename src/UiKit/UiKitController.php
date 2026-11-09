@@ -2,13 +2,66 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\UiKit;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\Font;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\GrayScale;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\IconSet;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\ThemeColor;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Theme;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\I18nContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\RequestContext;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CodeEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CurrencyField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FileField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\HiddenField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\LanguageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\LocaleField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\PercentField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TimezoneField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Twig\Environment;
@@ -29,6 +82,12 @@ final class UiKitController
         'typography' => 'Typography',
         'colors' => 'Colors',
         'fonts' => 'Fonts',
+    ];
+    private const FORM_FIELD_STATES = [
+        'default' => 'Default',
+        'help' => 'Help',
+        'errors' => 'Errors',
+        'disabled' => 'Disabled',
     ];
     private const TYPOGRAPHY_SAMPLE_TEMPLATE = '@EasyAdmin/ui_kit/foundations/_typography_sample.html.twig';
     // the namespace mapped to the 'ea:' prefix in EasyAdminExtension::prepend()
@@ -65,6 +124,9 @@ final class UiKitController
         private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly string $componentsDir,
         private readonly string $componentTemplatesDir,
+        private readonly ControllerFactory $controllerFactory,
+        private readonly FieldFactory $fieldFactory,
+        private readonly FormFactory $formFactory,
     ) {
     }
 
@@ -114,6 +176,212 @@ final class UiKitController
             'documentation' => $this->findDocumentation($components[$name]),
             'sub_components_documentation' => $this->findSubComponentsDocumentation($components[$name]),
         ]));
+    }
+
+    /**
+     * Renders every native field with the same factories that render the forms of the
+     * CRUD controllers, so the fields look and behave like in the real backend.
+     */
+    #[AdminRoute(path: '/form_fields', name: 'form_fields', options: ['methods' => ['GET']])]
+    public function formFields(Request $request): Response
+    {
+        $context = $this->adminContextProvider->getContext();
+        if (!$context instanceof AdminContext) {
+            throw new \LogicException('The form field reference of the UI Kit can only be rendered inside a dashboard.');
+        }
+
+        $dashboardController = $this->controllerFactory->getDashboardControllerInstance($context->getDashboardControllerFqcn(), $request)
+            ?? throw new \LogicException(sprintf('The "%s" dashboard controller can\'t be created.', $context->getDashboardControllerFqcn()));
+
+        // the CRUD config of the dashboard applies to all the CRUD controllers (e.g. form themes, date formats)
+        $crudDto = $dashboardController->configureCrud()->getAsDto();
+        $crudDto->setEntityFqcn(FormFieldReference::class);
+        $crudDto->setCurrentAction(Action::NEW);
+        $crudDto->setPageName(Crud::PAGE_NEW);
+        // there's no CRUD controller to run the actions or the search, so they're disabled
+        $actionsConfig = new ActionConfigDto();
+        $actionsConfig->disableActions([Action::INDEX, Action::DETAIL, Action::EDIT, Action::NEW, Action::DELETE, Action::BATCH_DELETE]);
+        $crudDto->setActionsConfig($actionsConfig);
+        $crudDto->setSearchFields(null);
+
+        // Doctrine metadata without any mapping: the fields are configured explicitly,
+        // so nothing has to be guessed from the type of the properties
+        $metadata = new ClassMetadata(FormFieldReference::class);
+        $metadata->setIdentifier(['id']);
+        $entityDto = new EntityDto(FormFieldReference::class, $metadata, null, new FormFieldReference());
+
+        // field configurators, form types and templates read the context from the request
+        $context = self::createContextWithCrud($context, $crudDto, $entityDto);
+        $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $context);
+
+        $state = $request->query->getString('state', 'default');
+        if (!\array_key_exists($state, self::FORM_FIELD_STATES)) {
+            throw new NotFoundHttpException(sprintf('The form field reference of the UI Kit doesn\'t include any state called "%s".', $state));
+        }
+
+        $fields = new FieldCollection($this->getReferenceFields());
+        foreach ($fields as $fieldDto) {
+            if ('help' === $state) {
+                $fieldDto->setHelp('Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+            } elseif ('disabled' === $state) {
+                $fieldDto->setFormTypeOption('disabled', true);
+            }
+        }
+
+        $this->fieldFactory->processFields($entityDto, $fields, Crud::PAGE_NEW);
+
+        $fieldAssets = new AssetsDto();
+        foreach ($entityDto->getFields() as $fieldDto) {
+            $fieldAssets = $fieldAssets->mergeWith($fieldDto->getAssets()->loadedOn(Crud::PAGE_NEW));
+        }
+        $crudDto->setFieldAssets($fieldAssets);
+
+        $formOptions = $crudDto->getNewFormOptions();
+        if ('errors' === $state) {
+            // the form is submitted with its own data (so no CSRF token is needed) because
+            // fields are only rendered as invalid after submitting the form
+            $formOptions->set('csrf_protection', false);
+        }
+        $form = $this->formFactory->createNewForm($entityDto, $formOptions, $context);
+
+        if ('errors' === $state) {
+            $form->submit(self::getSubmittedViewData($form));
+            foreach ($form as $childForm) {
+                // these errors would be displayed at the top of the form instead of next to the
+                // field (this also excludes the form children that only define the layout)
+                if ($childForm->getConfig()->getErrorBubbling()) {
+                    continue;
+                }
+
+                $childForm->addError(new FormError('Lorem ipsum dolor sit amet.'));
+            }
+        }
+
+        return new Response($this->twig->render('@EasyAdmin/ui_kit/form_fields.html.twig', [
+            'form' => $form->createView(),
+            'states' => self::FORM_FIELD_STATES,
+            'current_state' => $state,
+        ]));
+    }
+
+    /**
+     * Creates a copy of the context of the current dashboard page with a CRUD, so the fields
+     * are rendered like in a CRUD form. AdminContext doesn't expose its dashboard and i18n
+     * contexts, so they are read with reflection; if those properties change, the tests of
+     * the form field reference fail.
+     *
+     * @template TEntity of object
+     *
+     * @param EntityDto<TEntity> $entityDto
+     *
+     * @return AdminContext<TEntity>
+     */
+    private static function createContextWithCrud(AdminContext $context, CrudDto $crudDto, EntityDto $entityDto): AdminContext
+    {
+        /** @var DashboardContext $dashboardContext */
+        $dashboardContext = (new \ReflectionProperty(AdminContext::class, 'dashboardContext'))->getValue($context);
+        /** @var I18nContext $i18nContext */
+        $i18nContext = (new \ReflectionProperty(AdminContext::class, 'i18nContext'))->getValue($context);
+
+        return new AdminContext(
+            new RequestContext($context->getRequest(), $context->getUser()),
+            new CrudContext($crudDto, $entityDto, null, $context->getAdminControllers()),
+            $dashboardContext,
+            $i18nContext,
+        );
+    }
+
+    /**
+     * Returns the same data that the browser would submit for the given form as it's rendered.
+     */
+    private static function getSubmittedViewData(FormInterface $form): mixed
+    {
+        // expanded choices are compound, but browsers submit only the values of the checked
+        // options, which is also the view data of the choice form (not of each child)
+        if (!$form->getConfig()->getCompound() || self::isChoiceForm($form)) {
+            return $form->getViewData();
+        }
+
+        $data = [];
+        foreach ($form as $name => $childForm) {
+            $data[$name] = self::getSubmittedViewData($childForm);
+        }
+
+        return $data;
+    }
+
+    private static function isChoiceForm(FormInterface $form): bool
+    {
+        for ($type = $form->getConfig()->getType(); null !== $type; $type = $type->getParent()) {
+            if ($type->getInnerType() instanceof ChoiceType) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return list<FieldInterface>
+     */
+    private function getReferenceFields(): array
+    {
+        $choices = ['Lorem' => 0, 'Ipsum' => 1, 'Dolor' => 2];
+
+        return [
+            FormField::addColumn('col-12'),
+            FormField::addFieldset('Text fields'),
+            TextField::new('text', 'TextField'),
+            SlugField::new('slug', 'SlugField')->setTargetFieldName('text'),
+            TextareaField::new('textarea', 'TextareaField'),
+            TextEditorField::new('textEditor', 'TextEditorField'),
+            CodeEditorField::new('codeEditor', 'CodeEditorField')->setLanguage('php'),
+            EmailField::new('email', 'EmailField'),
+            TelephoneField::new('telephone', 'TelephoneField'),
+            UrlField::new('url', 'UrlField'),
+
+            FormField::addColumn('col-12 col-xl-6'),
+            FormField::addFieldset('Choice fields'),
+            BooleanField::new('boolean', 'BooleanField'),
+            ChoiceField::new('choice', 'ChoiceField')->setChoices($choices),
+            ChoiceField::new('choiceMultiple', 'ChoiceField (multiple)')->setChoices($choices)->allowMultipleChoices(),
+            ChoiceField::new('choiceAutocomplete', 'ChoiceField (autocomplete)')->setChoices($choices)->allowMultipleChoices()->autocomplete(),
+            ChoiceField::new('choiceExpanded', 'ChoiceField (expanded)')->setChoices($choices)->renderExpanded(),
+            ChoiceField::new('choiceExpandedMultiple', 'ChoiceField (expanded and multiple)')->setChoices($choices)->allowMultipleChoices()->renderExpanded(),
+
+            FormField::addFieldset('Numeric fields'),
+            IntegerField::new('integer', 'IntegerField'),
+            NumberField::new('number', 'NumberField'),
+            PercentField::new('percent', 'PercentField'),
+            MoneyField::new('money', 'MoneyField')->setCurrency('EUR'),
+
+            FormField::addFieldset('Other fields'),
+            AvatarField::new('avatar', 'AvatarField'),
+            ColorField::new('color', 'ColorField'),
+            IdField::new('id', 'IdField'),
+            HiddenField::new('hidden', 'HiddenField'),
+
+            FormField::addColumn('col-12 col-xl-6'),
+            FormField::addFieldset('Date and time fields'),
+            DateField::new('date', 'DateField'),
+            TimeField::new('time', 'TimeField'),
+            DateTimeField::new('dateTime', 'DateTimeField'),
+            TimezoneField::new('timezone', 'TimezoneField'),
+
+            FormField::addFieldset('Internationalization fields'),
+            CountryField::new('country', 'CountryField'),
+            CurrencyField::new('currency', 'CurrencyField'),
+            LanguageField::new('language', 'LanguageField'),
+            LocaleField::new('locale', 'LocaleField'),
+
+            FormField::addFieldset('Collection fields'),
+            ArrayField::new('array', 'ArrayField'),
+            CollectionField::new('collection', 'CollectionField'),
+
+            FormField::addFieldset('File fields'),
+            ImageField::new('image', 'ImageField')->setUploadDir('public/uploads/images/'),
+            FileField::new('file', 'FileField')->setUploadDir('public/uploads/files/'),
+        ];
     }
 
     /**

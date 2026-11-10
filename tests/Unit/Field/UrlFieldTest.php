@@ -6,7 +6,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\UrlConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Fixtures\UrlField\ChildUrlType;
 use PHPUnit\Framework\Attributes\TestWith;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Url;
 
@@ -42,6 +44,27 @@ class UrlFieldTest extends AbstractFieldTestCase
 
         self::assertSame($defaultProtocol, $fieldDto->getCustomOption(UrlField::OPTION_DEFAULT_PROTOCOL));
         self::assertSame($defaultProtocol, $fieldDto->getFormTypeOption('default_protocol'));
+    }
+
+    public function testDefaultProtocolOptionIsNotSetWhenFormTypeDoesNotDefineIt(): void
+    {
+        $this->initializeConfigurator();
+
+        $field = UrlField::new('foo')->setFormType(TextType::class)->setDefaultProtocol('https');
+        $fieldDto = $this->configure($field, actionName: Action::EDIT);
+
+        self::assertSame('url', $fieldDto->getFormTypeOption('attr.inputmode'));
+        self::assertArrayNotHasKey('default_protocol', $fieldDto->getFormTypeOptions());
+    }
+
+    public function testDefaultProtocolOptionIsSetWhenFormTypeExtendsUrlType(): void
+    {
+        $this->initializeConfigurator();
+
+        $field = UrlField::new('foo')->setFormType(ChildUrlType::class)->setDefaultProtocol('https');
+        $fieldDto = $this->configure($field, actionName: Action::EDIT);
+
+        self::assertSame('https', $fieldDto->getFormTypeOption('default_protocol'));
     }
 
     #[TestWith(['http://example.com', 'example.com'])]
@@ -294,6 +317,6 @@ class UrlFieldTest extends AbstractFieldTestCase
     private function initializeConfigurator(): void
     {
         self::bootKernel();
-        $this->configurator = new UrlConfigurator();
+        $this->configurator = new UrlConfigurator(static::getContainer()->get('form.registry'));
     }
 }

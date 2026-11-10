@@ -36,7 +36,7 @@ class ActionsCustomizationTest extends AbstractCrudTestCase
         static::assertSame('dropdown-item action-action3 bar dropdown-item-variant-default', $crawler->filter('a.dropdown-item:contains("Action3")')->attr('class'));
         static::assertSame('dropdown-item foo bar dropdown-item-variant-default', $crawler->filter('a.dropdown-item:contains("Action4")')->attr('class'));
 
-        static::assertSame('btn btn-primary btn-solid  action-new', trim($crawler->filter('.global-actions > a')->first()->attr('class')));
+        static::assertSame('btn btn-primary btn-solid  action-new', trim($crawler->filter('.global-actions > a[data-action-name="new"]')->attr('class')));
     }
 
     public function testDynamicLabels(): void

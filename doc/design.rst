@@ -270,6 +270,11 @@ their code, using your theme and your CSS. Open ``_ea_ui_kit`` under the URL of
 your dashboard (e.g. ``/admin/_ea_ui_kit``) or use the link in the EasyAdmin
 panel of the Symfony Profiler.
 
+The UI Kit also has a form with the form fields of EasyAdmin. It shows them
+the same way as your CRUD forms, so it's useful to check your CSS changes on a
+single page. Use the buttons above the form to see the fields with help
+messages, with validation errors or disabled.
+
 The UI Kit is only available in debug mode, so it doesn't exist in production.
 To enable it elsewhere (e.g. in a demo server) or disable it in debug mode,
 use this parameter:

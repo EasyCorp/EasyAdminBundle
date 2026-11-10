@@ -14,11 +14,12 @@
     <div class="ea-ui-kit-index">
         <section>
             <h2>Foundations</h2>
-            <p>The typography of your contents and a preview of the theme colors and fonts.</p>
+            <p>The typography of your contents, a preview of the theme colors and fonts, and the form fields.</p>
             <ul>
                 {% for dir_name, foundation_name in foundations %}
                     <li><a href="{{ path(ea().dashboardRouteName ~ '_ea_ui_kit_foundation', {name: dir_name}) }}">{{ foundation_name }}</a></li>
                 {% endfor %}
+                <li><a href="{{ path(ea().dashboardRouteName ~ '_ea_ui_kit_form_fields') }}">Form fields</a></li>
             </ul>
         </section>
 

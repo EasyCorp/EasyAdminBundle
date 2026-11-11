@@ -139,6 +139,29 @@ class BatchDeleteTest extends AbstractCrudTestCase
         self::assertSame(1, $this->repository->count([]));
     }
 
+    public function testBatchDeleteWithoutEntityFqcnIsABadRequest(): void
+    {
+        $entityId = CategoryFactory::createOne()->getId();
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $batchDeleteButton = $crawler->filter('.batch-actions [data-action-name="'.Action::BATCH_DELETE.'"]');
+        $batchActionUrl = $batchDeleteButton->attr('data-action-url');
+
+        // everything else is valid, so only the missing field can make the request fail
+        $this->client->request('POST', $batchActionUrl, [
+            'batchActionName' => Action::BATCH_DELETE,
+            'batchActionUrl' => $batchActionUrl,
+            'batchActionCsrfToken' => $batchDeleteButton->attr('data-action-csrf-token'),
+            'batchActionEntityIds' => [$entityId],
+        ]);
+
+        self::assertResponseStatusCodeSame(400);
+
+        $this->entityManager->clear();
+
+        self::assertNotNull($this->repository->find($entityId), 'A malformed batch request must not delete anything');
+    }
+
     public function testBatchDeleteRedirectsToIndexPage(): void
     {
         $entityIdToDelete = CategoryFactory::createOne()->getId();

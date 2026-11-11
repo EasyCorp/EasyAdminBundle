@@ -313,6 +313,11 @@ final readonly class EntityRepository implements EntityRepositoryInterface, Nest
                 ];
             }
 
+            // a filter without a comparison (e.g. a query string written by hand) can't be applied
+            if (!\is_string($submittedData['comparison'] ?? null) || '' === $submittedData['comparison']) {
+                continue;
+            }
+
             /** @var string $rootAlias */
             $rootAlias = current($queryBuilder->getRootAliases());
 

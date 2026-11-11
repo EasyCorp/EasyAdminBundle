@@ -99,7 +99,6 @@ class FilterTestEntityCrudController extends AbstractCrudController
                     'Tag 2' => 'tag2',
                     'Tag 3' => 'tag3',
                 ])
-                ->canSelectMultiple()
             )
             ->add(ArrayFilter::new('simpleArrayFilter'))
 

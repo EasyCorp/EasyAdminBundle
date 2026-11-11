@@ -4,7 +4,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Event\SubmitEvent;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -33,6 +36,17 @@ class ComparisonFilterType extends AbstractType
         $builder->add('value', $options['value_type'], $options['value_type_options'] + [
             'label' => false,
         ]);
+
+        // the data mapper leaves out the fields that couldn't be transformed (e.g. an unknown
+        // comparison or an array sent to a text field), so the model transformers of the filter
+        // types would read keys that don't exist; failing here stops them and makes the filter invalid
+        $builder->addEventListener(FormEvents::SUBMIT, static function (SubmitEvent $event): void {
+            foreach ($event->getForm() as $child) {
+                if (!$child->isSynchronized()) {
+                    throw new TransformationFailedException(sprintf('The "%s" field of the filter is not valid.', $child->getName()));
+                }
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

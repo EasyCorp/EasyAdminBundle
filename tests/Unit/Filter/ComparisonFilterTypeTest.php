@@ -27,6 +27,29 @@ class ComparisonFilterTypeTest extends TypeTestCase
         $this->assertInstanceOf(ComparisonFilterType::class, $form->getConfig()->getType()->getInnerType());
     }
 
+    /**
+     * @param array<string, mixed> $options
+     * @param array<string, mixed> $dataToSubmit
+     */
+    #[DataProvider('malformedData')]
+    public function testMalformedDataMakesTheFilterInvalid(array $options, array $dataToSubmit): void
+    {
+        $form = $this->factory->create(ComparisonFilterType::class, null, $options);
+        $form->submit($dataToSubmit);
+
+        $this->assertFalse($form->isSynchronized());
+        $this->assertFalse($form->isValid());
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>, array<string, mixed>}>
+     */
+    public static function malformedData(): iterable
+    {
+        yield 'unknown comparison' => [['value_type' => IntegerType::class], ['comparison' => 'bogus', 'value' => '1']];
+        yield 'text value' => [['value_type' => IntegerType::class], ['comparison' => ComparisonType::EQ, 'value' => 'abc']];
+    }
+
     public static function submit(): iterable
     {
         yield [

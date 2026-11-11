@@ -27,6 +27,30 @@ class DateTimeFilterTypeTest extends TypeTestCase
         }
     }
 
+    /**
+     * @param array<string, mixed> $options
+     * @param array<string, mixed> $dataToSubmit
+     */
+    #[DataProvider('malformedData')]
+    public function testMalformedDataMakesTheFilterInvalid(array $options, array $dataToSubmit): void
+    {
+        $form = $this->factory->create(DateTimeFilterType::class, null, $options);
+        $form->submit($dataToSubmit);
+
+        $this->assertFalse($form->isSynchronized());
+        $this->assertFalse($form->isValid());
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>, array<string, mixed>}>
+     */
+    public static function malformedData(): iterable
+    {
+        yield 'unknown comparison' => [[], ['comparison' => 'bogus']];
+        yield 'text value' => [[], ['comparison' => ComparisonType::EQ, 'value' => 'abc']];
+        yield 'text second value' => [[], ['comparison' => ComparisonType::BETWEEN, 'value' => '2024-01-01T10:00', 'value2' => 'abc']];
+    }
+
     public static function submit(): iterable
     {
         yield [

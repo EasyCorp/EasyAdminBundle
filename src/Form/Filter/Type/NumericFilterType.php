@@ -34,7 +34,10 @@ class NumericFilterType extends AbstractType
         $builder->addModelTransformer(new CallbackTransformer(
             static fn ($data) => $data,
             static function ($data) {
-                $data['value'] ??= null;
+                // without a comparison the filter can't be applied, so it's left as is to be ignored later
+                if (null === $data['comparison']) {
+                    return $data;
+                }
 
                 if (null === $data['value'] && ComparisonType::BETWEEN !== $data['comparison']) {
                     $data['comparison'] = ComparisonType::EQ === $data['comparison'] ? 'IS NULL' : 'IS NOT NULL';

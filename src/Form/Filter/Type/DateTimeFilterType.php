@@ -33,9 +33,10 @@ class DateTimeFilterType extends AbstractType
         $builder->addModelTransformer(new CallbackTransformer(
             static fn ($data) => $data,
             static function ($data) use ($options) {
-                // Symfony Form will cut off invalid values, so make sure no warnings will be thrown out
-                $data['value'] ??= null;
-                $data['value2'] ??= null;
+                // without a comparison the filter can't be applied, so it's left as is to be ignored later
+                if (null === $data['comparison']) {
+                    return $data;
+                }
 
                 if (null === $data['value'] && ComparisonType::BETWEEN !== $data['comparison']) {
                     $data['comparison'] = ComparisonType::EQ === $data['comparison'] ? 'IS NULL' : 'IS NOT NULL';

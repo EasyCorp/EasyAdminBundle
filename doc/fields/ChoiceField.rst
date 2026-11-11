@@ -184,6 +184,13 @@ This enum is supported in the ``setChoices()`` in different ways::
     // you can select only some of the possible enum values:
     yield ChoiceField::new('status')->setChoices([BlogPostStatus::Draft, BlogPostStatus::Published]);
 
+    // you can define the label of each enum case; labels are translated, so
+    // they can be translation keys too
+    yield ChoiceField::new('status')->setChoices([
+        'Work in progress' => BlogPostStatus::Draft,
+        'Visible on the blog' => BlogPostStatus::Published,
+    ]);
+
 In addition, EasyAdmin provides automatic support for Doctrine properties
 associated with PHP enums. Consider the following Doctrine entity::
 

@@ -29,6 +29,17 @@
     </ul>
 {% endset %}
 
+{% if group.hasMainAction and group.actions|length == 0 %}
+    {# all the submenu actions can be hidden for the current user or entity; in that case,
+       the main action is rendered as a regular item, without the submenu #}
+    <twig:ea:ActionMenu:ActionList:Item
+        class="{{ group.mainAction.cssClass }} dropdown-item-variant-{{ group.mainAction.color.value }}"
+        label="{{ group.mainAction.label is ea_is_not_empty ? group.mainAction.label|trans }}" label:class="action-label" renderLabelRaw
+        icon="{{ group.mainAction.icon ?: group.icon }}" icon:class="action-icon"
+        htmlAttributes="{{ group.mainAction.htmlAttributes|ea_html_attrs }}"
+        url="{{ group.mainAction.linkUrl }}"
+        renderAsForm="{{ group.mainAction.isRenderedAsForm }}" />
+{% else %}
 <li class="dropend dropdown-submenu">
     {% if group.hasMainAction and group.mainAction %}
         {# split dropdown: main action + submenu toggle. The submenu is rendered next to the toggle
@@ -59,3 +70,4 @@
         {{ submenu }}
     {% endif %}
 </li>
+{% endif %}

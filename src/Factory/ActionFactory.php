@@ -81,7 +81,7 @@ final readonly class ActionFactory
                 $processedGroup = $this->processActionGroup($currentPage, $item, $entityDto);
                 // only add the group if it has at least one action (ignoring dividers and headers)
                 // (actions are removed when processing the group if the user doesn't have permission to execute them)
-                if ([] !== $processedGroup->getActions()) {
+                if ($processedGroup->hasMainAction() || [] !== $processedGroup->getActions()) {
                     $processedItems[$item->getName()] = $processedGroup;
                 }
             }
@@ -196,7 +196,7 @@ final readonly class ActionFactory
                 $processedGroup = $this->processActionGroup($currentPage, $item);
                 // only add the group if it has at least one action (ignoring dividers and headers)
                 // (actions are removed when processing the group if the user doesn't have permission to execute them)
-                if ([] !== $processedGroup->getActions()) {
+                if ($processedGroup->hasMainAction() || [] !== $processedGroup->getActions()) {
                     $processedItems[$item->getName()] = $processedGroup;
                 }
             }
@@ -522,20 +522,10 @@ final readonly class ActionFactory
 
     private function processActionGroup(string $pageName, ActionGroupDto $groupDto, ?EntityDto $entityDto = null): ActionGroupDto
     {
-        if (null !== $mainAction = $groupDto->getMainAction()) {
-            $this->applyCssClasses($mainAction);
-            $processedMainAction = $this->processAction($pageName, $mainAction, $entityDto);
-            $groupDto->setMainAction($processedMainAction);
-        }
-
         $processedActions = [];
         foreach ($groupDto->getItems() as $item) {
             if ($item instanceof ActionDto) {
-                if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $item, 'entity' => $entityDto])) {
-                    continue;
-                }
-
-                if (false === $item->isDisplayed($entityDto)) {
+                if (!$this->isActionDisplayed($item, $entityDto)) {
                     continue;
                 }
 
@@ -551,6 +541,18 @@ final readonly class ActionFactory
         // create a new group DTO with the processed actions
         $newGroupDto = clone $groupDto;
         $newGroupDto->setActions([]);
+
+        // the main action is hidden in the processed copy only, because the original group
+        // is still needed to check if the action can be run when its URL is requested
+        if (null !== $mainAction = $newGroupDto->getMainAction()) {
+            if ($this->isActionDisplayed($mainAction, $entityDto)) {
+                $this->applyCssClasses($mainAction);
+                $newGroupDto->setMainAction($this->processAction($pageName, $mainAction, $entityDto));
+            } else {
+                $newGroupDto->setMainAction(null);
+            }
+        }
+
         foreach ($processedActions as $item) {
             if ($item instanceof ActionDto) {
                 $newGroupDto->addAction($item);
@@ -572,6 +574,12 @@ final readonly class ActionFactory
         $newGroupDto->setHtmlAttribute('data-action-group-name', $newGroupDto->getName());
 
         return $newGroupDto;
+    }
+
+    private function isActionDisplayed(ActionDto $actionDto, ?EntityDto $entityDto): bool
+    {
+        return $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $actionDto, 'entity' => $entityDto])
+            && $actionDto->isDisplayed($entityDto);
     }
 
     /**

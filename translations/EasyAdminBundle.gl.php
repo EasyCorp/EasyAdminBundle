@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Iniciar sesión',
         'forgot_password' => 'Esqueciches o contrasinal?',
         'remember_me' => 'Lembrarme',
+        'show_password' => 'Amosar o contrasinal',
     ],
 
     'exception' => [

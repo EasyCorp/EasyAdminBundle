@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Prijava',
         'forgot_password' => 'Ste pozabili geslo?',
         'remember_me' => 'Zapomni si me',
+        'show_password' => 'Prikaži geslo',
     ],
 
     'exception' => [

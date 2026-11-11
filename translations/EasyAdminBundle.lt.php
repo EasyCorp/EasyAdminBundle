@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Prisijungti',
         'forgot_password' => 'Pamiršote slaptažodį?',
         'remember_me' => 'Prisiminti mane',
+        'show_password' => 'Rodyti slaptažodį',
     ],
 
     'exception' => [

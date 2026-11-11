@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Entrar',
         'forgot_password' => 'Esqueceu sua senha?',
         'remember_me' => 'Manter conectado',
+        'show_password' => 'Mostrar senha',
     ],
 
     'exception' => [

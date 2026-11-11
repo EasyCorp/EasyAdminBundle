@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Συνδεθείτε',
         'forgot_password' => 'Ξεχάσατε τον κωδικό σας?',
         'remember_me' => 'Να με θυμάσαι',
+        'show_password' => 'Εμφάνιση κωδικού πρόσβασης',
     ],
 
     'exception' => [

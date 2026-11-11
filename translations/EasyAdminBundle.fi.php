@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Sign in',
         'forgot_password' => 'Unohditko salasanasi?',
         'remember_me' => 'Muista minut',
+        'show_password' => 'Näytä salasana',
     ],
 
     'exception' => [

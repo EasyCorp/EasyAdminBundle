@@ -145,6 +145,7 @@ return [
         'sign_in' => '登录',
         'forgot_password' => '忘记密码?',
         'remember_me' => '记住我',
+        'show_password' => '显示密码',
     ],
 
     'exception' => [

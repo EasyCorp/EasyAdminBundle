@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Hasi saioa',
         'forgot_password' => 'Pasahitza ahaztuta?',
         'remember_me' => 'Gogoratu',
+        'show_password' => 'Erakutsi pasahitza',
     ],
 
     'exception' => [

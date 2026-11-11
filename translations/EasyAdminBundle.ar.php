@@ -145,6 +145,7 @@ return [
         'sign_in' => 'تسجيل الدخول',
         'forgot_password' => 'نسيت كلمة المرور الخاصة بك ؟ ',
         'remember_me' => 'تذكرنى',
+        'show_password' => 'عرض كلمة السّر',
     ],
 
     'exception' => [

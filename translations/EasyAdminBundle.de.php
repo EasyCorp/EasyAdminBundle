@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Login',
         'forgot_password' => 'Passwort vergessen?',
         'remember_me' => 'Beim nächsten Mal automatisch anmelden',
+        'show_password' => 'Passwort anzeigen',
     ],
 
     'exception' => [

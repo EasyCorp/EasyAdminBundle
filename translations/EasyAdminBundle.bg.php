@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Вход',
         'forgot_password' => 'Забравена парола?',
         'remember_me' => 'Запомни ме',
+        'show_password' => 'Покажи паролата',
     ],
 
     'exception' => [

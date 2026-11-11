@@ -530,12 +530,6 @@
     --code-editor-deletion-bg: var(--red-50);
     --code-editor-selection-bg: var(--gray-300);
 
-    --page-login-bg: var(--gray-100);
-    --page-login-form-bg: var(--white);
-    --page-login-form-control-bg: var(--form-control-bg);
-    --page-login-form-control-border-color: var(--form-input-border-color);
-    --page-login-form-control-button-bg: var(--button-primary-tone);
-
     --zindex-700: 777;
     --zindex-800: 888;
     --zindex-900: 999;
@@ -881,12 +875,6 @@
     --code-editor-addition-bg: color-mix(in srgb, var(--green-600) 30%, transparent);
     --code-editor-deletion-bg: color-mix(in srgb, var(--red-600) 30%, transparent);
     --code-editor-selection-bg: var(--sky-900);
-
-    --page-login-bg: var(--gray-800);
-    --page-login-form-bg: var(--gray-700);
-    --page-login-form-control-bg: var(--gray-800);
-    --page-login-form-control-border-color: var(--gray-600);
-    --page-login-form-control-button-bg: var(--button-primary-tone);
 
     /* hand-darkened literals kept as-is to preserve WCAG contrast on tinted backgrounds */
     --text-blue-600: hsl(206, 91%, 30%);

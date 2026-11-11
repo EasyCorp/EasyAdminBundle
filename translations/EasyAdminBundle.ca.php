@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Iniciar sessió',
         'forgot_password' => 'Has oblidat la teva contrasenya?',
         'remember_me' => 'Recorda\'m',
+        'show_password' => 'Mostra la contrasenya',
     ],
 
     'exception' => [

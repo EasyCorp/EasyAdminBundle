@@ -145,6 +145,7 @@ return [
         'sign_in' => 'התחבר',
         'forgot_password' => 'שכחת סיסמה?',
         'remember_me' => 'זכור אותי',
+        'show_password' => 'הצג סיסמה',
     ],
 
     'exception' => [

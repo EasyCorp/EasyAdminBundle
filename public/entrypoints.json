@@ -2,7 +2,7 @@
   "entrypoints": {
     "app": {
       "css": [
-        "/app.d3c228ae.css"
+        "/app.5f323cd8.css"
       ],
       "js": [
         "/app.ec5e9b90.js"
@@ -71,7 +71,7 @@
     },
     "login": {
       "js": [
-        "/login.c9004e96.js"
+        "/login.d6af9e8b.js"
       ]
     }
   }

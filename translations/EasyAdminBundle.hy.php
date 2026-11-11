@@ -145,6 +145,7 @@ return [
         'sign_in' => 'Մուտք',
         'forgot_password' => 'Մոռացե՞լ եք գաղտնաբառը',
         'remember_me' => 'Հիշիր ինձ',
+        'show_password' => 'Ցույց տալ գաղտնաբառը',
     ],
 
     'exception' => [

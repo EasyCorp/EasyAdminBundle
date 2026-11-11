@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Actions;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\ActionGroupsEntityCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\ActionGroupsFormMainActionCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\ActionGroupsInlineEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
@@ -432,5 +433,31 @@ class ActionGroupsTest extends AbstractCrudTestCase
         $firstGroup = $actionGroups->first();
         static::assertCount(1, $firstGroup->filter('button.dropdown-toggle'), 'Action group should have dropdown toggle');
         static::assertCount(1, $firstGroup->filter('.dropdown-menu'), 'Action group should have dropdown menu');
+    }
+
+    /**
+     * The CSS that joins the main button and the dropdown toggle relies on this markup:
+     * the main action is wrapped in a form, which is a child of the group and is
+     * followed by the toggle.
+     */
+    public function testActionGroupsWithMainActionRenderedAsForm(): void
+    {
+        $entity = CategoryFactory::createOne();
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl(controllerFqcn: ActionGroupsFormMainActionCrudController::class));
+
+        $globalGroup = $crawler->filter('.global-actions .action-group[data-action-group-name="globalStatusGroup"]');
+        static::assertCount(1, $globalGroup->filter('.btn-group > form[method="POST"] > button.btn[data-action-group-name-main-action]'));
+        static::assertCount(1, $globalGroup->filter('.btn-group > form + button.btn.dropdown-toggle-split'));
+
+        $rowGroup = $crawler->filter(sprintf('tr[data-id="%d"] td.actions:not(.actions-as-dropdown) .action-group', $entity->getId()));
+        static::assertCount(1, $rowGroup->filter('.btn-group > form[method="POST"] > button.btn[data-action-group-name-main-action]'));
+        static::assertCount(1, $rowGroup->filter('.btn-group > form + button.btn.dropdown-toggle-split'));
+
+        $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId(), controllerFqcn: ActionGroupsFormMainActionCrudController::class));
+
+        $detailGroup = $crawler->filter('.action-group[data-action-group-name="statusGroup"]');
+        static::assertCount(1, $detailGroup->filter('.btn-group > form[method="POST"] > button.btn[data-action-group-name-main-action]'));
+        static::assertCount(1, $detailGroup->filter('.btn-group > form + button.btn.dropdown-toggle-split'));
     }
 }

@@ -15,6 +15,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneOpenType;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -34,6 +37,61 @@ class CrudFormType extends AbstractType
     {
         /** @var EntityDto $entityDto */
         $entityDto = $options['entityDto'];
+
+        foreach ($this->createFormFields($builder->getFormFactory(), $entityDto) as $formField) {
+            $builder->add($formField);
+        }
+
+        // a CRUD form embedded in another nested CRUD form (e.g. a collection entry) can't know if it creates
+        // or edits an entity until it receives its data, so its fields are configured for both cases: it
+        // shows the fields of 'entityDto' by default and replaces them by the ones of 'editEntityDto' when editing
+        if (null !== $editEntityDto = $options['editEntityDto']) {
+            $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($editEntityDto): void {
+                if (null === $event->getData()) {
+                    return;
+                }
+
+                $form = $event->getForm();
+                foreach ($form->all() as $name => $child) {
+                    if (null !== $child->getConfig()->getAttribute('ea_entity')) {
+                        $form->remove((string) $name);
+                    }
+                }
+
+                foreach ($this->createFormFields($form->getConfig()->getFormFactory(), $editEntityDto) as $formField) {
+                    $form->add($formField->setAutoInitialize(false)->getForm());
+                }
+            });
+        }
+
+        $builder->addEventSubscriber(new FormLayoutSubscriber());
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver
+            ->setDefaults([
+                'allow_extra_fields' => true,
+                // the EntityDto with the fields to use instead of the ones of 'entityDto' when the form receives an entity to edit
+                'editEntityDto' => null,
+                'data_class' => static fn (Options $options, $dataClass) => $dataClass ?? $options['entityDto']->getFqcn(),
+            ])
+            ->setDefined(['entityDto'])
+            ->setRequired(['entityDto'])
+            ->setAllowedTypes('editEntityDto', ['null', EntityDto::class]);
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return 'ea_crud';
+    }
+
+    /**
+     * @return list<FormBuilderInterface>
+     */
+    private function createFormFields(FormFactoryInterface $formFactory, EntityDto $entityDto): array
+    {
+        $formFields = [];
 
         /** @var FieldDto $fieldDto */
         foreach ($entityDto->getFields() as $fieldDto) {
@@ -57,30 +115,14 @@ class CrudFormType extends AbstractType
 
             $name = $this->isTypeFormField($formFieldType) ? $fieldDto->getPropertyNameWithSuffix() : $name;
 
-            $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
+            $formField = $formFactory->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
             $formField->setAttribute('ea_entity', $entityDto);
             $formField->setAttribute('ea_field', $fieldDto);
 
-            $builder->add($formField);
+            $formFields[] = $formField;
         }
 
-        $builder->addEventSubscriber(new FormLayoutSubscriber());
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver
-            ->setDefaults([
-                'allow_extra_fields' => true,
-                'data_class' => static fn (Options $options, $dataClass) => $dataClass ?? $options['entityDto']->getFqcn(),
-            ])
-            ->setDefined(['entityDto'])
-            ->setRequired(['entityDto']);
-    }
-
-    public function getBlockPrefix(): string
-    {
-        return 'ea_crud';
+        return $formFields;
     }
 
     private function isTypeFormField(?string $type): bool

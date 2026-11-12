@@ -34,6 +34,13 @@ use function Symfony\Component\Translation\t;
  */
 final class AssociationConfigurator implements FieldConfiguratorInterface
 {
+    /**
+     * The embedded CRUD forms (controller FQCN and page name) whose fields are being configured.
+     *
+     * @var array<class-string, array<string, true>>
+     */
+    private array $crudFormsBeingConfigured = [];
+
     public function __construct(
         private readonly EntityFactory $entityFactory,
         private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
@@ -380,6 +387,22 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             'entityDto',
             $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, $targetCrudControllerAction, $targetCrudControllerPageName, $crudPageName),
         );
+
+        // the fields of nested CRUD forms (e.g. collection entries or other embedded forms) are configured
+        // without the entity that they edit, so it's not possible to know here if the associated entity exists;
+        // in that case, the EDIT form is configured too and CrudFormType uses it if the form receives an entity
+        if (null === $entityDto->getInstance()) {
+            $editPageName = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_EDIT_PAGE_NAME) ?? Crud::PAGE_EDIT;
+
+            // when CRUD forms embed each other (e.g. a post embeds its author and the EDIT page of
+            // the author lists their posts) this would never end; the repeated form shows no fields
+            // for existing entities instead of showing the ones that are only meant for new entities
+            $editEntityDto = isset($this->crudFormsBeingConfigured[$targetCrudControllerFqcn][$editPageName])
+                ? $this->createEntityDtoWithoutFields($targetEntityFqcn)
+                : $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, Action::EDIT, $editPageName, Crud::PAGE_EDIT);
+
+            $field->setFormTypeOption('editEntityDto', $editEntityDto);
+        }
     }
 
     /**
@@ -396,9 +419,26 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $this->requestStack->getMainRequest()
         );
 
-        $fields = $crudController->configureFields($crudControllerPageName);
+        $this->crudFormsBeingConfigured[$crudControllerFqcn][$crudControllerPageName] = true;
 
-        $this->fieldFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
+        try {
+            $fields = $crudController->configureFields($crudControllerPageName);
+
+            $this->fieldFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
+        } finally {
+            unset($this->crudFormsBeingConfigured[$crudControllerFqcn][$crudControllerPageName]);
+        }
+
+        return $entityDto;
+    }
+
+    /**
+     * @param class-string $entityFqcn
+     */
+    private function createEntityDtoWithoutFields(string $entityFqcn): EntityDto
+    {
+        $entityDto = $this->entityFactory->create($entityFqcn);
+        $entityDto->setFields(new FieldCollection([]));
 
         return $entityDto;
     }

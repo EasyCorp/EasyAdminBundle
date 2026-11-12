@@ -183,10 +183,14 @@ Check the Permissions of Another CRUD Controller
 
 EasyAdmin applies the ``setPermission()`` and ``setEntityPermission()``
 configuration of a CRUD controller before rendering a link to it (for example,
-the link of an ``AssociationField`` to the related entity). If your own code
-renders links or embedded blocks that belong to another CRUD controller (e.g. in
-a custom field configurator), use the ``CrudPermissionCheckerInterface`` service
-to apply the same rules instead of duplicating the permission names::
+the link of an ``AssociationField`` to the related entity). The entity
+permission is not applied to the lists of choices that display the entities of
+another CRUD controller, as explained in :ref:`security-fields`.
+
+If your own code renders links or embedded blocks that belong to another CRUD
+controller (e.g. in a custom field configurator), use the
+``CrudPermissionCheckerInterface`` service to apply the same rules instead of
+duplicating the permission names::
 
     use App\Controller\Admin\InvoiceCrudController;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -285,6 +289,18 @@ permissions to see some items:
 
 .. image:: images/easyadmin-list-hidden-results.png
    :alt: Index page with some results hidden because user does not have enough permissions
+
+.. caution::
+
+    The entity permission only applies to the pages of the CRUD controller
+    that defines it. Other CRUD controllers that display the same entity as a
+    list of choices (for example, in the form of an ``AssociationField`` or in
+    an ``EntityFilter``) still list all its items and users can select any of
+    them.
+
+    If users must not select certain items in an
+    :doc:`AssociationField </fields/AssociationField>`, use its
+    ``setQueryBuilder()`` option to remove those items from the list.
 
 .. _security-expressions:
 

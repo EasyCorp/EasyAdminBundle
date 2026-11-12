@@ -218,6 +218,9 @@ use, pass the fully-qualified class name of the controller as the first argument
         CategoryCrudController::class, 'create_category_inside_an_article', 'edit_category_inside_an_article'
     );
 
+If you don't pass a CRUD controller as the first argument, the embedded form
+uses the controller set with the ``setCrudController()`` option, if any.
+
 ``renderAsNativeWidget``
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -264,6 +267,9 @@ However, if you define more than one CRUD controller for that entity, you'll nee
 to use this option to specify which one to use for the links::
 
     yield AssociationField::new('...')->setCrudController(SomeCrudController::class);
+
+The ``renderAsEmbeddedForm()`` option also uses this CRUD controller, unless you
+pass another one as its first argument.
 
 ``setPreferredChoices``
 ~~~~~~~~~~~~~~~~~~~~~~~

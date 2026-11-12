@@ -122,6 +122,84 @@ class SkillInstallerTest extends AiTestCase
             MD);
     }
 
+    public function testInstallRemovesTheHtmlCommentsOfTheSkillFile(): void
+    {
+        $this->filesystem->dumpFile($this->skillsSourceDir().'/easyadmin/SKILL.md', <<<'MD'
+            ---
+            name: easyadmin
+            metadata:
+              author: EasyCorp
+            ---
+
+            # EasyAdmin
+
+            <!-- rules:start -->
+            - Link CRUD controllers with `MenuItem::linkTo()`. <!-- src/Config/MenuItem.php::linkTo -->
+            - Menu permissions only hide the item;
+              the linked pages stay reachable. <!-- src/Config/Menu/MenuItemTrait.php::setPermission; doc/security.rst:99-104 -->
+            <!-- rules:end -->
+
+            Use `{{ ea().dashboardTitle }}` in templates.
+            <!-- UPGRADE.md:136-155 -->
+
+            ```twig
+            <!-- this comment belongs to the example -->
+            <twig:ea:Button color="primary">Save</twig:ea:Button>
+            ```
+
+            ## Project conventions
+
+            Apply the conventions of the project on top of these rules.
+
+            <!-- skill-check
+            must_exist: EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem::linkTo
+            source_contains: src/Config/Actions.php | removeAction
+            -->
+
+            MD);
+
+        $this->skillInstaller->install(AgentTarget::ClaudeCode);
+
+        $this->assertStringEqualsFile($this->projectDir.'/.claude/skills/easyadmin/SKILL.md', <<<'MD'
+            ---
+            name: easyadmin
+            metadata:
+              author: EasyCorp
+              easyadmin-version: '5.5.2-DEV'
+              installed-by: 'easyadmin:ai:install'
+            ---
+
+            # EasyAdmin
+
+            - Link CRUD controllers with `MenuItem::linkTo()`.
+            - Menu permissions only hide the item;
+              the linked pages stay reachable.
+
+            Use `{{ ea().dashboardTitle }}` in templates.
+
+            ```twig
+            <!-- this comment belongs to the example -->
+            <twig:ea:Button color="primary">Save</twig:ea:Button>
+            ```
+
+            ## Project conventions
+
+            Apply the conventions of the project on top of these rules.
+
+            MD);
+        $this->assertSame(SkillStatus::UpToDate, $this->skillInstaller->status(AgentTarget::ClaudeCode));
+    }
+
+    public function testInstallRemovesTheHtmlCommentsWhenTheSkillFileUsesWindowsLineEndings(): void
+    {
+        $this->filesystem->dumpFile($this->skillsSourceDir().'/easyadmin/SKILL.md', "---\r\nname: easyadmin\r\nmetadata:\r\n  author: EasyCorp\r\n---\r\n\r\n# EasyAdmin\r\n\r\n- A rule. <!-- src/Config/Crud.php::new -->\r\n\r\n<!-- skill-check\r\ndoc_file: doc/crud.rst\r\n-->\r\n");
+
+        $this->skillInstaller->install(AgentTarget::ClaudeCode);
+
+        $this->assertStringEqualsFile($this->projectDir.'/.claude/skills/easyadmin/SKILL.md', "---\r\nname: easyadmin\r\nmetadata:\r\n  author: EasyCorp\r\n  easyadmin-version: '5.5.2-DEV'\r\n  installed-by: 'easyadmin:ai:install'\r\n---\r\n\r\n# EasyAdmin\r\n\r\n- A rule.\r\n");
+        $this->assertSame(SkillStatus::UpToDate, $this->skillInstaller->status(AgentTarget::ClaudeCode));
+    }
+
     public function testInstallKeepsWorkingWhenTheSkillFileUsesWindowsLineEndings(): void
     {
         $this->filesystem->dumpFile($this->skillsSourceDir().'/easyadmin/SKILL.md', "---\r\nname: easyadmin\r\nmetadata:\r\n  author: EasyCorp\r\n---\r\n\r\n# EasyAdmin\r\n");

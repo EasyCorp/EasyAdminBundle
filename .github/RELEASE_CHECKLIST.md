@@ -8,7 +8,7 @@ How to release a new EasyAdmin version
 3. Execute the `make build-assets` command to compile the CSS and JavaScript
    assets into `src/Resources/public/`. If there are any changes, commit and push them.
 4. Run the manual evaluation of the AI agent skill described in
-   `tests/Unit/Skill/eval/README.md` (about 30 minutes). Do not tag the
+   `tests/Unit/Skill/eval/README.md` (about one hour). Do not tag the
    release while the evaluation fails: fix `skills/easyadmin/` first.
 5. Create the tag and sign it. Example: `git tag -s v1.12.6` (the tag version is
    always prefixed with `v`, but remove it for the tag comment: `1.12.6`).

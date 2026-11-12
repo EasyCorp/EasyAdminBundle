@@ -78,7 +78,7 @@ final readonly class SkillInstaller
             $skillFiles[$relativePath] = $this->readFile($absolutePath);
         }
 
-        $skillFiles[self::SKILL_FILE_NAME] = $this->addInstallationMetadata($skillFiles[self::SKILL_FILE_NAME]);
+        $skillFiles[self::SKILL_FILE_NAME] = $this->addInstallationMetadata($this->removeHtmlComments($skillFiles[self::SKILL_FILE_NAME]));
         ksort($skillFiles);
 
         return $skillFiles;
@@ -207,6 +207,63 @@ final readonly class SkillInstaller
         }
 
         return 1 === preg_match('/^[ \t]*installed-by:[ \t]*[\'"]?'.preg_quote(self::INSTALLED_BY, '/').'[\'"]?[ \t]*\r?$/m', $frontmatter);
+    }
+
+    /**
+     * The HTML comments of the skill file (the sources that prove each rule and the
+     * checks run by the test suite of the bundle) are useful only to its maintainers.
+     * Agents read the raw file, so every comment left in it spends part of their
+     * context. Comments inside fenced code blocks are part of the examples and stay.
+     */
+    private function removeHtmlComments(string $skillFileContents): string
+    {
+        $eol = str_contains($skillFileContents, "\r\n") ? "\r\n" : "\n";
+        $keptLines = [];
+        $isInsideCodeBlock = false;
+        $isInsideComment = false;
+
+        foreach (explode("\n", str_replace("\r\n", "\n", $skillFileContents)) as $line) {
+            if (!$isInsideComment && str_starts_with(ltrim($line), '```')) {
+                $isInsideCodeBlock = !$isInsideCodeBlock;
+            }
+
+            if ($isInsideCodeBlock) {
+                $keptLines[] = $line;
+
+                continue;
+            }
+
+            $originalLine = $line;
+            if ($isInsideComment) {
+                $closingPosition = strpos($line, '-->');
+                if (false === $closingPosition) {
+                    continue;
+                }
+
+                $line = substr($line, $closingPosition + 3);
+                $isInsideComment = false;
+            }
+
+            $line = preg_replace('/<!--.*?-->/', '', $line);
+            $openingPosition = strpos($line, '<!--');
+            if (false !== $openingPosition) {
+                $line = substr($line, 0, $openingPosition);
+                $isInsideComment = true;
+            }
+
+            if ($line === $originalLine) {
+                $keptLines[] = $line;
+
+                continue;
+            }
+
+            $line = rtrim($line);
+            if ('' !== $line) {
+                $keptLines[] = $line;
+            }
+        }
+
+        return rtrim(implode($eol, $keptLines)).$eol;
     }
 
     private function addInstallationMetadata(string $skillFileContents): string

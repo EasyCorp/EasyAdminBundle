@@ -207,8 +207,9 @@ generated code working on the current version, so it changes together with the c
   `src/Field/`, `src/Filter/`, `src/Attribute/`, `src/Test/`, `src/Controller/Abstract*`
   or `src/Router/AdminUrlGenerator.php`, run `make skill-api-reference` and commit
   the regenerated `skills/easyadmin/references/api.md` (a unit test fails otherwise)
-- After adding an entry to `UPGRADE.md`, review the "Legacy" table and the rules of
-  `skills/easyadmin/SKILL.md` that the change contradicts
+- After adding an entry to `UPGRADE.md`, review the rules and the "Legacy" section of
+  `skills/easyadmin/SKILL.md` and the tables of `references/traps.md` that the change
+  contradicts
 - A new entry at the top of `UPGRADE.md` shifts the `UPGRADE.md:NN-MM` provenance
   comments of `SKILL.md`; remap them in the same change, because the unit test only
   checks that those lines exist, not that they still point to the right entry
@@ -218,6 +219,12 @@ generated code working on the current version, so it changes together with the c
 - Rules that describe behavior (not only the existence of a method) need an anchor:
   a `source_contains` line in the `<!-- skill-check -->` trailer or a functional
   test that names the rule in its docblock
+- Agents load the whole `SKILL.md` on every use, so its body has a size budget that
+  a unit test checks: a new rule replaces another one, and lists and tables go to
+  a file in `references/` that `SKILL.md` says when to read
+- `easyadmin:ai:install` removes every HTML comment from the copy of `SKILL.md` it
+  writes, so comments are free there; don't put anything agents need inside one
 - The skill documents only what this package provides
 - `make tests ARGS="tests/Unit/Skill/"` runs every skill check; the manual
-  evaluation in `tests/Unit/Skill/eval/README.md` runs before each release
+  evaluation in `tests/Unit/Skill/eval/README.md` runs before each release and
+  after changing the rules or the `description` of the skill

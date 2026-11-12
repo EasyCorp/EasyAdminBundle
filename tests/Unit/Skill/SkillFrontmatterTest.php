@@ -7,9 +7,10 @@ use PHPUnit\Framework\TestCase;
 
 class SkillFrontmatterTest extends TestCase
 {
-    private const ALLOWED_KEYS = ['name', 'description', 'license', 'metadata'];
+    private const ALLOWED_KEYS = ['name', 'description', 'license', 'compatibility', 'metadata', 'allowed-tools'];
     private const EXPECTED_NAME = 'easyadmin';
     private const NAME_PATTERN = '/^[a-z0-9]+(-[a-z0-9]+)*$/';
+    private const MAX_NAME_LENGTH = 64;
     private const SAFE_DESCRIPTION_STYLES = [SkillFile::STYLE_FOLDED, SkillFile::STYLE_DOUBLE_QUOTED];
     private const MAX_DESCRIPTION_LENGTH = 1024;
     private const REQUIRED_DESCRIPTION_PHRASE = 'Do not use';
@@ -48,6 +49,7 @@ class SkillFrontmatterTest extends TestCase
         $name = SkillFile::skill()->frontmatter()['name'] ?? '';
 
         self::assertMatchesRegularExpression(self::NAME_PATTERN, $name, sprintf('The "name" of %s must be lowercase letters, digits and single hyphens (pattern %s), because it is used as a directory name.', SkillFile::RELATIVE_PATH, self::NAME_PATTERN));
+        self::assertLessThanOrEqual(self::MAX_NAME_LENGTH, \strlen($name), sprintf('The "name" of %s is %d characters long and the limit is %d.', SkillFile::RELATIVE_PATH, \strlen($name), self::MAX_NAME_LENGTH));
     }
 
     public function testDescriptionIsNeverWrittenAsAPlainScalar(): void
@@ -70,7 +72,7 @@ class SkillFrontmatterTest extends TestCase
         $description = SkillFile::skill()->frontmatter()['description'] ?? '';
         $firstWord = preg_split('/\s+/', trim($description))[0] ?? '';
 
-        self::assertMatchesRegularExpression('/^[A-Z][a-z]+s$/', $firstWord, sprintf('The "description" of %s starts with "%s", but it must start with a capitalized third-person verb such as "Creates" or "Configures". That is the wording agents are trained to match.', SkillFile::RELATIVE_PATH, $firstWord));
+        self::assertMatchesRegularExpression('/^[A-Z][a-z]+s$/', $firstWord, sprintf('The "description" of %s starts with "%s", but it must start with a capitalized third-person verb such as "Creates" or "Configures". The skill authoring guide of Anthropic asks for the third person and against "I can help you..." or "You can use this to...".', SkillFile::RELATIVE_PATH, $firstWord));
     }
 
     public function testDescriptionSaysWhenTheSkillMustNotBeUsed(): void

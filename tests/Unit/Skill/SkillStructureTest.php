@@ -2,12 +2,16 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Skill;
 
+use EasyCorp\Bundle\EasyAdminBundle\Ai\SkillInstaller;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Skill\Support\SkillFile;
 use PHPUnit\Framework\TestCase;
 
 class SkillStructureTest extends TestCase
 {
     private const MAX_SKILL_LINES = 500;
+    // the Agent Skills specification recommends a body under 5,000 tokens; this
+    // byte limit is an estimate of that (about 4 bytes per token), not a token count
+    private const MAX_INSTALLED_BODY_BYTES = 20000;
     private const MAX_REFERENCE_LINES_WITHOUT_CONTENTS = 100;
     private const TABLE_OF_CONTENTS_HEADING = '## Table of contents';
     private const TABLE_OF_CONTENTS_MAX_LINE = 40;
@@ -24,6 +28,16 @@ class SkillStructureTest extends TestCase
         $lines = self::countLines(SkillFile::skill()->contents());
 
         self::assertLessThanOrEqual(self::MAX_SKILL_LINES, $lines, sprintf('%s has %d lines and the limit is %d. A line is one element of the file contents split on "\n", ignoring the final newline. Move the extra content to a file in %s/.', SkillFile::RELATIVE_PATH, $lines, self::MAX_SKILL_LINES, SkillFile::RELATIVE_REFERENCES_DIR));
+    }
+
+    public function testInstalledSkillBodyFitsTheContextBudgetOfAgents(): void
+    {
+        $skillInstaller = new SkillInstaller(sys_get_temp_dir(), SkillFile::repositoryRoot().'/skills', SkillFile::repositoryRoot().'/src/Resources/ai/guidelines.md', '0.0.0');
+        $installedSkill = $skillInstaller->renderSkillFiles()['SKILL.md'];
+        $body = preg_replace('/\A---\r?\n.*?\r?\n---\r?\n/s', '', $installedSkill);
+
+        self::assertStringNotContainsString('<!--', $body, sprintf('The copy of %s written by "easyadmin:ai:install" still contains HTML comments. They only make sense in this repository, so the installer must remove all of them.', SkillFile::RELATIVE_PATH));
+        self::assertLessThanOrEqual(self::MAX_INSTALLED_BODY_BYTES, \strlen($body), sprintf('The body of %s is %d bytes long once installed (without its HTML comments) and the limit is %d. Agents load the whole body every time they use the skill and some of them keep only its first 5,000 tokens in long sessions. Replace a rule instead of adding one, or move lists and tables to a file in %s/.', SkillFile::RELATIVE_PATH, \strlen($body), self::MAX_INSTALLED_BODY_BYTES, SkillFile::RELATIVE_REFERENCES_DIR));
     }
 
     public function testReferencesDirectoryOnlyContainsMarkdownFiles(): void

@@ -22,21 +22,27 @@ metadata:
 # EasyAdmin 5
 
 This skill ships inside the `easycorp/easyadmin-bundle` Composer package, so it
-describes the API of the version installed in the project (the `VERSION`
-constant in `vendor/easycorp/easyadmin-bundle/src/EasyAdminBundle.php`). Trust
-it and the files it points to over your training data: most public code and
-tutorials target EasyAdmin 4, whose API differs in ways that throw exceptions
-on 5.x. If this copy was installed by `easyadmin:ai:install`, its `metadata`
-carries the version it matches; when that differs from the installed
-`VERSION`, tell the user to run `php bin/console easyadmin:ai:update` before
-you continue.
+describes the API of the installed version. Trust it over your training data:
+most public code and tutorials target EasyAdmin 4, whose API throws exceptions
+on 5.x. If the `metadata` of this file has an `easyadmin-version` that differs
+from the `VERSION` constant in
+`vendor/easycorp/easyadmin-bundle/src/EasyAdminBundle.php`, tell the user to
+run `php bin/console easyadmin:ai:update` before you continue.
 
-Files next to this one:
+## Reference files
 
 - [references/api.md](references/api.md): every public method of the config, field, filter,
-  attribute, controller and test classes, generated from the source. If a method is not listed there, it does not exist.
-- [references/patterns.md](references/patterns.md): copy-ready recipes for the most common tasks.
-- [references/traps.md](references/traps.md): method names that look right and are wrong.
+  attribute, controller and test classes, generated from the source. A method
+  that is not listed there does not exist. It is long, so do not read it
+  whole: before calling a method that this file does not show, search its
+  class heading (for example `## Field\MoneyField`) and read that section.
+- [references/patterns.md](references/patterns.md): read the matching recipe before writing a dashboard, a
+  CRUD controller, a custom or batch action, a scoped index query, filters,
+  associations, uploads, a form layout, a functional test or an event subscriber.
+- [references/traps.md](references/traps.md): read it when you port EasyAdmin 4 code or when the method
+  you want is not in `references/api.md`. It maps each wrong name to the right one.
+- [references/errors.md](references/errors.md): read it when an EasyAdmin exception or a PHPStan error
+  appears. It maps each message to its fix.
 
 ## Mental model
 
@@ -53,82 +59,89 @@ Files next to this one:
 - Routes come from the `#[AdminDashboard]` attribute, the `#[AdminRoute]`
   attributes and the route loader declared in `config/routes/easyadmin.yaml`.
   With a dashboard route named `admin`, CRUD routes are named
-  `admin_<entity>_<action>` (for example `admin_product_index`). List them
-  with `php bin/console debug:router`.
+  `admin_<entity>_<action>` (for example `admin_product_index`).
 
 ## Workflow
 
 1. Check whether a dashboard exists: `grep -rl AbstractDashboardController src/`.
 2. Scaffold with the makers and then edit the generated classes: `php bin/console make:admin:dashboard`
    and `php bin/console make:admin:crud "App\Entity\Product"`. The CRUD maker
-   leaves `configureFields()` commented out and adds no `@extends` PHPDoc: add both by hand.
+   leaves `configureFields()` commented out and adds no `@extends` PHPDoc: add both.
 3. Register every CRUD controller in the dashboard's `configureMenuItems()`.
-4. Before writing a method you have not seen in this skill, in
-   `references/api.md` or in the source, verify it exists:
+4. Before writing a method you have not seen in this skill, verify that it
+   exists in `references/api.md` or in the source:
    `grep -rn 'function <name>' vendor/easycorp/easyadmin-bundle/src/Config/ vendor/easycorp/easyadmin-bundle/src/Field/`.
 5. After adding a dashboard, a CRUD controller or an `#[AdminRoute]`, run
    `php bin/console cache:clear` and `php bin/console debug:router` to confirm
    the routes exist before linking to them.
 
+## Legacy: EasyAdmin 4 code
+
+Code and tutorials written for 4.x use names that no longer exist:
+`MenuItem::linkToCrud()`, `#[Route]` on the dashboard `index()`,
+`#[AdminCrud]`, `#[AdminAction]`, `displayAs*()`, `FormField::addPanel()`,
+the `ea` Twig global, `getReferrer()` and URLs with `?crudAction=...`. The
+replacement of each one is in `references/traps.md` and the full explanation
+in `vendor/easycorp/easyadmin-bundle/UPGRADE.md`. `linkToCrudAction()` itself
+still exists: 4.x code that uses it compiles and fails at render time until
+the target method gets `#[AdminRoute]`.
+<!-- UPGRADE.md:136-155; UPGRADE.md:247-259; UPGRADE.md:245-500 -->
+
+## Project conventions
+
+If this repository's `AGENTS.md` or `CLAUDE.md` has a section titled
+`## EasyAdmin conventions`, apply it on top of these rules.
+
 ## What to read, by task
 
-Online docs live at `https://symfony.com/bundles/EasyAdminBundle/current/<page>.html`;
-the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc/`.
+The `doc/` paths below are relative to `vendor/easycorp/easyadmin-bundle/`.
+The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/current/<page>.html`.
 
 | Task | Read |
 |---|---|
-| Dashboard, main menu, user menu, locales, dark mode, custom dashboard page | `vendor/easycorp/easyadmin-bundle/doc/dashboards.rst` |
-| CRUD options: labels, sorting, search, pagination, templates, form options, URLs | `vendor/easycorp/easyadmin-bundle/doc/crud.rst` |
-| Which field class to use, form layout (tabs, fieldsets, columns), custom fields | `vendor/easycorp/easyadmin-bundle/doc/fields.rst` |
-| Options of one field | `vendor/easycorp/easyadmin-bundle/doc/fields/<FieldName>.rst`, then `vendor/easycorp/easyadmin-bundle/src/Field/<FieldName>.php` |
-| Built-in and custom actions, batch actions, action permissions, admin routes | `vendor/easycorp/easyadmin-bundle/doc/actions.rst` |
-| Filters | `vendor/easycorp/easyadmin-bundle/doc/filters.rst` |
-| Roles, voters, entity permissions, impersonation, expressions | `vendor/easycorp/easyadmin-bundle/doc/security.rst` |
-| Functional tests | `vendor/easycorp/easyadmin-bundle/doc/tests.rst` and `vendor/easycorp/easyadmin-bundle/src/Test/Trait/` |
-| Theme, UI Kit, CSS variables, template overrides, icons, cascade layers, typography of custom pages | `vendor/easycorp/easyadmin-bundle/doc/design.rst` |
-| Twig components (`<twig:ea:*>`) | `vendor/easycorp/easyadmin-bundle/doc/components.rst` |
-| Events and entity lifecycle | `vendor/easycorp/easyadmin-bundle/doc/events.rst` |
-| Upgrading a backend to a newer EasyAdmin version (follow every `<upgrade-prompt>` block newer than the old version, oldest first); anything that "used to work" in EasyAdmin 4 | `vendor/easycorp/easyadmin-bundle/UPGRADE-AI.md`; `vendor/easycorp/easyadmin-bundle/UPGRADE.md` |
+| Dashboard, main menu, user menu, locales, dark mode | `doc/dashboards.rst` |
+| CRUD options: labels, sorting, search, pagination, URLs | `doc/crud.rst` |
+| Which field class to use, form layout (tabs, fieldsets, columns), custom fields | `doc/fields.rst` |
+| Options of one field | `doc/fields/<FieldName>.rst` |
+| Actions, batch actions, action permissions, admin routes | `doc/actions.rst` |
+| Filters | `doc/filters.rst` |
+| Roles, voters, entity permissions, impersonation, expressions | `doc/security.rst` |
+| Functional tests | `doc/tests.rst` |
+| Theme, CSS variables, template overrides, icons, custom pages | `doc/design.rst` |
+| Twig components (`<twig:ea:*>`) and their props | `doc/components.rst` |
+| Events and entity lifecycle | `doc/events.rst` |
+| Upgrading a backend to a newer EasyAdmin version | `vendor/easycorp/easyadmin-bundle/UPGRADE-AI.md`: follow every `<upgrade-prompt>` block newer than the old version, oldest first |
 
 ## Dashboard and menu
 
 <!-- rules:start -->
 - The dashboard class carries
   `#[AdminDashboard(routePath: '/admin', routeName: 'admin')]` and both
-  arguments are required. Without the attribute EasyAdmin throws a
-  `RuntimeException` while generating routes and no admin route exists. Do not
-  add a Symfony `#[Route]` to `index()`: the documentation states that no other
-  way of configuring the dashboard route works. <!-- src/Router/AdminRouteGenerator.php:558-570; src/Attribute/AdminDashboard.php::__construct; doc/dashboards.rst:96-97 -->
+  arguments are required. Without it, route generation throws and no admin
+  route exists. Do not add a Symfony `#[Route]` to `index()`: no other way of
+  configuring the dashboard route works. <!-- src/Router/AdminRouteGenerator.php:558-570; src/Attribute/AdminDashboard.php::__construct; doc/dashboards.rst:96-97 -->
 - The project needs `config/routes/easyadmin.yaml` with `resource: .` and
-  `type: easyadmin.routes` (the value of
-  `AdminRouteLoader::ROUTE_LOADER_TYPE`). Symfony Flex creates it; without
-  Flex, create it by hand. <!-- src/Router/AdminRouteLoader.php::ROUTE_LOADER_TYPE; doc/dashboards.rst:55-64 -->
+  `type: easyadmin.routes`. Symfony Flex creates it; without Flex, create it
+  by hand. <!-- src/Router/AdminRouteLoader.php::ROUTE_LOADER_TYPE; doc/dashboards.rst:55-64 -->
 - Link CRUD controllers with
   `MenuItem::linkTo(ProductCrudController::class, 'Products', 'fa fa-box')`:
   controller class first, then label, then icon. `MenuItem::linkToCrud()` was
   removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:274-290 -->
 - The other factories put the label first:
   `MenuItem::linkToRoute('Reports', 'fa fa-chart-bar', 'app_reports', ['year' => 2026])`,
-  `MenuItem::linkToUrl('Website', 'fa fa-globe', 'https://example.com')`,
-  `MenuItem::linkToDashboard('Home', 'fa fa-home')`, `MenuItem::linkToLogout('Sign out', 'fa fa-sign-out')`,
-  `MenuItem::linkToExitImpersonation('Stop impersonating', 'fa fa-user-secret')`,
-  `MenuItem::section('Catalog')`, `MenuItem::subMenu('Blog', 'fa fa-book')->setSubItems([...])`.
-  There are no other factories. <!-- src/Config/MenuItem.php::linkToRoute; src/Config/MenuItem.php::linkToUrl; src/Config/MenuItem.php::subMenu -->
+  `linkToUrl('Website', 'fa fa-globe', 'https://example.com')`,
+  `linkToDashboard('Home', 'fa fa-home')`, `linkToLogout(...)`,
+  `linkToExitImpersonation(...)`, `section('Catalog')` and
+  `subMenu('Blog', 'fa fa-book')->setSubItems([...])`. There are no other
+  factories, and the parent of a submenu links to nothing. <!-- src/Config/MenuItem.php::linkToRoute; src/Config/MenuItem.php::linkToUrl; src/Config/MenuItem.php::subMenu; doc/dashboards.rst:658-663 -->
 - `linkToRoute()` to a Symfony route that does not exist renders a menu that
   looks fine and fails with `RouteNotFoundException` when clicked. Link only to
   routes that exist or that you create in the same change; never guess route
   names. <!-- src/Router/AdminUrlGenerator.php::generateUrl; src/EventListener/AdminRouterSubscriber.php::getSymfonyControllerFqcn -->
-- Every menu item accepts `setPermission()`, `setLinkTarget('_blank')`,
-  `setLinkRel()`, `setBadge()`, `setCssClass()`, `setQueryParameter()` and
-  `setTranslationParameters()`. The parent of a submenu links to nothing; call
-  `keepOpen()` on it to render it expanded. <!-- src/Config/Menu/MenuItemTrait.php::setPermission; src/Config/Menu/SubMenuItem.php::keepOpen; doc/dashboards.rst:658-663 -->
 - `index()` belongs to the dashboard interface: do not add arguments to it.
-  Inject services through the constructor. <!-- src/Contracts/Controller/DashboardControllerInterface.php::index; doc/dashboards.rst:301-305 -->
-- To open a CRUD page instead of a dashboard, redirect from `index()`:
-  `return $this->redirectToRoute('admin_product_index');`. <!-- src/Resources/skeleton/dashboard.tpl:14-19; doc/dashboards.rst:332-337 -->
-- `Dashboard::new()` options: `setTitle()`, `setFaviconPath()`, `setLocales()`,
-  `setTranslationDomain()`, `setDefaultColorScheme()`, `disableDarkMode()`,
-  `setTheme()`. EasyAdmin never translates the contents stored in entities. <!-- src/Config/Dashboard.php::setLocales; doc/dashboards.rst:868-872 -->
+  Inject services through the constructor. To open a CRUD page instead of a
+  dashboard, redirect from it:
+  `return $this->redirectToRoute('admin_product_index');`. <!-- src/Contracts/Controller/DashboardControllerInterface.php::index; doc/dashboards.rst:301-305; src/Resources/skeleton/dashboard.tpl:14-19; doc/dashboards.rst:332-337 -->
 <!-- rules:end -->
 
 ## CRUD controller
@@ -145,56 +158,39 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 - In `createIndexQueryBuilder()`, call `parent::createIndexQueryBuilder(...)`
   and use the literal root alias `entity` (`->andWhere('entity.owner = :user')`).
   Global Doctrine filters hide rows silently. <!-- src/Orm/EntityRepository.php::createQueryBuilder; doc/fields.rst:170-182; doc/crud.rst:485-490 -->
-- Link to admin pages like to any other Symfony route, with the names listed
-  by `php bin/console debug:router`: `$this->redirectToRoute('admin_product_detail', ['entityId' => $id])`
+- Link to admin pages like to any other Symfony route: `$this->redirectToRoute('admin_product_detail', ['entityId' => $id])`
   in PHP, `path('admin_product_edit', {entityId: post.id})` in Twig. Reserve
   `AdminUrlGeneratorInterface` (`$this->container->get(AdminUrlGeneratorInterface::class)`
-  inside controllers) for URLs that must be built dynamically from a controller
-  class or from the current request:
+  inside controllers) for URLs built dynamically:
   `->setController(ProductCrudController::class)->setAction(Action::DETAIL)->setEntityId($id)->generateUrl()`.
   `setId()` is not on the interface; use `setEntityId()`. With a controller and
   no action, the URL points to `index`. <!-- doc/crud.rst:905-934; src/Controller/AbstractCrudController.php::getSubscribedServices; src/Router/AdminUrlGeneratorInterface.php::setEntityId; src/Router/AdminUrlGenerator.php::generateUrl; doc/crud.rst:1025-1029 -->
-- In a custom action, always receive the current entity as a typed argument
-  (`public function publish(Product $product)`, with `{id}` in the route path;
-  see Actions below). Only when that is impossible, inject `AdminContext $context`
-  and read `$context->getEntity()->getInstance()`, which is nullable and
-  untyped. <!-- src/Dto/EntityDto.php::getInstance; doc/actions.rst:731-757 -->
 - Route names join controller and action names with underscores, so an entity
   whose name is a prefix of another can produce duplicate route names; the
-  exception names both controllers. New routes appear after `cache:clear`. <!-- src/Router/AdminRouteGenerator.php::getDuplicatedRouteNameErrorMessage; doc/crud.rst:80-88; doc/actions.rst:1020-1024 -->
-- Frequent `Crud` options: `setEntityLabelInSingular()`, `setEntityLabelInPlural()`,
-  `setPageTitle(Crud::PAGE_INDEX, 'Products')`, `setDefaultSort(['createdAt' => 'DESC'])`,
-  `setSearchFields([...])`, `setPaginatorPageSize()`, `setFormOptions()`,
-  `showEntityActionsInlined()`, `setDefaultRowAction()`. <!-- src/Config/Crud.php::setDefaultSort; src/Config/Crud.php::setDefaultRowAction -->
+  exception names both controllers. <!-- src/Router/AdminRouteGenerator.php::getDuplicatedRouteNameErrorMessage; doc/crud.rst:80-88; doc/actions.rst:1020-1024 -->
 <!-- rules:end -->
 
 ## Fields
 
 <!-- rules:start -->
 - Use the explicit field classes from `EasyCorp\Bundle\EasyAdminBundle\Field\`
-  with their static constructor: `TextField::new('name', 'Name')`. The
-  generic `Field::new()` exists but guesses nothing useful in
-  `configureFields()`. Valid options are the public methods of that class plus
-  every method of `FieldTrait`: `setLabel()`, `setHelp()`, `setColumns()`,
-  `setSortable()`, `setPermission()`, `setRequired()`, `setDisabled()`,
-  `setFormType()`, `setFormTypeOption()`, `setFormTypeOptions()`,
-  `setTemplatePath()`, `setCssClass()`, `addCssClass()`, `formatValue()`,
-  `prepend()`, `append()`, `setHtmlAttribute()`, `setTextAlign()`. Never
-  invent an option; check `references/api.md`. <!-- src/Field/FieldTrait.php::setHelp; src/Field/FieldTrait.php::setColumns; src/Field/FieldTrait.php::formatValue -->
+  with their static constructor (`TextField::new('name', 'Name')`), not the
+  generic `Field::new()`. The valid options of a field are the public methods
+  of its class plus those of `Field\FieldTrait` (`setLabel()`, `setHelp()`,
+  `setColumns()`, `setRequired()`, `setFormTypeOption()`, `formatValue()`...),
+  all listed in `references/api.md`. Never invent an option. <!-- src/Field/FieldTrait.php::setHelp; src/Field/FieldTrait.php::setColumns; src/Field/FieldTrait.php::formatValue -->
 - The page-visibility methods are exactly ten: `hideOnIndex()`,
   `hideOnDetail()`, `hideOnForm()`, `hideWhenCreating()`,
   `hideWhenUpdating()`, `onlyOnIndex()`, `onlyOnDetail()`, `onlyOnForms()`,
   `onlyWhenCreating()`, `onlyWhenUpdating()`. Note `hideOnForm` (singular) and
-  `onlyOnForms` (plural). `hideOnForms()`, `onlyOnForm()`, `hideOnAll()` and
-  `showOnIndex()` do not exist. <!-- src/Field/FieldTrait.php::hideOnForm; src/Field/FieldTrait.php::onlyOnForms -->
+  `onlyOnForms` (plural). <!-- src/Field/FieldTrait.php::hideOnForm; src/Field/FieldTrait.php::onlyOnForms -->
 - `onlyOn*()` replaces the whole page list: "show the id on index and detail"
   is `IdField::new('id')->hideOnForm()`, not `->onlyOnIndex()`. <!-- src/Field/FieldTrait.php::onlyOnIndex; src/Field/FieldTrait.php::hideOnForm -->
 - `MoneyField::new('price')` has no `currency` argument: call
   `->setCurrency('EUR')` or `->setCurrencyPropertyPath('currency')`, and
-  `->setStoredAsCents()` when the database stores integers. With
-  `->useMoneyObject()`, `setStoredAsCents()` has no effect. Without a currency
-  the page throws `You must define the currency for the "price" money field.`;
-  with a property path, that property cannot be null on the `new` page. <!-- src/Field/MoneyField.php::setCurrency; src/Field/MoneyField.php::setStoredAsCents; src/Field/Configurator/MoneyConfigurator.php::getCurrency; doc/fields/MoneyField.rst:119-122 -->
+  `->setStoredAsCents()` when the database stores integers (it has no effect
+  with `->useMoneyObject()`). Without a currency the page throws; with a
+  property path, that property cannot be null on the `new` page. <!-- src/Field/MoneyField.php::setCurrency; src/Field/MoneyField.php::setStoredAsCents; src/Field/Configurator/MoneyConfigurator.php::getCurrency; doc/fields/MoneyField.rst:119-122 -->
 - Form layout uses the static methods `FormField::addTab('Details')`,
   `FormField::addFieldset('Pricing')`, `FormField::addColumn(6)` and
   `FormField::addRow()`. `FormField::addPanel()` was removed in 5.0. The first
@@ -203,14 +199,13 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
   `renderAsBadges(['draft' => 'warning', 'published' => 'success'])` (types:
   success, warning, danger, info, primary, secondary, light, dark),
   `renderExpanded()`, `allowMultipleChoices()`. Its `autocomplete()` takes no
-  arguments. `setBadgeVariant('dot')` overrides `Crud::setBadgeVariant()` for this field only (also in Boolean, Association, Collection, Currency, Language, Locale fields). <!-- src/Field/ChoiceField.php::setChoices; src/Field/ChoiceField.php::VALID_BADGE_TYPES; src/Field/ChoiceField.php::autocomplete; src/Field/ChoiceField.php::setBadgeVariant; src/Field/BooleanField.php::setBadgeVariant -->
+  arguments. `setBadgeVariant('dot')` overrides `Crud::setBadgeVariant()` for
+  this field only. <!-- src/Field/ChoiceField.php::setChoices; src/Field/ChoiceField.php::VALID_BADGE_TYPES; src/Field/ChoiceField.php::autocomplete; src/Field/ChoiceField.php::setBadgeVariant; src/Field/BooleanField.php::setBadgeVariant -->
 - `AssociationField`: `autocomplete()` requires a CRUD controller for the
   related entity; `setCrudController(CategoryCrudController::class)`;
   `setQueryBuilder(fn (QueryBuilder $qb) => $qb->andWhere('entity.active = true'))`
-  takes a `\Closure`; `renderAsEmbeddedForm()`; `setPreferredChoices()` does
-  not work together with `autocomplete()`. <!-- src/Field/AssociationField.php::autocomplete; src/Field/AssociationField.php::setQueryBuilder; doc/fields/AssociationField.rst:269-273 -->
-- `BooleanField::new('active')->renderAsSwitch()` toggles the value from the
-  index page; that toggle is protected by the `ea-toggle` CSRF token. <!-- src/Field/BooleanField.php::renderAsSwitch; src/Field/BooleanField.php::CSRF_TOKEN_NAME; src/Controller/AbstractCrudController.php::edit -->
+  takes a `\Closure`; `setPreferredChoices()` does not work together with
+  `autocomplete()`. <!-- src/Field/AssociationField.php::autocomplete; src/Field/AssociationField.php::setQueryBuilder; doc/fields/AssociationField.rst:269-273 -->
 - `ImageField` and `FileField`: `setBasePath('uploads/images')`,
   `setUploadDir('public/uploads/images')`,
   `setUploadedFileNamePattern('[randomhash].[extension]')`. The flags are
@@ -223,8 +218,7 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 - Similar names differ across fields: `setNumDecimals()` (Number, Money,
   Percent) versus `setNumOfRows()` (Textarea, TextEditor, CodeEditor);
   `setStoredAsCents()` (Money), `setStoredAsFractional()` (Percent),
-  `setStoredAsString()` (Number); `includeOnly()` and `remove()` exist only on
-  Country, Language and Locale fields. See `references/traps.md`. <!-- src/Field/MoneyField.php::setNumDecimals; src/Field/TextareaField.php::setNumOfRows; src/Field/PercentField.php::setStoredAsFractional; src/Field/CountryField.php::includeOnly -->
+  `setStoredAsString()` (Number). More in `references/traps.md`. <!-- src/Field/MoneyField.php::setNumDecimals; src/Field/TextareaField.php::setNumOfRows; src/Field/PercentField.php::setStoredAsFractional -->
 <!-- rules:end -->
 
 ## Actions and permissions
@@ -243,12 +237,11 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 - `{id}` (or `{entityId}`) in the path is what makes a custom action an
   entity action: the route carries the entity id and Symfony injects the typed
   entity (`public function publish(Product $product)`). Without the
-  placeholder the route has no entity parameter and the method cannot receive
-  the entity. Without DoctrineBundle's `controller_resolver.auto_mapping`, add
-  `#[MapEntity]` to the argument; with `{entityId}` use the mapped form
-  `{entityId:product.id}`. EasyAdmin throws for a missing placeholder only
-  when the route path of the built-in `edit`, `detail` or `delete` action is
-  customized. <!-- src/Router/AdminRouteGenerator.php:648-651; src/Router/AdminRouteGenerator.php::getEntityIdPlaceholderName; doc/actions.rst:744-757 -->
+  placeholder the method cannot receive the entity. Without DoctrineBundle's
+  `controller_resolver.auto_mapping`, add `#[MapEntity]` to the argument; with
+  `{entityId}` use the mapped form `{entityId:product.id}`. Only when a typed
+  argument is impossible, inject `AdminContext $context` and read
+  `$context->getEntity()->getInstance()`, which is nullable and untyped. <!-- src/Router/AdminRouteGenerator.php:648-651; src/Router/AdminRouteGenerator.php::getEntityIdPlaceholderName; doc/actions.rst:744-757; src/Dto/EntityDto.php::getInstance -->
 - Batch actions also need `#[AdminRoute('/approve', name: 'approve', options: ['methods' => ['POST']])]`
   on the method, receive `BatchActionDto $batchActionDto`
   (`getEntityIds()`, `getEntityFqcn()`, `getCsrfToken()`), are created with
@@ -257,29 +250,26 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
   the index page. <!-- src/Factory/ActionFactory.php::processGlobalActions; src/Dto/BatchActionDto.php::getEntityIds; src/Config/Actions.php::addBatchAction; doc/actions.rst:825-845 -->
 - EasyAdmin adds no CSRF token to a custom action rendered with
   `->renderAsForm()`: the `<form method="POST">` holds only the button. Only
-  the built-in delete action (`ea-delete`, through a shared confirmation form),
-  batch actions and the boolean toggle (`ea-toggle`) carry tokens. Never validate a
-  token you did not put there. To protect a custom action, add the token to
-  the URL with `->linkToUrl(fn (Product $product) => ...)` (the closure
-  receives the entity) or `->linkToRoute('app_publish', fn (Product $product) => ['id' => $product->getId(), 'token' => ...])`,
-  and check it with `$this->isCsrfTokenValid('publish'.$product->getId(), $request->query->get('token'))`.
-  Full recipe in `references/patterns.md`. <!-- templates/components/Button.html.twig:29-38; templates/crud/includes/_action_confirmation_modal.html.twig:5; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; src/Factory/ActionFactory.php::generateActionUrl; tests/Functional/Actions/CustomActionCsrfTest.php -->
+  the built-in delete action (`ea-delete`), batch actions and the boolean
+  toggle (`ea-toggle`) carry tokens. Never validate a token you did not put
+  there. To protect a custom action, add the token to the URL with
+  `->linkToRoute('app_publish', fn (Product $product) => ['id' => $product->getId(), 'token' => ...])`
+  (the closure receives the entity) and check it with
+  `$this->isCsrfTokenValid('publish'.$product->getId(), $request->query->get('token'))`.
+  Full recipe in `references/patterns.md`. <!-- templates/components/Button.html.twig:29-38; templates/crud/includes/_action_confirmation_modal.html.twig:5; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; src/Field/BooleanField.php::CSRF_TOKEN_NAME; src/Factory/ActionFactory.php::generateActionUrl; tests/Functional/Actions/CustomActionCsrfTest.php -->
 - Permissions belong to the `Actions` collection, not to `Action`:
   `$actions->setPermission('publish', 'ROLE_EDITOR')` and
   `$actions->setPermission(Action::DELETE, 'ROLE_ADMIN')`.
   `Action::setPermission()` does not exist. Both accept a string role or a
   Symfony `Expression`. <!-- src/Config/Actions.php::setPermission; src/Config/Actions.php::setPermissions; doc/security.rst:227-251 -->
 - Rendering methods are `renderAsLink()`, `renderAsButton()` and
-  `renderAsForm()`; the `displayAs*()` names were removed in 5.0. Styling:
-  `asPrimaryAction()`, `asSuccessAction()`, `asWarningAction()`,
-  `asDangerAction()`, `asInfoAction()`, `asTextLink()`, and
-  `askConfirmation()` for a confirmation modal. Groups use `ActionGroup::new()`
-  with `asPrimaryActionGroup()` and friends. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; src/Config/ActionGroup.php::asPrimaryActionGroup; UPGRADE.md:361-377 -->
-- `reorder()` disables automatic ordering; `setCssClass()` drops the default
-  `.btn-*` and `.action-<name>` classes (and with them the selectors used by the
-  test helpers), `addCssClass()` keeps them; `displayIf()` on a global action
-  receives no entity; removing or disabling `Action::DELETE` also removes
-  `Action::BATCH_DELETE`. <!-- src/Config/Actions.php::remove; src/Config/Actions.php::disable; src/Factory/ActionFactory.php::applyCssClasses; doc/actions.rst:392-395; doc/actions.rst:664-669; doc/actions.rst:205-208 -->
+  `renderAsForm()`; the `displayAs*()` names were removed in 5.0. Style them
+  with `asPrimaryAction()`, `asDangerAction()` (also Success, Warning, Info)
+  or `asTextLink()`, and add `askConfirmation()` for a confirmation modal. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; UPGRADE.md:361-377 -->
+- `setCssClass()` drops the default `.btn-*` and `.action-<name>` classes (and
+  with them the selectors used by the test helpers), `addCssClass()` keeps
+  them; `displayIf()` on a global action receives no entity; removing or
+  disabling `Action::DELETE` also removes `Action::BATCH_DELETE`. <!-- src/Config/Actions.php::remove; src/Config/Actions.php::disable; src/Factory/ActionFactory.php::applyCssClasses; doc/actions.rst:664-669; doc/actions.rst:205-208 -->
 - `autocomplete` and `renderFilters` are built-in action names: do not use
   them for custom actions. <!-- src/Router/AdminRouteGenerator.php::BUILT_IN_ACTION_NAMES -->
 <!-- rules:end -->
@@ -289,10 +279,9 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 <!-- rules:start -->
 - `configureFilters(Filters $filters)` adds either a property name
   (`->add('category')`) or a filter object (`->add(EntityFilter::new('category')->canSelectMultiple())`).
-  By property name, EasyAdmin picks `EntityFilter` for associations,
-  `BooleanFilter` for booleans, `DateTimeFilter` for date and time types,
-  `NumericFilter` for numeric types, `ArrayFilter` for array types and
-  `TextFilter` for everything else, also for nested paths (`->add('author.name')`). <!-- src/Config/Filters.php::add; src/Factory/FilterFactory.php::guessFilterClass -->
+  By property name, EasyAdmin picks the filter class from the Doctrine type
+  (`EntityFilter` for associations, `TextFilter` as the fallback), also for
+  nested paths (`->add('author.name')`). <!-- src/Config/Filters.php::add; src/Factory/FilterFactory.php::guessFilterClass -->
 - Filter options have no `set` prefix: `canSelectMultiple()`,
   `renderExpanded()`, `includeOnly()`, `remove()`, `preferredChoices()` and
   `EntityFilter::autocomplete()`; `ChoiceFilter` needs `setChoices()`. <!-- src/Filter/EntityFilter.php::autocomplete; src/Filter/ChoiceFilter.php::setChoices; src/Filter/CountryFilter.php::preferredChoices -->
@@ -303,8 +292,7 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 <!-- rules:start -->
 - `Crud::setEntityPermission('ROLE_EDITOR')` is evaluated per entity as
   `is_granted($permission, $entity)`: the index page hides the rows the user
-  cannot see (and shows a notice that some results are hidden), and the
-  detail, edit, new, delete and batch delete actions throw
+  cannot see, and the detail, edit, new, delete and batch delete actions throw
   `InsufficientEntityPermissionException`. It does not restrict custom actions
   or the index page itself. <!-- src/Controller/AbstractCrudController.php::detail; src/Controller/AbstractCrudController.php::edit; src/Controller/AbstractCrudController.php::new; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; doc/security.rst:243-274; tests/Functional/Security/EntityPermissionAccessTest.php; tests/Functional/Security/BatchDeleteAccessTest.php -->
 - Action permissions and `disable()` are checked per action, on the button and on the URL.
@@ -316,9 +304,9 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 - `MenuItem::setPermission()` only hides the menu item; the linked pages stay
   reachable unless their actions are protected too. <!-- src/Config/Menu/MenuItemTrait.php::setPermission; doc/security.rst:99-104 -->
 - Field-level access: `IntegerField::new('sales')->setPermission('ROLE_ADMIN')`
-  hides the field on every page for other users. <!-- src/Field/FieldTrait.php::setPermission; doc/security.rst:233-249 -->
-- Every `setPermission()` accepts a
-  `new Expression('"ROLE_EDITOR" in role_names')` besides a role string. <!-- src/Config/Menu/MenuItemTrait.php::setPermission; doc/security.rst:283-303 -->
+  hides the field on every page for other users. Every `setPermission()`
+  accepts a `new Expression('"ROLE_EDITOR" in role_names')` besides a role
+  string. <!-- src/Field/FieldTrait.php::setPermission; doc/security.rst:233-249; doc/security.rst:283-303 -->
 <!-- rules:end -->
 
 ## Functional tests
@@ -326,17 +314,14 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 <!-- rules:start -->
 - Extend `EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase` and
   implement the two `protected` abstract methods `getControllerFqcn()` and
-  `getDashboardFqcn()`. <!-- src/Test/AbstractCrudTestCase.php::getControllerFqcn; src/Test/AbstractCrudTestCase.php::getDashboardFqcn -->
-- `parent::setUp()` creates `$this->client`, `$this->entityManager` and
-  `$this->adminUrlGenerator`: do not call `static::createClient()` again and
-  do not redeclare those properties. <!-- src/Test/AbstractCrudTestCase.php::setUp -->
-- URL helpers are `protected` and come from traits: `generateIndexUrl()`,
-  `generateNewFormUrl()`, `generateEditFormUrl($id)`, `generateDetailUrl($id)`
-  and `getCrudUrl('publish', $id)` for custom actions. <!-- src/Test/Trait/CrudTestUrlGeneration.php::generateIndexUrl; src/Test/Trait/CrudTestUrlGeneration.php::getCrudUrl -->
-- Assertions: `assertIndexColumnExists('name')`,
-  `assertIndexPageEntityCount(3)`, `assertIndexFullEntityCount(42)`,
-  `assertIndexEntityActionExists('publish', $entityId)` (the entity id is
-  required), `assertGlobalActionExists('new')`, `assertFormFieldExists('name')`. <!-- src/Test/Trait/CrudTestIndexAsserts.php::assertIndexEntityActionExists; src/Test/Trait/CrudTestFormAsserts.php::assertFormFieldExists -->
+  `getDashboardFqcn()`. `parent::setUp()` creates `$this->client`,
+  `$this->entityManager` and `$this->adminUrlGenerator`: do not call
+  `static::createClient()` again and do not redeclare those properties. <!-- src/Test/AbstractCrudTestCase.php::getControllerFqcn; src/Test/AbstractCrudTestCase.php::getDashboardFqcn; src/Test/AbstractCrudTestCase.php::setUp -->
+- Build URLs with the `protected` helpers (`generateIndexUrl()`,
+  `generateEditFormUrl($id)`, `getCrudUrl('publish', $id)` for custom actions)
+  and never hardcode paths. `assertIndexEntityActionExists('publish', $entityId)`
+  requires the entity id. The other helpers are in the `Test\Trait\*` sections
+  of `references/api.md`. <!-- src/Test/Trait/CrudTestUrlGeneration.php::generateIndexUrl; src/Test/Trait/CrudTestUrlGeneration.php::getCrudUrl; src/Test/Trait/CrudTestIndexAsserts.php::assertIndexEntityActionExists -->
 - The base class does not log anyone in and loads no fixtures: log in with
   `$this->client->loginUser($user)` and create data through
   `$this->entityManager` before requesting pages. <!-- src/Test/AbstractCrudTestCase.php::setUp; doc/tests.rst:45-50 -->
@@ -356,66 +341,18 @@ the same pages are installed locally under `vendor/easycorp/easyadmin-bundle/doc
 - Custom pages extend `@EasyAdmin/page/content.html.twig`, not `@EasyAdmin/layout.html.twig`: only the former styles the
   HTML of the `main` block (headings, lists, tables, blue links). Elsewhere, add the `ea-prose` class (`ea-not-prose` opts out).
   Don't write CSS for those elements: unlayered CSS beats these styles. <!-- templates/page/content.html.twig; doc/design.rst:718-821 -->
-- Use the shipped Twig components in custom templates: `<twig:ea:Button>`,
-  `<twig:ea:Badge>`, `<twig:ea:Alert>`, `<twig:ea:Icon>`, `<twig:ea:Modal>`,
-  `<twig:ea:Pagination>`, `<twig:ea:Switch>`, `<twig:ea:Tabs>`,
-  `<twig:ea:ActionMenu>`, `<twig:ea:Flag>`, `<twig:ea:Sidebar>`. Icon names are FontAwesome 6 (`fa fa-box`).
-  Badges take `color="success"` and `variant="light|solid|outline|dot"` (default: `Crud::setBadgeVariant()`); buttons take `color="primary"` and `variant="solid|outline|light|ghost|link"` (never a color in `variant`). <!-- templates/components/Button.html.twig; templates/components/Badge.html.twig; doc/components.rst; src/Twig/Component/Badge.php::mount; src/Config/Crud.php::setBadgeVariant; src/Twig/Component/Button.php::mount -->
+- Use the shipped Twig components in custom templates instead of raw
+  Bootstrap markup (`<twig:ea:Button>`, `<twig:ea:Badge>`, `<twig:ea:Alert>`,
+  `<twig:ea:Icon>`, `<twig:ea:Modal>` and the others in `doc/components.rst`).
+  Badges take `color="success"` and `variant="light|solid|outline|dot"`;
+  buttons take `color="primary"` and `variant="solid|outline|light|ghost|link"`
+  (never a color in `variant`). Icon names are FontAwesome 6 (`fa fa-box`). <!-- templates/components/Button.html.twig; templates/components/Badge.html.twig; doc/components.rst; src/Twig/Component/Badge.php::mount; src/Twig/Component/Button.php::mount -->
 - Lifecycle hooks: override `persistEntity()`, `updateEntity()`,
-  `deleteEntity()` or `createEntity()` in the controller, or subscribe to
-  `BeforeEntityPersistedEvent`, `AfterEntityPersistedEvent`,
-  `BeforeEntityUpdatedEvent`, `AfterEntityUpdatedEvent`,
-  `BeforeEntityDeletedEvent`, `AfterEntityDeletedEvent`,
-  `AfterEntityBuiltEvent`, `AfterEntitySearchEvent`, `BeforeCrudActionEvent`
-  and `AfterCrudActionEvent` by class name. Only the `*CrudActionEvent` events
-  can return a `Response`. <!-- src/Event/BeforeEntityPersistedEvent.php; src/Event/AfterEntitySearchEvent.php; src/Event/AfterCrudActionEvent.php::setResponse; doc/events.rst:15-30; doc/events.rst:73-78 -->
+  `deleteEntity()` or `createEntity()` in the controller, or subscribe by
+  class name to the events in `vendor/easycorp/easyadmin-bundle/src/Event/`
+  (`BeforeEntityPersistedEvent`, `BeforeCrudActionEvent`...). Only the `*CrudActionEvent` events can return a
+  `Response`. <!-- src/Event/BeforeEntityPersistedEvent.php; src/Event/AfterCrudActionEvent.php::setResponse; doc/events.rst:15-30; doc/events.rst:73-78 -->
 <!-- rules:end -->
-
-## Legacy: what changed since EasyAdmin 4
-
-Code and tutorials written for 4.x need these replacements. All of them are
-described in `vendor/easycorp/easyadmin-bundle/UPGRADE.md`.
-
-| EasyAdmin 4 | EasyAdmin 5 |
-|---|---|
-| `MenuItem::linkToCrud('Products', 'fa fa-box', Product::class)` | `MenuItem::linkTo(ProductCrudController::class, 'Products', 'fa fa-box')` |
-| `#[Route('/admin', name: 'admin')]` on `index()` | `#[AdminDashboard(routePath: '/admin', routeName: 'admin')]` on the class |
-| Public method + `linkToCrudAction('foo')` | The same, plus `#[AdminRoute]` on the method |
-| `#[AdminCrud]`, `#[AdminAction]` | `#[AdminRoute]` on the class or the method |
-| `displayAsLink()`, `displayAsButton()`, `displayAsForm()` | `renderAsLink()`, `renderAsButton()`, `renderAsForm()` |
-| `FormField::addPanel()` | `FormField::addFieldset()` |
-| URLs with `?crudAction=...&crudControllerFqcn=...` | Pretty URLs from `config/routes/easyadmin.yaml`, always |
-| `{{ ea.dashboardTitle }}` | `{{ ea().dashboardTitle }}` |
-| `$context->getReferrer()`, `$batchActionDto->getReferrerUrl()` | Removed; redirect to a generated admin URL or read the `Referer` header |
-| `$context->getCrudControllers()` | `$context->getAdminControllers()` |
-| `CacheKey::ENTITY_FQCN_TO_CRUD_FQCN` | `array_flip()` of `CacheKey::CRUD_FQCN_TO_ENTITY_FQCN` |
-| No PHPDoc on controllers | `/** @extends AbstractCrudController<Product> */` |
-
-`linkToCrudAction()` itself still exists: 4.x code that uses it compiles and
-fails at render time until the target method gets `#[AdminRoute]`.
-<!-- UPGRADE.md:136-155; UPGRADE.md:247-259; UPGRADE.md:245-500 -->
-
-## If you see this error, do this
-
-| Message contains | Fix |
-|---|---|
-| `must apply the #[AdminDashboard] attribute` | Add `#[AdminDashboard(routePath: '/admin', routeName: 'admin')]` to the dashboard class. |
-| `missing either the "routePath" or "routeName" arguments` | Pass both arguments to `#[AdminDashboard]`. |
-| `is missing the #[AdminRoute] attribute` | Add `#[AdminRoute('/{id}/<action>', name: '<action>')]` to the controller method named in the message. |
-| `is missing the "{id}" or "{entityId}" placeholder` | Add `{id}` to the customized route path of that built-in `edit`, `detail` or `delete` action. |
-| `the only allowed HTTP methods are` | Use only GET, POST, PUT, PATCH, DELETE, HEAD in `options: ['methods' => [...]]`. |
-| `would create an admin route called "..." which already exists` | Change the `name` argument of one of the two `#[AdminRoute]` attributes. |
-| `cannot define both "allowedControllers" and "deniedControllers"` | Keep one of the two `#[AdminDashboard]` arguments. |
-| `You must define the currency for the` | Add `setCurrency('EUR')` or `setCurrencyPropertyPath()` to that `MoneyField`. |
-| `Batch actions can be added only to the "index" page` | Add the batch action with `addBatchAction()`, not with `add(Crud::PAGE_DETAIL, ...)`. |
-| `InsufficientEntityPermissionException` | Expected: the user fails `is_granted()` for that entity under `setEntityPermission()`. Log in with the right role or change the voter. |
-| `Class ... extends generic class ... but does not specify its types` (PHPStan) | Add `/** @extends AbstractCrudController<Entity> */`. |
-
-## Project conventions
-
-If this repository's `AGENTS.md` or `CLAUDE.md` has a section titled
-`## EasyAdmin conventions`, apply it on top of these rules (base controllers,
-naming, permission strategy, forbidden fields, required tests).
 
 <!-- skill-check
 must_exist: EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem::linkTo

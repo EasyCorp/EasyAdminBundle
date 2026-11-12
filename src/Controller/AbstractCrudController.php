@@ -252,11 +252,19 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                 throw new MethodNotAllowedHttpException(['PATCH']);
             }
 
-            if (!$this->isCsrfTokenValid(BooleanField::CSRF_TOKEN_NAME, $context->getRequest()->query->get('csrfToken'))) {
-                throw new InvalidCsrfTokenException();
+            $fieldName = $context->getRequest()->query->get('fieldName');
+            $csrfToken = $context->getRequest()->query->get('csrfToken');
+
+            // the token ID includes the CRUD controller and the property, so the token
+            // of a switch is not valid for other fields or other CRUD controllers
+            if (!$this->isCsrfTokenValid(BooleanField::CSRF_TOKEN_NAME.'-'.$context->getCrud()->getControllerFqcn().'-'.$fieldName, $csrfToken)) {
+                if (!$this->isCsrfTokenValid(BooleanField::CSRF_TOKEN_NAME, $csrfToken)) {
+                    throw new InvalidCsrfTokenException();
+                }
+
+                @trigger_deprecation('easycorp/easyadmin-bundle', '5.10.1', 'Using the "%s" CSRF token ID in boolean switches is deprecated and it will not be valid in EasyAdmin 6.0. Use "%s-<crud-controller-fqcn>-<property-name>" instead.', BooleanField::CSRF_TOKEN_NAME, BooleanField::CSRF_TOKEN_NAME);
             }
 
-            $fieldName = $context->getRequest()->query->get('fieldName');
             $newValue = 'true' === mb_strtolower($context->getRequest()->query->get('newValue'));
 
             try {
@@ -402,8 +410,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $csrfToken = $context->getRequest()->request->has('token')
             ? (string) $context->getRequest()->request->get('token')
             : null;
-        if (!$this->isCsrfTokenValid('ea-delete', $csrfToken)) {
-            return $this->redirectToRoute($context->getDashboardRouteName());
+        // the token ID includes the CRUD controller, so the token printed
+        // by a CRUD controller is not valid for other CRUD controllers
+        if (!$this->isCsrfTokenValid('ea-delete-'.$context->getCrud()->getControllerFqcn(), $csrfToken)) {
+            if (!$this->isCsrfTokenValid('ea-delete', $csrfToken)) {
+                return $this->redirectToRoute($context->getDashboardRouteName());
+            }
+
+            @trigger_deprecation('easycorp/easyadmin-bundle', '5.10.1', 'Using the "ea-delete" CSRF token ID in the delete action is deprecated and it will not be valid in EasyAdmin 6.0. Use "ea-delete-<crud-controller-fqcn>" instead.');
         }
 
         /** @var TEntity $entityInstance */

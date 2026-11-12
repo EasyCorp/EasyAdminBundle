@@ -85,7 +85,7 @@ replacement of each one is in `references/traps.md` and the full explanation
 in `vendor/easycorp/easyadmin-bundle/UPGRADE.md`. `linkToCrudAction()` itself
 still exists: 4.x code that uses it compiles and fails at render time until
 the target method gets `#[AdminRoute]`.
-<!-- UPGRADE.md:176-195; UPGRADE.md:287-299; UPGRADE.md:285-540 -->
+<!-- UPGRADE.md:214-233; UPGRADE.md:325-337; UPGRADE.md:323-578 -->
 
 ## Project conventions
 
@@ -126,7 +126,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - Link CRUD controllers with
   `MenuItem::linkTo(ProductCrudController::class, 'Products', 'fa fa-box')`:
   controller class first, then label, then icon. `MenuItem::linkToCrud()` was
-  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:314-330 -->
+  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:352-368 -->
 - The other factories put the label first:
   `MenuItem::linkToRoute('Reports', 'fa fa-chart-bar', 'app_reports', ['year' => 2026])`,
   `linkToUrl('Website', 'fa fa-globe', 'https://example.com')`,
@@ -149,7 +149,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 <!-- rules:start -->
 - Declare `public static function getEntityFqcn(): string` (the base class
   does not) and add `/** @extends AbstractCrudController<Product> */` above
-  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:523-540 -->
+  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:561-578 -->
 - Overrides must keep the interface signatures: `createEntity(string $entityFqcn): ?object`
   (overrides may keep `: object`),
   `persistEntity(EntityManagerInterface $entityManager, object $entityInstance): void`,
@@ -194,7 +194,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - Form layout uses the static methods `FormField::addTab('Details')`,
   `FormField::addFieldset('Pricing')`, `FormField::addColumn(6)` and
   `FormField::addRow()`. `FormField::addPanel()` was removed in 5.0. The first
-  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:438-450 -->
+  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:476-488 -->
 - `ChoiceField`: `setChoices(['Draft' => 'draft'])`,
   `renderAsBadges(['draft' => 'warning', 'published' => 'success'])` (types:
   success, warning, danger, info, primary, secondary, light, dark),
@@ -250,8 +250,8 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   the index page. <!-- src/Factory/ActionFactory.php::processGlobalActions; src/Dto/BatchActionDto.php::getEntityIds; src/Config/Actions.php::addBatchAction; doc/actions.rst:825-845 -->
 - EasyAdmin adds no CSRF token to a custom action rendered with
   `->renderAsForm()`: the `<form method="POST">` holds only the button. Only
-  the built-in delete action (`ea-delete`), batch actions and the boolean
-  toggle (`ea-toggle`) carry tokens. Never validate a token you did not put
+  the built-in delete action (`ea-delete-<controllerFqcn>`), batch actions and
+  the boolean toggle carry tokens. Never validate a token you did not put
   there. To protect a custom action, add the token to the URL with
   `->linkToRoute('app_publish', fn (Product $product) => ['id' => $product->getId(), 'token' => ...])`
   (the closure receives the entity) and check it with
@@ -265,7 +265,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - Rendering methods are `renderAsLink()`, `renderAsButton()` and
   `renderAsForm()`; the `displayAs*()` names were removed in 5.0. Style them
   with `asPrimaryAction()`, `asDangerAction()` (also Success, Warning, Info)
-  or `asTextLink()`, and add `askConfirmation()` for a confirmation modal. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; UPGRADE.md:401-417 -->
+  or `asTextLink()`, and add `askConfirmation()` for a confirmation modal. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; UPGRADE.md:439-455 -->
 - `setCssClass()` drops the default `.btn-*` and `.action-<name>` classes (and
   with them the selectors used by the test helpers), `addCssClass()` keeps
   them; `displayIf()` on a global action receives no entity; removing or
@@ -331,13 +331,13 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 
 <!-- rules:start -->
 - The `ea` Twig global was removed; call the `ea()` function, which returns
-  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:176-195 -->
+  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:214-233 -->
 - Override page templates with `Crud::overrideTemplate('crud/index', 'admin/product/index.html.twig')`
   and field templates with `->setTemplatePath()`. The `new` and `edit` pages render form fields
   through Symfony form themes (`Crud::addFormTheme()`), not through field templates. <!-- src/Config/Crud.php::overrideTemplate; src/Config/Crud.php::addFormTheme; src/Field/FieldTrait.php::setTemplatePath; doc/fields.rst:1066-1069 -->
 - Backend CSS lives in cascade layers (`vendor`, `ea`, `ea-overrides`), so
   unlayered custom CSS wins without `!important`. Override design tokens on
-  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:237-261; doc/design.rst:314-316; doc/design.rst:1400-1404 -->
+  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:275-299; doc/design.rst:314-316; doc/design.rst:1400-1404 -->
 - Custom pages extend `@EasyAdmin/page/content.html.twig`, not `@EasyAdmin/layout.html.twig`: only the former styles the
   HTML of the `main` block (headings, lists, tables, blue links). Elsewhere, add the `ea-prose` class (`ea-not-prose` opts out).
   Don't write CSS for those elements: unlayered CSS beats these styles. <!-- templates/page/content.html.twig; doc/design.rst:718-821 -->
@@ -424,11 +424,11 @@ source_contains: src/Router/AdminRouteGenerator.php | 'autocomplete', 'renderFil
 source_contains: src/Router/AdminUrlGenerator.php | $this->set(EA::CRUD_ACTION, Action::INDEX);
 source_contains: src/Field/Configurator/MoneyConfigurator.php | You must define the currency for the
 source_contains: src/Controller/AbstractCrudController.php | throw new InsufficientEntityPermissionException($context);
-source_contains: src/Controller/AbstractCrudController.php | isCsrfTokenValid('ea-delete'
+source_contains: src/Controller/AbstractCrudController.php | isCsrfTokenValid('ea-delete-'
 source_contains: src/Controller/AbstractCrudController.php | isCsrfTokenValid(BooleanField::CSRF_TOKEN_NAME
 source_contains: src/Orm/EntityRepository.php | ->from($entityDto->getFqcn(), 'entity')
 source_contains: src/Config/Actions.php | $this->dto->removeAction($pageName, Action::BATCH_DELETE);
-source_contains: templates/crud/includes/_action_confirmation_modal.html.twig | csrf_token('ea-delete')
+source_contains: templates/crud/includes/_action_confirmation_modal.html.twig | csrf_token('ea-delete-'
 source_contains: templates/page/content.html.twig | {% block body_class 'page-content' %}
 source_contains: doc/security.rst | is_granted($permission, $item)
 source_contains: doc/actions.rst | controller_resolver.auto_mapping

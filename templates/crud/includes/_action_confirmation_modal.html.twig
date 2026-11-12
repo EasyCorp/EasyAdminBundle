@@ -1,7 +1,7 @@
 {# Hidden form for POST-based actions (like DELETE) with CSRF protection #}
 <form class="d-none" method="post" id="action-confirmation-form">
     {% guard function csrf_token %}
-        <input type="hidden" name="token" value="{{ csrf_token('ea-delete') }}" />
+        <input type="hidden" name="token" value="{{ csrf_token('ea-delete-' ~ (ea().crud.controllerFqcn ?? '')) }}" />
     {% endguard %}
 </form>
 

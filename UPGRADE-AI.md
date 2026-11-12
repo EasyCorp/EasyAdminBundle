@@ -5,7 +5,7 @@ This guide is for AI agents. If you are a human, read [UPGRADE.md](UPGRADE.md) i
 
 ## EasyAdmin 5.10.1
 
-Use this prompt to upgrade backends for the string callable and route option changes made in EasyAdmin 5.10.1.
+Use this prompt to upgrade backends for the string callable, route option and CSRF token changes made in EasyAdmin 5.10.1.
 
 <upgrade-prompt version="5.10.1">
 
@@ -15,8 +15,12 @@ file name pattern or the name of a method of the collection entry). It also appl
 the `options` argument of `#[AdminRoute]` (`host`, `schemes`, `condition`,
 `requirements`, `defaults`, `locale`, `format`, `utf8`, `stateless`, `options`) to
 the routes of CRUD controllers. Before, CRUD controllers ignored all of them except
-the `methods` option of actions. Search the PHP code of the project and apply what's
-relevant. Skip what doesn't apply.
+the `methods` option of actions. It also changes the IDs of the CSRF tokens of the
+delete action and of the boolean switches of the index page: `ea-delete` ->
+`ea-delete-<CRUD controller FQCN>` and `ea-toggle` ->
+`ea-toggle-<CRUD controller FQCN>-<property name>`. EasyAdmin still accepts tokens
+generated with the old IDs, but they are deprecated. Search the project (templates,
+PHP, JavaScript) and apply what's relevant. Skip what doesn't apply.
 
 ## Required changes
 
@@ -62,6 +66,27 @@ relevant. Skip what doesn't apply.
    class ProductCrudController extends AbstractCrudController
    ```
 
+3. Find PHP code that checks the token of the delete action or of the confirmation
+   modal with the old ID (e.g. a `delete()` method that doesn't call
+   `parent::delete()`, or a custom action that reads the `token` field):
+
+   ```php
+   // before
+   $this->isCsrfTokenValid('ea-delete', $token);
+   // after
+   $this->isCsrfTokenValid('ea-delete-'.$context->getCrud()->getControllerFqcn(), $token);
+   ```
+
+4. Find PHP code that checks the token of the boolean switches with the old ID (e.g.
+   an `edit()` method that doesn't call `parent::edit()`):
+
+   ```php
+   // before
+   $this->isCsrfTokenValid(BooleanField::CSRF_TOKEN_NAME, $csrfToken);
+   // after
+   $this->isCsrfTokenValid(BooleanField::CSRF_TOKEN_NAME.'-'.$context->getCrud()->getControllerFqcn().'-'.$fieldName, $csrfToken);
+   ```
+
 ## Optional changes
 
 1. Find `#[AdminRoute(` attributes with `'methods'` inside `options:` applied to
@@ -83,6 +108,27 @@ relevant. Skip what doesn't apply.
    {
        #[AdminRoute('/{id}/publish', name: 'publish', options: ['methods' => ['POST']])]
        public function publish(Product $product): Response
+   ```
+
+2. Find templates and code that generate the token of the delete action with the old
+   ID (e.g. overrides of the `delete_form` block or of
+   `@EasyAdmin/crud/includes/_action_confirmation_modal.html.twig`). Add the FQCN of
+   the CRUD controller that runs the delete action:
+
+   ```twig
+   {# before #} {{ csrf_token('ea-delete') }}
+   {# after #}  {{ csrf_token('ea-delete-' ~ ea().crud.controllerFqcn) }}
+   ```
+
+3. Find code that generates the token of the boolean switches with `'ea-toggle'` or
+   `BooleanField::CSRF_TOKEN_NAME`. Add the FQCN of the CRUD controller and the name
+   of the property:
+
+   ```php
+   // before
+   $csrfTokenManager->getToken(BooleanField::CSRF_TOKEN_NAME);
+   // after
+   $csrfTokenManager->getToken(BooleanField::CSRF_TOKEN_NAME.'-'.$crudControllerFqcn.'-'.$propertyName);
    ```
 
 </upgrade-prompt>

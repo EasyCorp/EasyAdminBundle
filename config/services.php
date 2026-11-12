@@ -477,6 +477,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, tagged_locator('flysystem.storage', 'storage'))
 
         ->set(IntegerConfigurator::class)
+            ->arg(0, service(IntlFormatter::class))
 
         ->set(LanguageConfigurator::class)
 

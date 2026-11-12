@@ -4,16 +4,20 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Intl\IntlFormatterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class IntegerConfigurator implements FieldConfiguratorInterface
+final readonly class IntegerConfigurator implements FieldConfiguratorInterface
 {
+    public function __construct(private IntlFormatterInterface $intlFormatter)
+    {
+    }
+
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
         return IntegerField::class === $field->getFieldFqcn();
@@ -25,17 +29,25 @@ final class IntegerConfigurator implements FieldConfiguratorInterface
             return;
         }
 
-        $numberFormat = $field->getCustomOption(NumberField::OPTION_NUMBER_FORMAT)
+        $formatterAttributes = ['fraction_digit' => 0];
+
+        $numberFormat = $field->getCustomOption(IntegerField::OPTION_NUMBER_FORMAT)
             ?? $context->getCrud()->getNumberFormat()
             ?? null;
-        $thousandsSeparator = $field->getCustomOption(NumberField::OPTION_THOUSANDS_SEPARATOR)
+
+        if (null !== $numberFormat) {
+            $field->setFormattedValue(sprintf($numberFormat, $value));
+
+            return;
+        }
+
+        $thousandsSeparator = $field->getCustomOption(IntegerField::OPTION_THOUSANDS_SEPARATOR)
             ?? $context->getCrud()->getThousandsSeparator()
             ?? null;
+        if (null !== $thousandsSeparator) {
+            $formatterAttributes['grouping_separator'] = $thousandsSeparator;
+        }
 
-        $field->setFormattedValue(match (true) {
-            null !== $numberFormat => sprintf($numberFormat, $value),
-            null !== $thousandsSeparator => number_format($value, 0, '.', $thousandsSeparator),
-            default => $value,
-        });
+        $field->setFormattedValue($this->intlFormatter->formatNumber($value, $formatterAttributes));
     }
 }

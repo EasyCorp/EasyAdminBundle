@@ -232,7 +232,9 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                         EA::CRUD_ACTION => $actionRouteConfig['actionName'],
                     ];
 
-                    $adminRoute = new Route($adminRoutePath, defaults: $defaults, methods: $actionRouteConfig['methods']);
+                    $routeOptions = array_merge($crudControllerRouteConfig['routeOptions'], $actionRouteConfig['routeOptions'] ?? []);
+
+                    $adminRoute = $this->createCrudRoute($adminRoutePath, $routeOptions, $actionRouteConfig['methods'], $defaults);
                     $adminRoutes[$adminRouteName] = $adminRoute;
                     $addedRouteNames[$adminRouteName] = ['type' => 'crud', 'controllerFqcn' => $crudControllerFqcn, 'actionName' => $actionRouteConfig['actionName']];
                 }
@@ -494,6 +496,53 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     }
 
     /**
+     * Requirements, defaults and options are added instead of replaced to keep the ones that
+     * the route path defines inline (e.g. '/{entityId:order.id}/invoices/{page<\d+>?1}').
+     *
+     * @param array<string, mixed> $routeOptions      the merged options of the #[AdminRoute] attributes of the controller and the action
+     * @param array<string>        $methods
+     * @param array<string, mixed> $easyAdminDefaults the route defaults set by EasyAdmin, which route options cannot override
+     */
+    private function createCrudRoute(string $routePath, array $routeOptions, array $methods, array $easyAdminDefaults): Route
+    {
+        $route = new Route($routePath, methods: $methods);
+
+        if (isset($routeOptions['requirements'])) {
+            $route->addRequirements($routeOptions['requirements']);
+        }
+        if (isset($routeOptions['host'])) {
+            $route->setHost($routeOptions['host']);
+        }
+        if (isset($routeOptions['schemes'])) {
+            $route->setSchemes($routeOptions['schemes']);
+        }
+        if (isset($routeOptions['condition'])) {
+            $route->setCondition($routeOptions['condition']);
+        }
+
+        $defaults = $routeOptions['defaults'] ?? [];
+        if (isset($routeOptions['locale'])) {
+            $defaults['_locale'] = $routeOptions['locale'];
+        }
+        if (isset($routeOptions['format'])) {
+            $defaults['_format'] = $routeOptions['format'];
+        }
+        if (isset($routeOptions['stateless'])) {
+            $defaults['_stateless'] = $routeOptions['stateless'];
+        }
+        $route->addDefaults(array_merge($defaults, $easyAdminDefaults));
+
+        if (isset($routeOptions['utf8'])) {
+            $routeOptions['options']['utf8'] = $routeOptions['utf8'];
+        }
+        if (isset($routeOptions['options'])) {
+            $route->addOptions($routeOptions['options']);
+        }
+
+        return $route;
+    }
+
+    /**
      * @param class-string<DashboardControllerInterface> $dashboardFqcn
      *
      * @return array{0: class-string[]|null, 1: class-string[]|null}
@@ -583,11 +632,11 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     /**
      * @param class-string<CrudControllerInterface> $crudControllerFqcn
      *
-     * @return array{routeName: string, routePath: string}
+     * @return array{routeName: string, routePath: string, routeOptions: array<string, mixed>}
      */
     private function getCrudControllerRouteConfig(string $crudControllerFqcn): array
     {
-        $crudControllerConfig = [];
+        $crudControllerConfig = ['routeOptions' => []];
 
         $reflectionClass = new \ReflectionClass($crudControllerFqcn);
 
@@ -596,6 +645,10 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         if ([] !== $adminRouteAttributes) {
             /** @var AdminRoute $adminRouteInstance */
             $adminRouteInstance = $adminRouteAttributes[0]->newInstance();
+
+            // each CRUD action defines its own HTTP methods (e.g. 'delete' only allows POST),
+            // so a 'methods' option set for the whole controller is not applied
+            $crudControllerConfig['routeOptions'] = array_diff_key($adminRouteInstance->options, ['methods' => true]);
 
             if (null !== $adminRouteInstance->path) {
                 $crudControllerConfig['routePath'] = trim($adminRouteInstance->path, '/');
@@ -625,7 +678,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     /**
      * @param class-string<CrudControllerInterface> $crudControllerFqcn
      *
-     * @return array<string, array{routeName?: string, routePath?: string, methods?: array<string>}>
+     * @return array<string, array{routeName?: string, routePath?: string, methods?: array<string>, routeOptions?: array<string, mixed>}>
      */
     private function getCustomActionsConfig(string $crudControllerFqcn): array
     {
@@ -692,6 +745,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                 }
 
                 $customActionsConfig[$routeId]['methods'] = array_map('strtoupper', $methods);
+                $customActionsConfig[$routeId]['routeOptions'] = $adminRouteInstance->options;
 
                 // store the actual action name for the route generation
                 $customActionsConfig[$routeId]['actionName'] = $action;

@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\MultipleRouteCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\RouteOptionsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Entity\Synthetic\AdminRouteTestEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Kernel;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -599,6 +600,83 @@ class AdminRouteTest extends WebTestCase
             'EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\AdvancedOptionsDashboardController',
             $defaults['dashboardControllerFqcn']
         );
+    }
+
+    public function testCrudControllerRouteOptions(): void
+    {
+        $client = static::createClient();
+        $routes = $client->getContainer()->get('router')->getRouteCollection();
+
+        // class-level options reach the built-in actions and the custom actions that don't override them
+        foreach (['index', 'new', 'batch_delete', 'autocomplete', 'render_filters', 'edit', 'delete', 'detail', 'inherited'] as $routeName) {
+            $route = $routes->get('admin_route_options_'.$routeName);
+            $this->assertNotNull($route, sprintf('Route "admin_route_options_%s" should exist', $routeName));
+            $this->assertSame('intranet.example.com', $route->getHost());
+            $this->assertSame(['https'], $route->getSchemes());
+            $this->assertSame('sales', $route->getDefault('department'));
+            $this->assertStringStartsWith(RouteOptionsCrudController::class.'::', $route->getDefault('_controller'), 'The defaults set by EasyAdmin cannot be overridden.');
+        }
+
+        $this->assertSame('intranet.example.com', $routes->get('second_admin_route_options_index')->getHost());
+
+        // the class-level 'methods' option is ignored: each CRUD action keeps its own HTTP methods
+        $this->assertSame(['GET'], $routes->get('admin_route_options_index')->getMethods());
+        $this->assertSame(['GET', 'POST', 'PATCH'], $routes->get('admin_route_options_edit')->getMethods());
+        $this->assertSame(['POST'], $routes->get('admin_route_options_delete')->getMethods());
+        $this->assertSame(['GET', 'POST'], $routes->get('admin_route_options_inherited')->getMethods());
+
+        // the requirements and defaults defined inline in the route path are kept
+        $inheritedRoute = $routes->get('admin_route_options_inherited');
+        $this->assertSame('/admin/route-options/inherited/{page}', $inheritedRoute->getPath());
+        $this->assertSame('\d+', $inheritedRoute->getRequirement('page'));
+        $this->assertSame('1', $inheritedRoute->getDefault('page'));
+
+        // action-level options override the class-level ones
+        $exportRoute = $routes->get('admin_route_options_export');
+        $this->assertSame('reports.example.com', $exportRoute->getHost());
+        $this->assertSame(['https'], $exportRoute->getSchemes());
+        $this->assertSame(['GET'], $exportRoute->getMethods());
+        $this->assertSame('csv|xlsx', $exportRoute->getRequirement('format'));
+        $this->assertSame('request.headers.get("X-Internal") == "1"', $exportRoute->getCondition());
+
+        // CRUD controllers that don't define route options are not restricted
+        $route = $routes->get('admin_built_in_action_list');
+        $this->assertSame('', $route->getHost());
+        $this->assertSame([], $route->getSchemes());
+        $this->assertSame('', $route->getCondition());
+    }
+
+    public function testCrudControllerRouteOptionsRestrictTheMatchedRequests(): void
+    {
+        $client = static::createClient();
+
+        $client->request('GET', 'https://intranet.example.com/admin/route-options/inherited');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Inherited Options', $client->getResponse()->getContent());
+
+        $client->request('GET', 'https://www.example.com/admin/route-options/inherited');
+        $this->assertResponseStatusCodeSame(404);
+
+        $client->request('GET', 'https://www.example.com/admin/route-options');
+        $this->assertResponseStatusCodeSame(404);
+
+        // the '?routeName=' forward matches the target route again, so it's restricted too
+        $client->request('GET', 'https://www.example.com/admin?routeName=admin_route_options_inherited');
+        $this->assertResponseStatusCodeSame(404);
+
+        // the action that overrides the host also has to meet its own requirements and condition
+        $client->request('GET', 'https://reports.example.com/admin/route-options/export/csv', server: ['HTTP_X_INTERNAL' => '1']);
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Overridden Options: csv', $client->getResponse()->getContent());
+
+        $client->request('GET', 'https://intranet.example.com/admin/route-options/export/csv', server: ['HTTP_X_INTERNAL' => '1']);
+        $this->assertResponseStatusCodeSame(404);
+
+        $client->request('GET', 'https://reports.example.com/admin/route-options/export/exe', server: ['HTTP_X_INTERNAL' => '1']);
+        $this->assertResponseStatusCodeSame(404);
+
+        $client->request('GET', 'https://reports.example.com/admin/route-options/export/csv');
+        $this->assertResponseStatusCodeSame(404);
     }
 
     public function testEntityIdAliasRoutesAreGenerated(): void

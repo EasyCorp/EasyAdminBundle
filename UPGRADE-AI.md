@@ -5,14 +5,18 @@ This guide is for AI agents. If you are a human, read [UPGRADE.md](UPGRADE.md) i
 
 ## EasyAdmin 5.10.1
 
-Use this prompt to upgrade backends for the string callables that EasyAdmin 5.10.1 no longer calls.
+Use this prompt to upgrade backends for the string callable and route option changes made in EasyAdmin 5.10.1.
 
 <upgrade-prompt version="5.10.1">
 
 EasyAdmin 5.10.1 never calls strings in the options that accept a string or a
 callable: a string is always the literal value (a title, a URL, a badge content, a
-file name pattern or the name of a method of the collection entry). Search the PHP
-code of the project and apply what's relevant. Skip what doesn't apply.
+file name pattern or the name of a method of the collection entry). It also applies
+the `options` argument of `#[AdminRoute]` (`host`, `schemes`, `condition`,
+`requirements`, `defaults`, `locale`, `format`, `utf8`, `stateless`, `options`) to
+the routes of CRUD controllers. Before, CRUD controllers ignored all of them except
+the `methods` option of actions. Search the PHP code of the project and apply what's
+relevant. Skip what doesn't apply.
 
 ## Required changes
 
@@ -41,6 +45,45 @@ code of the project and apply what's relevant. Skip what doesn't apply.
 
    Don't change strings that are literal values (`'Products'`, `'https://example.com'`)
    or, in `setEntryToStringMethod()`, names of methods of the entry (`'getFullName'`).
+
+2. Find `#[AdminRoute(` attributes with an `options:` argument applied to classes
+   that extend `AbstractCrudController` (or implement `CrudControllerInterface`) and
+   to their methods. Their options now restrict the generated routes: the class
+   options apply to all the routes of the controller and the method options override
+   the class options with the same name. Requests that don't match them return a 404
+   error. Keep the options that describe a wanted restriction and remove the others:
+
+   ```php
+   // before: 'host' was ignored and the routes worked on every host
+   #[AdminRoute(options: ['host' => 'intranet.example.com'])]
+   class ProductCrudController extends AbstractCrudController
+
+   // after, to keep the routes working on every host
+   class ProductCrudController extends AbstractCrudController
+   ```
+
+## Optional changes
+
+1. Find `#[AdminRoute(` attributes with `'methods'` inside `options:` applied to
+   classes that extend `AbstractCrudController`. That option is ignored there (as
+   before). Remove it from the class attribute. Add it to the `#[AdminRoute]`
+   attribute of a custom action only when that action must be limited to those
+   HTTP methods:
+
+   ```php
+   // before
+   #[AdminRoute(options: ['methods' => ['POST']])]
+   class ProductCrudController extends AbstractCrudController
+   {
+       #[AdminRoute('/{id}/publish', name: 'publish')]
+       public function publish(Product $product): Response
+
+   // after
+   class ProductCrudController extends AbstractCrudController
+   {
+       #[AdminRoute('/{id}/publish', name: 'publish', options: ['methods' => ['POST']])]
+       public function publish(Product $product): Response
+   ```
 
 </upgrade-prompt>
 

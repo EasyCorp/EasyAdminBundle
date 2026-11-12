@@ -85,7 +85,7 @@ replacement of each one is in `references/traps.md` and the full explanation
 in `vendor/easycorp/easyadmin-bundle/UPGRADE.md`. `linkToCrudAction()` itself
 still exists: 4.x code that uses it compiles and fails at render time until
 the target method gets `#[AdminRoute]`.
-<!-- UPGRADE.md:163-182; UPGRADE.md:274-286; UPGRADE.md:272-527 -->
+<!-- UPGRADE.md:176-195; UPGRADE.md:287-299; UPGRADE.md:285-540 -->
 
 ## Project conventions
 
@@ -119,14 +119,14 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `#[AdminDashboard(routePath: '/admin', routeName: 'admin')]` and both
   arguments are required. Without it, route generation throws and no admin
   route exists. Do not add a Symfony `#[Route]` to `index()`: no other way of
-  configuring the dashboard route works. <!-- src/Router/AdminRouteGenerator.php:558-570; src/Attribute/AdminDashboard.php::__construct; doc/dashboards.rst:96-97 -->
+  configuring the dashboard route works. <!-- src/Router/AdminRouteGenerator.php:607-619; src/Attribute/AdminDashboard.php::__construct; doc/dashboards.rst:96-97 -->
 - The project needs `config/routes/easyadmin.yaml` with `resource: .` and
   `type: easyadmin.routes`. Symfony Flex creates it; without Flex, create it
   by hand. <!-- src/Router/AdminRouteLoader.php::ROUTE_LOADER_TYPE; doc/dashboards.rst:55-64 -->
 - Link CRUD controllers with
   `MenuItem::linkTo(ProductCrudController::class, 'Products', 'fa fa-box')`:
   controller class first, then label, then icon. `MenuItem::linkToCrud()` was
-  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:301-317 -->
+  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:314-330 -->
 - The other factories put the label first:
   `MenuItem::linkToRoute('Reports', 'fa fa-chart-bar', 'app_reports', ['year' => 2026])`,
   `linkToUrl('Website', 'fa fa-globe', 'https://example.com')`,
@@ -149,7 +149,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 <!-- rules:start -->
 - Declare `public static function getEntityFqcn(): string` (the base class
   does not) and add `/** @extends AbstractCrudController<Product> */` above
-  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:510-527 -->
+  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:523-540 -->
 - Overrides must keep the interface signatures: `createEntity(string $entityFqcn): ?object`
   (overrides may keep `: object`),
   `persistEntity(EntityManagerInterface $entityManager, object $entityInstance): void`,
@@ -157,14 +157,14 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder`. <!-- src/Contracts/Controller/CrudControllerInterface.php::createEntity; src/Contracts/Controller/CrudControllerInterface.php::createIndexQueryBuilder -->
 - In `createIndexQueryBuilder()`, call `parent::createIndexQueryBuilder(...)`
   and use the literal root alias `entity` (`->andWhere('entity.owner = :user')`).
-  Global Doctrine filters hide rows silently. <!-- src/Orm/EntityRepository.php::createQueryBuilder; doc/fields.rst:170-182; doc/crud.rst:485-490 -->
+  Global Doctrine filters hide rows silently. <!-- src/Orm/EntityRepository.php::createQueryBuilder; doc/fields.rst:170-182; doc/crud.rst:519-524 -->
 - Link to admin pages like to any other Symfony route: `$this->redirectToRoute('admin_product_detail', ['entityId' => $id])`
   in PHP, `path('admin_product_edit', {entityId: post.id})` in Twig. Reserve
   `AdminUrlGeneratorInterface` (`$this->container->get(AdminUrlGeneratorInterface::class)`
   inside controllers) for URLs built dynamically:
   `->setController(ProductCrudController::class)->setAction(Action::DETAIL)->setEntityId($id)->generateUrl()`.
   `setId()` is not on the interface; use `setEntityId()`. With a controller and
-  no action, the URL points to `index`. <!-- doc/crud.rst:905-934; src/Controller/AbstractCrudController.php::getSubscribedServices; src/Router/AdminUrlGeneratorInterface.php::setEntityId; src/Router/AdminUrlGenerator.php::generateUrl; doc/crud.rst:1025-1029 -->
+  no action, the URL points to `index`. <!-- doc/crud.rst:939-968; src/Controller/AbstractCrudController.php::getSubscribedServices; src/Router/AdminUrlGeneratorInterface.php::setEntityId; src/Router/AdminUrlGenerator.php::generateUrl; doc/crud.rst:1059-1063 -->
 - Route names join controller and action names with underscores, so an entity
   whose name is a prefix of another can produce duplicate route names; the
   exception names both controllers. <!-- src/Router/AdminRouteGenerator.php::getDuplicatedRouteNameErrorMessage; doc/crud.rst:80-88; doc/actions.rst:1020-1024 -->
@@ -194,7 +194,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - Form layout uses the static methods `FormField::addTab('Details')`,
   `FormField::addFieldset('Pricing')`, `FormField::addColumn(6)` and
   `FormField::addRow()`. `FormField::addPanel()` was removed in 5.0. The first
-  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:425-437 -->
+  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:438-450 -->
 - `ChoiceField`: `setChoices(['Draft' => 'draft'])`,
   `renderAsBadges(['draft' => 'warning', 'published' => 'success'])` (types:
   success, warning, danger, info, primary, secondary, light, dark),
@@ -233,7 +233,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - `#[AdminRoute]` accepts only `path`, `name`, `options`, `allowedDashboards`
   and `deniedDashboards`. There is no `methods` argument: HTTP methods,
   requirements and defaults go inside `options`. Allowed methods are GET,
-  POST, PUT, PATCH, DELETE and HEAD; the default is GET and POST. <!-- src/Attribute/AdminRoute.php::__construct; src/Router/AdminRouteGenerator.php:687-691 -->
+  POST, PUT, PATCH, DELETE and HEAD; the default is GET and POST. <!-- src/Attribute/AdminRoute.php::__construct; src/Router/AdminRouteGenerator.php:740-744 -->
 - `{id}` (or `{entityId}`) in the path is what makes a custom action an
   entity action: the route carries the entity id and Symfony injects the typed
   entity (`public function publish(Product $product)`). Without the
@@ -241,7 +241,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `controller_resolver.auto_mapping`, add `#[MapEntity]` to the argument; with
   `{entityId}` use the mapped form `{entityId:product.id}`. Only when a typed
   argument is impossible, inject `AdminContext $context` and read
-  `$context->getEntity()->getInstance()`, which is nullable and untyped. <!-- src/Router/AdminRouteGenerator.php:648-651; src/Router/AdminRouteGenerator.php::getEntityIdPlaceholderName; doc/actions.rst:744-757; src/Dto/EntityDto.php::getInstance -->
+  `$context->getEntity()->getInstance()`, which is nullable and untyped. <!-- src/Router/AdminRouteGenerator.php:701-704; src/Router/AdminRouteGenerator.php::getEntityIdPlaceholderName; doc/actions.rst:744-757; src/Dto/EntityDto.php::getInstance -->
 - Batch actions also need `#[AdminRoute('/approve', name: 'approve', options: ['methods' => ['POST']])]`
   on the method, receive `BatchActionDto $batchActionDto`
   (`getEntityIds()`, `getEntityFqcn()`, `getCsrfToken()`), are created with
@@ -265,7 +265,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - Rendering methods are `renderAsLink()`, `renderAsButton()` and
   `renderAsForm()`; the `displayAs*()` names were removed in 5.0. Style them
   with `asPrimaryAction()`, `asDangerAction()` (also Success, Warning, Info)
-  or `asTextLink()`, and add `askConfirmation()` for a confirmation modal. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; UPGRADE.md:388-404 -->
+  or `asTextLink()`, and add `askConfirmation()` for a confirmation modal. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; UPGRADE.md:401-417 -->
 - `setCssClass()` drops the default `.btn-*` and `.action-<name>` classes (and
   with them the selectors used by the test helpers), `addCssClass()` keeps
   them; `displayIf()` on a global action receives no entity; removing or
@@ -331,13 +331,13 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 
 <!-- rules:start -->
 - The `ea` Twig global was removed; call the `ea()` function, which returns
-  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:163-182 -->
+  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:176-195 -->
 - Override page templates with `Crud::overrideTemplate('crud/index', 'admin/product/index.html.twig')`
   and field templates with `->setTemplatePath()`. The `new` and `edit` pages render form fields
   through Symfony form themes (`Crud::addFormTheme()`), not through field templates. <!-- src/Config/Crud.php::overrideTemplate; src/Config/Crud.php::addFormTheme; src/Field/FieldTrait.php::setTemplatePath; doc/fields.rst:1066-1069 -->
 - Backend CSS lives in cascade layers (`vendor`, `ea`, `ea-overrides`), so
   unlayered custom CSS wins without `!important`. Override design tokens on
-  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:224-248; doc/design.rst:314-316; doc/design.rst:1400-1404 -->
+  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:237-261; doc/design.rst:314-316; doc/design.rst:1400-1404 -->
 - Custom pages extend `@EasyAdmin/page/content.html.twig`, not `@EasyAdmin/layout.html.twig`: only the former styles the
   HTML of the `main` block (headings, lists, tables, blue links). Elsewhere, add the `ea-prose` class (`ea-not-prose` opts out).
   Don't write CSS for those elements: unlayered CSS beats these styles. <!-- templates/page/content.html.twig; doc/design.rst:718-821 -->

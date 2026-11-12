@@ -211,6 +211,40 @@ The ``index()`` action of this controller will no longer use the ``admin_product
 route name and the ``/admin/product`` path in the URL. Instead, the route name
 will be ``admin_product_latest`` and the path will be ``/admin/product/latest-products``.
 
+The ``options`` defined in the ``#[AdminRoute]`` attribute of the CRUD controller
+class (e.g. ``host``, ``schemes`` or ``condition``) are applied to the routes of
+all its actions. The ``options`` defined in the ``#[AdminRoute]`` attribute of an
+action override the class-level options with the same name::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+    use Symfony\Component\HttpFoundation\Response;
+    // ...
+
+    // all the routes of this controller are only available in this host
+    #[AdminRoute(options: ['host' => 'intranet.example.com'])]
+    class ProductCrudController extends AbstractCrudController
+    {
+        // ...
+
+        // this route also requires HTTPS and only accepts some formats
+        #[AdminRoute(path: '/export/{format}', name: 'export', options: [
+            'schemes' => ['https'],
+            'requirements' => ['format' => 'csv|xlsx'],
+        ])]
+        public function export(string $format): Response
+        {
+            // ...
+        }
+    }
+
+.. note::
+
+    The ``methods`` option is the exception: each CRUD action defines its own
+    HTTP methods (e.g. the ``delete`` action only allows ``POST``), so this
+    option is ignored in the attribute of the CRUD controller class. Define it
+    in the attribute of each action instead.
+
 .. tip::
 
     You can combine the ``#[AdminDashboard]`` and ``#[AdminRoute]``

@@ -90,6 +90,15 @@ class ArrayFilterTest extends FilterFunctionalTestCase
         $this->assertVisibleEntities($expectedEntities);
     }
 
+    public function testFilterWithChoicesIsMultipleByDefault(): void
+    {
+        $this->client->request('GET', $this->generateFilterRenderUrl());
+
+        static::assertSelectorExists('select[name="filters[arrayFilter][value][]"][multiple][data-ea-widget="ea-autocomplete"]');
+        static::assertSelectorNotExists('select[name="filters[arrayFilter][value][]"][data-ea-autocomplete-allow-item-create]');
+        static::assertSelectorExists('select[name="filters[simpleArrayFilter][value][]"][multiple][data-ea-autocomplete-allow-item-create="true"]');
+    }
+
     /**
      * @return iterable<string, array{list<string>, list<string>}>
      */

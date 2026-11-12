@@ -22,6 +22,31 @@ class TextFilterTypeTest extends TypeTestCase
         $this->assertInstanceOf(TextFilterType::class, $form->getConfig()->getType()->getInnerType());
     }
 
+    /**
+     * @param array<string, mixed> $options
+     * @param array<string, mixed> $dataToSubmit
+     */
+    #[DataProvider('malformedData')]
+    public function testMalformedDataMakesTheFilterInvalid(array $options, array $dataToSubmit): void
+    {
+        $form = $this->factory->create(TextFilterType::class, null, $options);
+        $form->submit($dataToSubmit);
+
+        $this->assertFalse($form->isSynchronized());
+        $this->assertFalse($form->isValid());
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>, array<string, mixed>}>
+     */
+    public static function malformedData(): iterable
+    {
+        yield 'unknown comparison' => [[], ['comparison' => 'bogus', 'value' => 'abc']];
+        yield 'array comparison' => [[], ['comparison' => ['like'], 'value' => 'abc']];
+        yield 'array value' => [[], ['comparison' => ComparisonType::CONTAINS, 'value' => ['abc']]];
+        yield 'array value with starts with' => [[], ['comparison' => ComparisonType::STARTS_WITH, 'value' => ['abc']]];
+    }
+
     public static function submit(): iterable
     {
         yield [

@@ -26,6 +26,31 @@ class NumericFilterTypeTest extends TypeTestCase
         }
     }
 
+    /**
+     * @param array<string, mixed> $options
+     * @param array<string, mixed> $dataToSubmit
+     */
+    #[DataProvider('malformedData')]
+    public function testMalformedDataMakesTheFilterInvalid(array $options, array $dataToSubmit): void
+    {
+        $form = $this->factory->create(NumericFilterType::class, null, $options);
+        $form->submit($dataToSubmit);
+
+        $this->assertFalse($form->isSynchronized());
+        $this->assertFalse($form->isValid());
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>, array<string, mixed>}>
+     */
+    public static function malformedData(): iterable
+    {
+        yield 'unknown comparison' => [[], ['comparison' => 'bogus', 'value' => '1']];
+        yield 'text value' => [[], ['comparison' => ComparisonType::EQ, 'value' => 'abc']];
+        yield 'text second value' => [[], ['comparison' => ComparisonType::BETWEEN, 'value' => '1', 'value2' => 'abc']];
+        yield 'array second value' => [[], ['comparison' => ComparisonType::BETWEEN, 'value' => '1', 'value2' => ['1']]];
+    }
+
     public static function submit(): iterable
     {
         yield [

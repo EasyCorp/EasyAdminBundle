@@ -22,6 +22,30 @@ class ChoiceFilterTypeTest extends TypeTestCase
         $this->assertInstanceOf(ChoiceFilterType::class, $form->getConfig()->getType()->getInnerType());
     }
 
+    /**
+     * @param array<string, mixed> $options
+     * @param array<string, mixed> $dataToSubmit
+     */
+    #[DataProvider('malformedData')]
+    public function testMalformedDataMakesTheFilterInvalid(array $options, array $dataToSubmit): void
+    {
+        $form = $this->factory->create(ChoiceFilterType::class, null, $options);
+        $form->submit($dataToSubmit);
+
+        $this->assertFalse($form->isSynchronized());
+        $this->assertFalse($form->isValid());
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>, array<string, mixed>}>
+     */
+    public static function malformedData(): iterable
+    {
+        yield 'unknown comparison' => [['value_type_options' => ['choices' => ['a' => 'a', 'b' => 'b']]], ['comparison' => 'bogus', 'value' => 'a']];
+        yield 'unknown value' => [['value_type_options' => ['choices' => ['a' => 'a', 'b' => 'b']]], ['comparison' => ComparisonType::EQ, 'value' => 'bogus']];
+        yield 'array value' => [['value_type_options' => ['choices' => ['a' => 'a', 'b' => 'b']]], ['comparison' => ComparisonType::EQ, 'value' => ['a']]];
+    }
+
     public static function submit(): iterable
     {
         yield [

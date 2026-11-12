@@ -4,10 +4,46 @@
 /* tables with many columns or long values scroll here instead of moving the whole page. The
    dropdowns inside the table use a 'fixed' position to not be clipped by this element. The
    relative position also clips the absolutely positioned elements of the table, such as
-   '.visually-hidden' texts, which would otherwise keep the page wider than the screen */
+   '.visually-hidden' texts, which would otherwise keep the page wider than the screen.
+   Its scrollbar can be replaced by '.datagrid-scrollbar' (see below) */
 .datagrid-scroll {
     overflow-x: auto;
     position: relative;
+}
+
+/* in long listings the end of the table is off screen, and so is the scrollbar of the element
+   above. When scrollbars take space (they don't on touch devices or by default on macOS),
+   JavaScript hides that scrollbar and adds this element after the table: it only shows a
+   scrollbar, which sticks to the bottom of the screen and moves the table. The table still
+   scrolls with the keyboard, the mouse wheel and the trackpad */
+@media (min-width: 768px) {
+    .datagrid-scroll-enhanced {
+        scrollbar-width: none;
+    }
+    /* Safari added 'scrollbar-width' in version 18.2 */
+    .datagrid-scroll-enhanced::-webkit-scrollbar {
+        display: none;
+    }
+
+    .datagrid-scrollbar {
+        background: var(--body-bg);
+        inset-block-end: 0;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        position: sticky;
+        /* above the table rows but below the dropdowns of the row actions */
+        z-index: 1;
+    }
+    /* the scrollbar adds its own size to this, which is the minimum to make the element scroll */
+    .datagrid-scrollbar > div {
+        block-size: 1px;
+    }
+}
+/* narrower tables display their rows as stacked blocks, which never overflow */
+@media (max-width: 767px) {
+    .datagrid-scrollbar {
+        display: none;
+    }
 }
 
 table.datagrid {

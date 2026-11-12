@@ -37,6 +37,7 @@ class App {
         this.#createBatchActions();
         this.#createActionConfirmationModals();
         this.#createDefaultRowAction();
+        this.#createDatagridScrollbar();
         this.#createPopovers();
         this.#createTooltips();
         this.#createContentHelp();
@@ -785,6 +786,65 @@ class App {
     #createTooltips() {
         document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipElement) => {
             new bootstrap.Tooltip(tooltipElement);
+        });
+    }
+
+    // The scrollbar of a datagrid wider than the page is at the end of the table, which is
+    // off screen in long listings. CSS can't make the scrollbar of an element sticky, so this
+    // adds an empty element that only shows a scrollbar, sticks to the bottom of the screen
+    // and scrolls in sync with the datagrid
+    #createDatagridScrollbar() {
+        const scrollbarMeter = document.createElement('div');
+        scrollbarMeter.style.cssText = 'overflow: scroll; position: absolute; visibility: hidden;';
+        document.body.appendChild(scrollbarMeter);
+        const scrollbarSize = scrollbarMeter.offsetHeight - scrollbarMeter.clientHeight;
+        scrollbarMeter.remove();
+
+        // overlay scrollbars (touch devices, the default on macOS) take no space, so the extra
+        // element would be invisible; those devices keep the native scrollbar of the datagrid
+        if (0 === scrollbarSize) {
+            return;
+        }
+
+        const syncScrollPosition = (source, target) => {
+            source.addEventListener(
+                'scroll',
+                () => {
+                    // without this check, each element would keep updating the other one
+                    if (Math.abs(target.scrollLeft - source.scrollLeft) >= 1) {
+                        target.scrollLeft = source.scrollLeft;
+                    }
+                },
+                { passive: true }
+            );
+        };
+
+        document.querySelectorAll('.datagrid-scroll').forEach((datagridScroll) => {
+            const scrollbar = document.createElement('div');
+            scrollbar.classList.add('datagrid-scrollbar');
+            scrollbar.setAttribute('aria-hidden', 'true');
+            scrollbar.tabIndex = -1;
+            const scrollbarContent = document.createElement('div');
+            scrollbar.appendChild(scrollbarContent);
+
+            const updateScrollbar = () => {
+                scrollbar.hidden = datagridScroll.scrollWidth <= datagridScroll.clientWidth;
+                scrollbarContent.style.inlineSize = `${datagridScroll.scrollWidth}px`;
+                scrollbar.scrollLeft = datagridScroll.scrollLeft;
+            };
+
+            datagridScroll.after(scrollbar);
+            datagridScroll.classList.add('datagrid-scroll-enhanced');
+            syncScrollPosition(datagridScroll, scrollbar);
+            syncScrollPosition(scrollbar, datagridScroll);
+
+            updateScrollbar();
+            const resizeObserver = new ResizeObserver(updateScrollbar);
+            resizeObserver.observe(datagridScroll);
+            const datagrid = datagridScroll.querySelector('table');
+            if (null !== datagrid) {
+                resizeObserver.observe(datagrid);
+            }
         });
     }
 

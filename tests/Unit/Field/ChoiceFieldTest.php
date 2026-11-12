@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ChoiceConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Fixtures\ChoiceField\PriorityUnitEnum;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Fixtures\ChoiceField\StatusBackedEnum;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Fixtures\ChoiceField\TranslatableStatusBackedEnum;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -86,6 +87,130 @@ class ChoiceFieldTest extends AbstractFieldTestCase
         self::assertSame(StatusBackedEnum::Published->name, (string) $this->configure($field)->getFormattedValue());
         $field->setValue(StatusBackedEnum::Deleted);
         self::assertSame(StatusBackedEnum::Deleted->name, (string) $this->configure($field)->getFormattedValue());
+    }
+
+    public function testFieldWithLabeledBackedEnumChoices(): void
+    {
+        $field = ChoiceField::new('foo')->setChoices([
+            'status.draft' => StatusBackedEnum::Draft,
+            'status.published' => StatusBackedEnum::Published,
+        ]);
+
+        $field->setValue(StatusBackedEnum::Draft);
+        self::assertSame('status.draft', (string) $this->configure($field)->getFormattedValue());
+        $field->setValue(StatusBackedEnum::Published);
+        self::assertSame('status.published', (string) $this->configure($field)->getFormattedValue());
+        // the property can also store the backing value instead of the enum case
+        $field->setValue('published');
+        self::assertSame('status.published', (string) $this->configure($field)->getFormattedValue());
+    }
+
+    public function testFieldWithLabeledUnitEnumChoices(): void
+    {
+        $field = ChoiceField::new('foo')->setChoices([
+            'priority.high' => PriorityUnitEnum::High,
+            'priority.low' => PriorityUnitEnum::Low,
+        ]);
+
+        $field->setValue(PriorityUnitEnum::High);
+        self::assertSame('priority.high', (string) $this->configure($field)->getFormattedValue());
+        $field->setValue(PriorityUnitEnum::Low);
+        self::assertSame('priority.low', (string) $this->configure($field)->getFormattedValue());
+    }
+
+    public function testFieldWithLabeledEnumChoicesAndMultipleValues(): void
+    {
+        $field = ChoiceField::new('foo')->allowMultipleChoices()->setChoices([
+            'status.draft' => StatusBackedEnum::Draft,
+            'status.published' => StatusBackedEnum::Published,
+            'status.deleted' => StatusBackedEnum::Deleted,
+        ]);
+
+        $field->setValue([StatusBackedEnum::Draft, StatusBackedEnum::Deleted]);
+        self::assertSame('status.draft, status.deleted', (string) $this->configure($field)->getFormattedValue());
+    }
+
+    public function testFieldWithGroupedLabeledEnumChoices(): void
+    {
+        $field = ChoiceField::new('foo')->setChoices([
+            'status.draft' => StatusBackedEnum::Draft,
+            'Visible' => [
+                'status.published' => StatusBackedEnum::Published,
+            ],
+            'Priorities' => [
+                'priority.high' => PriorityUnitEnum::High,
+            ],
+        ]);
+
+        $field->setValue(StatusBackedEnum::Draft);
+        self::assertSame('status.draft', (string) $this->configure($field)->getFormattedValue());
+        $field->setValue(StatusBackedEnum::Published);
+        self::assertSame('status.published', (string) $this->configure($field)->getFormattedValue());
+        $field->setValue(PriorityUnitEnum::High);
+        self::assertSame('priority.high', (string) $this->configure($field)->getFormattedValue());
+    }
+
+    public function testFieldWithEnumChoicesMixedWithOtherChoices(): void
+    {
+        // the list isn't made only of enum cases, so the cases have no label
+        // and their name is displayed
+        $field = ChoiceField::new('foo')->setChoices([StatusBackedEnum::Draft, PriorityUnitEnum::High, 'archived']);
+
+        $field->setValue(StatusBackedEnum::Draft);
+        self::assertSame('Draft', (string) $this->configure($field)->getFormattedValue());
+        $field->setValue(PriorityUnitEnum::High);
+        self::assertSame('High', (string) $this->configure($field)->getFormattedValue());
+    }
+
+    public function testFieldWithLabeledTranslatableEnumChoices(): void
+    {
+        $field = ChoiceField::new('foo')->setChoices([
+            'status.draft' => TranslatableStatusBackedEnum::Draft,
+            'status.published' => TranslatableStatusBackedEnum::Published,
+        ]);
+        $field->getAsDto()->setDoctrineMetadata(['enumType' => TranslatableStatusBackedEnum::class]);
+
+        $field->setValue(TranslatableStatusBackedEnum::Published);
+        $fieldDto = $this->configure($field);
+
+        // the labels given by the developer win over the translation that the enum provides
+        self::assertSame('status.published', (string) $fieldDto->getFormattedValue());
+        self::assertSame(ChoiceType::class, $fieldDto->getFormType());
+        self::assertSame([
+            'status.draft' => TranslatableStatusBackedEnum::Draft,
+            'status.published' => TranslatableStatusBackedEnum::Published,
+        ], $fieldDto->getFormTypeOption('choices'));
+    }
+
+    public function testFieldWithTranslatableEnumChoicesWithoutLabels(): void
+    {
+        $field = ChoiceField::new('foo')->setChoices([TranslatableStatusBackedEnum::Draft, TranslatableStatusBackedEnum::Published]);
+        $field->getAsDto()->setDoctrineMetadata(['enumType' => TranslatableStatusBackedEnum::class]);
+
+        $field->setValue(TranslatableStatusBackedEnum::Published);
+        $choiceMessages = iterator_to_array($this->configure($field)->getFormattedValue());
+
+        self::assertCount(1, $choiceMessages);
+        self::assertSame(TranslatableStatusBackedEnum::Published, $choiceMessages[0]->getMessage());
+    }
+
+    public function testBadgesWithLabeledEnumChoices(): void
+    {
+        $field = ChoiceField::new('foo')
+            ->setChoices([
+                'status.draft' => StatusBackedEnum::Draft,
+                'status.published' => StatusBackedEnum::Published,
+            ])
+            ->renderAsBadges(['draft' => 'warning', 'published' => 'success']);
+
+        $field->setValue(StatusBackedEnum::Published);
+        $value = $this->configure($field)->getFormattedValue();
+        self::assertSame('status.published', (string) $value);
+        self::assertSame(['success'], $this->badgeVariants($value));
+
+        $field->renderAsBadges(static fn (mixed $value): string => 'draft' === $value ? 'warning' : 'success');
+        $field->setValue(StatusBackedEnum::Draft);
+        self::assertSame(['warning'], $this->badgeVariants($this->configure($field)->getFormattedValue()));
     }
 
     public function testFieldWithChoiceGeneratorCallback(): void

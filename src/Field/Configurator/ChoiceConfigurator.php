@@ -60,8 +60,12 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             $allChoicesAreEnums = true;
         }
 
+        // choices defined as 'label' => case tell which label to display, so they
+        // aren't replaced by the translation that the enum provides for itself
+        $enumChoicesDefineLabels = $allChoicesAreEnums && \count($choices) > 0 && !array_is_list($choices);
+
         // SF 6.4 and up has native support for translatable enums, we should respect that too
-        if (is_subclass_of($enumTypeClass, TranslatableInterface::class)) {
+        if (!$enumChoicesDefineLabels && is_subclass_of($enumTypeClass, TranslatableInterface::class)) {
             $areChoicesTranslatable = $choicesSupportTranslatableInterface = true;
         }
 
@@ -224,18 +228,21 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $flattened = [];
 
         foreach ($choices as $label => $choice) {
-            // Flatten grouped choices
             if (\is_array($choice)) {
-                foreach ($choice as $subLabel => $subChoice) {
+                foreach ($this->flatten($choice) as $subLabel => $subChoice) {
                     $flattened[$subLabel] = $subChoice;
                 }
-            } elseif ($choice instanceof \BackedEnum) {
-                $flattened[$choice->name] = $choice->value;
-            } elseif ($choice instanceof \UnitEnum) {
-                $flattened[$choice->name] = $choice->name;
-            } else {
-                $flattened[$label] = $choice;
+
+                continue;
             }
+
+            if ($choice instanceof \UnitEnum) {
+                // enum cases that are not given a label (e.g. MyEnum::cases()) are labeled with their name
+                $label = \is_string($label) ? $label : $choice->name;
+                $choice = $choice instanceof \BackedEnum ? $choice->value : $choice->name;
+            }
+
+            $flattened[$label] = $choice;
         }
 
         return $flattened;

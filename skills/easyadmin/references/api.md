@@ -1661,11 +1661,13 @@ setAll(array $parameters): AdminUrlGeneratorInterface
 setController(string $crudControllerFqcn): AdminUrlGeneratorInterface
 setDashboard(string $dashboardControllerFqcn): AdminUrlGeneratorInterface
 setEntityId(mixed $entityId): AdminUrlGeneratorInterface
+setFilter(string $propertyName, mixed $value, ?string $comparison = null, mixed $value2 = null): self
 setId(mixed $id): self
 setRoute(string $routeName, array $routeParameters = []): AdminUrlGeneratorInterface
 unset(string $paramName): AdminUrlGeneratorInterface
 unsetAll(): AdminUrlGeneratorInterface
 unsetAllExcept(string ...$namesOfParamsToKeep): AdminUrlGeneratorInterface
+unsetFilter(string $propertyName): self
 ```
 
 ## Test\AbstractCrudTestCase

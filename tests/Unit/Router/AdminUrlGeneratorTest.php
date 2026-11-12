@@ -10,10 +10,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\RequestContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -81,6 +82,88 @@ class AdminUrlGeneratorTest extends KernelTestCase
         $adminUrlGenerator->setAll(['foo1' => 'bar1', 'foo2' => 'bar2', 'foo3' => 'bar3', 'foo4' => 'bar4']);
         $adminUrlGenerator->unsetAllExcept('foo3', 'foo2');
         $this->assertSame('http://localhost/admin?foo2=bar2&foo3=bar3', $adminUrlGenerator->generateUrl());
+    }
+
+    /**
+     * @param array<string, mixed> $expectedFilters
+     */
+    #[DataProvider('provideSetFilterCases')]
+    public function testSetFilter(mixed $value, ?string $comparison, mixed $value2, array $expectedFilters): void
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator();
+
+        $adminUrlGenerator->setFilter('price', $value, $comparison, $value2);
+        $this->assertSame(['price' => $expectedFilters], $adminUrlGenerator->get(EA::FILTERS));
+    }
+
+    public static function provideSetFilterCases(): iterable
+    {
+        yield 'value and comparison' => [42, ComparisonType::GT, null, ['comparison' => '>', 'value' => 42]];
+        yield 'value without comparison' => [true, null, null, ['value' => true]];
+        yield 'between two values' => [10, ComparisonType::BETWEEN, 20, ['comparison' => 'between', 'value' => 10, 'value2' => 20]];
+        yield 'multiple values' => [[1, 2], ComparisonType::EQ, null, ['comparison' => '=', 'value' => [1, 2]]];
+        yield 'null value' => [null, ComparisonType::EQ, null, ['comparison' => '=', 'value' => null]];
+    }
+
+    public function testSetFilterGeneratesUrl(): void
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator();
+
+        $adminUrlGenerator->setFilter('seller', 42, ComparisonType::NEQ);
+        $this->assertSame('http://localhost/admin?filters%5Bseller%5D%5Bcomparison%5D=!%3D&filters%5Bseller%5D%5Bvalue%5D=42&foo=bar', $adminUrlGenerator->generateUrl());
+    }
+
+    public function testSetFilterKeepsOtherFilters(): void
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator(query: ['filters' => ['title' => ['comparison' => 'like', 'value' => 'Post 1']]]);
+
+        $adminUrlGenerator->setFilter('published', true);
+        $this->assertSame([
+            'title' => ['comparison' => 'like', 'value' => 'Post 1'],
+            'published' => ['value' => true],
+        ], $adminUrlGenerator->get(EA::FILTERS));
+    }
+
+    public function testSetFilterReplacesFilterOfSameProperty(): void
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator(query: ['filters' => ['price' => ['comparison' => 'between', 'value' => '10', 'value2' => '20']]]);
+
+        $adminUrlGenerator->setFilter('price', 30, ComparisonType::LT);
+        $this->assertSame(['price' => ['comparison' => '<', 'value' => 30]], $adminUrlGenerator->get(EA::FILTERS));
+    }
+
+    public function testSetFilterReplacesInvalidFiltersParameter(): void
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator(query: ['filters' => 'foo']);
+
+        $adminUrlGenerator->setFilter('published', false);
+        $this->assertSame(['published' => ['value' => false]], $adminUrlGenerator->get(EA::FILTERS));
+    }
+
+    public function testUnsetFilter(): void
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator(query: ['filters' => ['title' => ['comparison' => 'like', 'value' => 'Post 1'], 'published' => ['value' => '1']]]);
+
+        $adminUrlGenerator->unsetFilter('title');
+        $this->assertSame(['published' => ['value' => '1']], $adminUrlGenerator->get(EA::FILTERS));
+    }
+
+    public function testUnsetLastFilterRemovesFiltersParameter(): void
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator(query: ['foo' => 'bar', 'filters' => ['published' => ['value' => '1']]]);
+
+        $adminUrlGenerator->unsetFilter('published');
+        $this->assertNull($adminUrlGenerator->get(EA::FILTERS));
+        $this->assertSame('http://localhost/admin?foo=bar', $adminUrlGenerator->generateUrl());
+    }
+
+    public function testUnsetFilterOfUnfilteredProperty(): void
+    {
+        $adminUrlGenerator = $this->getAdminUrlGenerator();
+
+        $adminUrlGenerator->unsetFilter('published');
+        $this->assertNull($adminUrlGenerator->get(EA::FILTERS));
+        $this->assertSame('http://localhost/admin?foo=bar', $adminUrlGenerator->generateUrl());
     }
 
     public function testParametersAreSorted(): void
@@ -202,7 +285,10 @@ class AdminUrlGeneratorTest extends KernelTestCase
         $this->assertSame('http://localhost/admin?foo=bar&foo1=bar1', $adminUrlGenerator->generateUrl());
     }
 
-    private function getAdminUrlGenerator(bool $absoluteUrls = true): AdminUrlGeneratorInterface
+    /**
+     * @param array<string, mixed> $query
+     */
+    private function getAdminUrlGenerator(bool $absoluteUrls = true, array $query = ['foo' => 'bar']): AdminUrlGenerator
     {
         self::bootKernel();
 
@@ -211,11 +297,11 @@ class AdminUrlGeneratorTest extends KernelTestCase
         $dashboardDto->setAbsoluteUrls($absoluteUrls);
 
         $adminContext = AdminContext::forTesting(
-            requestContext: RequestContext::forTesting(new Request(['foo' => 'bar'])),
+            requestContext: RequestContext::forTesting(new Request($query)),
             dashboardContext: DashboardContext::forTesting($dashboardDto),
         );
 
-        $request = new Request(query: ['foo' => 'bar'], attributes: [EA::CONTEXT_REQUEST_ATTRIBUTE => $adminContext]);
+        $request = new Request(query: $query, attributes: [EA::CONTEXT_REQUEST_ATTRIBUTE => $adminContext]);
 
         $requestStack = new RequestStack();
         $requestStack->push($request);

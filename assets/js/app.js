@@ -567,6 +567,10 @@ class App {
             action?.();
         });
 
+        document.querySelector('#modal-action-confirmation')?.addEventListener('hidden.bs.modal', () => {
+            pendingAction = null;
+        });
+
         document.querySelectorAll('[data-action-confirmation="true"]').forEach((actionElement) => {
             actionElement.addEventListener('click', (event) => {
                 event.preventDefault();
@@ -620,14 +624,26 @@ class App {
                         return;
                     }
 
-                    // Case 3: standalone button inside a <form> (renderAsForm)
+                    // Case 3: submit button bound to a form, possibly outside its DOM tree (e.g. EDIT/NEW pages);
+                    // unlike submit(), requestSubmit() sends the name/value of the button (needed by the
+                    // built-in save actions) and fires the 'submit' event that form.js and DirtyForm rely on
+                    if (
+                        actionElement instanceof HTMLButtonElement &&
+                        actionElement.type === 'submit' &&
+                        actionElement.form
+                    ) {
+                        actionElement.form.requestSubmit(actionElement);
+                        return;
+                    }
+
+                    // Case 4: standalone button inside a <form> (renderAsForm)
                     const parentForm = actionElement.closest('form');
                     if (parentForm?.hasAttribute('action')) {
                         parentForm.submit();
                         return;
                     }
 
-                    // Case 4: GET action with href
+                    // Case 5: GET action with href
                     const href = actionElement.getAttribute('href');
                     if (href) {
                         window.location.href = href;

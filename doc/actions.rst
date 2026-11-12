@@ -589,7 +589,7 @@ Conditional Action Group Display
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Like regular actions, action groups can be displayed conditionally based on the
-entity state or user permissions::
+entity state::
 
     $moderationGroup = ActionGroup::new('moderation', 'Moderation')
         // the callable receives the current entity instance or null for global action groups
@@ -600,7 +600,17 @@ entity state or user permissions::
         ->addAction(Action::new('reject', 'Reject')->linkToCrudAction('reject'));
 
 The action group will only appear when the condition is met. Individual actions
-within the group can also have their own display conditions.
+within the group, including the main action, can also have their own display
+conditions and :ref:`permissions <security-permissions-actions>`. Permissions
+are set on the actions and not on the group, so use the names of the actions
+when calling ``setPermission()``.
+
+The action group adapts to the actions that the current user can see:
+
+* if the main action is hidden, the group is rendered as a regular dropdown
+  that shows the label and icon of the group;
+* if all the other actions are hidden, the group only renders its main action;
+* if all the actions are hidden, the group isn't rendered.
 
 .. _customizing-dropdown-appearance:
 

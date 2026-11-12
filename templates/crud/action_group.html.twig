@@ -4,6 +4,9 @@
 } %}
 {% set has_main_action = group.hasMainAction %}
 {% set main_action = group.mainAction %}
+{# all the dropdown actions can be hidden for the current user or entity; in that case,
+   only the main action is rendered, without the dropdown toggle and the empty menu #}
+{% set has_dropdown_actions = group.actions|length > 0 %}
 
 <div class="btn-group action-group" {% for name, value in group.htmlAttributes %}{{ name }}="{{ (value.trans is defined ? value|trans : value)|e('html') }}" {% endfor %}>
     {% if has_main_action %} {# render as a split button (main button with action + dropdown toggle) #}
@@ -22,23 +25,25 @@
             {%- if main_action_label is not same as(false) -%}{{ main_action_label|raw }}{%- endif -%}
         </twig:ea:Button>
 
-        {# the toggle mirrors the custom CSS classes of the main action (e.g. to match its size),
-           but not its default 'action-{name}' class, which must only identify the main button #}
-        {% set toggle_css_class = main_action.cssClass|split(' ')|filter(css_class => css_class != 'action-' ~ main_action.name)|join(' ') %}
-        <twig:ea:Button
-                color="{{ group.color }}"
-            variant="{{ group.buttonVariant }}"
-                htmlElement="button"
-                type="button"
-                class="{{ toggle_css_class }} dropdown-toggle dropdown-toggle-split"
-                data-bs-toggle="dropdown"
-                data-bs-popper-config='{"strategy":"fixed"}'
-                aria-haspopup="true"
-                aria-expanded="false"
-                label:class="visually-hidden"
-        >
-            {{ 'action.toggle_dropdown'|trans(domain: 'EasyAdminBundle') }}
-        </twig:ea:Button>
+        {% if has_dropdown_actions %}
+            {# the toggle mirrors the custom CSS classes of the main action (e.g. to match its size),
+               but not its default 'action-{name}' class, which must only identify the main button #}
+            {% set toggle_css_class = main_action.cssClass|split(' ')|filter(css_class => css_class != 'action-' ~ main_action.name)|join(' ') %}
+            <twig:ea:Button
+                    color="{{ group.color }}"
+                variant="{{ group.buttonVariant }}"
+                    htmlElement="button"
+                    type="button"
+                    class="{{ toggle_css_class }} dropdown-toggle dropdown-toggle-split"
+                    data-bs-toggle="dropdown"
+                    data-bs-popper-config='{"strategy":"fixed"}'
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    label:class="visually-hidden"
+            >
+                {{ 'action.toggle_dropdown'|trans(domain: 'EasyAdminBundle') }}
+            </twig:ea:Button>
+        {% endif %}
     {% else %} {# render as a single button that toggles the dropdown (no main action) #}
         <twig:ea:Button
             color="{{ group.color }}"
@@ -57,24 +62,26 @@
         </twig:ea:Button>
     {% endif %}
 
-    <twig:ea:ActionMenu:ActionList class="dropdown-menu" align="{{ has_main_action ? 'end' : 'start' }}">
-        {% for item in group.items %}
-            {% if item is iterable and item.type is defined %}
-                {% if item.type == 'divider' %}
-                    <twig:ea:ActionMenu:ActionList:Divider />
-                {% elseif item.type == 'header' %}
-                    {% set item_label = item.content|trans %}
-                    <twig:ea:ActionMenu:ActionList:Header label="{{ item_label }}" renderLabelRaw="true" />
+    {% if has_dropdown_actions %}
+        <twig:ea:ActionMenu:ActionList class="dropdown-menu" align="{{ has_main_action ? 'end' : 'start' }}">
+            {% for item in group.items %}
+                {% if item is iterable and item.type is defined %}
+                    {% if item.type == 'divider' %}
+                        <twig:ea:ActionMenu:ActionList:Divider />
+                    {% elseif item.type == 'header' %}
+                        {% set item_label = item.content|trans %}
+                        <twig:ea:ActionMenu:ActionList:Header label="{{ item_label }}" renderLabelRaw="true" />
+                    {% endif %}
+                {% else %}
+                    {# item is an ActionDto #}
+                    <twig:ea:ActionMenu:ActionList:Item
+                        label="{{ item.label|trans }}" icon="{{ item.icon }}" class="{{ item.cssClass }} dropdown-item-variant-{{ item.color.value }}"
+                        htmlAttributes="{{ item.htmlAttributes|ea_html_attrs }}"
+                        renderAsForm="{{ item.isRenderedAsForm }}"
+                        url="{{ item.linkUrl }}" renderLabelRaw="true"
+                    />
                 {% endif %}
-            {% else %}
-                {# item is an ActionDto #}
-                <twig:ea:ActionMenu:ActionList:Item
-                    label="{{ item.label|trans }}" icon="{{ item.icon }}" class="{{ item.cssClass }} dropdown-item-variant-{{ item.color.value }}"
-                    htmlAttributes="{{ item.htmlAttributes|ea_html_attrs }}"
-                    renderAsForm="{{ item.isRenderedAsForm }}"
-                    url="{{ item.linkUrl }}" renderLabelRaw="true"
-                />
-            {% endif %}
-        {% endfor %}
-    </twig:ea:ActionMenu:ActionList>
+            {% endfor %}
+        </twig:ea:ActionMenu:ActionList>
+    {% endif %}
 </div>

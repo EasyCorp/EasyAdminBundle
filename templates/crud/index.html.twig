@@ -201,7 +201,7 @@
                                                 </twig:ea:ActionMenu:Button>
 
                                                 <twig:ea:ActionMenu:Overlay>
-                                                    <twig:ea:ActionMenu:ActionList hasSubmenus="{{ entity.actions|filter(item => item.isActionGroup)|length > 0 }}" align="end">
+                                                    <twig:ea:ActionMenu:ActionList hasSubmenus="{{ entity.actions|filter(item => item.isActionGroup and item.actions|length > 0)|length > 0 }}" align="end">
                                                         {% for item in entity.actions %}
                                                             {% if item.isActionGroup %}
                                                                 <twig:ea:ActionMenu:ActionList:ItemGroup

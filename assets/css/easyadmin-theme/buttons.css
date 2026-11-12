@@ -322,14 +322,17 @@
 }
 
 /* these mirror the button group rules of Bootstrap (with logical properties), because the
-   .btn border-radius of the 'ea' layer overrides the ones of the 'vendor' layer */
+   .btn border-radius of the 'ea' layer overrides the ones of the 'vendor' layer. The
+   'form > .btn' selectors are for buttons rendered as forms (e.g. the main action of an
+   action group), which are wrapped in a <form> and so, they aren't children of the group */
 .btn-group > .btn-group:not(:first-child),
 .btn-group > :not(.btn-check:first-child) + .btn {
     margin-inline-start: calc(-1 * var(--button-border-width, var(--border-width)));
 }
 .btn-group > .btn:not(:last-child):not(.dropdown-toggle),
 .btn-group > .btn.dropdown-toggle-split:first-child,
-.btn-group > .btn-group:not(:last-child) > .btn {
+.btn-group > .btn-group:not(:last-child) > .btn,
+.btn-group > form:not(:last-child) > .btn {
     border-start-end-radius: 0;
     border-end-end-radius: 0;
 }
@@ -344,10 +347,12 @@
     min-inline-size: var(--button-height, var(--ea-control-height));
     padding-inline: 0;
 }
-.btn-group > .btn + .btn.dropdown-toggle-split:not(:disabled):not(.disabled) {
+.btn-group > .btn + .btn.dropdown-toggle-split:not(:disabled):not(.disabled),
+.btn-group > form + .btn.dropdown-toggle-split:not(:disabled):not(.disabled) {
     border-inline-start-color: var(--button-split-divider-color, var(--button-border-color));
 }
-.btn-group > .btn:is(:hover, :focus-visible, :active) {
+.btn-group > .btn:is(:hover, :focus-visible, :active),
+.btn-group > form > .btn:is(:hover, :focus-visible, :active) {
     z-index: 1;
 }
 .dropdown-menu .dropdown-submenu .dropdown-toggle.dropdown-toggle-split {

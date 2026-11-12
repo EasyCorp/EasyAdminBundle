@@ -182,6 +182,11 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions {
     margin-inline-start: var(--ea-sp-5);
     margin-inline-end: var(--ea-sp-5);
 }
+/* a form inside a button group is part of a joined button (e.g. the main action
+   of an action group), so it can't be separated from the rest of the group */
+.datagrid td.actions:not(.actions-as-dropdown) .btn-group > form {
+    margin-inline: 0;
+}
 .datagrid td.actions a:not(.dropdown-item) {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);

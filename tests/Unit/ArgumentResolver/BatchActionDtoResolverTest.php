@@ -8,9 +8,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\RequestContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class BatchActionDtoResolverTest extends TestCase
 {
@@ -156,5 +159,48 @@ class BatchActionDtoResolverTest extends TestCase
 
         $this->assertCount(1, $result);
         $this->assertSame([], $result[0]->getEntityIds());
+    }
+
+    /**
+     * @param array<string, mixed>     $payloadChanges    the fields to replace in a valid payload (null removes the field)
+     * @param class-string<\Throwable> $expectedException both exceptions end up as a 400 response
+     */
+    #[DataProvider('provideInvalidPayloads')]
+    public function testResolveRejectsInvalidPayloads(array $payloadChanges, string $expectedException): void
+    {
+        $payload = array_filter(array_merge([
+            EA::BATCH_ACTION_NAME => 'delete',
+            EA::BATCH_ACTION_ENTITY_IDS => ['1', '2'],
+            EA::ENTITY_FQCN => 'App\Entity\Product',
+            EA::BATCH_ACTION_CSRF_TOKEN => 'test_csrf_token',
+        ], $payloadChanges), static fn (mixed $value): bool => null !== $value);
+
+        $this->adminContextProvider
+            ->method('getContext')
+            ->willReturn(AdminContext::forTesting(RequestContext::forTesting(new Request(request: $payload))));
+
+        $argument = new ArgumentMetadata('dto', BatchActionDto::class, false, false, null);
+
+        $this->expectException($expectedException);
+
+        iterator_to_array($this->resolver->resolve(new Request(), $argument));
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>, class-string<\Throwable>}>
+     */
+    public static function provideInvalidPayloads(): iterable
+    {
+        yield 'missing name' => [[EA::BATCH_ACTION_NAME => null], BadRequestHttpException::class];
+        yield 'missing entity FQCN' => [[EA::ENTITY_FQCN => null], BadRequestHttpException::class];
+        yield 'missing CSRF token' => [[EA::BATCH_ACTION_CSRF_TOKEN => null], BadRequestHttpException::class];
+        yield 'empty name' => [[EA::BATCH_ACTION_NAME => ''], BadRequestHttpException::class];
+        yield 'empty entity FQCN' => [[EA::ENTITY_FQCN => ''], BadRequestHttpException::class];
+        yield 'empty CSRF token' => [[EA::BATCH_ACTION_CSRF_TOKEN => ''], BadRequestHttpException::class];
+        yield 'name sent as an array' => [[EA::BATCH_ACTION_NAME => ['delete']], BadRequestException::class];
+        yield 'entity FQCN sent as an array' => [[EA::ENTITY_FQCN => ['App\Entity\Product']], BadRequestException::class];
+        yield 'CSRF token sent as an array' => [[EA::BATCH_ACTION_CSRF_TOKEN => ['test_csrf_token']], BadRequestException::class];
+        yield 'entity IDs sent as a scalar' => [[EA::BATCH_ACTION_ENTITY_IDS => '5'], BadRequestException::class];
+        yield 'nested entity IDs' => [[EA::BATCH_ACTION_ENTITY_IDS => ['1', ['2']]], BadRequestHttpException::class];
     }
 }

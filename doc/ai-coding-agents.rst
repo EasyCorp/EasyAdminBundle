@@ -24,6 +24,12 @@ symbolic links, so they work on every operating system, including Windows.
 The skill is plain text that you can read and change at any time. It doesn't
 need network access and it doesn't send any telemetry.
 
+.. note::
+
+    The ``SKILL.md`` file in the ``vendor/`` directory contains HTML comments
+    that EasyAdmin uses to test the skill. The copies of your project don't
+    include them, because agents don't need them.
+
 Installing the Skill
 --------------------
 
@@ -103,7 +109,9 @@ shared ``.agents/skills/`` directory.
 .. tip::
 
     Junie reads skills from both ``.junie/skills/`` and ``.agents/skills/``,
-    so the ``junie`` target is a convenience and not a requirement.
+    so the ``junie`` target is a convenience and not a requirement. The same
+    happens with Windsurf: its latest versions read ``.agents/skills/`` too
+    and consider ``.windsurf/skills/`` a legacy location.
 
 Installing Without Interaction
 ------------------------------

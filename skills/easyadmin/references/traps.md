@@ -14,6 +14,7 @@ When in doubt, search `references/api.md`.
 - [Twig](#twig)
 - [Tests](#tests)
 - [Assets](#assets)
+- [Removed in EasyAdmin 5](#removed-in-easyadmin-5)
 
 ## Menu
 
@@ -118,3 +119,17 @@ When in doubt, search `references/api.md`.
 |---|---|
 | `Asset::new('app.js')->hideOnIndex()` | `->ignoreOnIndex()`, `->ignoreOnDetail()`, `->ignoreOnForm()`, `->onlyOnIndex()`, ...: assets use `ignoreOn*`, fields use `hideOn*` |
 | `$assets->addJs('build/admin.js')` | `->addJsFile('build/admin.js')`, `->addCssFile()`, `->addWebpackEncoreEntry()`, `->addAssetMapperEntry()` |
+
+## Removed in EasyAdmin 5
+
+Other EasyAdmin 4 names, besides the ones in the tables above. The details
+are in `vendor/easycorp/easyadmin-bundle/UPGRADE.md`.
+
+| EasyAdmin 4 | EasyAdmin 5 |
+|---|---|
+| `#[Route('/admin', name: 'admin')]` on the dashboard `index()` | `#[AdminDashboard(routePath: '/admin', routeName: 'admin')]` on the class |
+| URLs with `?crudAction=...&crudControllerFqcn=...` | Pretty URLs from `config/routes/easyadmin.yaml`, always |
+| `$batchActionDto->getReferrerUrl()` | Removed; redirect to a generated admin URL or read the `Referer` header |
+| `$context->getCrudControllers()` | `$context->getAdminControllers()` |
+| `CacheKey::ENTITY_FQCN_TO_CRUD_FQCN` | `array_flip()` of `CacheKey::CRUD_FQCN_TO_ENTITY_FQCN` |
+| No PHPDoc on CRUD controllers | `/** @extends AbstractCrudController<Product> */` |

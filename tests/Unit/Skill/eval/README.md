@@ -3,7 +3,7 @@
 The unit tests in `tests/Unit/Skill/` prove that every symbol the skill names
 exists. They cannot prove that an AI coding agent produces working code after
 reading it. This evaluation does, and it runs before every release (see
-`.github/RELEASE_CHECKLIST.md`). It takes about 30 minutes.
+`.github/RELEASE_CHECKLIST.md`). It takes about one hour.
 
 ## Setup
 
@@ -22,6 +22,27 @@ reading it. This evaluation does, and it runs before every release (see
 2. Create the entities that the tasks mention (`Product`, `Category`, `Tag`,
    `Shop`, `User`) with `make:entity`, or copy them from a previous run. The
    tasks describe every property they need.
+
+## Format check
+
+Validate the skill with `skills-ref`, the reference validator of the Agent
+Skills specification (it lives in the `skills-ref/` directory of the
+`agentskills/agentskills` repository on GitHub), before anything else:
+
+```bash
+skills-ref validate /path/to/EasyAdminBundle/skills/easyadmin
+```
+
+## Trigger evaluation
+
+Run every query of `triggers.md` three times with the skill installed and
+record whether the agent loaded the `easyadmin` skill. A query passes when
+the agent does the expected thing in at least two of the three runs.
+
+When a query fails, change the `description` in the front matter of
+`skills/easyadmin/SKILL.md` to describe the missing kind of task or the
+boundary that was crossed. Don't copy words of the failed query into it:
+that fixes that query only.
 
 ## Arms
 

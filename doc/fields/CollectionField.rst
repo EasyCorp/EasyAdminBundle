@@ -171,7 +171,8 @@ By default, items in the collection are represented by a single line showing
 their ``__toString()`` value. Use this option to define how to get the string
 representation of each collection entry::
 
-    // this calls the 'getFullName()' method in the entity
+    // this calls the 'getFullName()' method in the entity (a string is always
+    // the name of a method of the entity, never the name of a PHP function)
     yield CollectionField::new('...')->setEntryToStringMethod('getFullName');
 
     // you can also pass a callable to generate the string

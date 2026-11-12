@@ -86,4 +86,38 @@ class CrudDtoTest extends TestCase
         yield [static function () { return 'link'; }, 'link'];
         yield [static function ($entityInstance) { return 'Entity #'.$entityInstance->getPrimaryKeyValue(); }, 'Entity #42'];
     }
+
+    #[DataProvider('providePageTitles')]
+    public function testGetCustomPageTitle(string|callable $setTitle, string $expectedTitle): void
+    {
+        $crudDto = new CrudDto();
+        $crudDto->setCustomPageTitle('detail', $setTitle);
+
+        $entityInstance = new class implements \Stringable {
+            public function __toString(): string
+            {
+                return ' Entity #42 ';
+            }
+        };
+
+        $this->assertSame($expectedTitle, $crudDto->getCustomPageTitle('detail', $entityInstance)?->getMessage());
+        $this->assertSame($expectedTitle, $crudDto->getCustomPageTitle('detail')?->getMessage());
+    }
+
+    public static function providePageTitles(): \Generator
+    {
+        yield ['Foo Bar', 'Foo Bar'];
+        // strings that match the name of a PHP function are titles, not callables
+        yield ['Trim', 'Trim'];
+        yield ['strtoupper', 'strtoupper'];
+        yield ['Time', 'Time'];
+        yield [static fn (): string => 'Foo Bar', 'Foo Bar'];
+        yield [static fn (?object $entityInstance = null): string => 'Foo Bar', 'Foo Bar'];
+        yield [new class {
+            public function __invoke(): string
+            {
+                return 'Foo Bar';
+            }
+        }, 'Foo Bar'];
+    }
 }

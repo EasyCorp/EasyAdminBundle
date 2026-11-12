@@ -199,7 +199,8 @@ final class CrudDto
     public function getCustomPageTitle(?string $pageName = null, ?object $entityInstance = null, array $translationParameters = [], ?string $domain = null): ?TranslatableInterface
     {
         $title = $this->customPageTitles[$pageName ?? $this->pageName];
-        if (\is_callable($title)) {
+        // strings are always literal titles, even if they match the name of a PHP function (e.g. 'Time')
+        if (!\is_string($title) && \is_callable($title)) {
             $title = null !== $entityInstance ? $title($entityInstance) : $title();
         }
 

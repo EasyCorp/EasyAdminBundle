@@ -55,6 +55,26 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
         $this->assertSame(ObjectWithVirtualIdProperty::class.' #virtual-1234', $result);
     }
 
+    public function testRepresentAsStringCallsTheMethodNamedLikeAPhpFunction(): void
+    {
+        $reflectedClass = new \ReflectionClass(EasyAdminTwigExtension::class);
+        $twigExtensionInstance = $reflectedClass->newInstanceWithoutConstructor();
+
+        $value = new class implements \Stringable {
+            public function strrev(): string
+            {
+                return 'result of the method';
+            }
+
+            public function __toString(): string
+            {
+                return 'abc';
+            }
+        };
+
+        $this->assertSame('result of the method', $twigExtensionInstance->representAsString($value, 'strrev'));
+    }
+
     public function testRepresentAsStringException(): void
     {
         $this->expectException(\RuntimeException::class);

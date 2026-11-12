@@ -324,7 +324,8 @@ class FileUploadType extends AbstractType implements DataMapperInterface
                 ]);
             };
 
-            if (\is_callable($fileNamePatternOrCallable)) {
+            // strings are always patterns, even if they match the name of a PHP function (e.g. 'time')
+            if (!\is_string($fileNamePatternOrCallable) && \is_callable($fileNamePatternOrCallable)) {
                 return static function (UploadedFile $file) use ($fileNamePatternOrCallable, $resolvePatternPlaceholders) {
                     return $resolvePatternPlaceholders($fileNamePatternOrCallable($file), $file);
                 };

@@ -60,7 +60,8 @@ final readonly class FileConfigurator implements FieldConfiguratorInterface
 
         $pattern = $field->getCustomOption(FileField::OPTION_UPLOADED_FILE_NAME_PATTERN);
 
-        if (\is_callable($pattern)) {
+        // strings are always patterns, even if they match the name of a PHP function (e.g. 'time')
+        if ($pattern instanceof \Closure) {
             $entityInstance = $entityDto->getInstance();
             $originalCallback = $pattern;
             $pattern = static function (UploadedFile $file) use ($originalCallback, $entityInstance) {

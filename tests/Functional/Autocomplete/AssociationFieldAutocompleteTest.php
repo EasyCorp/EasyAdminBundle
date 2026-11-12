@@ -8,6 +8,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FilterTestEntityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Autocomplete\Fixtures\ConstructorSpy;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\HttpFoundation\Response;
 
 class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
 {
@@ -202,15 +205,51 @@ class AssociationFieldAutocompleteTest extends AbstractCrudTestCase
         static::assertSame($this->getCategoryIds(), array_column($data['results'], 'entityId'));
     }
 
+    #[DataProvider('provideFqcnsThatAreNotCrudControllers')]
+    public function testAutocompleteRejectsContextControllersThatAreNotCrudControllers(string $crudControllerFqcn): void
+    {
+        $this->client->request('GET', $this->generateAutocompleteUrl(null, 1, 'new', $crudControllerFqcn));
+
+        static::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    public static function provideFqcnsThatAreNotCrudControllers(): \Generator
+    {
+        yield 'class that is not a controller' => [\ArrayObject::class];
+        yield 'dashboard controller' => [DashboardController::class];
+        yield 'service ID' => ['router'];
+        yield 'class that does not exist' => ['App\Controller\MissingCrudController'];
+    }
+
+    public function testAutocompleteDoesNotInstantiateContextClassesThatAreNotCrudControllers(): void
+    {
+        ConstructorSpy::$wasInstantiated = false;
+
+        $this->client->request('GET', $this->generateAutocompleteUrl(null, 1, 'new', ConstructorSpy::class));
+
+        static::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+        static::assertFalse(ConstructorSpy::$wasInstantiated);
+    }
+
+    public function testAutocompleteRejectsContextControllersThatAreNotStrings(): void
+    {
+        $autocompleteUrl = $this->generateAutocompleteUrl().'&autocompleteContext[crudControllerFqcn][]='.urlencode(CategoryCrudController::class);
+
+        $this->client->request('GET', $autocompleteUrl);
+
+        static::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
     /**
-     * @param string|null $query           Search query
-     * @param int         $page            Page number
-     * @param string      $originatingPage The page where autocomplete is called from (new, edit, index)
+     * @param string|null $query              Search query
+     * @param int         $page               Page number
+     * @param string      $originatingPage    The page where autocomplete is called from (new, edit, index)
+     * @param string      $crudControllerFqcn The CRUD controller that displays the autocomplete field
      */
-    private function generateAutocompleteUrl(?string $query = null, int $page = 1, string $originatingPage = 'new'): string
+    private function generateAutocompleteUrl(?string $query = null, int $page = 1, string $originatingPage = 'new', string $crudControllerFqcn = FilterTestEntityCrudController::class): string
     {
         $options = [
-            'autocompleteContext[crudControllerFqcn]' => FilterTestEntityCrudController::class,
+            'autocompleteContext[crudControllerFqcn]' => $crudControllerFqcn,
             'autocompleteContext[propertyName]' => 'relatedEntity',
             'autocompleteContext[originatingPage]' => $originatingPage,
         ];

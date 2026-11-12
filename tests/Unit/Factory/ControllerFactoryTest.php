@@ -5,6 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Factory;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
@@ -41,7 +43,7 @@ class ControllerFactoryTest extends TestCase
             ->willReturnCallback(static fn (): array => [$crudController, 'index']);
 
         $result = $this->controllerFactory->getCrudControllerInstance(
-            'App\Controller\ProductCrudController',
+            CategoryCrudController::class,
             'index',
             $request
         );
@@ -59,10 +61,10 @@ class ControllerFactoryTest extends TestCase
             ->willReturn(false);
 
         $this->expectException(NotFoundHttpException::class);
-        $this->expectExceptionMessage('Unable to find the controller "App\Controller\InvalidController::index".');
+        $this->expectExceptionMessage(sprintf('Unable to find the controller "%s::index".', CategoryCrudController::class));
 
         $this->controllerFactory->getCrudControllerInstance(
-            'App\Controller\InvalidController',
+            CategoryCrudController::class,
             'index',
             $request
         );
@@ -78,7 +80,7 @@ class ControllerFactoryTest extends TestCase
             ->willReturnCallback(static fn (): \Closure => static fn (): string => 'response');
 
         $result = $this->controllerFactory->getCrudControllerInstance(
-            'App\Controller\ProductCrudController',
+            CategoryCrudController::class,
             'index',
             $request
         );
@@ -102,7 +104,7 @@ class ControllerFactoryTest extends TestCase
             ->willReturnCallback(static fn (): array => [$nonCrudController, 'index']);
 
         $result = $this->controllerFactory->getCrudControllerInstance(
-            'App\Controller\ProductCrudController',
+            CategoryCrudController::class,
             'index',
             $request
         );
@@ -121,7 +123,7 @@ class ControllerFactoryTest extends TestCase
             ->willReturnCallback(static fn (): array => [$dashboardController, 'index']);
 
         $result = $this->controllerFactory->getDashboardControllerInstance(
-            'App\Controller\DashboardController',
+            DashboardController::class,
             $request
         );
 
@@ -144,7 +146,7 @@ class ControllerFactoryTest extends TestCase
             ->willReturnCallback(static fn (): array => [$nonDashboardController, 'index']);
 
         $result = $this->controllerFactory->getDashboardControllerInstance(
-            'App\Controller\DashboardController',
+            DashboardController::class,
             $request
         );
 
@@ -161,10 +163,10 @@ class ControllerFactoryTest extends TestCase
             ->willReturn(false);
 
         $this->expectException(NotFoundHttpException::class);
-        $this->expectExceptionMessage('Unable to find the controller "App\Controller\InvalidDashboard::index".');
+        $this->expectExceptionMessage(sprintf('Unable to find the controller "%s::index".', DashboardController::class));
 
         $this->controllerFactory->getDashboardControllerInstance(
-            'App\Controller\InvalidDashboard',
+            DashboardController::class,
             $request
         );
     }
@@ -180,13 +182,13 @@ class ControllerFactoryTest extends TestCase
             ->willReturnCallback(function (Request $req) use ($crudController) {
                 $controller = $req->attributes->get('_controller');
                 // verify the backslashes were decoded
-                $this->assertSame(['App\Controller\ProductCrudController', 'index'], $controller);
+                $this->assertSame([CategoryCrudController::class, 'index'], $controller);
 
                 return [$crudController, 'index'];
             });
 
         $result = $this->controllerFactory->getCrudControllerInstance(
-            'App%5CController%5CProductCrudController',
+            str_replace('\\', '%5C', CategoryCrudController::class),
             'index',
             $request
         );
@@ -206,9 +208,28 @@ class ControllerFactoryTest extends TestCase
         $this->expectException(NotFoundHttpException::class);
 
         $this->controllerFactory->getCrudControllerInstance(
-            'App\Controller\BrokenController',
+            CategoryCrudController::class,
             'index',
             $request
         );
+    }
+
+    public function testClassesThatAreNotControllersOfTheRequestedTypeAreNotResolved(): void
+    {
+        $this->controllerResolver->expects($this->never())->method('getController');
+
+        $this->assertNull($this->controllerFactory->getCrudControllerInstance(\ArrayObject::class, 'index', new Request()));
+        $this->assertNull($this->controllerFactory->getCrudControllerInstance(DashboardController::class, 'index', new Request()));
+        $this->assertNull($this->controllerFactory->getDashboardControllerInstance(CategoryCrudController::class, new Request()));
+    }
+
+    public function testStringsThatAreNotClassesAreNotResolved(): void
+    {
+        $this->controllerResolver->expects($this->never())->method('getController');
+
+        $this->expectException(NotFoundHttpException::class);
+        $this->expectExceptionMessage('Unable to find the controller "router::index".');
+
+        $this->controllerFactory->getCrudControllerInstance('router', 'index', new Request());
     }
 }

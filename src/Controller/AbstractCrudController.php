@@ -65,6 +65,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PropertyAccess\PropertyPathInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
@@ -565,8 +566,15 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $crudControllerFqcn = $autocompleteContext[EA::CRUD_CONTROLLER_FQCN] ?? $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN);
-        /** @var CrudControllerInterface $controller */
+        if (!\is_string($crudControllerFqcn)) {
+            throw new NotFoundHttpException('Invalid autocomplete context: the CRUD controller must be a class name.');
+        }
+
         $controller = $this->container->get(ControllerFactory::class)->getCrudControllerInstance($crudControllerFqcn, Action::INDEX, $context->getRequest());
+        if (null === $controller) {
+            throw new NotFoundHttpException(sprintf('The "%s" class is not a CRUD controller.', $crudControllerFqcn));
+        }
+
         $originatingPage = $autocompleteContext['originatingPage'];
         $propertyName = $autocompleteContext['propertyName'];
         $fields = new FieldCollection($controller->configureFields($originatingPage));

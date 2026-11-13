@@ -298,6 +298,21 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions {
     text-decoration-thickness: var(--ea-sp-1);
     text-underline-offset: var(--ea-sp-3);
 }
+/* When the search query has several words and one of them is part of another one (e.g.
+   searching for 'car carpet'), mark.js highlights each word separately, so the shorter word
+   is highlighted again inside the longer one: <mark><mark>car</mark>pet</mark>.
+   The negative z-index of the inner mark would hide it behind the background of the outer
+   one, so the inner mark is rendered as plain text (it's already inside the outer highlight).
+   Its underline is removed too, because it would be painted over the underline of the outer
+   mark and that part would look more intense (mostly in the dark theme) */
+.datagrid mark mark {
+    position: static;
+    z-index: auto;
+    margin-inline: 0;
+    padding: 0;
+    background: none;
+    text-decoration-line: none;
+}
 
 .datagrid .header-for-field-boolean {
     text-align: center;

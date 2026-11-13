@@ -57,6 +57,17 @@ final readonly class ControllerFactory
 
         // needed to fix the double encoding of URLs that might happen (https://github.com/EasyCorp/EasyAdminBundle/pull/6902)
         $controllerFqcn = str_replace('%5C', '\\', $controllerFqcn);
+
+        // the FQCN can come from the request (e.g. the autocomplete context) and the controller resolver
+        // instantiates any given class or fetches any public service, so check the type before resolving it
+        if (!class_exists($controllerFqcn)) {
+            throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $controllerFqcn, $controllerAction));
+        }
+
+        if (!is_subclass_of($controllerFqcn, $controllerInterface)) {
+            return null;
+        }
+
         $newRequest = $request->duplicate(null, null, ['_controller' => [$controllerFqcn, $controllerAction]]);
         try {
             $controllerCallable = $this->controllerResolver->getController($newRequest);

@@ -122,6 +122,17 @@ class AssociationFieldTest extends AbstractFieldTestCase
         self::assertSame($crudControllerFqcn, $fieldDto->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER));
     }
 
+    public function testRenderAsEmbeddedFormKeepsControllerSetWithSetCrudController(): void
+    {
+        $crudControllerFqcn = 'App\\Controller\\CategoryCrudController';
+        $field = AssociationField::new('category');
+        $field->setCrudController($crudControllerFqcn)->renderAsEmbeddedForm();
+        $fieldDto = $this->configure($field);
+
+        self::assertTrue($fieldDto->getCustomOption(AssociationField::OPTION_RENDER_AS_EMBEDDED_FORM));
+        self::assertSame($crudControllerFqcn, $fieldDto->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER));
+    }
+
     public function testRenderAsEmbeddedFormWithPageNames(): void
     {
         $crudControllerFqcn = 'App\\Controller\\CategoryCrudController';

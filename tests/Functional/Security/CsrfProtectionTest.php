@@ -7,9 +7,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\CategoryCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\CsrfTokenCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\SecuredDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Kernel;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -237,6 +239,82 @@ class CsrfProtectionTest extends AbstractCrudTestCase
         static::assertSame($toggleIsExpectedToSucceed, $category->isActive());
     }
 
+    public function testDeleteCsrfTokenIsBoundToTheCrudController(): void
+    {
+        $category = CategoryFactory::createOne();
+        $deleteUrl = $this->getCrudUrl('delete', $category->getId(), [], null, CsrfTokenCategoryCrudController::class);
+
+        // the token printed by a CRUD controller is not valid for another CRUD controller...
+        $csrfToken = $this->getDeleteCsrfToken($this->generateIndexUrl());
+        $this->client->request('POST', $deleteUrl, ['token' => $csrfToken]);
+
+        $this->entityManager->clear();
+        static::assertInstanceOf(Category::class, $this->categories->find($category->getId()));
+
+        // ...but only for the CRUD controller that printed it
+        $csrfToken = $this->getDeleteCsrfToken($this->generateIndexUrl(null, null, CsrfTokenCategoryCrudController::class));
+        $this->client->request('POST', $deleteUrl, ['token' => $csrfToken]);
+
+        $this->entityManager->clear();
+        static::assertNull($this->categories->find($category->getId()));
+    }
+
+    #[IgnoreDeprecations]
+    public function testDeleteAcceptsTheDeprecatedCsrfTokenId(): void
+    {
+        $category = CategoryFactory::createOne();
+
+        $this->expectUserDeprecationMessage('Since easycorp/easyadmin-bundle 5.10.1: Using the "ea-delete" CSRF token ID in the delete action is deprecated and it will not be valid in EasyAdmin 6.0. Use "ea-delete-<crud-controller-fqcn>" instead.');
+
+        $this->client->request('POST', $this->getCrudUrl('delete', $category->getId(), [], null, CsrfTokenCategoryCrudController::class), ['token' => $this->getLegacyCsrfTokens()['delete']]);
+
+        $this->entityManager->clear();
+        static::assertNull($this->categories->find($category->getId()));
+    }
+
+    public function testToggleCsrfTokenIsBoundToTheCrudControllerAndTheField(): void
+    {
+        $category = CategoryFactory::createOne(['active' => false, 'activeDisabled' => false]);
+
+        // the token of a switch is not valid for the same field of another CRUD controller...
+        $csrfToken = $this->getToggleCsrfToken($this->generateIndexUrl(), 'active');
+        $this->requestToggle($category->getId(), 'active', $csrfToken);
+        static::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+
+        // ...nor for another field of the same CRUD controller
+        $csrfToken = $this->getToggleCsrfToken($this->generateIndexUrl(null, null, CsrfTokenCategoryCrudController::class), 'active');
+        $this->requestToggle($category->getId(), 'activeDisabled', $csrfToken);
+        static::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+
+        $this->entityManager->clear();
+        $category = $this->categories->find($category->getId());
+        static::assertFalse($category->isActive());
+        static::assertFalse($category->isActiveDisabled());
+
+        // it's only valid for the switch it was generated for
+        $this->requestToggle($category->getId(), 'active', $csrfToken);
+        static::assertResponseIsSuccessful();
+
+        $this->entityManager->clear();
+        $category = $this->categories->find($category->getId());
+        static::assertTrue($category->isActive());
+        static::assertFalse($category->isActiveDisabled());
+    }
+
+    #[IgnoreDeprecations]
+    public function testToggleAcceptsTheDeprecatedCsrfTokenId(): void
+    {
+        $category = CategoryFactory::createOne(['active' => false]);
+
+        $this->expectUserDeprecationMessage('Since easycorp/easyadmin-bundle 5.10.1: Using the "ea-toggle" CSRF token ID in boolean switches is deprecated and it will not be valid in EasyAdmin 6.0. Use "ea-toggle-<crud-controller-fqcn>-<property-name>" instead.');
+
+        $this->requestToggle($category->getId(), 'active', $this->getLegacyCsrfTokens()['toggle']);
+        static::assertResponseIsSuccessful();
+
+        $this->entityManager->clear();
+        static::assertTrue($this->categories->find($category->getId())->isActive());
+    }
+
     public static function provideToggleCsrfTokens(): \Generator
     {
         yield 'GET method not allowed' => [
@@ -257,5 +335,36 @@ class CsrfProtectionTest extends AbstractCrudTestCase
             Response::HTTP_OK,
             true,
         ];
+    }
+
+    private function getDeleteCsrfToken(string $indexUrl): string
+    {
+        return $this->client->request('GET', $indexUrl)->filter('#action-confirmation-form input[name="token"]')->attr('value');
+    }
+
+    private function getToggleCsrfToken(string $indexUrl, string $property): string
+    {
+        $crawler = $this->client->request('GET', $indexUrl);
+        $toggleUrl = $crawler->filter(sprintf('td[data-column="%s"] input[type="checkbox"]', $property))->first()->attr('data-toggle-url');
+        parse_str(parse_url($toggleUrl, \PHP_URL_QUERY), $parameters);
+
+        return $parameters['csrfToken'];
+    }
+
+    /**
+     * @return array{delete: string, toggle: string}
+     */
+    private function getLegacyCsrfTokens(): array
+    {
+        $this->client->request('GET', $this->getCrudUrl('legacyCsrfTokens', null, [], null, CsrfTokenCategoryCrudController::class));
+
+        return json_decode($this->client->getResponse()->getContent(), true, flags: \JSON_THROW_ON_ERROR);
+    }
+
+    private function requestToggle(int $categoryId, string $property, string $csrfToken): void
+    {
+        $toggleUrl = $this->getCrudUrl('edit', $categoryId, ['fieldName' => $property, 'newValue' => 'true', 'csrfToken' => $csrfToken], null, CsrfTokenCategoryCrudController::class);
+
+        $this->client->request('PATCH', $toggleUrl, [], [], ['HTTP_x-requested-with' => 'XMLHttpRequest']);
     }
 }

@@ -45,7 +45,9 @@ final readonly class BooleanConfigurator implements FieldConfiguratorInterface
                     ->setAction(Action::EDIT)
                     ->setEntityId($entityDto->getPrimaryKeyValue())
                     ->set('fieldName', $field->getProperty())
-                    ->set('csrfToken', $this->csrfTokenManager?->getToken(BooleanField::CSRF_TOKEN_NAME))
+                    // the token ID includes the CRUD controller and the property, so the token
+                    // of a switch is not valid for other fields or other CRUD controllers
+                    ->set('csrfToken', $this->csrfTokenManager?->getToken(BooleanField::CSRF_TOKEN_NAME.'-'.$crudDto->getControllerFqcn().'-'.$field->getProperty()))
                     ->generateUrl();
                 $field->setCustomOption(BooleanField::OPTION_TOGGLE_URL, $toggleUrl);
             }

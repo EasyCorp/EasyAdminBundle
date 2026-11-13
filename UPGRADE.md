@@ -43,6 +43,44 @@ they are correct, because the requests that don't match them now return a 404 er
 The `methods` option is still ignored in the attribute of the CRUD controller class;
 define it in the attribute of each action.
 
+### CSRF Tokens of Delete Actions and Boolean Switches Changed Their IDs
+
+The CSRF tokens of the delete action and of the boolean switches of the index
+page are now only valid for the CRUD controller (and the property) they were
+generated for. Their IDs changed like this:
+
+| Before      | After                                              |
+| ----------- | -------------------------------------------------- |
+| `ea-delete` | `ea-delete-<CRUD controller FQCN>`                 |
+| `ea-toggle` | `ea-toggle-<CRUD controller FQCN>-<property name>` |
+
+If your code checks those tokens (for example, in a `delete()` or `edit()`
+method that doesn't call the parent method, or in a custom action that checks
+the token of the confirmation modal), update it, because the tokens that
+EasyAdmin generates no longer match the old IDs:
+
+```php
+// before
+$this->isCsrfTokenValid('ea-delete', $token);
+
+// after
+$this->isCsrfTokenValid('ea-delete-'.$context->getCrud()->getControllerFqcn(), $token);
+```
+
+If your templates or your code generate those tokens (for example, if you
+override the `delete_form` block or the
+`@EasyAdmin/crud/includes/_action_confirmation_modal.html.twig` template),
+tokens generated with the old IDs still work, but they are deprecated and they
+will not be valid in EasyAdmin 6.0:
+
+```twig
+{# before #}
+<input type="hidden" name="token" value="{{ csrf_token('ea-delete') }}" />
+
+{# after #}
+<input type="hidden" name="token" value="{{ csrf_token('ea-delete-' ~ ea().crud.controllerFqcn) }}" />
+```
+
 ## EasyAdmin 5.10.0
 
 ### Flags Are Rounded and Outlined Everywhere

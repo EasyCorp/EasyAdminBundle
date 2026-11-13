@@ -30,6 +30,19 @@ $crud->setPageTitle(Crud::PAGE_DETAIL, 'App\Util\Titles::build');
 $crud->setPageTitle(Crud::PAGE_DETAIL, Titles::build(...));
 ```
 
+### `#[AdminRoute]` Options Are Now Applied to CRUD Routes
+
+The `options` argument of `#[AdminRoute]` (`host`, `schemes`, `condition`,
+`requirements`, `defaults`, etc.) was ignored in CRUD controllers, except for the
+`methods` option of actions. Now those options are applied to the generated routes:
+the options of the class attribute apply to all the routes of the CRUD controller,
+and the options of an action attribute override them.
+
+If your CRUD controllers or their actions already define those options, check that
+they are correct, because the requests that don't match them now return a 404 error.
+The `methods` option is still ignored in the attribute of the CRUD controller class;
+define it in the attribute of each action.
+
 ## EasyAdmin 5.10.0
 
 ### Flags Are Rounded and Outlined Everywhere

@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\FileConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FileField;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTestCase;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileConfiguratorTest extends AbstractFieldTestCase
 {
@@ -42,6 +43,25 @@ class FileConfiguratorTest extends AbstractFieldTestCase
         $dto = $this->configure($field, Crud::PAGE_EDIT);
 
         $this->assertSame('s3://bucket/uploads/', $dto->getFormTypeOption('upload_dir'));
+    }
+
+    public function testPatternNamedLikeAPhpFunctionIsNotCalled(): void
+    {
+        $field = FileField::new('document')->setUploadDir('public/uploads/files')->setUploadedFileNamePattern('time');
+
+        $dto = $this->configure($field, Crud::PAGE_EDIT);
+
+        $this->assertSame('time', $dto->getFormTypeOption('upload_filename'));
+    }
+
+    public function testPatternDefinedAsClosureReceivesTheEntity(): void
+    {
+        $field = FileField::new('document')->setUploadDir('public/uploads/files')
+            ->setUploadedFileNamePattern(static fn (UploadedFile $file, object $entity): string => 'custom-name');
+
+        $dto = $this->configure($field, Crud::PAGE_EDIT);
+
+        $this->assertInstanceOf(\Closure::class, $dto->getFormTypeOption('upload_filename'));
     }
 
     public function testMissingUploadDirThrows(): void

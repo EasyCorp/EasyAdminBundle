@@ -3,6 +3,33 @@ Upgrade Guide
 
 This guide is for humans. If you are an AI agent, read [UPGRADE-AI.md](UPGRADE-AI.md) instead.
 
+## EasyAdmin 5.10.1
+
+### Strings Are No Longer Called as PHP Functions
+
+Some options accept a string or a callable. A string that matched the name of a
+PHP function (e.g. a page title like `'Time'` or `'Trim'`) was called as that
+function. Now strings are never called in these options:
+
+* `Crud::setPageTitle()`: the string is always the title;
+* `Action::linkToUrl()`: the string is always the URL;
+* `FormField::addTab()->setBadge()`: the string is always the badge content;
+* `CollectionField::setEntryToStringMethod()`: the string is always the name of
+  a method of the entry;
+* `FileField::setUploadedFileNamePattern()`, `ImageField::setUploadedFileNamePattern()`
+  and the `upload_filename` option of `FileUploadType`: the string is always the pattern.
+
+If you passed a callable as a string (`'my_function'` or `'App\Util\Titles::build'`),
+use a closure or the first-class callable syntax:
+
+```php
+// before
+$crud->setPageTitle(Crud::PAGE_DETAIL, 'App\Util\Titles::build');
+
+// after
+$crud->setPageTitle(Crud::PAGE_DETAIL, Titles::build(...));
+```
+
 ## EasyAdmin 5.10.0
 
 ### Flags Are Rounded and Outlined Everywhere

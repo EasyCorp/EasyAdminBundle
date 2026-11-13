@@ -3,6 +3,47 @@ AI Upgrade Guide
 
 This guide is for AI agents. If you are a human, read [UPGRADE.md](UPGRADE.md) instead.
 
+## EasyAdmin 5.10.1
+
+Use this prompt to upgrade backends for the string callables that EasyAdmin 5.10.1 no longer calls.
+
+<upgrade-prompt version="5.10.1">
+
+EasyAdmin 5.10.1 never calls strings in the options that accept a string or a
+callable: a string is always the literal value (a title, a URL, a badge content, a
+file name pattern or the name of a method of the collection entry). Search the PHP
+code of the project and apply what's relevant. Skip what doesn't apply.
+
+## Required changes
+
+1. Find calls to these methods whose argument is a string with the name of a
+   function (`'my_function'`) or of a static method (`'App\Util\Titles::build'`)
+   that was expected to be called:
+
+   - `setPageTitle()` (second argument)
+   - `linkToUrl()`
+   - `setBadge()` after `FormField::addTab()` (first argument)
+   - `setEntryToStringMethod()` of `CollectionField`
+   - `setUploadedFileNamePattern()` of `FileField` and `ImageField`
+   - the `upload_filename` option of `FileUploadType`
+
+   Replace the string with a closure or a first-class callable:
+
+   ```php
+   // before
+   $crud->setPageTitle(Crud::PAGE_DETAIL, 'App\Util\Titles::build');
+   $action->linkToUrl('build_invoice_url');
+
+   // after
+   $crud->setPageTitle(Crud::PAGE_DETAIL, Titles::build(...));
+   $action->linkToUrl(build_invoice_url(...));
+   ```
+
+   Don't change strings that are literal values (`'Products'`, `'https://example.com'`)
+   or, in `setEntryToStringMethod()`, names of methods of the entry (`'getFullName'`).
+
+</upgrade-prompt>
+
 ## EasyAdmin 5.10.0
 
 Use this prompt to upgrade backends for the flag and security changes made in EasyAdmin 5.10.0.

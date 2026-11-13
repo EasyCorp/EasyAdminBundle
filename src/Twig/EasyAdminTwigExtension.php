@@ -180,7 +180,8 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function representAsString(mixed $value, string|callable|null $toStringMethod = null): string
     {
         if (null !== $toStringMethod) {
-            if (\is_callable($toStringMethod)) {
+            // strings are always names of methods of the value, even if they match the name of a PHP function (e.g. 'key')
+            if (!\is_string($toStringMethod)) {
                 return $toStringMethod($value, $this->translator);
             }
 

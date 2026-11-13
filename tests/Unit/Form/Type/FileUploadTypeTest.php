@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\Extension\Validator\ViolationMapper\ViolationMapperInterface;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Validation;
 
 class FileUploadTypeTest extends TypeTestCase
@@ -54,6 +55,20 @@ class FileUploadTypeTest extends TypeTestCase
         ]);
 
         $this->assertSame($this->projectDir.'/public/uploads/files/', $form->getConfig()->getOption('upload_dir'));
+    }
+
+    public function testUploadFilenameNamedLikeAPhpFunctionIsNotCalled(): void
+    {
+        $form = $this->factory->create(FileUploadType::class, null, [
+            'upload_dir' => 'public/uploads/files',
+            'upload_filename' => 'basename',
+        ]);
+
+        $filePath = $this->externalDir.'/report.txt';
+        file_put_contents($filePath, 'some contents');
+        $uploadFilename = $form->getConfig()->getOption('upload_filename');
+
+        $this->assertSame('basename', $uploadFilename(new UploadedFile($filePath, 'report.txt', null, null, true)));
     }
 
     public function testAbsoluteUploadDirOutsideProjectDirIsKeptAsIs(): void

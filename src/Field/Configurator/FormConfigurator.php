@@ -30,10 +30,11 @@ final class FormConfigurator implements FieldConfiguratorInterface
         }
 
         // if a form tab defines a badge whose content is a callable, resolve it now that the
-        // current entity instance is available (e.g. fn (Foo $foo) => $foo->getBars()->count())
+        // current entity instance is available (e.g. fn (Foo $foo) => $foo->getBars()->count());
+        // strings are always literal contents, even if they match the name of a PHP function (e.g. 'Count')
         if ($field->isFormTab()) {
             $badge = $field->getCustomOption(FormField::OPTION_TAB_BADGE);
-            if ($badge instanceof FormTabBadgeDto && \is_callable($content = $badge->getContent())) {
+            if ($badge instanceof FormTabBadgeDto && !\is_string($content = $badge->getContent()) && \is_callable($content)) {
                 $field->setCustomOption(FormField::OPTION_TAB_BADGE, new FormTabBadgeDto(
                     $content($entityDto->getInstance()),
                     $badge->getStyle(),

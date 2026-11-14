@@ -55,7 +55,11 @@ final class ActionConfigDto
      */
     public function setActionPermissions(array $permissions): void
     {
-        $this->actionPermissions = $permissions;
+        // merge instead of replacing, because the map already holds the permissions defined
+        // by the dashboard and losing them would grant those actions to every user
+        foreach ($permissions as $actionName => $permission) {
+            $this->actionPermissions[$actionName] = $permission;
+        }
     }
 
     public function prependAction(string $pageName, ActionDto|ActionGroupDto $item): void

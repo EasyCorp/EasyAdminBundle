@@ -225,6 +225,15 @@ class AdminRouterSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // when a request doesn't meet the scheme or the trailing slash of the matched route, the Symfony router
+        // keeps the route attributes but replaces the controller with a redirection; that redirection must
+        // run instead of the controller swapped below, or the restrictions of the route (e.g. 'https') are bypassed
+        $controller = $event->getController();
+        $controllerObject = \is_array($controller) ? $controller[0] : $controller;
+        if (!$controllerObject instanceof DashboardControllerInterface && !$controllerObject instanceof CrudControllerInterface) {
+            return;
+        }
+
         // if the request is related to a CRUD controller, change the controller to be executed
         if (null !== $crudControllerInstance = $this->getCrudControllerInstance($request, $adminContext->getDashboardControllerFqcn())) {
             $symfonyControllerFqcnCallable = [$crudControllerInstance, $request->attributes->get(EA::CRUD_ACTION) ?? $request->query->get(EA::CRUD_ACTION)];

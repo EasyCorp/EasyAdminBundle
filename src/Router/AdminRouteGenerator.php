@@ -203,6 +203,8 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         $adminRoutes = [];
         /** @var array<string> $addedRouteNames Temporary cache that stores the route names to ensure that we don't add duplicated admin routes */
         $addedRouteNames = [];
+        /** @var array<class-string, Route> $dashboardRoutes Only the dashboards that define their route with the #[AdminDashboard] attribute */
+        $dashboardRoutes = [];
 
         // create the routes for the CRUD controllers and actions
         foreach ($this->dashboardControllers as $dashboardController) {
@@ -215,6 +217,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             if (null !== $adminRouteData = $this->createDashboardRoute($dashboardFqcn)) {
                 $adminRoutes[$adminRouteData['routeName']] = $adminRouteData['route'];
                 $addedRouteNames[] = $adminRouteData['routeName'];
+                $dashboardRoutes[$dashboardFqcn] = $adminRouteData['route'];
             }
 
             // then, create the routes of the CRUD controllers associated with the dashboard
@@ -293,6 +296,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                     ];
 
                     $adminRoute = new Route($adminRoutePath, defaults: $defaults, methods: $actionRouteConfig['methods']);
+                    $this->applyDashboardRouteRestrictions($adminRoute, $dashboardRoutes[$dashboardFqcn] ?? null);
                     $adminRoutes[$adminRouteName] = $adminRoute;
                     $addedRouteNames[] = $adminRouteName;
                 }
@@ -360,6 +364,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                             }
 
                             $adminRoute = $this->createRouteForAdminAttribute($currentClassAdminRoute, $adminRoutePath, $dashboardFqcn, $controllerFqcn, '__invoke');
+                            $this->applyDashboardRouteRestrictions($adminRoute, $dashboardRoutes[$dashboardFqcn] ?? null);
 
                             $adminRoutes[$adminRouteName] = $adminRoute;
                             $addedRouteNames[] = $adminRouteName;
@@ -452,6 +457,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                         );
 
                         $adminRoute = $this->createRouteForAdminAttribute($mergedAdminRoute, $adminRoutePath, $dashboardFqcn, $controllerFqcn, $method->name);
+                        $this->applyDashboardRouteRestrictions($adminRoute, $dashboardRoutes[$dashboardFqcn] ?? null);
 
                         $adminRoutes[$adminRouteName] = $adminRoute;
                         $addedRouteNames[] = $adminRouteName;
@@ -510,6 +516,51 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         }
 
         return $route;
+    }
+
+    /**
+     * All the routes of a dashboard start with the path of the dashboard route, so they must match only
+     * the requests matched by that route. Otherwise, they would match URLs (e.g. other hosts or other
+     * values of a placeholder of the dashboard path) that a security rule written like the dashboard
+     * route doesn't cover. The requirements, host and schemes of the route itself win over the ones
+     * of the dashboard because they are more specific, but the conditions are combined, so a route
+     * condition never removes the dashboard condition. The HTTP methods are not inherited because each
+     * route defines its own (and other defaults don't restrict which requests are matched).
+     *
+     * The dashboards that define their route with the Symfony #[Route] attribute have no dashboard
+     * route here ($dashboardRoute is null), so nothing is applied to their routes.
+     */
+    private function applyDashboardRouteRestrictions(Route $route, ?Route $dashboardRoute): void
+    {
+        if (null === $dashboardRoute) {
+            return;
+        }
+
+        $route->setRequirements(array_merge($dashboardRoute->getRequirements(), $route->getRequirements()));
+
+        if ('' === $route->getHost() && '' !== $dashboardRoute->getHost()) {
+            $route->setHost($dashboardRoute->getHost());
+
+            // without the defaults of the host placeholders, the URLs of the route couldn't be generated
+            foreach ($dashboardRoute->compile()->getHostVariables() as $hostVariable) {
+                if ($dashboardRoute->hasDefault($hostVariable) && !$route->hasDefault($hostVariable)) {
+                    $route->setDefault($hostVariable, $dashboardRoute->getDefault($hostVariable));
+                }
+            }
+        }
+
+        if ([] === $route->getSchemes()) {
+            $route->setSchemes($dashboardRoute->getSchemes());
+        }
+
+        if ('' !== $dashboardCondition = $dashboardRoute->getCondition()) {
+            $route->setCondition('' === $route->getCondition() ? $dashboardCondition : sprintf('(%s) and (%s)', $dashboardCondition, $route->getCondition()));
+        }
+
+        // the requirements inherited from the dashboard might need this option to compile
+        if ($dashboardRoute->hasOption('utf8') && !$route->hasOption('utf8')) {
+            $route->setOption('utf8', $dashboardRoute->getOption('utf8'));
+        }
     }
 
     /**

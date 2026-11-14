@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controll
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\MultipleRouteCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\SecondDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\TenantDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Entity\Product;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Kernel;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -830,5 +831,118 @@ class AdminRouteTest extends WebTestCase
 
         $client->request('GET', $url);
         $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testDashboardRouteRestrictionsApplyToAllItsRoutes(): void
+    {
+        $client = static::createClient();
+        $routes = $client->getContainer()->get('router')->getRouteCollection();
+
+        // CRUD routes, a custom CRUD action, an invokable #[AdminRoute] controller and a method #[AdminRoute]
+        foreach (['tenant_admin_multiple_route_index', 'tenant_admin_multiple_route_delete', 'tenant_admin_multiple_route_action1', 'tenant_admin_custom_invokable', 'tenant_admin_standalone_action1'] as $routeName) {
+            $route = $routes->get($routeName);
+            $this->assertNotNull($route, sprintf('Route "%s" should exist', $routeName));
+            $this->assertSame('acme|globex', $route->getRequirement('tenant'), $routeName);
+            $this->assertSame('{subdomain}.example.com', $route->getHost(), $routeName);
+            $this->assertSame('admin|backoffice', $route->getRequirement('subdomain'), $routeName);
+            $this->assertSame('admin', $route->getDefault('subdomain'), $routeName);
+            $this->assertSame(['https'], $route->getSchemes(), $routeName);
+            $this->assertSame('request.headers.get("X-Admin") == "1"', $route->getCondition(), $routeName);
+        }
+
+        // the HTTP methods are not inherited: each route keeps its own
+        $this->assertSame(['POST'], $routes->get('tenant_admin_multiple_route_delete')->getMethods());
+
+        // the options of #[AdminRoute] win over the ones of the dashboard, except the conditions, which are combined
+        $reportRoute = $routes->get('tenant_admin_tenant_report');
+        $this->assertSame(['tenant' => 'acme|globex', 'subdomain' => 'admin|backoffice', 'year' => '\d{4}'], $reportRoute->getRequirements());
+        $this->assertSame('(request.headers.get("X-Admin") == "1") and (request.query.has("token"))', $reportRoute->getCondition());
+
+        // the requirements and schemes of #[AdminRoute] replace the ones of the dashboard, even for its placeholders
+        $httpReportRoute = $routes->get('tenant_admin_tenant_report_http');
+        $this->assertSame('initech', $httpReportRoute->getRequirement('tenant'));
+        $this->assertSame(['http'], $httpReportRoute->getSchemes());
+        $this->assertSame('{subdomain}.example.com', $httpReportRoute->getHost());
+        $this->assertSame('request.headers.get("X-Admin") == "1"', $httpReportRoute->getCondition());
+
+        // the routes of the other dashboards are not affected
+        foreach (['admin_multiple_route_index', 'legacy_admin_multiple_route_index'] as $routeName) {
+            $route = $routes->get($routeName);
+            $this->assertSame('', $route->getHost(), $routeName);
+            $this->assertSame([], $route->getSchemes(), $routeName);
+            $this->assertSame('', $route->getCondition(), $routeName);
+        }
+    }
+
+    public function testDashboardRouteRestrictionsRestrictTheMatchedRequests(): void
+    {
+        $client = static::createClient();
+        $adminHeaders = ['HTTP_X_ADMIN' => '1'];
+
+        $client->request('GET', 'https://admin.example.com/tenant-admin/acme', server: $adminHeaders);
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Tenant Dashboard', $client->getResponse()->getContent());
+
+        $client->request('GET', 'https://admin.example.com/tenant-admin/acme/multiple-route/action1', server: $adminHeaders);
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Custom Action 1', $client->getResponse()->getContent());
+
+        $client->request('GET', 'https://backoffice.example.com/tenant-admin/globex/custom-invokable', server: $adminHeaders);
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Invokable Controller Response', $client->getResponse()->getContent());
+
+        // requests rejected by the dashboard route are also rejected by its other routes...
+        foreach ([
+            'https://admin.example.com/tenant-admin/initech/multiple-route/action1',
+            'https://admin.example.com/tenant-admin/ACME/multiple-route/action1',
+            'https://www.example.com/tenant-admin/acme/multiple-route/action1',
+            'https://admin.example.com/tenant-admin/initech/custom-invokable',
+            'https://www.example.com/tenant-admin/acme/custom-invokable',
+        ] as $url) {
+            $client->request('GET', $url, server: $adminHeaders);
+            $this->assertResponseStatusCodeSame(404, $url);
+        }
+
+        // ...when the condition is not met...
+        $client->request('GET', 'https://admin.example.com/tenant-admin/acme/multiple-route/action1');
+        $this->assertResponseStatusCodeSame(404);
+        $client->request('GET', 'https://admin.example.com/tenant-admin/acme/custom-invokable');
+        $this->assertResponseStatusCodeSame(404);
+
+        // ...and with other schemes (the redirect of the router must not be replaced by the CRUD action)
+        $client->request('GET', 'http://admin.example.com/tenant-admin/acme/multiple-route/action1', server: $adminHeaders);
+        $this->assertResponseRedirects('https://admin.example.com/tenant-admin/acme/multiple-route/action1', 301);
+        $client->request('GET', 'http://admin.example.com/tenant-admin/acme/custom-invokable', server: $adminHeaders);
+        $this->assertResponseRedirects('https://admin.example.com/tenant-admin/acme/custom-invokable', 301);
+        $client->request('GET', 'http://admin.example.com/tenant-admin/acme', [EA::CRUD_CONTROLLER_FQCN => MultipleRouteCrudController::class, EA::CRUD_ACTION => 'customAction1'], server: $adminHeaders);
+        $this->assertResponseRedirects();
+        $this->assertStringStartsWith('https://admin.example.com/tenant-admin/acme?', $client->getResponse()->headers->get('Location'));
+
+        // the conditions of the dashboard and of the #[AdminRoute] attribute must be both met
+        $client->request('GET', 'https://admin.example.com/tenant-admin/acme/tenant-report/2026?token=1', server: $adminHeaders);
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Tenant Report: 2026', $client->getResponse()->getContent());
+
+        $client->request('GET', 'https://admin.example.com/tenant-admin/acme/tenant-report/2026?token=1');
+        $this->assertResponseStatusCodeSame(404);
+        $client->request('GET', 'https://admin.example.com/tenant-admin/initech/tenant-report/2026?token=1', server: $adminHeaders);
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testUrlsOfRoutesThatInheritTheDashboardHost(): void
+    {
+        $client = static::createClient();
+        $client->getContainer()->get('router')->getRouteCollection();
+
+        /** @var AdminUrlGenerator $urlGenerator */
+        $urlGenerator = static::getContainer()->get(AdminUrlGenerator::class);
+
+        $url = $urlGenerator
+            ->setDashboard(TenantDashboardController::class)
+            ->setController(MultipleRouteCrudController::class)
+            ->setAction('index')
+            ->set('tenant', 'acme')
+            ->generateUrl();
+        $this->assertSame('https://admin.example.com/tenant-admin/acme/multiple-route', $url);
     }
 }

@@ -432,6 +432,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(4, new Reference(FieldFactory::class))
             ->arg(5, service(CrudPermissionCheckerInterface::class))
             ->arg(6, service(EntityRepository::class))
+            ->arg(7, service(CrudPermissionChecker::class))
 
         ->set(AvatarConfigurator::class)
 
@@ -503,6 +504,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(3, new Reference(FieldFactory::class))
             ->arg(4, service(AdminContextProvider::class))
             ->arg(5, service(EntityRepository::class))
+            ->arg(6, service(CrudPermissionChecker::class))
 
         ->set(SlugConfigurator::class)
 

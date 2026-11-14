@@ -23,6 +23,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Security\CrudPermissionChecker;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -49,6 +50,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         private readonly FieldFactory $fieldFactory,
         private readonly CrudPermissionCheckerInterface $crudPermissionChecker,
         private readonly NestedAssociationResolverInterface $associationResolver,
+        private readonly ?CrudPermissionChecker $entityPermissionChecker = null,
     ) {
     }
 
@@ -113,6 +115,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 $entityDto->getClassMetadata()->getAssociationTargetClass($propertyName),
                 $targetCrudControllerFqcn,
             );
+            $this->applyEntityPermission($field, $context, $targetCrudControllerFqcn);
 
             return;
         }
@@ -403,6 +406,25 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
             $field->setFormTypeOption('editEntityDto', $editEntityDto);
         }
+    }
+
+    /**
+     * The embedded form edits the associated entity (or creates it, when there's none) with the
+     * CRUD form of the target controller, so it must respect its entity permission as its own
+     * 'edit' and 'new' pages do.
+     */
+    private function applyEntityPermission(FieldDto $field, AdminContext $context, string $targetCrudControllerFqcn): void
+    {
+        if (null === $this->entityPermissionChecker
+            || null === $entityPermission = $this->entityPermissionChecker->getEntityPermission($context, $targetCrudControllerFqcn)) {
+            return;
+        }
+
+        $entityPermissionChecker = $this->entityPermissionChecker;
+        $field->setCustomOption(
+            CrudFormType::FIELD_OPTION_IS_ENTITY_GRANTED,
+            static fn (mixed $associatedEntity): bool => $entityPermissionChecker->isEntityPermissionGranted($entityPermission, \is_object($associatedEntity) ? $associatedEntity : null),
+        );
     }
 
     /**

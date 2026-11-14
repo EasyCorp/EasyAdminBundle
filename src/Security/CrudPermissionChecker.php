@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -41,6 +42,32 @@ final class CrudPermissionChecker implements CrudPermissionCheckerInterface, Res
             Permission::EA_EXECUTE_ACTION,
             ['crud' => $targetCrud, 'action' => $action, 'entity' => $entityDto],
         );
+    }
+
+    /**
+     * Returns the entity permission (Crud::setEntityPermission()) of the given CRUD controller.
+     *
+     * @internal
+     *
+     * @param AdminContextInterface<object> $context
+     *
+     * @throws \InvalidArgumentException if $crudControllerFqcn is not a CRUD controller
+     * @throws \LogicException           if the dashboard controller of $context cannot be resolved
+     */
+    public function getEntityPermission(AdminContextInterface $context, string $crudControllerFqcn): string|Expression|null
+    {
+        return $this->getTargetCrudDto($context, $crudControllerFqcn, Action::EDIT)->getEntityPermission();
+    }
+
+    /**
+     * Checks the entity permission of a CRUD controller as its own pages do: with the entity
+     * instance in the 'edit' and 'detail' pages and with NULL in the 'new' page.
+     *
+     * @internal
+     */
+    public function isEntityPermissionGranted(string|Expression $entityPermission, ?object $entityInstance): bool
+    {
+        return $this->authorizationChecker->isGranted($entityPermission, $entityInstance);
     }
 
     public function reset(): void

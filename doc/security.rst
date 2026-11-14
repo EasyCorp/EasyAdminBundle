@@ -290,13 +290,25 @@ permissions to see some items:
 .. image:: images/easyadmin-list-hidden-results.png
    :alt: Index page with some results hidden because user does not have enough permissions
 
+The entity permission also applies when the form of the CRUD controller is
+nested in the form of another CRUD controller (with the
+``renderAsEmbeddedForm()`` option of ``AssociationField`` or with the entries
+of a ``CollectionField``). If the user doesn't have permission to access the
+associated entity, or any of the entries of the collection, the whole field is
+removed from the form and its contents don't change when submitting the form.
+If the entity permission denies the creation of new entities (it's checked
+with a ``null`` subject, as in the ``new`` page), users can't add new entries
+to the collection, and the embedded form of an empty association is removed.
+The permissions of the actions of that CRUD controller (configured with
+``setPermission()``) don't apply to these nested forms.
+
 .. caution::
 
-    The entity permission only applies to the pages of the CRUD controller
-    that defines it. Other CRUD controllers that display the same entity as a
-    list of choices (for example, in the form of an ``AssociationField`` or in
-    an ``EntityFilter``) still list all its items and users can select any of
-    them.
+    The entity permission only applies to the pages and forms of the CRUD
+    controller that defines it. Other CRUD controllers that display the same
+    entity as a list of choices (for example, in the form of an
+    ``AssociationField`` or in an ``EntityFilter``) still list all its items
+    and users can select any of them.
 
     If users must not select certain items in an
     :doc:`AssociationField </fields/AssociationField>`, use its

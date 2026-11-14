@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Security\CrudPermissionChecker;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\LanguageType;
@@ -38,6 +39,7 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
         private FieldFactory $fieldFactory,
         private AdminContextProviderInterface $adminContextProvider,
         private NestedAssociationResolverInterface $associationResolver,
+        private ?CrudPermissionChecker $crudPermissionChecker = null,
     ) {
     }
 
@@ -189,6 +191,8 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
 
         $targetEntityFqcn = $entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty());
 
+        $this->applyEntityPermission($fieldDto, $context, $targetCrudControllerFqcn);
+
         $editEntityDto = $this->createEntityDto(
             $targetEntityFqcn,
             $targetCrudControllerFqcn,
@@ -238,6 +242,33 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
         if (null !== $prototypeEntity) {
             $fieldDto->setFormTypeOptionIfNotSet('prototype_data', $prototypeEntity);
             $fieldDto->setFormTypeOptionIfNotSet('entry_options.empty_data', $createEntryEntity);
+        }
+    }
+
+    /**
+     * The entries are edited and created with the CRUD forms of the target controller, so they
+     * must respect its entity permission as its own 'edit' and 'new' pages do.
+     */
+    private function applyEntityPermission(FieldDto $fieldDto, AdminContext $context, string $targetCrudControllerFqcn): void
+    {
+        if (null === $this->crudPermissionChecker
+            || null === $entityPermission = $this->crudPermissionChecker->getEntityPermission($context, $targetCrudControllerFqcn)) {
+            return;
+        }
+
+        $crudPermissionChecker = $this->crudPermissionChecker;
+        $fieldDto->setCustomOption(CrudFormType::FIELD_OPTION_IS_ENTITY_GRANTED, static function (mixed $entries) use ($crudPermissionChecker, $entityPermission): bool {
+            foreach (is_iterable($entries) ? $entries : [] as $entry) {
+                if (\is_object($entry) && !$crudPermissionChecker->isEntityPermissionGranted($entityPermission, $entry)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        if (!$crudPermissionChecker->isEntityPermissionGranted($entityPermission, null)) {
+            $fieldDto->setFormTypeOption('allow_add', false);
         }
     }
 

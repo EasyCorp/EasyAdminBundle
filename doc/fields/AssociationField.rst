@@ -221,6 +221,13 @@ use, pass the fully-qualified class name of the controller as the first argument
 If you don't pass a CRUD controller as the first argument, the embedded form
 uses the controller set with the ``setCrudController()`` option, if any.
 
+.. note::
+
+    The embedded form applies the ``setEntityPermission()`` option of its
+    CRUD controller. If the user doesn't have permission to access the
+    associated entity, the field is not included in the form. Read more
+    about :ref:`restricting the items displayed to users <security-fields>`.
+
 ``renderAsNativeWidget``
 ~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -3,6 +3,249 @@ AI Upgrade Guide
 
 This guide is for AI agents. If you are a human, read [UPGRADE.md](UPGRADE.md) instead.
 
+## EasyAdmin 5.10.2
+
+Use this prompt to upgrade backends for the route, permission and escaping changes made in EasyAdmin 5.10.2.
+
+<upgrade-prompt version="5.10.2">
+
+EasyAdmin 5.10.2 makes these changes:
+
+- it applies the `allowedDashboards` and `deniedDashboards` arguments of
+  `#[AdminRoute]` to the routes of CRUD controllers. Before, CRUD controllers and
+  their actions ignored them and their routes were generated in every dashboard;
+- it applies the `requirements`, `host`, `schemes` and `condition` of the
+  `routeOptions` argument of `#[AdminDashboard]` to all the routes of the dashboard
+  (CRUD routes and `#[AdminRoute]` routes), not only to the route of `index()`;
+- `Actions::setPermissions()` no longer removes the action permissions defined
+  before calling it on the same `Actions` object. It only adds or changes the
+  permissions of the actions in the given array, like one `setPermission()` call
+  per action;
+- it applies `Crud::setEntityPermission()` of a CRUD controller to its forms nested
+  in other forms: `AssociationField::renderAsEmbeddedForm()` and the entries of
+  `CollectionField` (with `useEntryCrudForm()` or on a Doctrine association
+  without `setEntryType()`). When the user fails the entity permission on the
+  associated entity or on any entry, the field is removed from the form. The entity
+  permission is also checked with a `null` subject, as in the `new` page; when that
+  check fails, the collection doesn't allow adding entries and the embedded form of
+  an empty association is removed;
+- the `crud/field/text`, `crud/field/textarea` and `crud/field/choice` templates
+  escape the contents of the fields, unless the custom option
+  `formattedValueIsSafeHtml` (`FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML`) of the
+  field is `true`. `TextField`, `TextareaField`, `ChoiceField` and the strings
+  returned by `formatValue()` set it and are rendered as before;
+- it HTML-escapes the values of the `%entity_as_string%`, `%entity_id%` and
+  `%entity_short_id%` translation parameters, and fills `%entity_id%` and
+  `%entity_short_id%` with the ID of the loaded entity instead of the ID of the URL.
+  The `ea().i18n.translationParameters` Twig variable contains the escaped values;
+- it escapes the labels of the checkboxes and radio buttons of expanded fields whose
+  choices are Doctrine entities (`AssociationField` or any field with `EntityType`
+  and the `expanded` form option). Before, those labels (the result of
+  `__toString()` or of the `choice_label` option) were rendered as HTML. The label
+  of the field itself and the choices of `ChoiceField` don't change.
+
+Search the project (PHP, templates) and apply what's relevant. Skip what doesn't
+apply.
+
+## Required changes
+
+1. Find `#[AdminRoute(` attributes with an `allowedDashboards:` or
+   `deniedDashboards:` argument applied to classes that extend
+   `AbstractCrudController` (or implement `CrudControllerInterface`) and to their
+   methods. The class arguments now apply to all the routes of the controller,
+   built-in actions included; a method argument overrides the class argument with
+   the same name (`false`, the default, inherits it). Routes are no longer
+   generated in the excluded dashboards. Keep the arguments that describe a wanted
+   restriction and fix or remove the others:
+
+   ```php
+   // before: the routes were generated in every dashboard
+   #[AdminRoute(allowedDashboards: [DashboardController::class])]
+   class InvoiceCrudController extends AbstractCrudController
+
+   // after, to keep generating the routes in every dashboard
+   class InvoiceCrudController extends AbstractCrudController
+   ```
+
+2. Find the code that links to the routes of those CRUD controllers in the
+   excluded dashboards: route names that start with the route name of an excluded
+   dashboard (`path('guest_admin_invoice_index')`, `redirectToRoute('guest_admin_invoice_detail', ...)`),
+   and `MenuItem::linkTo(InvoiceCrudController::class, ...)` in the
+   `configureMenuItems()` method of an excluded dashboard. Remove those links or
+   allow the dashboard in the `#[AdminRoute]` attribute.
+
+3. Find `#[AdminDashboard(` attributes with a `routeOptions:` argument that defines
+   `requirements`, `host`, `schemes` or `condition`. They now also restrict the
+   routes of the CRUD controllers and `#[AdminRoute]` controllers of that dashboard;
+   the requests that don't match them return a 404 error. The `requirements`,
+   `host` and `schemes` inside `options:` of an `#[AdminRoute]` attribute win over
+   the dashboard ones; its `condition` is combined as
+   `(<dashboard condition>) and (<route condition>)`. If a `condition` limits the
+   HTTP method (e.g. `context.getMethod() in ["GET", "HEAD"]`), remove that part
+   or replace it with the `methods` option, which only applies to the dashboard
+   route:
+
+   ```php
+   // before: the condition only applied to the dashboard index() route
+   #[AdminDashboard(routePath: '/admin', routeName: 'admin', routeOptions: [
+       'condition' => 'context.getMethod() in ["GET", "HEAD"]',
+   ])]
+
+   // after
+   #[AdminDashboard(routePath: '/admin', routeName: 'admin', routeOptions: [
+       'methods' => ['GET', 'HEAD'],
+   ])]
+   ```
+
+4. Find every `setPermissions(` call on an `Actions` object: in the
+   `configureActions()` method of dashboards and CRUD controllers, and in the
+   `extend()` method of classes that implement `ActionsExtensionInterface`.
+   For each call, list the action permissions set earlier on the same object:
+   in the `configureActions()` method of the dashboard, in the `configureActions()`
+   method of the parent CRUD controller, and in earlier `setPermission()` or
+   `setPermissions()` calls of the same method. For an actions extension, also list
+   the permissions set by each CRUD controller that its `supports()` method accepts.
+   Don't change anything by default. Only when the user confirms that one of those
+   actions must not require any permission there, add it to the array with an
+   empty string:
+
+   ```php
+   // before
+   ->setPermissions([Action::NEW => 'ROLE_ADMIN'])
+   // after (only if the user confirms that this CRUD controller must not restrict DELETE)
+   ->setPermissions([Action::NEW => 'ROLE_ADMIN', Action::DELETE => ''])
+   ```
+
+5. Find `setPermissions([])` calls. They no longer remove any permission. Ask the
+   user which permissions must be removed, and set each of them to an empty string
+   as in the previous item.
+
+6. Find the CRUD controllers that call `setEntityPermission()` and whose form is
+   nested in other forms (search `renderAsEmbeddedForm(`, `useEntryCrudForm(` and
+   `CollectionField::new(` on association properties that use those controllers).
+   For each one, find the voter that handles the permission attribute. If its
+   `supports()` method returns `false` when `$subject` is `null` and users must
+   create those entities in the nested form, accept `null` too:
+
+   ```php
+   // before
+   return self::EDIT === $attribute && $subject instanceof Address;
+
+   // after
+   return self::EDIT === $attribute && (null === $subject || $subject instanceof Address);
+   ```
+
+   Then make `voteOnAttribute()` return `true` for a `null` subject when the user
+   can create those entities.
+
+7. Find fields defined as a string (`'fullName'`) or with `Field::new()` whose value
+   contains HTML that must be rendered (usually an entity method that returns HTML).
+   Also find `SlugField` and custom field classes that use the `crud/field/text` or
+   `crud/field/textarea` template (they set no template, or call
+   `setTemplateName('crud/field/text')` or `setTemplateName('crud/field/textarea')`).
+   Their HTML is now escaped. If it must be rendered, use a `TextField` with
+   `renderAsHtml()`:
+
+   ```php
+   // before
+   yield Field::new('statusBadge');
+
+   // after
+   yield TextField::new('statusBadge')->renderAsHtml();
+   ```
+
+8. Find templates that override `crud/field/text`, `crud/field/textarea` or
+   `crud/field/choice` (in `overrideTemplate()`, `overrideTemplates()` or in
+   `templates/bundles/EasyAdminBundle/crud/field/`) and print
+   `field.formattedValue|raw`. Apply `raw` only when the option is `true`:
+
+   ```twig
+   {# before #}
+   {{ field.formattedValue|raw }}
+
+   {# after #}
+   {% if field.customOptions.get('formattedValueIsSafeHtml') is same as(true) %}
+       {{ field.formattedValue|raw }}
+   {% else %}
+       {{ field.formattedValue }}
+   {% endif %}
+   ```
+
+9. Find classes that implement `FieldConfiguratorInterface` and call
+   `setFormattedValue()` with HTML contents for a field rendered with those
+   templates. Escape any value that comes from the entity, then set the option:
+
+   ```php
+   $field->setFormattedValue($html);
+   $field->setCustomOption(FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML, true);
+   ```
+
+10. Find `__toString()` methods of entities that return HTML tags on purpose, and
+    the `setPageTitle()`, `setEntityLabelInSingular()`, `setEntityLabelInPlural()`
+    and `Action::new()`/`setLabel()` calls of their CRUD controllers that use
+    `%entity_as_string%`. The HTML is now displayed as text. Replace the placeholder
+    with a closure that returns the HTML:
+
+    ```php
+    // before
+    $crud->setPageTitle(Crud::PAGE_DETAIL, '%entity_as_string%');
+
+    // after
+    $crud->setPageTitle(Crud::PAGE_DETAIL, static fn (Product $product): string => (string) $product);
+    ```
+
+    Don't change it when `__toString()` returns plain text.
+
+11. Find Twig templates that pass `ea().i18n.translationParameters` (or
+    `ea.i18n.translationParameters`) to `trans` or `t()` in a message that contains
+    `%entity_as_string%`, `%entity_id%` or `%entity_short_id%`, and print the result
+    without the `raw` filter. Those values are now escaped twice. Replace the
+    placeholder with a parameter of your own that holds the original value (don't
+    add the `raw` filter):
+
+    ```twig
+    {# before #}
+    {{ 'Delete %entity_as_string%?'|trans(ea().i18n.translationParameters) }}
+
+    {# after #}
+    {{ 'Delete %name%?'|trans({'%name%': entity.instance.name}) }}
+    ```
+
+12. Find `AssociationField::new(` calls that also call
+    `setFormTypeOption('expanded', true)` or pass `'expanded' => true` to
+    `setFormTypeOptions()`. If the `__toString()` method of the related entity or the
+    `choice_label` form option returns HTML that must be rendered (not displayed as
+    text), add `->renderAsHtml()`:
+
+    ```php
+    // before
+    yield AssociationField::new('categories')->setFormTypeOption('expanded', true);
+    // after
+    yield AssociationField::new('categories')->setFormTypeOption('expanded', true)->renderAsHtml();
+    ```
+
+    Only do this when the HTML comes from trusted code, never when it contains
+    values that users can edit.
+
+13. Find fields that are not `AssociationField` (`Field::new(`, custom fields) and
+    use `setFormType(EntityType::class)` (or a form type that extends it) with the
+    `expanded` option and labels that must render HTML. If the property is a
+    Doctrine association, replace the field with
+    `AssociationField::new('...')->setFormTypeOption('expanded', true)->renderAsHtml()`.
+    If it isn't a Doctrine association, don't change it.
+
+## Optional changes
+
+1. Remove the `setPermission()` calls added to `AssociationField` or
+   `CollectionField` fields only to hide nested CRUD forms from the users that the
+   entity permission of their controller already denies.
+
+2. Remove `setFormTypeOption('label_html', false)` from expanded `AssociationField`
+   and `EntityType` fields when it was added only to escape the labels of their
+   choices; those labels are escaped now and the field label can use HTML again.
+
+</upgrade-prompt>
+
 ## EasyAdmin 5.10.1
 
 Use this prompt to upgrade backends for the string callable, route option and CSRF token changes made in EasyAdmin 5.10.1.

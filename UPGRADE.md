@@ -3,6 +3,169 @@ Upgrade Guide
 
 This guide is for humans. If you are an AI agent, read [UPGRADE-AI.md](UPGRADE-AI.md) instead.
 
+## EasyAdmin 5.10.2
+
+### `allowedDashboards` and `deniedDashboards` Are Now Applied to CRUD Routes
+
+The `allowedDashboards` and `deniedDashboards` options of `#[AdminRoute]` were
+ignored in CRUD controllers and their actions, so their routes were generated in
+every dashboard. Now they're applied: the options of the class attribute apply to
+all the routes of the CRUD controller (including the built-in actions) and the
+options of an action attribute override them.
+
+If your CRUD controllers or their actions use these options, check that they list
+the right dashboards. In the excluded dashboards, their URLs return a 404 error,
+their menu items point to the dashboard and links that use their route names fail.
+
+### Dashboard Route Options Are Now Applied to All the Dashboard Routes
+
+The `requirements`, `host`, `schemes` and `condition` defined in the `routeOptions`
+argument of `#[AdminDashboard]` were only applied to the route of the dashboard
+`index()`. Now they're also applied to all the other routes of the dashboard (the
+routes of its CRUD controllers and of the `#[AdminRoute]` attributes). The
+requirements, host and schemes of an `#[AdminRoute]` attribute win over the ones of
+the dashboard, and its condition is combined with the dashboard condition using `and`.
+The other options (e.g. `methods`) still apply only to the dashboard route.
+
+If your dashboards use these options, check that all their routes must have the same
+restrictions, because the requests that don't match them now return a 404 error. For
+example, a dashboard `condition` that only allows GET requests now also blocks the
+forms of the backend. Use the `methods` option to restrict the HTTP methods of the
+dashboard route.
+
+### `setPermissions()` No Longer Removes the Permissions of Other Actions
+
+The `setPermissions()` method of `Actions` replaced all the action permissions
+defined before calling it. For example, a CRUD controller that called
+`setPermissions([Action::NEW => 'ROLE_ADMIN'])` removed the permission that the
+dashboard defined for `Action::DELETE`.
+
+Now `setPermissions()` works like calling `setPermission()` for each action: it
+only adds or changes the permissions of the given actions. Calling it with an
+empty array changes nothing.
+
+If you used `setPermissions()` to remove the permissions defined before (in the
+dashboard, in a parent CRUD controller or in an actions extension), set the
+permission of those actions to an empty string:
+
+```php
+public function configureActions(Actions $actions): Actions
+{
+    return $actions->setPermissions([
+        Action::NEW => 'ROLE_ADMIN',
+        // the dashboard restricts this action, but this CRUD controller doesn't
+        Action::DELETE => '',
+    ]);
+}
+```
+
+### Nested CRUD Forms Apply the Entity Permission of Their Controller
+
+The CRUD forms nested in other forms (`AssociationField::renderAsEmbeddedForm()`
+and the entries of `CollectionField`) now apply the `setEntityPermission()` option
+of their CRUD controller, as the pages of that controller do:
+
+* if the user can't access the associated entity, or any of the entries of the
+  collection, the field is removed from the form and its property doesn't change
+  when submitting the form;
+* if the entity permission denies new entities (it's checked with a `null`
+  subject, as in the `new` page), the collection doesn't allow adding entries and
+  the embedded form of an empty association is removed.
+
+If the entity permission is checked by a voter that only supports entity instances,
+it now denies new entries to all users (as the `new` page of that controller already
+did). If users must create those entities in the nested form, make the voter also
+vote when the subject is `null`:
+
+```php
+protected function supports(string $attribute, mixed $subject): bool
+{
+    return self::EDIT === $attribute && (null === $subject || $subject instanceof Address);
+}
+```
+
+### The Default Field Templates Escape the Contents of Fields
+
+The `crud/field/text` template is the default template of all fields, and it printed
+their contents without escaping them. Only `TextField` and `TextareaField` escaped
+their contents before passing them to the template. The contents of the other fields
+that use this template (fields defined as a string or with `Field::new()` for
+unmapped or nested properties like `'fullName'` or `'author.name'`, `SlugField` and
+custom fields) were rendered as HTML.
+
+Now the `crud/field/text`, `crud/field/textarea` and `crud/field/choice` templates
+escape the contents, unless the field configurator marks them as safe with the
+`FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML` custom option. `TextField`,
+`TextareaField`, `ChoiceField` and the strings returned by `formatValue()` are
+rendered as before.
+
+If one of those fields must render HTML contents, use a `TextField` with the
+`renderAsHtml()` option or return the HTML contents in `formatValue()`:
+
+```php
+// before
+yield Field::new('statusBadge');
+
+// after
+yield TextField::new('statusBadge')->renderAsHtml();
+```
+
+If your application overrides the `crud/field/text`, `crud/field/textarea` or
+`crud/field/choice` templates and prints `field.formattedValue|raw`, apply the
+`raw` filter only when `field.customOptions.get('formattedValueIsSafeHtml')` is
+`true`. If a custom field configurator sets HTML contents as the formatted value of
+a field rendered with those templates, set that custom option to `true` too.
+
+### The Values of the Entity Placeholders Are Escaped
+
+Page titles, entity labels and action labels are rendered as HTML. Now EasyAdmin
+escapes the values of the `%entity_as_string%`, `%entity_id%` and `%entity_short_id%`
+placeholders used in them, because they come from the entity data. Also,
+`%entity_id%` and `%entity_short_id%` are now the ID of the loaded entity instead of
+the ID typed in the URL.
+
+If the `__toString()` method of an entity returns HTML on purpose and you show it
+with `%entity_as_string%`, it's now displayed as text. Use a closure instead and
+return the HTML from it:
+
+```php
+// before
+$crud->setPageTitle(Crud::PAGE_DETAIL, '%entity_as_string%');
+
+// after
+$crud->setPageTitle(Crud::PAGE_DETAIL, static fn (Product $product): string => (string) $product);
+```
+
+The `translationParameters` of `ea().i18n` contain the escaped values. If a custom
+template translates a message with these parameters and doesn't print it with the
+`raw` filter, the values are escaped twice (`O'Neil` is shown as `O&#039;Neil`).
+Remove these placeholders from that message and pass the value as your own parameter:
+
+```twig
+{# before #}
+{{ 'Delete %entity_as_string%?'|trans(ea().i18n.translationParameters) }}
+
+{# after #}
+{{ 'Delete %name%?'|trans({'%name%': entity.instance.name}) }}
+```
+
+### Entity Labels of Expanded Choice Fields Are Now Escaped
+
+When an `AssociationField` (or any field that uses Symfony's `EntityType`) sets
+the `expanded` form option, the labels of its checkboxes and radio buttons
+(the result of `__toString()` or of the `choice_label` option of the related
+entities) were rendered as HTML. Now they are escaped, like in the dropdown
+widget. The label of the field itself can still contain HTML.
+
+If those labels must render HTML that you trust, call `renderAsHtml()` on the
+`AssociationField`:
+
+```php
+yield AssociationField::new('categories')
+    ->setFormTypeOption('expanded', true)
+    ->renderAsHtml();
+```
+
 ## EasyAdmin 5.10.1
 
 ### Strings Are No Longer Called as PHP Functions

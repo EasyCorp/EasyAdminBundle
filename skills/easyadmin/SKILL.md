@@ -85,7 +85,7 @@ replacement of each one is in `references/traps.md` and the full explanation
 in `vendor/easycorp/easyadmin-bundle/UPGRADE.md`. `linkToCrudAction()` itself
 still exists: 4.x code that uses it compiles and fails at render time until
 the target method gets `#[AdminRoute]`.
-<!-- UPGRADE.md:214-233; UPGRADE.md:325-337; UPGRADE.md:323-578 -->
+<!-- UPGRADE.md:426-445; UPGRADE.md:537-549; UPGRADE.md:535-790 -->
 
 ## Project conventions
 
@@ -119,21 +119,21 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `#[AdminDashboard(routePath: '/admin', routeName: 'admin')]` and both
   arguments are required. Without it, route generation throws and no admin
   route exists. Do not add a Symfony `#[Route]` to `index()`: no other way of
-  configuring the dashboard route works. <!-- src/Router/AdminRouteGenerator.php:607-619; src/Attribute/AdminDashboard.php::__construct; doc/dashboards.rst:96-97 -->
+  configuring the dashboard route works. <!-- src/Router/AdminRouteGenerator.php:665-677; src/Attribute/AdminDashboard.php::__construct; doc/dashboards.rst:96-97 -->
 - The project needs `config/routes/easyadmin.yaml` with `resource: .` and
   `type: easyadmin.routes`. Symfony Flex creates it; without Flex, create it
   by hand. <!-- src/Router/AdminRouteLoader.php::ROUTE_LOADER_TYPE; doc/dashboards.rst:55-64 -->
 - Link CRUD controllers with
   `MenuItem::linkTo(ProductCrudController::class, 'Products', 'fa fa-box')`:
   controller class first, then label, then icon. `MenuItem::linkToCrud()` was
-  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:352-368 -->
+  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:564-580 -->
 - The other factories put the label first:
   `MenuItem::linkToRoute('Reports', 'fa fa-chart-bar', 'app_reports', ['year' => 2026])`,
   `linkToUrl('Website', 'fa fa-globe', 'https://example.com')`,
   `linkToDashboard('Home', 'fa fa-home')`, `linkToLogout(...)`,
   `linkToExitImpersonation(...)`, `section('Catalog')` and
   `subMenu('Blog', 'fa fa-book')->setSubItems([...])`. There are no other
-  factories, and the parent of a submenu links to nothing. <!-- src/Config/MenuItem.php::linkToRoute; src/Config/MenuItem.php::linkToUrl; src/Config/MenuItem.php::subMenu; doc/dashboards.rst:658-663 -->
+  factories, and the parent of a submenu links to nothing. <!-- src/Config/MenuItem.php::linkToRoute; src/Config/MenuItem.php::linkToUrl; src/Config/MenuItem.php::subMenu; doc/dashboards.rst:705-706 -->
 - `linkToRoute()` to a Symfony route that does not exist renders a menu that
   looks fine and fails with `RouteNotFoundException` when clicked. Link only to
   routes that exist or that you create in the same change; never guess route
@@ -141,7 +141,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - `index()` belongs to the dashboard interface: do not add arguments to it.
   Inject services through the constructor. To open a CRUD page instead of a
   dashboard, redirect from it:
-  `return $this->redirectToRoute('admin_product_index');`. <!-- src/Contracts/Controller/DashboardControllerInterface.php::index; doc/dashboards.rst:301-305; src/Resources/skeleton/dashboard.tpl:14-19; doc/dashboards.rst:332-337 -->
+  `return $this->redirectToRoute('admin_product_index');`. <!-- src/Contracts/Controller/DashboardControllerInterface.php::index; doc/dashboards.rst:147-150; src/Resources/skeleton/dashboard.tpl:14-19; doc/dashboards.rst:371-380 -->
 <!-- rules:end -->
 
 ## CRUD controller
@@ -149,7 +149,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 <!-- rules:start -->
 - Declare `public static function getEntityFqcn(): string` (the base class
   does not) and add `/** @extends AbstractCrudController<Product> */` above
-  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:561-578 -->
+  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:773-790 -->
 - Overrides must keep the interface signatures: `createEntity(string $entityFqcn): ?object`
   (overrides may keep `: object`),
   `persistEntity(EntityManagerInterface $entityManager, object $entityInstance): void`,
@@ -157,17 +157,17 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder`. <!-- src/Contracts/Controller/CrudControllerInterface.php::createEntity; src/Contracts/Controller/CrudControllerInterface.php::createIndexQueryBuilder -->
 - In `createIndexQueryBuilder()`, call `parent::createIndexQueryBuilder(...)`
   and use the literal root alias `entity` (`->andWhere('entity.owner = :user')`).
-  Global Doctrine filters hide rows silently. <!-- src/Orm/EntityRepository.php::createQueryBuilder; doc/fields.rst:170-182; doc/crud.rst:519-524 -->
+  Global Doctrine filters hide rows silently. <!-- src/Orm/EntityRepository.php::createQueryBuilder; doc/fields.rst:178-185; doc/crud.rst:603-606 -->
 - Link to admin pages like to any other Symfony route: `$this->redirectToRoute('admin_product_detail', ['entityId' => $id])`
   in PHP, `path('admin_product_edit', {entityId: post.id})` in Twig. Reserve
   `AdminUrlGeneratorInterface` (`$this->container->get(AdminUrlGeneratorInterface::class)`
   inside controllers) for URLs built dynamically:
   `->setController(ProductCrudController::class)->setAction(Action::DETAIL)->setEntityId($id)->generateUrl()`.
   `setId()` is not on the interface; use `setEntityId()`. With a controller and
-  no action, the URL points to `index`. <!-- doc/crud.rst:939-968; src/Controller/AbstractCrudController.php::getSubscribedServices; src/Router/AdminUrlGeneratorInterface.php::setEntityId; src/Router/AdminUrlGenerator.php::generateUrl; doc/crud.rst:1059-1063 -->
+  no action, the URL points to `index`. <!-- doc/crud.rst:1122-1138; src/Controller/AbstractCrudController.php::getSubscribedServices; src/Router/AdminUrlGeneratorInterface.php::setEntityId; src/Router/AdminUrlGenerator.php::generateUrl; doc/crud.rst:1242-1244 -->
 - Route names join controller and action names with underscores, so an entity
   whose name is a prefix of another can produce duplicate route names; the
-  exception names both controllers. <!-- src/Router/AdminRouteGenerator.php::getDuplicatedRouteNameErrorMessage; doc/crud.rst:80-88; doc/actions.rst:1020-1024 -->
+  exception names both controllers. <!-- src/Router/AdminRouteGenerator.php::getDuplicatedRouteNameErrorMessage; doc/crud.rst:92-98 -->
 <!-- rules:end -->
 
 ## Fields
@@ -194,7 +194,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - Form layout uses the static methods `FormField::addTab('Details')`,
   `FormField::addFieldset('Pricing')`, `FormField::addColumn(6)` and
   `FormField::addRow()`. `FormField::addPanel()` was removed in 5.0. The first
-  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:476-488 -->
+  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:688-700 -->
 - `ChoiceField`: `setChoices(['Draft' => 'draft'])`,
   `renderAsBadges(['draft' => 'warning', 'published' => 'success'])` (types:
   success, warning, danger, info, primary, secondary, light, dark),
@@ -205,14 +205,14 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   related entity; `setCrudController(CategoryCrudController::class)`;
   `setQueryBuilder(fn (QueryBuilder $qb) => $qb->andWhere('entity.active = true'))`
   takes a `\Closure`; `setPreferredChoices()` does not work together with
-  `autocomplete()`. <!-- src/Field/AssociationField.php::autocomplete; src/Field/AssociationField.php::setQueryBuilder; doc/fields/AssociationField.rst:269-273 -->
+  `autocomplete()`. <!-- src/Field/AssociationField.php::autocomplete; src/Field/AssociationField.php::setQueryBuilder; doc/fields/AssociationField.rst:304-306 -->
 - `ImageField` and `FileField`: `setBasePath('uploads/images')`,
   `setUploadDir('public/uploads/images')`,
   `setUploadedFileNamePattern('[randomhash].[extension]')`. The flags are
   `isDeletable()`, `isViewable()`, `isDownloadable()` (no `setDeletable()`),
   and the validation methods are `maxSize()` and `mimeTypes()` without a
   `set` prefix. `[day]`, `[month]` and `[year]` are deprecated placeholders;
-  use `[DD]`, `[MM]`, `[YYYY]`. <!-- src/Field/ImageField.php::setUploadedFileNamePattern; src/Field/ImageField.php::isDeletable; src/Field/ImageField.php::maxSize; doc/fields/ImageField.rst:105-109 -->
+  use `[DD]`, `[MM]`, `[YYYY]`. <!-- src/Field/ImageField.php::setUploadedFileNamePattern; src/Field/ImageField.php::isDeletable; src/Field/ImageField.php::maxSize; doc/fields/ImageField.rst:108-112 -->
 - Properties edited through forms must be nullable, because Symfony Forms
   calls the setter with `null` before validation runs. <!-- doc/fields.rst:98-102 -->
 - Similar names differ across fields: `setNumDecimals()` (Number, Money,
@@ -229,11 +229,11 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   linked with `Action::new('publish', 'Publish', 'fa fa-check')->linkToCrudAction('publish')`
   and added with `$actions->add(Crud::PAGE_INDEX, $publish)`. Without the
   attribute, rendering the page throws
-  `is missing the #[AdminRoute] attribute`. <!-- src/Factory/ActionFactory.php::generateActionUrl; src/Attribute/AdminRoute.php::__construct; doc/actions.rst:731-741 -->
+  `is missing the #[AdminRoute] attribute`. <!-- src/Factory/ActionFactory.php::generateActionUrl; src/Attribute/AdminRoute.php::__construct; doc/actions.rst:843-847 -->
 - `#[AdminRoute]` accepts only `path`, `name`, `options`, `allowedDashboards`
   and `deniedDashboards`. There is no `methods` argument: HTTP methods,
   requirements and defaults go inside `options`. Allowed methods are GET,
-  POST, PUT, PATCH, DELETE and HEAD; the default is GET and POST. <!-- src/Attribute/AdminRoute.php::__construct; src/Router/AdminRouteGenerator.php:740-744 -->
+  POST, PUT, PATCH, DELETE and HEAD; the default is GET and POST. <!-- src/Attribute/AdminRoute.php::__construct; src/Router/AdminRouteGenerator.php:800-804 -->
 - `{id}` (or `{entityId}`) in the path is what makes a custom action an
   entity action: the route carries the entity id and Symfony injects the typed
   entity (`public function publish(Product $product)`). Without the
@@ -241,13 +241,13 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `controller_resolver.auto_mapping`, add `#[MapEntity]` to the argument; with
   `{entityId}` use the mapped form `{entityId:product.id}`. Only when a typed
   argument is impossible, inject `AdminContext $context` and read
-  `$context->getEntity()->getInstance()`, which is nullable and untyped. <!-- src/Router/AdminRouteGenerator.php:701-704; src/Router/AdminRouteGenerator.php::getEntityIdPlaceholderName; doc/actions.rst:744-757; src/Dto/EntityDto.php::getInstance -->
+  `$context->getEntity()->getInstance()`, which is nullable and untyped. <!-- src/Router/AdminRouteGenerator.php:761-764; src/Router/AdminRouteGenerator.php::getEntityIdPlaceholderName; doc/actions.rst:849-862; src/Dto/EntityDto.php::getInstance -->
 - Batch actions also need `#[AdminRoute('/approve', name: 'approve', options: ['methods' => ['POST']])]`
   on the method, receive `BatchActionDto $batchActionDto`
   (`getEntityIds()`, `getEntityFqcn()`, `getCsrfToken()`), are created with
   `Action::new('approve')->linkToCrudAction('approve')->createAsBatchAction()`
   and are added with `$actions->addBatchAction($approve)`; they exist only on
-  the index page. <!-- src/Factory/ActionFactory.php::processGlobalActions; src/Dto/BatchActionDto.php::getEntityIds; src/Config/Actions.php::addBatchAction; doc/actions.rst:825-845 -->
+  the index page. <!-- src/Factory/ActionFactory.php::processGlobalActions; src/Dto/BatchActionDto.php::getEntityIds; src/Config/Actions.php::addBatchAction; doc/actions.rst:904-938 -->
 - EasyAdmin adds no CSRF token to a custom action rendered with
   `->renderAsForm()`: the `<form method="POST">` holds only the button. Only
   the built-in delete action (`ea-delete-<controllerFqcn>`), batch actions and
@@ -256,20 +256,20 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `->linkToRoute('app_publish', fn (Product $product) => ['id' => $product->getId(), 'token' => ...])`
   (the closure receives the entity) and check it with
   `$this->isCsrfTokenValid('publish'.$product->getId(), $request->query->get('token'))`.
-  Full recipe in `references/patterns.md`. <!-- templates/components/Button.html.twig:29-38; templates/crud/includes/_action_confirmation_modal.html.twig:5; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; src/Field/BooleanField.php::CSRF_TOKEN_NAME; src/Factory/ActionFactory.php::generateActionUrl; tests/Functional/Actions/CustomActionCsrfTest.php -->
+  Full recipe in `references/patterns.md`. <!-- templates/components/Button.html.twig:29-38; templates/crud/includes/_action_confirmation_modal.html.twig:4; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; src/Field/BooleanField.php::CSRF_TOKEN_NAME; src/Factory/ActionFactory.php::generateActionUrl; tests/Functional/Actions/CustomActionCsrfTest.php -->
 - Permissions belong to the `Actions` collection, not to `Action`:
   `$actions->setPermission('publish', 'ROLE_EDITOR')` and
   `$actions->setPermission(Action::DELETE, 'ROLE_ADMIN')`.
   `Action::setPermission()` does not exist. Both accept a string role or a
-  Symfony `Expression`. <!-- src/Config/Actions.php::setPermission; src/Config/Actions.php::setPermissions; doc/security.rst:227-251 -->
+  Symfony `Expression`. <!-- src/Config/Actions.php::setPermission; src/Config/Actions.php::setPermissions; doc/security.rst:147-166 -->
 - Rendering methods are `renderAsLink()`, `renderAsButton()` and
   `renderAsForm()`; the `displayAs*()` names were removed in 5.0. Style them
   with `asPrimaryAction()`, `asDangerAction()` (also Success, Warning, Info)
-  or `asTextLink()`, and add `askConfirmation()` for a confirmation modal. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; UPGRADE.md:439-455 -->
+  or `asTextLink()`, and add `askConfirmation()` for a confirmation modal. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; UPGRADE.md:651-667 -->
 - `setCssClass()` drops the default `.btn-*` and `.action-<name>` classes (and
   with them the selectors used by the test helpers), `addCssClass()` keeps
   them; `displayIf()` on a global action receives no entity; removing or
-  disabling `Action::DELETE` also removes `Action::BATCH_DELETE`. <!-- src/Config/Actions.php::remove; src/Config/Actions.php::disable; src/Factory/ActionFactory.php::applyCssClasses; doc/actions.rst:664-669; doc/actions.rst:205-208 -->
+  disabling `Action::DELETE` also removes `Action::BATCH_DELETE`. <!-- src/Config/Actions.php::remove; src/Config/Actions.php::disable; src/Factory/ActionFactory.php::applyCssClasses; doc/actions.rst:764-768; doc/actions.rst:220-222 -->
 - `autocomplete` and `renderFilters` are built-in action names: do not use
   them for custom actions. <!-- src/Router/AdminRouteGenerator.php::BUILT_IN_ACTION_NAMES -->
 <!-- rules:end -->
@@ -294,19 +294,19 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `is_granted($permission, $entity)`: the index page hides the rows the user
   cannot see, and the detail, edit, new, delete and batch delete actions throw
   `InsufficientEntityPermissionException`. It does not restrict custom actions
-  or the index page itself. <!-- src/Controller/AbstractCrudController.php::detail; src/Controller/AbstractCrudController.php::edit; src/Controller/AbstractCrudController.php::new; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; doc/security.rst:243-274; tests/Functional/Security/EntityPermissionAccessTest.php; tests/Functional/Security/BatchDeleteAccessTest.php -->
+  or the index page itself. <!-- src/Controller/AbstractCrudController.php::detail; src/Controller/AbstractCrudController.php::edit; src/Controller/AbstractCrudController.php::new; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; doc/security.rst:264-310; tests/Functional/Security/EntityPermissionAccessTest.php; tests/Functional/Security/BatchDeleteAccessTest.php -->
 - Action permissions and `disable()` are checked per action, on the button and on the URL.
   `setPermission(Action::INDEX, 'ROLE_ADMIN')` blocks index, autocomplete and filters, not detail, edit, new or delete.
   A custom action URL (`linkToCrudAction()`, or `linkToRoute()` to an admin route of the same CRUD controller)
   throws `ForbiddenActionException` unless one action linked to it is enabled and granted: no check needed in the method.
   `linkToUrl()` and other routes only lose the button: protect them, or a whole CRUD controller,
-  with `security.access_control` or `#[IsGranted('ROLE_ADMIN')]`. <!-- src/Controller/AbstractCrudController.php::index; src/Controller/AbstractCrudController.php::detail; src/Controller/AbstractCrudController.php::autocomplete; src/EventListener/AdminRouterSubscriber.php::assertCustomCrudActionIsGranted; src/Router/AdminUrlGenerator.php::setRoute; tests/Functional/Security/RolePermissionTest.php; tests/Functional/Security/CustomActionAccessTest.php; doc/security.rst:26; doc/security.rst:131-177; doc/actions.rst:331-338 -->
+  with `security.access_control` or `#[IsGranted('ROLE_ADMIN')]`. <!-- src/Controller/AbstractCrudController.php::index; src/Controller/AbstractCrudController.php::detail; src/Controller/AbstractCrudController.php::autocomplete; src/EventListener/AdminRouterSubscriber.php::assertCustomCrudActionIsGranted; src/Router/AdminUrlGenerator.php::setRoute; tests/Functional/Security/RolePermissionTest.php; tests/Functional/Security/CustomActionAccessTest.php; doc/security.rst:26; doc/security.rst:138-184; doc/actions.rst:348-355 -->
 - `MenuItem::setPermission()` only hides the menu item; the linked pages stay
-  reachable unless their actions are protected too. <!-- src/Config/Menu/MenuItemTrait.php::setPermission; doc/security.rst:99-104 -->
+  reachable unless their actions are protected too. <!-- src/Config/Menu/MenuItemTrait.php::setPermission; doc/security.rst:115-118 -->
 - Field-level access: `IntegerField::new('sales')->setPermission('ROLE_ADMIN')`
   hides the field on every page for other users. Every `setPermission()`
   accepts a `new Expression('"ROLE_EDITOR" in role_names')` besides a role
-  string. <!-- src/Field/FieldTrait.php::setPermission; doc/security.rst:233-249; doc/security.rst:283-303 -->
+  string. <!-- src/Field/FieldTrait.php::setPermission; doc/security.rst:249-260; doc/security.rst:329-346 -->
 <!-- rules:end -->
 
 ## Functional tests
@@ -331,16 +331,16 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 
 <!-- rules:start -->
 - The `ea` Twig global was removed; call the `ea()` function, which returns
-  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:214-233 -->
+  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:426-445 -->
 - Override page templates with `Crud::overrideTemplate('crud/index', 'admin/product/index.html.twig')`
   and field templates with `->setTemplatePath()`. The `new` and `edit` pages render form fields
-  through Symfony form themes (`Crud::addFormTheme()`), not through field templates. <!-- src/Config/Crud.php::overrideTemplate; src/Config/Crud.php::addFormTheme; src/Field/FieldTrait.php::setTemplatePath; doc/fields.rst:1066-1069 -->
+  through Symfony form themes (`Crud::addFormTheme()`), not through field templates. <!-- src/Config/Crud.php::overrideTemplate; src/Config/Crud.php::addFormTheme; src/Field/FieldTrait.php::setTemplatePath; doc/fields.rst:934-936 -->
 - Backend CSS lives in cascade layers (`vendor`, `ea`, `ea-overrides`), so
   unlayered custom CSS wins without `!important`. Override design tokens on
-  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:275-299; doc/design.rst:314-316; doc/design.rst:1400-1404 -->
+  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:487-511; doc/design.rst:314-316; doc/design.rst:1407-1411 -->
 - Custom pages extend `@EasyAdmin/page/content.html.twig`, not `@EasyAdmin/layout.html.twig`: only the former styles the
   HTML of the `main` block (headings, lists, tables, blue links). Elsewhere, add the `ea-prose` class (`ea-not-prose` opts out).
-  Don't write CSS for those elements: unlayered CSS beats these styles. <!-- templates/page/content.html.twig; doc/design.rst:718-821 -->
+  Don't write CSS for those elements: unlayered CSS beats these styles. <!-- templates/page/content.html.twig; doc/design.rst:727-827 -->
 - Use the shipped Twig components in custom templates instead of raw
   Bootstrap markup (`<twig:ea:Button>`, `<twig:ea:Badge>`, `<twig:ea:Alert>`,
   `<twig:ea:Icon>`, `<twig:ea:Modal>` and the others in `doc/components.rst`).

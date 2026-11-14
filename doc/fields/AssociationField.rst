@@ -187,10 +187,11 @@ pass the fully-qualified class name of the controller as the first argument::
 ``renderAsHtml``
 ~~~~~~~~~~~~~~~~
 
-By default, the HTML contents of the items displayed in the select lists are
-escaped to avoid security issues like `XSS`_. If you need to render custom HTML
-contents and you are certain that they are safe to display "as is", set this
-option to not escape those contents::
+By default, the HTML contents of the items displayed in the select lists (and
+in the checkboxes and radio buttons displayed when using the ``expanded``
+form option) are escaped to avoid security issues like `XSS`_. If you need
+to render custom HTML contents and you are certain that they are safe to
+display "as is", set this option to not escape those contents::
 
     yield AssociationField::new('...')->renderAsHtml();
 

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextDirection;
@@ -194,7 +195,7 @@ final readonly class AdminContextFactory
         if (null !== $crudDto) {
             $translationParameters['%entity_name%'] = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
             $translationParameters['%entity_as_string%'] = null === $entityDto ? '' : (string) $entityDto;
-            $translationParameters['%entity_id%'] = $entityId = EntityIdReader::fromRequest($request);
+            $translationParameters['%entity_id%'] = $entityId = $this->getEntityId($request, $crudDto);
             $translationParameters['%entity_short_id%'] = null === $entityId ? null : u($entityId)->truncate(7)->toString();
 
             $entityInstance = $entityDto?->getInstance();
@@ -263,8 +264,20 @@ final readonly class AdminContextFactory
             return null;
         }
 
-        $entityId = EntityIdReader::fromRequest($request);
+        $entityId = $this->getEntityId($request, $crudDto);
 
         return $this->entityFactory->create($crudDto->getEntityFqcn(), $entityId, $crudDto->getEntityPermission());
+    }
+
+    private function getEntityId(Request $request, CrudDto $crudDto): mixed
+    {
+        // the route of 'new' has no ID placeholder, so any ID comes from the query string
+        // (e.g. the 'save and add another' redirection of the edit page adds it); the entity
+        // permission must be voted with a null subject here, not with an existing entity
+        if (Action::NEW === $crudDto->getCurrentAction()) {
+            return null;
+        }
+
+        return EntityIdReader::fromRequest($request);
     }
 }

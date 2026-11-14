@@ -38,6 +38,10 @@
 .modal-dialog-xl {
     --bs-modal-width: 800px;
 }
+.modal-dialog.modal-fullscreen {
+    max-inline-size: unset;
+    --bs-modal-width: 100%;
+}
 
 .modal.fade .modal-dialog {
     transform: scale(0.95);

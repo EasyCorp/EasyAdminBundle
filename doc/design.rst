@@ -982,6 +982,36 @@ overrides any change done in the dashboard)::
         }
     }
 
+These methods configure the templates of all the requests. If the template
+depends on the current request (e.g. a page loaded inside a modal dialog that
+must not display the main menu), call the ``overrideTemplate()`` method of the
+admin context. It changes the template for the rest of the current request, so
+you can call it from an :doc:`event listener </events>`, such as a listener of
+the ``BeforeCrudActionEvent``::
+
+    namespace App\EventSubscriber;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
+    use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+    class DialogLayoutSubscriber implements EventSubscriberInterface
+    {
+        public static function getSubscribedEvents(): array
+        {
+            return [BeforeCrudActionEvent::class => 'useDialogLayout'];
+        }
+
+        public function useDialogLayout(BeforeCrudActionEvent $event): void
+        {
+            $context = $event->getAdminContext();
+            if (!$context?->getRequest()->headers->has('X-Dialog')) {
+                return;
+            }
+
+            $context->overrideTemplate('layout', 'admin/dialog_layout.html.twig');
+        }
+    }
+
 Detail Page Templates
 ~~~~~~~~~~~~~~~~~~~~~
 

@@ -410,10 +410,12 @@ That's why the default page titles used by EasyAdmin only include safe contents
 like the entity name and ID. Otherwise, your backend could be vulnerable to
 `XSS attacks`_.
 
-If you change the default page title to include the placeholder ``%entity_as_string%``,
-check that you don't include user-created contents in the value returned by the
-``__toString()`` method of the related entity. If you can't avoid that, make sure
-to sanitize any user submitted data with the Symfony `HtmlSanitizer component`_.
+EasyAdmin escapes the values of the ``%entity_as_string%``, ``%entity_id%``
+and ``%entity_short_id%`` placeholders, because they come from the entity
+data. However, EasyAdmin doesn't escape the contents returned by the closures
+of titles and labels. If those contents include user-created data, escape it
+(e.g. with the ``htmlspecialchars()`` PHP function) or sanitize it with the
+Symfony `HtmlSanitizer component`_.
 
 .. _crud-date-time-number-format-options:
 

@@ -10,13 +10,15 @@ final readonly class I18nDto
     private string $language;
 
     /**
-     * @param array<string, mixed> $translationParameters
+     * @param array<string, mixed>      $translationParameters
+     * @param array<string, mixed>|null $plainTextTranslationParameters
      */
     public function __construct(
         private string $locale,
         private string $textDirection,
         private string $translationDomain,
         private array $translationParameters,
+        private ?array $plainTextTranslationParameters = null,
     ) {
         // returns 'en' for 'en', 'en-US', 'en_US', 'en-US.UTF-8', 'en_US.UTF-8', etc.
         $this->language = explode('-', str_replace('_', '-', $this->locale))[0];
@@ -68,5 +70,20 @@ final readonly class I18nDto
     public function getTranslationParameters(): array
     {
         return $this->translationParameters;
+    }
+
+    /**
+     * The values of the entity placeholders (%entity_as_string%, %entity_id%, etc.) in
+     * getTranslationParameters() are HTML-escaped because page titles and labels are
+     * rendered as HTML. These parameters contain the original values instead, for the
+     * contents that are displayed as plain text (or escaped later by Twig).
+     *
+     * @internal
+     *
+     * @return array<string, mixed>
+     */
+    public function getPlainTextTranslationParameters(): array
+    {
+        return $this->plainTextTranslationParameters ?? $this->translationParameters;
     }
 }

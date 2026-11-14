@@ -192,11 +192,24 @@ final readonly class AdminContextFactory
         $translationDomain = $dashboardDto->getTranslationDomain();
 
         $translationParameters = [];
+        $plainTextTranslationParameters = null;
         if (null !== $crudDto) {
+            // the entity ID comes from the loaded entity instead of the request because the
+            // database can find an entity with an ID that is not the canonical one (e.g. '1<b>')
+            $entityId = null === $entityDto?->getInstance() ? null : $entityDto->getPrimaryKeyValueAsString();
+            $entityValueParameters = [
+                '%entity_as_string%' => null === $entityDto ? '' : (string) $entityDto,
+                '%entity_id%' => $entityId,
+                '%entity_short_id%' => null === $entityId ? null : u($entityId)->truncate(7)->toString(),
+            ];
+
             $translationParameters['%entity_name%'] = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
-            $translationParameters['%entity_as_string%'] = null === $entityDto ? '' : (string) $entityDto;
-            $translationParameters['%entity_id%'] = $entityId = $this->getEntityId($request, $crudDto);
-            $translationParameters['%entity_short_id%'] = null === $entityId ? null : u($entityId)->truncate(7)->toString();
+            // page titles and labels are rendered as HTML, so the values that come from the entity
+            // must be escaped (even if the developer escaped them inside a title closure, because the
+            // entity data can contain the placeholders themselves)
+            foreach ($entityValueParameters as $name => $value) {
+                $translationParameters[$name] = null === $value ? null : htmlspecialchars($value, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
+            }
 
             $entityInstance = $entityDto?->getInstance();
             $pageName = $crudDto->getCurrentPage();
@@ -224,9 +237,11 @@ final readonly class AdminContextFactory
 
             $translationParameters['%entity_label_singular%'] = $singularLabel->trans($this->translator, $locale);
             $translationParameters['%entity_label_plural%'] = $pluralLabel->trans($this->translator, $locale);
+
+            $plainTextTranslationParameters = array_merge($translationParameters, $entityValueParameters);
         }
 
-        return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters);
+        return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters, $plainTextTranslationParameters);
     }
 
     public function getSearchDto(Request $request, ?CrudDto $crudDto): ?SearchDto

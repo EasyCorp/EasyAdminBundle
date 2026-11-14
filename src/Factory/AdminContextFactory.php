@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextDirection;
@@ -213,9 +214,7 @@ final class AdminContextFactory
         if (null !== $crudDto) {
             $translationParameters['%entity_name%'] = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
             $translationParameters['%entity_as_string%'] = null === $entityDto ? '' : (string) $entityDto;
-            // when using pretty URLs, the entity ID is passed as a request attribute (it's part of the route path);
-            // in legacy URLs, the entity ID is passed as a regular query parameter
-            $translationParameters['%entity_id%'] = $entityId = $request->attributes->get(EA::ENTITY_ID) ?? $request->query->get(EA::ENTITY_ID);
+            $translationParameters['%entity_id%'] = $entityId = $this->getEntityId($request, $crudDto);
             $translationParameters['%entity_short_id%'] = null === $entityId ? null : u($entityId)->truncate(7)->toString();
 
             $entityInstance = null === $entityDto ? null : $entityDto->getInstance();
@@ -284,10 +283,22 @@ final class AdminContextFactory
             return null;
         }
 
-        // when using pretty URLs, the entity ID is passed as a request attribute (it's part of the route path);
-        // in legacy URLs, the entity ID is passed as a regular query parameter
-        $entityId = $request->attributes->get(EA::ENTITY_ID) ?? $request->query->get(EA::ENTITY_ID);
+        $entityId = $this->getEntityId($request, $crudDto);
 
         return $this->entityFactory->create($crudDto->getEntityFqcn(), $entityId, $crudDto->getEntityPermission());
+    }
+
+    private function getEntityId(Request $request, CrudDto $crudDto): mixed
+    {
+        // the 'new' action has no entity, so any ID comes from the query string (e.g. the 'save and
+        // add another' redirection of the edit page adds it); the entity permission must be voted
+        // with a null subject here, not with an existing entity
+        if (Action::NEW === $crudDto->getCurrentAction()) {
+            return null;
+        }
+
+        // when using pretty URLs, the entity ID is passed as a request attribute (it's part of the route path);
+        // in legacy URLs, the entity ID is passed as a regular query parameter
+        return $request->attributes->get(EA::ENTITY_ID) ?? $request->query->get(EA::ENTITY_ID);
     }
 }

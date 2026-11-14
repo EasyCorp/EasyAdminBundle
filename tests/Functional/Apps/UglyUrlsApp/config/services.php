@@ -3,6 +3,7 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\DataFixtures\AppFixtures;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Security\InactiveCategoryVoter;
 
 return static function (ContainerConfigurator $container) {
     $container->parameters()->set('locale', 'en');
@@ -20,4 +21,6 @@ return static function (ContainerConfigurator $container) {
         ->tag('controller.service_arguments');
 
     $services->set(AppFixtures::class)->tag('doctrine.fixture.orm');
+
+    $services->set(InactiveCategoryVoter::class);
 };

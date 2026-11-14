@@ -27,7 +27,7 @@ use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
  */
 class EasyAdminBundle extends AbstractBundle
 {
-    public const VERSION = '5.10.1';
+    public const VERSION = '5.10.2-DEV';
     public const TAG_CRUD_CONTROLLER = 'ea.crud_controller';
     public const TAG_DASHBOARD_CONTROLLER = 'ea.dashboard_controller';
     public const TAG_ADMIN_ROUTE_CONTROLLER = 'ea.admin_route_controller';

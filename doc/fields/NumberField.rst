@@ -43,9 +43,9 @@ This option overrides, for this field only, the value of the
 ``setNumberFormat``
 ~~~~~~~~~~~~~~~~~~~
 
-By default, numbers are displayed "as is". If you prefer to format the value in
-any way, use this option and pass any formatting string valid as an argument of
-the ``sprintf()`` function::
+By default, numbers are formatted according to the current locale. If you
+prefer to format the value in any way, use this option and pass any formatting
+string valid as an argument of the ``sprintf()`` function::
 
     // this would display numbers in scientific notation (e.g. 123456.7890 = '1.234568e+5')
     yield NumberField::new('...')->setNumberFormat('%e');
@@ -55,8 +55,8 @@ This option overrides, for this field only, the value of the
 
 .. caution::
 
-    Using this option makes EasyAdmin ignore the ``setNumDecimals()`` and
-    ``setRoundingMode()`` options.
+    Using this option makes EasyAdmin ignore all the other number formatting
+    options.
 
 ``setNumDecimals``
 ~~~~~~~~~~~~~~~~~~
@@ -92,9 +92,9 @@ default ``<input type="number">`` element::
 ``setThousandsSeparator``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default, the numeric value does not separate thousands groups (e.g.
-``12345.67`` is displayed like that, instead of ``12,345.67``). Use this option
-to set the character used to separate thousands groups::
+By default, the numeric value uses the thousands separator of the current
+locale (e.g. ``12345.67`` is displayed as ``12,345.67`` in the English locale).
+Use this option to set a different character to separate thousands groups::
 
     // this would display '12345.67' as '12 345.67'
     yield NumberField::new('...')->setThousandsSeparator(' ');

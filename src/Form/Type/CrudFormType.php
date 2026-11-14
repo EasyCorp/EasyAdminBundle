@@ -16,6 +16,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Layout\EaFormTabPaneOpenType;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
@@ -29,6 +31,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CrudFormType extends AbstractType
 {
+    /**
+     * Custom option of the fields that edit other entities with nested CRUD forms: a callable that
+     * receives the value of the field and returns FALSE when the entity permission of the CRUD
+     * controller of those forms denies any of those entities to the current user.
+     *
+     * @internal
+     */
+    public const FIELD_OPTION_IS_ENTITY_GRANTED = 'isEntityGranted';
+
     public function __construct(private readonly DoctrineOrmTypeGuesser $doctrineOrmTypeGuesser)
     {
     }
@@ -120,6 +131,20 @@ class CrudFormType extends AbstractType
 
         $builder->setAttribute('ea_form_tabs', $formTabs);
         $builder->setAttribute('ea_form_fieldsets', $formFieldsets);
+
+        // the entities edited by nested CRUD forms are only known when the form receives its data (the
+        // nested forms are configured without an entity instance), so they are checked here at every level;
+        // the whole field is removed because a removed field leaves its property untouched on submit, while
+        // removing single collection entries would unlink (or orphan-remove) the denied entities
+        $builder->addEventListener(FormEvents::POST_SET_DATA, static function (FormEvent $event): void {
+            $form = $event->getForm();
+            foreach ($form->all() as $name => $child) {
+                $isEntityGranted = $child->getConfig()->getAttribute('ea_field')?->getCustomOption(self::FIELD_OPTION_IS_ENTITY_GRANTED);
+                if (null !== $isEntityGranted && !$isEntityGranted($child->getData())) {
+                    $form->remove((string) $name);
+                }
+            }
+        });
 
         $builder->addEventSubscriber(new FormLayoutSubscriber());
     }

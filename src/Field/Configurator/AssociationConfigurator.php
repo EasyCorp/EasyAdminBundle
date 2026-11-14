@@ -21,10 +21,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use function Symfony\Component\Translation\t;
 
 /**
@@ -38,6 +40,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         private readonly RequestStack $requestStack,
         private readonly ControllerFactory $controllerFactory,
         private readonly ?FieldFactory $fieldFactory = null,
+        private readonly ?AuthorizationCheckerInterface $authorizationChecker = null,
     ) {
         if (null === $this->fieldFactory) {
             trigger_deprecation(
@@ -95,6 +98,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 $entityDto->getClassMetadata()->getAssociationTargetClass($propertyName),
                 $targetCrudControllerFqcn,
             );
+            $this->applyEntityPermission($field, $context, $targetCrudControllerFqcn);
 
             return;
         }
@@ -367,6 +371,38 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             'entityDto',
             $this->createEntityDto($targetEntityFqcn, $targetCrudControllerFqcn, $targetCrudControllerAction, $targetCrudControllerPageName, $crudPageName),
         );
+    }
+
+    /**
+     * The embedded form edits the associated entity (or creates it, when there's none) with the
+     * CRUD form of the target controller, so it must respect its entity permission as its own
+     * 'edit' and 'new' pages do.
+     */
+    private function applyEntityPermission(FieldDto $field, AdminContext $context, string $targetCrudControllerFqcn): void
+    {
+        if (null === $this->authorizationChecker
+            || null === $entityPermission = $this->getEntityPermission($context, $targetCrudControllerFqcn)) {
+            return;
+        }
+
+        $authorizationChecker = $this->authorizationChecker;
+        $field->setCustomOption(
+            CrudFormType::FIELD_OPTION_IS_ENTITY_GRANTED,
+            static fn (mixed $associatedEntity): bool => $authorizationChecker->isGranted($entityPermission, \is_object($associatedEntity) ? $associatedEntity : null),
+        );
+    }
+
+    /**
+     * Returns the entity permission of the given CRUD controller, built in the same way as
+     * the CRUD context of its own pages (dashboard defaults overridden by the controller).
+     */
+    private function getEntityPermission(AdminContext $context, string $crudControllerFqcn): string|Expression|null
+    {
+        $request = $this->requestStack->getMainRequest();
+        $dashboardController = $this->controllerFactory->getDashboardControllerInstance($context->getDashboardControllerFqcn(), $request);
+        $crudController = $this->controllerFactory->getCrudControllerInstance($crudControllerFqcn, Action::EDIT, $request);
+
+        return $crudController->configureCrud($dashboardController?->configureCrud() ?? Crud::new())->getAsDto()->getEntityPermission();
     }
 
     /**

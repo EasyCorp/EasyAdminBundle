@@ -393,6 +393,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, service('request_stack'))
             ->arg(3, service(ControllerFactory::class))
             ->arg(4, new Reference(FieldFactory::class))
+            ->arg(5, service(AuthorizationChecker::class))
 
         ->set(AvatarConfigurator::class)
 
@@ -455,6 +456,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, service(ControllerFactory::class))
             ->arg(3, service(AdminContextProvider::class))
             ->arg(4, new Reference(FieldFactory::class))
+            ->arg(5, service(AuthorizationChecker::class))
 
         ->set(SlugConfigurator::class)
 

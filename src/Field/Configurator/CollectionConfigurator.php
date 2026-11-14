@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\LanguageType;
@@ -24,6 +25,7 @@ use Symfony\Component\Form\Extension\Core\Type\LocaleType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use function Symfony\Component\String\u;
 
 /**
@@ -37,6 +39,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         private readonly ControllerFactory $controllerFactory,
         private readonly AdminContextProvider $adminContextProvider,
         private readonly ?FieldFactory $fieldFactory = null,
+        private readonly ?AuthorizationCheckerInterface $authorizationChecker = null,
     ) {
         if (null === $this->fieldFactory) {
             trigger_deprecation(
@@ -179,6 +182,8 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
 
         $targetEntityFqcn = $entityDto->getClassMetadata()->getAssociationTargetClass($fieldDto->getProperty());
 
+        $this->applyEntityPermission($fieldDto, $context, $targetCrudControllerFqcn);
+
         $editEntityDto = $this->createEntityDto(
             $targetEntityFqcn,
             $targetCrudControllerFqcn,
@@ -227,6 +232,46 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         }
         $fieldDto->setFormTypeOptionIfNotSet('prototype_data', $createEntryEntity());
         $fieldDto->setFormTypeOptionIfNotSet('entry_options.empty_data', $createEntryEntity);
+    }
+
+    /**
+     * The entries are edited and created with the CRUD forms of the target controller, so they
+     * must respect its entity permission as its own 'edit' and 'new' pages do.
+     */
+    private function applyEntityPermission(FieldDto $fieldDto, AdminContext $context, string $targetCrudControllerFqcn): void
+    {
+        if (null === $this->authorizationChecker
+            || null === $entityPermission = $this->getEntityPermission($context, $targetCrudControllerFqcn)) {
+            return;
+        }
+
+        $authorizationChecker = $this->authorizationChecker;
+        $fieldDto->setCustomOption(CrudFormType::FIELD_OPTION_IS_ENTITY_GRANTED, static function (mixed $entries) use ($authorizationChecker, $entityPermission): bool {
+            foreach (is_iterable($entries) ? $entries : [] as $entry) {
+                if (\is_object($entry) && !$authorizationChecker->isGranted($entityPermission, $entry)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        if (!$authorizationChecker->isGranted($entityPermission, null)) {
+            $fieldDto->setFormTypeOption('allow_add', false);
+        }
+    }
+
+    /**
+     * Returns the entity permission of the given CRUD controller, built in the same way as
+     * the CRUD context of its own pages (dashboard defaults overridden by the controller).
+     */
+    private function getEntityPermission(AdminContext $context, string $crudControllerFqcn): string|Expression|null
+    {
+        $request = $this->requestStack->getMainRequest();
+        $dashboardController = $this->controllerFactory->getDashboardControllerInstance($context->getDashboardControllerFqcn(), $request);
+        $crudController = $this->controllerFactory->getCrudControllerInstance($crudControllerFqcn, Action::EDIT, $request);
+
+        return $crudController->configureCrud($dashboardController?->configureCrud() ?? Crud::new())->getAsDto()->getEntityPermission();
     }
 
     /**

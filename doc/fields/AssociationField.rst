@@ -177,6 +177,13 @@ pass the fully-qualified class name of the controller as the first argument::
         CategoryCrudController::class, 'create_category_inside_an_article', 'edit_category_inside_an_article'
     );
 
+.. note::
+
+    The embedded form applies the ``setEntityPermission()`` option of its
+    CRUD controller. If the user doesn't have permission to access the
+    associated entity, the field is not included in the form. Read more
+    about :ref:`restricting the items displayed to users <security-fields>`.
+
 ``renderAsHtml``
 ~~~~~~~~~~~~~~~~
 

@@ -201,6 +201,13 @@ class name of the controller as the first argument::
     When no Symfony form option ``entry_type`` is set, ``CollectionField`` for
     association properties will use ``CrudFormType`` as the default ``entry_type``.
 
+.. note::
+
+    The CRUD form of the entries applies the ``setEntityPermission()`` option
+    of its CRUD controller. If the user doesn't have permission to access any
+    of the entries, the field is not included in the form. Read more about
+    :ref:`restricting the items displayed to users <security-fields>`.
+
 JavaScript Events
 -----------------
 

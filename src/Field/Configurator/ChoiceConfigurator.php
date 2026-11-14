@@ -159,6 +159,8 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             }
         }
         $field->setFormattedValue(new TranslatableChoiceMessageCollection($choiceMessages, $isRenderedAsBadge));
+        // choice labels are defined by the developer and they can contain HTML contents
+        $field->setCustomOption(FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML, true);
     }
 
     /**

@@ -25,6 +25,13 @@ use Symfony\Contracts\Translation\TranslatableInterface;
  */
 final class FieldDto
 {
+    /**
+     * The default templates of the fields print the formatted value without escaping it
+     * only when this custom option is TRUE. Field configurators set it after escaping the
+     * value or when the value is HTML that the developer wants to render.
+     */
+    public const OPTION_FORMATTED_VALUE_IS_SAFE_HTML = 'formattedValueIsSafeHtml';
+
     private ?string $fieldFqcn = null;
     private ?string $propertyName = null;
     private ?string $propertyNameSuffix = null;

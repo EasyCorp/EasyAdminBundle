@@ -85,6 +85,21 @@ class BlogPost
         return $this;
     }
 
+    public function getDisplayTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function getDisplayAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function getPublisherEmail(): ?string
+    {
+        return $this->publisher?->getEmail();
+    }
+
     /**
      * @return Collection|Category[]
      */

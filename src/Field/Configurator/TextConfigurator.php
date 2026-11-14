@@ -61,5 +61,6 @@ final class TextConfigurator implements FieldConfiguratorInterface
         }
 
         $field->setFormattedValue($formattedValue);
+        $field->setCustomOption(FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML, true);
     }
 }

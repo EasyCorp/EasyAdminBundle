@@ -1,13 +1,15 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{# the value is only printed as HTML when the code that formatted it marked it as safe #}
+{% set is_safe_html = field.customOptions.get('formattedValueIsSafeHtml') is same as(true) %}
 {% set render_as_html = field.customOptions.get('renderAsHtml') %}
 {% if ea().crud.currentAction == 'detail' %}
     <span title="{{ field.value }}">
-        {{ render_as_html ? field.formattedValue|raw : field.formattedValue|raw|nl2br }}
+        {% if not is_safe_html %}{{ field.formattedValue|nl2br }}{% elseif render_as_html %}{{ field.formattedValue|raw }}{% else %}{{ field.formattedValue|raw|nl2br }}{% endif %}
     </span>
 {% else %}
     <span title="{{ field.value }}">
-        {{ field.formattedValue|raw }}
+        {% if is_safe_html %}{{ field.formattedValue|raw }}{% else %}{{ field.formattedValue }}{% endif %}
     </span>
 {% endif %}

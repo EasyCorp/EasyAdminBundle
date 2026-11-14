@@ -135,6 +135,15 @@ class StringToFileTransformer implements DataTransformerInterface
         return false;
     }
 
+    private static function getSafeStoredPath(string $path): string
+    {
+        if (self::isUnsafeStoredPath($path)) {
+            throw new TransformationFailedException(sprintf('The name "%s" generated for the uploaded file is not a relative path inside the upload directory.', $path));
+        }
+
+        return $path;
+    }
+
     private function doReverseTransform(mixed $value): ?string
     {
         if (null === $value) {
@@ -146,15 +155,19 @@ class StringToFileTransformer implements DataTransformerInterface
                 throw new TransformationFailedException($value->getErrorMessage());
             }
 
-            $filename = ($this->uploadFilename)($value);
+            // the stored name is also the path where the file is written, relative to the
+            // upload dir, and it can contain values that the user controls (e.g. the
+            // client file name), so it's checked before probing the storage and again
+            // after the validator has possibly renamed it
+            $filename = self::getSafeStoredPath(($this->uploadFilename)($value));
             // Pass the full path (upload dir + filename) to the validator so
             // it can detect existing files and avoid overwriting them. Strip
             // the upload dir afterwards so only the relative name is stored.
             $validatedPath = ($this->uploadValidate)($this->uploadDir.$filename);
 
-            return str_starts_with($validatedPath, $this->uploadDir)
+            return self::getSafeStoredPath(str_starts_with($validatedPath, $this->uploadDir)
                 ? mb_substr($validatedPath, mb_strlen($this->uploadDir))
-                : $validatedPath;
+                : $validatedPath);
         }
 
         if ($value instanceof FlysystemFile) {

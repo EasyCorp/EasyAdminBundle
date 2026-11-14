@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\DataTransformer\StringToFileTransformer
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -155,6 +156,63 @@ class StringToFileTransformerTest extends TestCase
         self::assertSame('normal_1.txt', $result);
 
         @unlink($tmpFile);
+    }
+
+    #[DataProvider('unsafeStoredPathProvider')]
+    public function testReverseTransformRejectsUnsafeGeneratedName(string $generatedName): void
+    {
+        $validatorWasCalled = false;
+        $transformer = new StringToFileTransformer(
+            $this->uploadDir,
+            static fn (UploadedFile $file): string => $generatedName,
+            static function (string $filename) use (&$validatorWasCalled): string {
+                $validatorWasCalled = true;
+
+                return $filename;
+            },
+            false,
+        );
+
+        try {
+            $transformer->reverseTransform($this->createUploadedFile());
+            self::fail('An unsafe name generated for an uploaded file must be rejected.');
+        } catch (TransformationFailedException) {
+            self::assertFalse($validatorWasCalled);
+        }
+    }
+
+    #[DataProvider('unsafeStoredPathProvider')]
+    public function testReverseTransformRejectsUnsafeValidatedName(string $validatedName): void
+    {
+        $transformer = new StringToFileTransformer(
+            $this->uploadDir,
+            static fn (UploadedFile $file): string => 'normal.txt',
+            static fn (string $filename): string => $validatedName,
+            true,
+        );
+
+        $this->expectException(TransformationFailedException::class);
+        $transformer->reverseTransform([$this->createUploadedFile()]);
+    }
+
+    public function testReverseTransformAcceptsSubdirectoriesInGeneratedName(): void
+    {
+        $transformer = new StringToFileTransformer(
+            $this->uploadDir,
+            static fn (UploadedFile $file): string => '2026/11/...txt',
+            static fn (string $filename): string => $filename,
+            false,
+        );
+
+        self::assertSame('2026/11/...txt', $transformer->reverseTransform($this->createUploadedFile()));
+    }
+
+    private function createUploadedFile(): UploadedFile
+    {
+        $tmpFile = $this->uploadDir.'source.tmp';
+        file_put_contents($tmpFile, 'source');
+
+        return new UploadedFile($tmpFile, 'source.txt', 'text/plain', null, true);
     }
 
     private function createTransformer(): StringToFileTransformer

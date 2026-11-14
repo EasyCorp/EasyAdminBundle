@@ -133,6 +133,10 @@ The string returned by the closure still goes through the placeholder
 substitution described above, so you can combine both mechanisms (as in the
 ``'[name].[extension]'`` part of the previous example).
 
+The final file name must be a relative path inside the upload directory.
+Otherwise (e.g. if it's an absolute path or it contains a ``..`` part), the
+file is not uploaded and the form shows a validation error.
+
 ``isDeletable``
 ~~~~~~~~~~~~~~~
 

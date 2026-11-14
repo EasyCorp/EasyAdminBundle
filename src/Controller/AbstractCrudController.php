@@ -70,7 +70,6 @@ use Symfony\Component\PropertyAccess\PropertyPathInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -838,9 +837,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $uploadDir = $config->getOption('upload_dir');
             $uploadNew = $config->getOption('upload_new');
 
+            // the form data is already relative to the upload dir and was checked to stay inside
+            // it, so it must be passed as is (removing the upload dir from it again could turn
+            // a safe path into one that leaves the upload dir)
             foreach ($state->getUploadedFiles() as $index => $file) {
-                $fileName = u($filePaths[$index])->replace($uploadDir, '')->toString();
-                $uploadNew($file, $uploadDir, $fileName);
+                $uploadNew($file, $uploadDir, $filePaths[$index]);
             }
         }
     }

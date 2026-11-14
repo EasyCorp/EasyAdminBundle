@@ -179,9 +179,10 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         //   * no Windows drive letters
         //   * no null bytes
         //
-        // values that violate this contract are rejected on read (see
-        // StringToFileTransformer::doTransform) and the form behaves as if
-        // no file were stored. Overrides must preserve this contract.
+        // values that violate this contract are rejected on upload with a form
+        // error, before the file is written (see StringToFileTransformer::doReverseTransform),
+        // and on read, where the form behaves as if no file were stored (see
+        // StringToFileTransformer::doTransform). Overrides must preserve this contract.
         $uploadFilename = static fn (UploadedFile $file): string => basename(str_replace('\\', '/', $file->getClientOriginalName()));
 
         // the upload_validate callable receives the full path (upload_dir + filename)

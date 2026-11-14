@@ -15,7 +15,6 @@ return static function (ContainerConfigurator $container) {
                     'type' => 'attribute',
                     'dir' => '%kernel.project_dir%/src/Entity',
                     'prefix' => 'EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Entity',
-                    'alias' => 'AdminRouteTestApplication',
                 ],
             ],
         ],

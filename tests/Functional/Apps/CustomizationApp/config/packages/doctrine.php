@@ -12,7 +12,6 @@ $config = [
                 'type' => 'attribute',
                 'dir' => '%kernel.project_dir%/src/Entity',
                 'prefix' => 'EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Entity',
-                'alias' => 'app',
             ],
         ],
     ],

@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -204,7 +205,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         // creating the context is expensive, so it's created once and stored in the request
         // if the current request already has an AdminContext object, do nothing
         if (null === $adminContext = $request->attributes->get(EA::CONTEXT_REQUEST_ATTRIBUTE)) {
-            $crudControllerInstance = $this->getCrudControllerInstance($request);
+            $crudControllerInstance = $this->getCrudControllerInstance($request, $dashboardControllerFqcn);
             $adminContext = $this->adminContextFactory->create($request, $dashboardControllerInstance, $crudControllerInstance);
         }
 
@@ -220,12 +221,12 @@ class AdminRouterSubscriber implements EventSubscriberInterface
     public function onKernelController(ControllerEvent $event): void
     {
         $request = $event->getRequest();
-        if (null === $request->attributes->get(EA::CONTEXT_REQUEST_ATTRIBUTE)) {
+        if (null === $adminContext = $request->attributes->get(EA::CONTEXT_REQUEST_ATTRIBUTE)) {
             return;
         }
 
         // if the request is related to a CRUD controller, change the controller to be executed
-        if (null !== $crudControllerInstance = $this->getCrudControllerInstance($request)) {
+        if (null !== $crudControllerInstance = $this->getCrudControllerInstance($request, $adminContext->getDashboardControllerFqcn())) {
             $symfonyControllerFqcnCallable = [$crudControllerInstance, $request->attributes->get(EA::CRUD_ACTION) ?? $request->query->get(EA::CRUD_ACTION)];
             $symfonyControllerStringCallable = [$crudControllerInstance::class, $request->attributes->get(EA::CRUD_ACTION) ?? $request->query->get(EA::CRUD_ACTION)];
 
@@ -295,13 +296,27 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         return $this->controllerFactory->getDashboardControllerInstance($dashboardControllerFqcn, $request);
     }
 
-    private function getCrudControllerInstance(Request $request): ?CrudControllerInterface
+    private function getCrudControllerInstance(Request $request, string $dashboardControllerFqcn): ?CrudControllerInterface
     {
         // when using pretty URLs, the data is in the request attributes instead of the query string
         $crudControllerFqcn = $request->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $request->query->get(EA::CRUD_CONTROLLER_FQCN);
         $crudAction = $request->attributes->get(EA::CRUD_ACTION) ?? $request->query->get(EA::CRUD_ACTION);
 
-        return $this->controllerFactory->getCrudControllerInstance($crudControllerFqcn, $crudAction, $request);
+        $crudControllerInstance = $this->controllerFactory->getCrudControllerInstance($crudControllerFqcn, $crudAction, $request);
+
+        // the restrictions of the dashboard and of the #[AdminRoute] attributes are applied when generating the
+        // admin routes, so a CRUD controller taken from the query string must pass them too; otherwise, any
+        // CRUD controller would be reachable under any dashboard
+        if (null !== $crudControllerInstance
+            && null === $request->attributes->get(EA::CRUD_CONTROLLER_FQCN)
+            && $this->adminRouteGenerator instanceof AdminRouteGenerator
+            && $this->adminRouteGenerator->usesPrettyUrls()
+            && !$this->adminRouteGenerator->isCrudActionAllowedInDashboard($dashboardControllerFqcn, $crudControllerInstance::class, (string) $crudAction)
+        ) {
+            throw new NotFoundHttpException(sprintf('The "%s::%s()" action of the CRUD controller is not available in the "%s" dashboard.', $crudControllerInstance::class, $crudAction, $dashboardControllerFqcn));
+        }
+
+        return $crudControllerInstance;
     }
 
     private function getSymfonyControllerFqcn(Request $request): ?string

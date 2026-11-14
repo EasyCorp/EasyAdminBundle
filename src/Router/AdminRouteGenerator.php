@@ -144,6 +144,57 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     }
 
     /**
+     * Applies to the legacy query string parameters (?crudControllerFqcn=...&crudAction=...) the same
+     * dashboard restrictions applied when generating the routes of the CRUD controllers. The actions
+     * without their own route (e.g. custom actions without the #[AdminRoute] attribute) use the
+     * restrictions of their CRUD controller.
+     *
+     * @internal
+     *
+     * @param class-string<DashboardControllerInterface> $dashboardFqcn
+     * @param class-string<CrudControllerInterface>      $crudControllerFqcn
+     */
+    public function isCrudActionAllowedInDashboard(string $dashboardFqcn, string $crudControllerFqcn, string $actionName): bool
+    {
+        if (!method_exists($crudControllerFqcn, $actionName)) {
+            return false;
+        }
+
+        // class and method names are case-insensitive in PHP, but the restrictions use their declared names
+        $dashboardFqcn = (new \ReflectionClass($dashboardFqcn))->getName();
+        $crudControllerFqcn = (new \ReflectionClass($crudControllerFqcn))->getName();
+        $actionName = (new \ReflectionMethod($crudControllerFqcn, $actionName))->getName();
+
+        [$allowedCrudControllers, $deniedCrudControllers] = $this->getAllowedAndDeniedControllers($dashboardFqcn);
+        if (null !== $allowedCrudControllers && !\in_array($crudControllerFqcn, $allowedCrudControllers, true)) {
+            return false;
+        }
+
+        if (null !== $deniedCrudControllers && \in_array($crudControllerFqcn, $deniedCrudControllers, true)) {
+            return false;
+        }
+
+        $crudControllerRouteConfig = $this->getCrudControllerRouteConfig($crudControllerFqcn);
+        $actionRouteConfigs = array_filter(
+            $this->getCustomActionsConfig($crudControllerFqcn),
+            static fn (array $actionRouteConfig): bool => $actionName === $actionRouteConfig['actionName'],
+        );
+
+        if ([] === $actionRouteConfigs) {
+            return $this->isRouteAllowedInDashboard($dashboardFqcn, $crudControllerRouteConfig['allowedDashboards'], $crudControllerRouteConfig['deniedDashboards']);
+        }
+
+        foreach ($actionRouteConfigs as $actionRouteConfig) {
+            [$allowedDashboards, $deniedDashboards] = $this->getCrudActionDashboardRestrictions($actionRouteConfig, $crudControllerRouteConfig);
+            if ($this->isRouteAllowedInDashboard($dashboardFqcn, $allowedDashboards, $deniedDashboards)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return array<string, Route>
      */
     private function generateAdminRoutes(): array
@@ -217,6 +268,12 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
 
                 foreach (array_keys($actionsRouteConfig) as $actionName) {
                     $actionRouteConfig = $actionsRouteConfig[$actionName];
+
+                    [$allowedDashboards, $deniedDashboards] = $this->getCrudActionDashboardRestrictions($actionRouteConfig, $crudControllerRouteConfig);
+                    if (!$this->isRouteAllowedInDashboard($dashboardFqcn, $allowedDashboards, $deniedDashboards)) {
+                        continue;
+                    }
+
                     $actionNameSnakeCase = strtolower(preg_replace('/[A-Z]/', '_$0', $actionRouteConfig['actionName']));
                     $actionNameSlug = strtolower(preg_replace('/[A-Z]/', '-$0', $actionRouteConfig['actionName']));
 
@@ -288,16 +345,8 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                         // create route for the entire controller
                         foreach ($this->dashboardControllers as $dashboardController) {
                             $dashboardFqcn = $dashboardController::class;
-                            $allowedDashboards = $currentClassAdminRoute->allowedDashboards;
-                            $deniedDashboards = $currentClassAdminRoute->deniedDashboards;
 
-                            // skip if not in allowed dashboards (when restrictions are set)
-                            if (\is_array($allowedDashboards) && !\in_array($dashboardFqcn, $allowedDashboards, true)) {
-                                continue;
-                            }
-
-                            // skip if in denied dashboards (when restrictions are set)
-                            if (\is_array($deniedDashboards) && \in_array($dashboardFqcn, $deniedDashboards, true)) {
+                            if (!$this->isRouteAllowedInDashboard($dashboardFqcn, $currentClassAdminRoute->allowedDashboards, $currentClassAdminRoute->deniedDashboards)) {
                                 continue;
                             }
 
@@ -351,13 +400,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                             ? $methodAdminRoute->deniedDashboards
                             : $classAdminRoute?->deniedDashboards;
 
-                        // skip if not in allowed dashboards (when restrictions are set)
-                        if (\is_array($allowedDashboards) && !\in_array($dashboardFqcn, $allowedDashboards, true)) {
-                            continue;
-                        }
-
-                        // skip if in denied dashboards (when restrictions are set)
-                        if (\is_array($deniedDashboards) && \in_array($dashboardFqcn, $deniedDashboards, true)) {
+                        if (!$this->isRouteAllowedInDashboard($dashboardFqcn, $allowedDashboards, $deniedDashboards)) {
                             continue;
                         }
 
@@ -467,6 +510,41 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         }
 
         return $route;
+    }
+
+    /**
+     * Each option of the action overrides the one of the class unless it's 'false' (the same inheritance
+     * used in the other controllers); built-in actions without their own #[AdminRoute] attribute always
+     * use the options of the class.
+     *
+     * @param array{allowedDashboards?: class-string[]|false|null, deniedDashboards?: class-string[]|false|null} $actionRouteConfig
+     * @param array{allowedDashboards: class-string[]|false|null, deniedDashboards: class-string[]|false|null}   $crudControllerRouteConfig
+     *
+     * @return array{0: class-string[]|false|null, 1: class-string[]|false|null}
+     */
+    private function getCrudActionDashboardRestrictions(array $actionRouteConfig, array $crudControllerRouteConfig): array
+    {
+        $allowedDashboards = \array_key_exists('allowedDashboards', $actionRouteConfig) && false !== $actionRouteConfig['allowedDashboards']
+            ? $actionRouteConfig['allowedDashboards']
+            : $crudControllerRouteConfig['allowedDashboards'];
+        $deniedDashboards = \array_key_exists('deniedDashboards', $actionRouteConfig) && false !== $actionRouteConfig['deniedDashboards']
+            ? $actionRouteConfig['deniedDashboards']
+            : $crudControllerRouteConfig['deniedDashboards'];
+
+        return [$allowedDashboards, $deniedDashboards];
+    }
+
+    /**
+     * @param class-string[]|false|null $allowedDashboards false and null mean that all dashboards are allowed
+     * @param class-string[]|false|null $deniedDashboards  false and null mean that no dashboard is denied
+     */
+    private function isRouteAllowedInDashboard(string $dashboardFqcn, array|false|null $allowedDashboards, array|false|null $deniedDashboards): bool
+    {
+        if (\is_array($allowedDashboards) && !\in_array($dashboardFqcn, $allowedDashboards, true)) {
+            return false;
+        }
+
+        return !\is_array($deniedDashboards) || !\in_array($dashboardFqcn, $deniedDashboards, true);
     }
 
     /**
@@ -598,11 +676,11 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     /**
      * @param class-string<CrudControllerInterface> $crudControllerFqcn
      *
-     * @return array{routeName: string, routePath: string}
+     * @return array{routeName: string, routePath: string, allowedDashboards: class-string[]|false|null, deniedDashboards: class-string[]|false|null}
      */
     private function getCrudControllerRouteConfig(string $crudControllerFqcn): array
     {
-        $crudControllerConfig = [];
+        $crudControllerConfig = ['allowedDashboards' => false, 'deniedDashboards' => false];
 
         $reflectionClass = new \ReflectionClass($crudControllerFqcn);
 
@@ -611,6 +689,8 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         if ([] !== $adminRouteAttributes) {
             /** @var AdminRoute $adminRouteInstance */
             $adminRouteInstance = $adminRouteAttributes[0]->newInstance();
+            $crudControllerConfig['allowedDashboards'] = $adminRouteInstance->allowedDashboards;
+            $crudControllerConfig['deniedDashboards'] = $adminRouteInstance->deniedDashboards;
 
             if (null !== $adminRouteInstance->path) {
                 $crudControllerConfig['routePath'] = trim($adminRouteInstance->path, '/');
@@ -672,7 +752,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     /**
      * @param class-string<CrudControllerInterface> $crudControllerFqcn
      *
-     * @return array<string, array{routeName?: string, routePath?: string, methods?: array<string>}>
+     * @return array<string, array{actionName: string, routeName?: string|null, routePath?: string|null, methods?: array<string>, allowedDashboards?: class-string[]|false|null, deniedDashboards?: class-string[]|false|null}>
      */
     private function getCustomActionsConfig(string $crudControllerFqcn): array
     {
@@ -741,6 +821,8 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                     }
 
                     $customActionsConfig[$routeId]['methods'] = array_map('strtoupper', $methods);
+                    $customActionsConfig[$routeId]['allowedDashboards'] = $adminRouteInstance->allowedDashboards;
+                    $customActionsConfig[$routeId]['deniedDashboards'] = $adminRouteInstance->deniedDashboards;
 
                     // store the actual action name for the route generation
                     $customActionsConfig[$routeId]['actionName'] = $action;

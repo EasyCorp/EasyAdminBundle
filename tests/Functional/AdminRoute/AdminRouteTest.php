@@ -5,6 +5,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\AllowedDashboardsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\BuiltInActionCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\DashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\MultipleRouteCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\SecondDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Entity\Product;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Kernel;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -676,5 +682,153 @@ class AdminRouteTest extends WebTestCase
             'EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\AdvancedOptionsDashboardController',
             $defaults['dashboardControllerFqcn']
         );
+    }
+
+    public function testDashboardRestrictionsOfCrudControllers(): void
+    {
+        $client = static::createClient();
+        $routes = $client->getContainer()->get('router')->getRouteCollection();
+
+        // the class-level restriction applies to the built-in actions and to the custom actions that don't override it
+        foreach (['index', 'new', 'edit', 'delete', 'batch_delete', 'autocomplete', 'render_filters', 'inherited'] as $routeName) {
+            $this->assertNull($routes->get('admin_allowed_dashboards_'.$routeName), sprintf('Route "admin_allowed_dashboards_%s" should not exist', $routeName));
+            $this->assertNotNull($routes->get('second_admin_allowed_dashboards_'.$routeName), sprintf('Route "second_admin_allowed_dashboards_%s" should exist', $routeName));
+            $this->assertNull($routes->get('legacy_admin_allowed_dashboards_'.$routeName), sprintf('Route "legacy_admin_allowed_dashboards_%s" should not exist', $routeName));
+        }
+
+        // a built-in action with its own restriction doesn't get its default route in the other dashboards
+        $this->assertNotNull($routes->get('admin_allowed_dashboards_show'));
+        $this->assertNull($routes->get('second_admin_allowed_dashboards_show'));
+        $this->assertNull($routes->get('admin_allowed_dashboards_detail'));
+        $this->assertNull($routes->get('second_admin_allowed_dashboards_detail'));
+
+        // action-level options override the class-level ones
+        $this->assertNotNull($routes->get('admin_allowed_dashboards_only_first'));
+        $this->assertNull($routes->get('second_admin_allowed_dashboards_only_first'));
+        $this->assertNotNull($routes->get('admin_allowed_dashboards_everywhere'));
+        $this->assertNotNull($routes->get('second_admin_allowed_dashboards_everywhere'));
+        $this->assertNotNull($routes->get('legacy_admin_allowed_dashboards_everywhere'));
+        $this->assertNotNull($routes->get('admin_allowed_dashboards_not_in_second'));
+        $this->assertNull($routes->get('second_admin_allowed_dashboards_not_in_second'));
+
+        // 'deniedDashboards' at the class level; each option is inherited on its own, so allowing
+        // a dashboard in an action doesn't remove the class-level denial of that dashboard
+        foreach (['index', 'new', 'edit', 'delete', 'detail', 'batch_delete', 'autocomplete', 'render_filters'] as $routeName) {
+            $this->assertNull($routes->get('admin_denied_dashboards_'.$routeName), sprintf('Route "admin_denied_dashboards_%s" should not exist', $routeName));
+            $this->assertNotNull($routes->get('second_admin_denied_dashboards_'.$routeName), sprintf('Route "second_admin_denied_dashboards_%s" should exist', $routeName));
+        }
+        $this->assertNull($routes->get('admin_denied_dashboards_still_denied'));
+        $this->assertNull($routes->get('second_admin_denied_dashboards_still_denied'));
+        $this->assertNotNull($routes->get('admin_denied_dashboards_not_denied'));
+        $this->assertNotNull($routes->get('second_admin_denied_dashboards_not_denied'));
+
+        // 'allowedDashboards: []' allows no dashboard
+        foreach ($routes->all() as $routeName => $route) {
+            $this->assertStringNotContainsString('no_dashboards', $routeName);
+        }
+
+        // the 'allowedControllers' option of the dashboard is checked first and can't be overridden
+        $this->assertNull($routes->get('advanced_admin_allowed_dashboards_everywhere'));
+    }
+
+    public function testDashboardRestrictionsOfCrudControllersRestrictTheMatchedRequests(): void
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/second-admin/allowed-dashboards/inherited');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Inherited', $client->getResponse()->getContent());
+
+        $client->request('GET', '/admin/allowed-dashboards/inherited');
+        $this->assertResponseStatusCodeSame(404);
+
+        $client->request('GET', '/admin/allowed-dashboards');
+        $this->assertResponseStatusCodeSame(404);
+
+        $client->request('GET', '/admin/allowed-dashboards/only-first');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Only First', $client->getResponse()->getContent());
+
+        $client->request('GET', '/second-admin/allowed-dashboards/only-first');
+        $this->assertResponseStatusCodeSame(404);
+
+        $client->request('GET', '/admin/denied-dashboards/still-denied');
+        $this->assertResponseStatusCodeSame(404);
+
+        $client->request('GET', '/admin/denied-dashboards/not-denied');
+        $this->assertResponseIsSuccessful();
+
+        $client->request('GET', '/admin/no-dashboards/custom');
+        $this->assertResponseStatusCodeSame(404);
+        $client->request('GET', '/second-admin/no-dashboards/custom');
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testLegacyQueryParametersOnlyReachCrudActionsAllowedInTheDashboard(): void
+    {
+        $client = static::createClient();
+
+        // dashboards with an admin route: the CRUD controller of the query string is used without matching any CRUD route
+        $client->request('GET', '/second-admin', [EA::CRUD_CONTROLLER_FQCN => AllowedDashboardsCrudController::class, EA::CRUD_ACTION => 'inherited']);
+        $this->assertSame('Inherited', $client->getResponse()->getContent());
+        $client->request('GET', '/second-admin', [EA::CRUD_CONTROLLER_FQCN => AllowedDashboardsCrudController::class, EA::CRUD_ACTION => 'unrouted']);
+        $this->assertSame('Unrouted', $client->getResponse()->getContent());
+
+        foreach ([
+            [AllowedDashboardsCrudController::class, 'inherited'],
+            [AllowedDashboardsCrudController::class, 'INHERITED'],
+            ['\\'.AllowedDashboardsCrudController::class, 'inherited'],
+            [AllowedDashboardsCrudController::class, 'unrouted'],
+            [AllowedDashboardsCrudController::class, 'index'],
+        ] as [$crudControllerFqcn, $crudAction]) {
+            $client->request('GET', '/admin', [EA::CRUD_CONTROLLER_FQCN => $crudControllerFqcn, EA::CRUD_ACTION => $crudAction]);
+            $this->assertResponseStatusCodeSame(404, sprintf('%s::%s()', $crudControllerFqcn, $crudAction));
+        }
+
+        // dashboards with a Symfony route: the query string parameters redirect to the CRUD route of the dashboard if it exists...
+        $client->request('GET', '/legacy-admin', [EA::CRUD_CONTROLLER_FQCN => MultipleRouteCrudController::class, EA::CRUD_ACTION => 'index']);
+        $this->assertResponseRedirects('/legacy-admin/multiple-route');
+        $client->request('GET', '/legacy-admin', [EA::CRUD_CONTROLLER_FQCN => AllowedDashboardsCrudController::class, EA::CRUD_ACTION => 'everywhere']);
+        $this->assertResponseRedirects('/legacy-admin/allowed-dashboards/everywhere');
+
+        // ...and otherwise, the CRUD controller of the query string is only used if the dashboard allows it
+        foreach ([
+            [BuiltInActionCrudController::class, 'index'],
+            [AllowedDashboardsCrudController::class, 'index'],
+            [AllowedDashboardsCrudController::class, 'inherited'],
+            [AllowedDashboardsCrudController::class, 'unrouted'],
+        ] as [$crudControllerFqcn, $crudAction]) {
+            $client->request('GET', '/legacy-admin', [EA::CRUD_CONTROLLER_FQCN => $crudControllerFqcn, EA::CRUD_ACTION => $crudAction]);
+            $this->assertResponseStatusCodeSame(404, sprintf('%s::%s()', $crudControllerFqcn, $crudAction));
+        }
+    }
+
+    public function testUrlsOfCrudActionsNotRoutedInTheDashboard(): void
+    {
+        $client = static::createClient();
+        $client->getContainer()->get('router')->getRouteCollection();
+
+        /** @var AdminUrlGenerator $urlGenerator */
+        $urlGenerator = static::getContainer()->get(AdminUrlGenerator::class);
+
+        $url = $urlGenerator
+            ->setDashboard(SecondDashboardController::class)
+            ->setController(AllowedDashboardsCrudController::class)
+            ->setAction('inherited')
+            ->generateUrl();
+        $this->assertStringEndsWith('/second-admin/allowed-dashboards/inherited', $url);
+
+        // like for the controllers excluded by 'allowedControllers', the URL points to the dashboard
+        // with the legacy query string parameters, which don't reach the CRUD action
+        $url = $urlGenerator
+            ->setDashboard(DashboardController::class)
+            ->setController(AllowedDashboardsCrudController::class)
+            ->setAction('inherited')
+            ->generateUrl();
+        $this->assertStringStartsWith('http://localhost/admin?', $url);
+        $this->assertStringContainsString('crudAction=inherited', $url);
+
+        $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(404);
     }
 }

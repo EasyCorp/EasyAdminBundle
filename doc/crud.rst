@@ -172,6 +172,40 @@ The ``index()`` action of this controller will no longer use the ``admin_product
 route name and the ``/admin/product`` path in the URL. Instead, the route name
 will be ``admin_product_latest`` and the path will be ``/admin/product/latest-products``.
 
+The ``allowedDashboards`` and ``deniedDashboards`` options of the CRUD controller
+class apply to the routes of all its actions, including the built-in ones. The
+same options in the attribute of an action override the class-level options
+(each option on its own) as explained in :ref:`actions-integrating-symfony`::
+
+    use App\Controller\Admin\DashboardController;
+    use App\Controller\Admin\GuestDashboardController;
+    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+    use Symfony\Component\HttpFoundation\Response;
+    // ...
+
+    // the routes of this controller are only generated in the main dashboard
+    #[AdminRoute(allowedDashboards: [DashboardController::class])]
+    class InvoiceCrudController extends AbstractCrudController
+    {
+        // ...
+
+        // this route is also generated in the guest dashboard
+        #[AdminRoute(path: '/summary', name: 'summary', allowedDashboards: [
+            DashboardController::class,
+            GuestDashboardController::class,
+        ])]
+        public function summary(): Response
+        {
+            // ...
+        }
+    }
+
+The ``allowedControllers`` and ``deniedControllers`` options of the
+``#[AdminDashboard]`` attribute are checked first: if a dashboard excludes a CRUD
+controller, none of its routes are generated in that dashboard, whatever the
+``#[AdminRoute]`` attributes of the controller and its actions say.
+
 .. tip::
 
     You can combine the ``#[AdminDashboard]``, and ``#[AdminRoute]``

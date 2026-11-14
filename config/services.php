@@ -122,6 +122,8 @@ use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\AccessMapInterface;
 
@@ -222,6 +224,8 @@ return static function (ContainerConfigurator $container) {
                 AdminRouteGeneratorInterface::class => service(AdminRouteGenerator::class),
                 AccessMapInterface::class => service('security.access_map')->ignoreOnInvalid(),
                 AuthorizationCheckerInterface::class => service('security.authorization_checker')->ignoreOnInvalid(),
+                AccessDecisionManagerInterface::class => service('security.access.decision_manager')->ignoreOnInvalid(),
+                TokenStorageInterface::class => service('security.token_storage')->ignoreOnInvalid(),
             ]))
             ->tag('kernel.event_subscriber')
 

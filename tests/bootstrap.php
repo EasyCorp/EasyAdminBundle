@@ -59,6 +59,9 @@ $filesystem = new Filesystem();
 $testAppKernels = [
     EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Kernel::class,
     EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Kernel::class,
+    EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\UnanimousStrategyKernel::class,
+    EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\ConsensusStrategyKernel::class,
+    EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\PriorityStrategyKernel::class,
     EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Kernel::class,
 ];
 

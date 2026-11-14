@@ -1,6 +1,7 @@
 <?php
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Kernel;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Security\AdminAreaVoter;
 use Symfony\Component\Security\Core\User\InMemoryUser;
 
 $configuration = [
@@ -46,6 +47,10 @@ $configuration = [
     ],
 
     'access_control' => [
+        // with the default 'affirmative' strategy these rules grant access when any of their
+        // attributes is granted; the strategy kernels of this app make them stricter
+        ['path' => '^/admin/access-control/role-and-full-login', 'roles' => ['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY']],
+        ['path' => '^/admin/access-control/role-and-custom-voter', 'roles' => ['ROLE_USER', AdminAreaVoter::ADMIN_AREA]],
         ['path' => '^/admin/secure', 'roles' => ['ROLE_ADMIN']],
         ['path' => '^/admin', 'roles' => ['ROLE_USER']],
     ],

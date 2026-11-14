@@ -37,6 +37,10 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\NullToken;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AccessDecision;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -72,6 +76,8 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
         ?AdminRouteGeneratorInterface $adminRouteGenerator = null,
         ?AccessMapInterface $accessMap = null,
         ?AuthorizationCheckerInterface $authorizationChecker = null,
+        ?AccessDecisionManagerInterface $accessDecisionManager = null,
+        ?TokenStorageInterface $tokenStorage = null,
     ) {
         if ($locator instanceof ContainerInterface) {
             $this->locator = $locator;
@@ -95,6 +101,8 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
             AdminRouteGeneratorInterface::class => static fn () => $adminRouteGenerator,
             AccessMapInterface::class => null === $accessMap ? null : static fn () => $accessMap,
             AuthorizationCheckerInterface::class => null === $authorizationChecker ? null : static fn () => $authorizationChecker,
+            AccessDecisionManagerInterface::class => null === $accessDecisionManager ? null : static fn () => $accessDecisionManager,
+            TokenStorageInterface::class => null === $tokenStorage ? null : static fn () => $tokenStorage,
         ]));
     }
 
@@ -345,15 +353,14 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
      * silently skipped, allowing it to be reached through EasyAdmin. So we re-evaluate
      * that rule here against the target request.
      *
-     * This mirrors Symfony's own AccessListener, but evaluates the matched attributes one
-     * by one through the authorization checker instead of calling the access decision
-     * manager directly: the signature of AccessDecisionManagerInterface::decide() (needed
-     * to pass several attributes at once) is not portable across the Symfony versions this
-     * bundle supports.
+     * The rule is decided like Symfony's AccessListener does: all its attributes (roles and
+     * the allow_if expression) in a single call to the access decision manager, with the
+     * target request as the subject. Deciding them one by one would grant access when any
+     * of them is granted, which only matches the default 'affirmative' strategy.
      */
     private function assertTargetRouteAccessIsGranted(Request $request): void
     {
-        if (!$this->locator->has(AccessMapInterface::class) || !$this->locator->has(AuthorizationCheckerInterface::class)) {
+        if (!$this->locator->has(AccessMapInterface::class)) {
             return;
         }
 
@@ -363,13 +370,40 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
             return;
         }
 
-        foreach ($attributes as $attribute) {
-            if ($this->get(AuthorizationCheckerInterface::class)->isGranted($attribute)) {
-                return;
-            }
+        if ($this->isAccessControlRuleGranted($attributes, $request)) {
+            return;
         }
 
         throw new AccessDeniedException(sprintf('Access to the "%s" route is denied by an access control rule; it cannot be reached through an EasyAdmin custom action.', $request->attributes->get('_route')));
+    }
+
+    /**
+     * @param array<mixed> $attributes
+     */
+    private function isAccessControlRuleGranted(array $attributes, Request $request): bool
+    {
+        if ($this->locator->has(AccessDecisionManagerInterface::class) && $this->locator->has(TokenStorageInterface::class)) {
+            $token = $this->get(TokenStorageInterface::class)->getToken() ?? new NullToken();
+
+            // the flag that allows several attributes is not part of AccessDecisionManagerInterface
+            // and it moved from the 4th to the 5th argument when Symfony 7.3 added AccessDecision;
+            // these are the calls made by the AccessListener of each Symfony version
+            if (class_exists(AccessDecision::class)) {
+                // @phpstan-ignore arguments.count
+                return $this->get(AccessDecisionManagerInterface::class)->decide($token, $attributes, $request, new AccessDecision(), true);
+            }
+
+            // @phpstan-ignore argument.type
+            return $this->get(AccessDecisionManagerInterface::class)->decide($token, $attributes, $request, true);
+        }
+
+        // without the decision manager the strategy is unknown, so a rule with several
+        // attributes can't be decided like Symfony does and access is denied
+        if (1 !== \count($attributes) || !$this->locator->has(AuthorizationCheckerInterface::class)) {
+            return false;
+        }
+
+        return $this->get(AuthorizationCheckerInterface::class)->isGranted(reset($attributes), $request);
     }
 
     /**

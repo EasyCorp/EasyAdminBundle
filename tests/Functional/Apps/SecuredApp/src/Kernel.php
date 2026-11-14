@@ -17,7 +17,7 @@ use Symfony\UX\TwigComponent\TwigComponentBundle;
 use Twig\Extra\TwigExtraBundle\TwigExtraBundle;
 use Zenstruck\Foundry\ZenstruckFoundryBundle;
 
-final class Kernel extends SymfonyKernel
+class Kernel extends SymfonyKernel
 {
     use MicroKernelTrait;
 

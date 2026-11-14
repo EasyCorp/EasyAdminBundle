@@ -226,7 +226,9 @@ class AdminRouterSubscriber implements EventSubscriberInterface
             if (null !== $prettyUrlRoute) {
                 $request->query->remove(EA::CRUD_CONTROLLER_FQCN);
 
-                $event->setResponse(new RedirectResponse($this->urlGenerator->generate($prettyUrlRoute, $request->query->all())));
+                // the path of the dashboard can have parameters, which the pretty URL needs too
+                $routeParams = array_merge($request->query->all(), $request->attributes->get('_route_params', []));
+                $event->setResponse(new RedirectResponse($this->urlGenerator->generate($prettyUrlRoute, $routeParams)));
 
                 return;
             }

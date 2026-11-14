@@ -771,7 +771,7 @@ class AdminRouteTest extends WebTestCase
 
         // dashboards with an admin route: the CRUD controller of the query string is used without matching any CRUD route
         $client->request('GET', '/second-admin', [EA::CRUD_CONTROLLER_FQCN => AllowedDashboardsCrudController::class, EA::CRUD_ACTION => 'inherited']);
-        $this->assertSame('Inherited', $client->getResponse()->getContent());
+        $this->assertResponseRedirects('/second-admin/allowed-dashboards/inherited');
         $client->request('GET', '/second-admin', [EA::CRUD_CONTROLLER_FQCN => AllowedDashboardsCrudController::class, EA::CRUD_ACTION => 'unrouted']);
         $this->assertSame('Unrouted', $client->getResponse()->getContent());
 
@@ -916,7 +916,7 @@ class AdminRouteTest extends WebTestCase
         $this->assertResponseRedirects('https://admin.example.com/tenant-admin/acme/custom-invokable', 301);
         $client->request('GET', 'http://admin.example.com/tenant-admin/acme', [EA::CRUD_CONTROLLER_FQCN => MultipleRouteCrudController::class, EA::CRUD_ACTION => 'customAction1'], server: $adminHeaders);
         $this->assertResponseRedirects();
-        $this->assertStringStartsWith('https://admin.example.com/tenant-admin/acme?', $client->getResponse()->headers->get('Location'));
+        $this->assertStringStartsWith('https://admin.example.com/tenant-admin/acme', $client->getResponse()->headers->get('Location'));
 
         // the conditions of the dashboard and of the #[AdminRoute] attribute must be both met
         $client->request('GET', 'https://admin.example.com/tenant-admin/acme/tenant-report/2026?token=1', server: $adminHeaders);

@@ -282,7 +282,8 @@ Disabling Actions
 
 Disabling an action means that it's not displayed in the interface and the user
 can't run the action even if they modify the URL. If they try to do that, they
-will see a "Forbidden Action" exception.
+will see a "Forbidden Action" exception. This applies both to built-in actions
+and to :ref:`custom actions <actions-custom>` that use ``linkToCrudAction()``.
 
 Actions are disabled globally, you cannot disable them per page::
 
@@ -297,6 +298,15 @@ Actions are disabled globally, you cannot disable them per page::
             ->disable(Action::NEW, Action::DELETE)
         ;
     }
+
+.. caution::
+
+    EasyAdmin can't check the URLs of actions that use ``linkToUrl()``, or
+    ``linkToRoute()`` with a route that isn't a custom action of the same CRUD
+    controller. Disabling these actions or setting their permission only hides
+    their buttons. Protect those routes yourself (for example, with the
+    ``#[IsGranted]`` attribute or with the ``access_control`` option of
+    Symfony Security).
 
 Restricting Actions
 -------------------

@@ -356,9 +356,15 @@ class AdminRouterSubscriber implements EventSubscriberInterface
 
         $newRequest->server->set('REQUEST_URI', $url);
 
-        $this->assertTargetRouteAccessIsGranted($newRequest);
-
         $parameters = $this->requestMatcher->matchRequest($newRequest);
+
+        // access_control rules can match on the attributes that RouterListener adds to the
+        // request ('attributes' and 'route' options), so the target request needs the same
+        // ones; '_route' becomes the matched name, not the given one, which can be an alias
+        $newRequest->attributes->add($parameters);
+        $newRequest->attributes->set('_route_params', array_diff_key($parameters, ['_route' => true, '_controller' => true]));
+
+        $this->assertTargetRouteAccessIsGranted($newRequest);
 
         return $parameters['_controller'] ?? null;
     }

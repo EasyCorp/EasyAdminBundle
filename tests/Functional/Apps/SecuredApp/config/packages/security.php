@@ -51,6 +51,9 @@ $configuration = [
         // attributes is granted; the strategy kernels of this app make them stricter
         ['path' => '^/admin/access-control/role-and-full-login', 'roles' => ['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY']],
         ['path' => '^/admin/access-control/role-and-custom-voter', 'roles' => ['ROLE_USER', AdminAreaVoter::ADMIN_AREA]],
+        // rules that match on route attributes instead of on the path
+        ['attributes' => ['_controller' => 'AccessControlRuleController::controllerAttribute$'], 'roles' => ['ROLE_ADMIN']],
+        ['route' => 'access_control_route_option', 'roles' => ['ROLE_ADMIN']],
         ['path' => '^/admin/secure', 'roles' => ['ROLE_ADMIN']],
         ['path' => '^/admin', 'roles' => ['ROLE_USER']],
     ],

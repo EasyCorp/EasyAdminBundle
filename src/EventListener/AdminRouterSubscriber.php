@@ -323,6 +323,12 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
             throw new NotFoundHttpException(sprintf('The route "%s" does not match the current request (check its host, scheme and condition).', $routeName), $e);
         }
 
+        // access_control rules can match on the attributes that RouterListener adds to the
+        // request ('attributes' and 'route' options), so the target request needs the same
+        // ones; '_route' becomes the matched name, not the given one, which can be an alias
+        $newRequest->attributes->add($parameters);
+        $newRequest->attributes->set('_route_params', array_diff_key($parameters, ['_route' => true, '_controller' => true]));
+
         return ['url' => $url, 'request' => $newRequest, 'parameters' => $parameters];
     }
 

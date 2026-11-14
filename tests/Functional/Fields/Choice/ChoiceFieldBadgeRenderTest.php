@@ -22,6 +22,8 @@ class ChoiceFieldBadgeRenderTest extends AbstractFieldFunctionalTestCase
     {
         $field = new FieldDto();
         $field->setFormattedValue(new TranslatableChoiceMessageCollection($choices, $isRenderedAsBadge));
+        // ChoiceConfigurator marks its formatted value as safe because choice labels are defined by the developer
+        $field->setCustomOption(FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML, true);
 
         return trim(static::getContainer()->get('twig')->render('@EasyAdmin/crud/field/choice.html.twig', [
             'field' => $field,
@@ -60,5 +62,17 @@ class ChoiceFieldBadgeRenderTest extends AbstractFieldFunctionalTestCase
         // <twig:ea:Badge> refactor), not escaped to "&lt;b&gt;Active&lt;/b&gt;"
         self::assertStringContainsString('<b>Active</b>', $html);
         self::assertStringNotContainsString('&lt;b&gt;', $html);
+    }
+
+    public function testValuesNotCreatedByTheChoiceConfiguratorAreEscaped(): void
+    {
+        $field = new FieldDto();
+        $field->setFormattedValue('<b>Active</b>');
+
+        $html = trim(static::getContainer()->get('twig')->render('@EasyAdmin/crud/field/choice.html.twig', [
+            'field' => $field,
+        ]));
+
+        self::assertSame('&lt;b&gt;Active&lt;/b&gt;', $html);
     }
 }

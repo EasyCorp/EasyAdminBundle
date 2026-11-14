@@ -88,6 +88,11 @@ class BlogPost
         return $this;
     }
 
+    public function getDisplayTitle(): ?string
+    {
+        return $this->title;
+    }
+
     /**
      * @return Collection|Category[]
      */

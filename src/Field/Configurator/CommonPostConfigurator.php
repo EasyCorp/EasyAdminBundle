@@ -49,10 +49,15 @@ final readonly class CommonPostConfigurator implements FieldConfiguratorInterfac
         }
 
         $formatted = $callable($field->getValue(), $entityDto->getInstance());
+        if (!\is_string($formatted)) {
+            return $formatted;
+        }
 
         // if the callable returns a string, wrap it in a Twig Markup to render the
         // HTML and CSS/JS elements that it might contain
-        return \is_string($formatted) ? new Markup($formatted, $this->charset) : $formatted;
+        $field->setCustomOption(FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML, true);
+
+        return new Markup($formatted, $this->charset);
     }
 
     private function updateFieldTemplate(FieldDto $field): void

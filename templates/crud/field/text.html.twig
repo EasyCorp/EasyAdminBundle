@@ -2,8 +2,11 @@
     field: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\FieldDto',
     entity: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto',
 } %}
+{# this is the default template of all fields, so the value is only printed as HTML
+   when the code that formatted it marked it as safe (e.g. TextConfigurator escapes it) #}
+{% set is_safe_html = field.customOptions.get('formattedValueIsSafeHtml') is same as(true) %}
 {% if ea().crud.currentAction == 'detail' %}
-    <span title="{{ field.value }}">{{ field.formattedValue|raw|nl2br }}</span>
+    <span title="{{ field.value }}">{% if is_safe_html %}{{ field.formattedValue|raw|nl2br }}{% else %}{{ field.formattedValue|nl2br }}{% endif %}</span>
 {% else %}
-    <span title="{{ field.value }}">{{ field.formattedValue|raw }}</span>
+    <span title="{{ field.value }}">{% if is_safe_html %}{{ field.formattedValue|raw }}{% else %}{{ field.formattedValue }}{% endif %}</span>
 {% endif %}

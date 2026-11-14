@@ -2,10 +2,14 @@
     field: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\FieldDto',
     entity: '\\EasyCorp\\Bundle\\EasyAdminBundle\\Dto\\EntityDto',
 } %}
-{% if field.formattedValue is iterable and field.formattedValue.isRenderedAsBadge %}
+{# choice labels are printed as HTML only when ChoiceConfigurator created them (other fields can use this template too) #}
+{% set is_safe_html = field.customOptions.get('formattedValueIsSafeHtml') is same as(true) %}
+{% if is_safe_html and field.formattedValue is iterable and field.formattedValue.isRenderedAsBadge %}
     {%- for choice in field.formattedValue -%}
         <twig:ea:Badge color="{{ choice.variant }}" variant="{{ field.customOptions.get('badgeVariant') }}">{{ choice.message|trans|raw }}</twig:ea:Badge>
     {%- endfor -%}
-{% else %}
+{% elseif is_safe_html %}
     {{ field.formattedValue|trans|raw }}
+{% else %}
+    {{ field.formattedValue|trans }}
 {% endif %}

@@ -387,7 +387,7 @@
             {% else %}
                 {% set _lightbox_id = 'ea-lightbox-' ~ id %}
 
-                <a href="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}" target="_blank" rel="noopener" class="ea-lightbox-thumbnail" data-ea-lightbox-content-selector="#{{ _lightbox_id }}">
+                <a href="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}" {% if download_uri|split('/')|last|ea_force_download %}download{% else %}target="_blank"{% endif %} rel="noopener" class="ea-lightbox-thumbnail" data-ea-lightbox-content-selector="#{{ _lightbox_id }}">
                     <img src="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri }}">
                 </a>
 

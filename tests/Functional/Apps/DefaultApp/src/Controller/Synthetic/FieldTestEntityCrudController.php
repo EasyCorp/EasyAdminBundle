@@ -108,6 +108,10 @@ class FieldTestEntityCrudController extends AbstractCrudController
                 $field->keepReplacedFile();
             }
 
+            if ($this->getContext()?->getRequest()->query->getBoolean('allowRiskyInlineRender')) {
+                $field->allowRiskyInlineRender();
+            }
+
             yield $field
                 ->setBasePath('uploads/')
                 ->setUploadDir('public/uploads/')

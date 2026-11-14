@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Media;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
+use PHPUnit\Framework\Attributes\TestWith;
 
 class ImageFieldTest extends AbstractFieldFunctionalTestCase
 {
@@ -170,5 +171,74 @@ class ImageFieldTest extends AbstractFieldFunctionalTestCase
             @unlink($uploadDir.$svgName);
             @unlink($uploadDir.$jpgName);
         }
+    }
+
+    /**
+     * The thumbnail of the index and detail pages is also a link to the image,
+     * which the browser follows on a Ctrl/Cmd/Shift click or a middle click. For
+     * files the browser would render inline and could execute scripts from (e.g.
+     * ".svg") that link must force a download instead of opening the file, while
+     * the lightbox keeps showing the image through an <img> tag.
+     */
+    #[TestWith(['index'])]
+    #[TestWith(['detail'])]
+    public function testRiskyImageTypesAreNotLinkedInlineOnIndexAndDetail(string $pageName): void
+    {
+        $entity = $this->createFieldTestEntity(['imageField' => 'payload.svg']);
+        $crawler = $this->client->request('GET', $this->getPageUrl($pageName, $entity->getId()));
+
+        $link = $crawler->filter('a.ea-lightbox-thumbnail[href$="payload.svg"]');
+        static::assertCount(1, $link);
+        static::assertSame('payload.svg', $link->attr('download'));
+        static::assertNull($link->attr('target'));
+        static::assertCount(1, $crawler->filter($link->attr('data-ea-lightbox-content-selector').' img[src$="payload.svg"]'));
+    }
+
+    #[TestWith(['index'])]
+    #[TestWith(['detail'])]
+    public function testSafeImageTypesAreLinkedInlineOnIndexAndDetail(string $pageName): void
+    {
+        $entity = $this->createFieldTestEntity(['imageField' => 'photo.jpg']);
+        $crawler = $this->client->request('GET', $this->getPageUrl($pageName, $entity->getId()));
+
+        $link = $crawler->filter('a.ea-lightbox-thumbnail[href$="photo.jpg"]');
+        static::assertCount(1, $link);
+        static::assertNull($link->attr('download'));
+        static::assertSame('_blank', $link->attr('target'));
+        static::assertCount(1, $crawler->filter($link->attr('data-ea-lightbox-content-selector').' img[src$="photo.jpg"]'));
+    }
+
+    #[TestWith(['index'])]
+    #[TestWith(['detail'])]
+    public function testRiskyImageTypesAreLinkedInlineOnIndexAndDetailWhenAllowed(string $pageName): void
+    {
+        $entity = $this->createFieldTestEntity(['imageField' => 'payload.svg']);
+        $crawler = $this->client->request('GET', $this->getPageUrl($pageName, $entity->getId(), ['allowRiskyInlineRender' => true]));
+
+        $link = $crawler->filter('a.ea-lightbox-thumbnail[href$="payload.svg"]');
+        static::assertCount(1, $link);
+        static::assertNull($link->attr('download'));
+        static::assertSame('_blank', $link->attr('target'));
+    }
+
+    public function testEachImageOfMultipleImageFieldIsCheckedOnDetail(): void
+    {
+        $entity = $this->createFieldTestEntity(['multipleImageField' => ['payload.svg', 'photo.png']]);
+        $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
+
+        static::assertSame('payload.svg', $crawler->filter('a.ea-lightbox-thumbnail[href$="payload.svg"]')->attr('download'));
+        static::assertNull($crawler->filter('a.ea-lightbox-thumbnail[href$="photo.png"]')->attr('download'));
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    private function getPageUrl(string $pageName, int $entityId, array $options = []): string
+    {
+        if ('index' === $pageName) {
+            return $this->getCrudUrl('index', null, ['sort' => ['id' => 'DESC']] + $options);
+        }
+
+        return $this->getCrudUrl('detail', $entityId, $options);
     }
 }

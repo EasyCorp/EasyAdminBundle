@@ -242,6 +242,8 @@ final class ActionFactory
         $adminContext = $this->adminContextProvider->getContext();
         $translationDomain = $adminContext->getI18n()->getTranslationDomain();
         $defaultTranslationParameters = $adminContext->getI18n()->getTranslationParameters();
+        // confirmation messages are stored in HTML attributes (escaped by Twig) and displayed as text
+        $plainTextTranslationParameters = $adminContext->getI18n()->getPlainTextTranslationParameters();
 
         $actionDto->setHtmlAttribute('data-action-name', $actionDto->getName());
 
@@ -284,7 +286,7 @@ final class ActionFactory
                     'data-action-confirmation-message',
                     $confirmationMessage instanceof TranslatableInterface
                         ? $confirmationMessage
-                        : t($confirmationMessage, $defaultTranslationParameters, $translationDomain)
+                        : t($confirmationMessage, $plainTextTranslationParameters, $translationDomain)
                 );
             }
 
@@ -295,7 +297,7 @@ final class ActionFactory
                     'data-action-confirmation-button',
                     $buttonLabel instanceof TranslatableInterface
                         ? $buttonLabel
-                        : t($buttonLabel, $defaultTranslationParameters, $translationDomain)
+                        : t($buttonLabel, $plainTextTranslationParameters, $translationDomain)
                 );
             }
 
@@ -304,7 +306,7 @@ final class ActionFactory
                 $entityLabel = $adminContext->getCrud()->getEntityLabelInSingular();
                 $actionDto->setHtmlAttribute(
                     'data-action-entity-name',
-                    \is_string($entityLabel) ? t($entityLabel, $defaultTranslationParameters, $translationDomain) : $entityLabel
+                    \is_string($entityLabel) ? t($entityLabel, $plainTextTranslationParameters, $translationDomain) : $entityLabel
                 );
                 $actionDto->setHtmlAttribute('data-action-entity-id', $entityDto->getPrimaryKeyValueAsString());
             }
@@ -332,7 +334,7 @@ final class ActionFactory
                 if (true !== $confirmationConfig) {
                     $batchActionAttributes['data-batch-action-confirm-message'] = $confirmationConfig instanceof TranslatableInterface
                         ? $confirmationConfig
-                        : t($confirmationConfig, $defaultTranslationParameters, $translationDomain);
+                        : t($confirmationConfig, $plainTextTranslationParameters, $translationDomain);
                 }
             }
 

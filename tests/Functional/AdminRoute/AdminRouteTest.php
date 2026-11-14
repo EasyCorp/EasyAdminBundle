@@ -6,9 +6,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\AllowedDashboardsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\MultipleRouteCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\RouteOptionsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\SecondDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Entity\Synthetic\AdminRouteTestEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Kernel;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -677,6 +679,115 @@ class AdminRouteTest extends WebTestCase
 
         $client->request('GET', 'https://reports.example.com/admin/route-options/export/csv');
         $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testDashboardRestrictionsOfCrudControllers(): void
+    {
+        $client = static::createClient();
+        $routes = $client->getContainer()->get('router')->getRouteCollection();
+
+        // the class-level restriction applies to the built-in actions and to the custom actions that don't override it
+        foreach (['index', 'new', 'edit', 'delete', 'batch_delete', 'autocomplete', 'render_filters', 'inherited'] as $routeName) {
+            $this->assertNull($routes->get('admin_allowed_dashboards_'.$routeName), sprintf('Route "admin_allowed_dashboards_%s" should not exist', $routeName));
+            $this->assertNotNull($routes->get('second_admin_allowed_dashboards_'.$routeName), sprintf('Route "second_admin_allowed_dashboards_%s" should exist', $routeName));
+        }
+
+        // a built-in action with its own restriction doesn't get its default route in the other dashboards
+        $this->assertNotNull($routes->get('admin_allowed_dashboards_show'));
+        $this->assertNull($routes->get('second_admin_allowed_dashboards_show'));
+        $this->assertNull($routes->get('admin_allowed_dashboards_detail'));
+        $this->assertNull($routes->get('second_admin_allowed_dashboards_detail'));
+
+        // action-level options override the class-level ones
+        $this->assertNotNull($routes->get('admin_allowed_dashboards_only_first'));
+        $this->assertNull($routes->get('second_admin_allowed_dashboards_only_first'));
+        $this->assertNotNull($routes->get('admin_allowed_dashboards_everywhere'));
+        $this->assertNotNull($routes->get('second_admin_allowed_dashboards_everywhere'));
+        $this->assertNotNull($routes->get('admin_allowed_dashboards_not_in_second'));
+        $this->assertNull($routes->get('second_admin_allowed_dashboards_not_in_second'));
+
+        // 'deniedDashboards' at the class level; each option is inherited on its own, so allowing
+        // a dashboard in an action doesn't remove the class-level denial of that dashboard
+        foreach (['index', 'new', 'edit', 'delete', 'detail', 'batch_delete', 'autocomplete', 'render_filters'] as $routeName) {
+            $this->assertNull($routes->get('admin_denied_dashboards_'.$routeName), sprintf('Route "admin_denied_dashboards_%s" should not exist', $routeName));
+            $this->assertNotNull($routes->get('second_admin_denied_dashboards_'.$routeName), sprintf('Route "second_admin_denied_dashboards_%s" should exist', $routeName));
+        }
+        $this->assertNull($routes->get('admin_denied_dashboards_still_denied'));
+        $this->assertNull($routes->get('second_admin_denied_dashboards_still_denied'));
+        $this->assertNotNull($routes->get('admin_denied_dashboards_not_denied'));
+        $this->assertNotNull($routes->get('second_admin_denied_dashboards_not_denied'));
+
+        // 'allowedDashboards: []' allows no dashboard
+        foreach ($routes->all() as $routeName => $route) {
+            $this->assertStringNotContainsString('no_dashboards', $routeName);
+        }
+
+        // the 'allowedControllers' option of the dashboard is checked first and can't be overridden
+        $this->assertNull($routes->get('id_alias_admin_allowed_dashboards_everywhere'));
+        $this->assertNull($routes->get('advanced_admin_allowed_dashboards_everywhere'));
+    }
+
+    public function testDashboardRestrictionsOfCrudControllersRestrictTheMatchedRequests(): void
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/second-admin/allowed-dashboards/inherited');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Inherited', $client->getResponse()->getContent());
+
+        $client->request('GET', '/admin/allowed-dashboards/inherited');
+        $this->assertResponseStatusCodeSame(404);
+
+        $client->request('GET', '/admin/allowed-dashboards');
+        $this->assertResponseStatusCodeSame(404);
+
+        $client->request('GET', '/admin/allowed-dashboards/only-first');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Only First', $client->getResponse()->getContent());
+
+        $client->request('GET', '/second-admin/allowed-dashboards/only-first');
+        $this->assertResponseStatusCodeSame(404);
+
+        $client->request('GET', '/admin/denied-dashboards/still-denied');
+        $this->assertResponseStatusCodeSame(404);
+
+        $client->request('GET', '/admin/denied-dashboards/not-denied');
+        $this->assertResponseIsSuccessful();
+
+        $client->request('GET', '/admin/no-dashboards/custom');
+        $this->assertResponseStatusCodeSame(404);
+        $client->request('GET', '/second-admin/no-dashboards/custom');
+        $this->assertResponseStatusCodeSame(404);
+
+        // the query string parameters can't select a CRUD controller that isn't routed in the dashboard:
+        // the dashboard index() runs instead (it fails because this app doesn't have its template)
+        $client->request('GET', '/admin', [EA::CRUD_CONTROLLER_FQCN => AllowedDashboardsCrudController::class, EA::CRUD_ACTION => 'inherited']);
+        $this->assertNotSame('Inherited', $client->getResponse()->getContent());
+        $this->assertStringContainsString('page/dashboard.html.twig', urldecode((string) $client->getResponse()->headers->get('X-Debug-Exception')));
+    }
+
+    public function testUrlsOfCrudActionsNotRoutedInTheDashboard(): void
+    {
+        $client = static::createClient();
+        $client->getContainer()->get('router')->getRouteCollection();
+
+        /** @var AdminUrlGenerator $urlGenerator */
+        $urlGenerator = static::getContainer()->get(AdminUrlGenerator::class);
+
+        $url = $urlGenerator
+            ->setDashboard(SecondDashboardController::class)
+            ->setController(AllowedDashboardsCrudController::class)
+            ->setAction('inherited')
+            ->generateUrl();
+        $this->assertStringEndsWith('/second-admin/allowed-dashboards/inherited', $url);
+
+        // like for the controllers excluded by 'allowedControllers', the URL points to the dashboard
+        $url = $urlGenerator
+            ->setDashboard(DashboardController::class)
+            ->setController(AllowedDashboardsCrudController::class)
+            ->setAction('inherited')
+            ->generateUrl();
+        $this->assertSame('http://localhost/admin', $url);
     }
 
     public function testEntityIdAliasRoutesAreGenerated(): void

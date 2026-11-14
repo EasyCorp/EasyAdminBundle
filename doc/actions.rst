@@ -1216,6 +1216,12 @@ action-level value overrides the class-level one:
 * ``[FooDashboard::class, BarDashboard::class, ...]``: allow/deny only these
   specific dashboards.
 
+Each option is inherited on its own. For example, if the class-level attribute
+denies a dashboard, an action that only sets ``allowedDashboards`` with that
+dashboard still inherits the class-level ``deniedDashboards`` and is not
+available in it; set ``deniedDashboards: null`` in that action too to make it
+available.
+
 Now you can link to those admin routes from your :ref:`main menu <dashboard-menu>`
 to render the actions fully integrated into each dashboard::
 

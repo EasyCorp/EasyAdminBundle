@@ -394,6 +394,14 @@ method and pass all the permissions at once::
         ;
     }
 
+Calling ``setPermissions()`` is the same as calling ``setPermission()`` for
+each action: the permissions defined before for other actions (for example, in
+the ``configureActions()`` method of the dashboard) still apply. To remove the
+permission of an action, set it to an empty string::
+
+    // the dashboard restricts the 'delete' action, but this CRUD controller doesn't
+    ->setPermission(Action::DELETE, '')
+
 Reordering Actions
 ------------------
 

@@ -37,6 +37,13 @@ permissions when browsing that URL path:
             - { path: ^/admin, roles: ROLE_ADMIN }
             # ...
 
+If the dashboard route is restricted with the ``routeOptions`` of the
+``#[AdminDashboard]`` attribute (e.g. a ``host`` or the ``requirements`` of a
+placeholder), all the routes of the dashboard have the same restrictions, so a
+security rule that matches those same requests covers the entire backend (unless
+some ``#[AdminRoute]`` attribute defines its own ``host``, ``schemes`` or
+``requirements``, which win over the ones of the dashboard).
+
 .. note::
 
     Some custom actions dispatch the request to a different Symfony controller.

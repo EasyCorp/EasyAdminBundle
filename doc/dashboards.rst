@@ -134,6 +134,16 @@ additional validation, so you can use any of the following options:
         // ...
     }
 
+The ``requirements``, ``host``, ``schemes`` and ``condition`` options also
+restrict all the other routes of the dashboard (the routes of its CRUD controllers
+and of the ``#[AdminRoute]`` attributes), so they only match the requests that the
+dashboard route matches. The requirements, host and schemes defined in an
+``#[AdminRoute]`` attribute win over the ones of the dashboard, and its condition
+is combined with the dashboard condition (both must be met). The other options
+(e.g. ``methods`` or ``defaults``) only apply to the dashboard route, except the
+``defaults`` of the placeholders of the ``host``, which are needed to generate
+the URLs of the other routes.
+
 The ``index()`` method is called by EasyAdmin to render your dashboard. Since
 ``index()`` is part of the Dashboard interface, you cannot add arguments to it
 to inject dependencies. Instead, inject those dependencies in the constructor

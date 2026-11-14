@@ -193,6 +193,8 @@ return static function (ContainerConfigurator $container) {
             ->arg(8, service(AdminControllerRegistry::class))
             ->arg(9, new Reference('security.access_map', ContainerInterface::NULL_ON_INVALID_REFERENCE))
             ->arg(10, new Reference('security.authorization_checker', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(11, new Reference('security.access.decision_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->arg(12, new Reference('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE))
             ->tag('kernel.event_subscriber')
 
         ->set(ControllerFactory::class)

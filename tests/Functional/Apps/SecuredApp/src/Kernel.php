@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\UX\TwigComponent\TwigComponentBundle;
 use Twig\Extra\TwigExtraBundle\TwigExtraBundle;
 
-final class Kernel extends SymfonyKernel
+class Kernel extends SymfonyKernel
 {
     use MicroKernelTrait;
 

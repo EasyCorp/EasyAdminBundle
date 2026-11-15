@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\Size;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\UX\TwigComponent\Attribute\PostMount;
 use Symfony\UX\TwigComponent\Attribute\PreMount;
 
 /**
@@ -50,19 +51,19 @@ class Button
      */
     public bool $inactive = false;
     /**
-     * The HTML element used to render the button: 'button', 'a' (a link that looks like a button) or 'form' (a form that submits to the action URL).
+     * The HTML element used to render the button: 'button', 'a' (a link that looks like a button) or 'form' (a form that submits to the action URL); when not set, it's 'a' if the button has a href, 'form' if it has an action and 'button' otherwise.
      */
     public ButtonElement $htmlElement = ButtonElement::Button;
     /**
-     * The URL of the link (only when htmlElement is 'a').
+     * The URL of the link; it renders the button as an 'a' element unless htmlElement says otherwise.
      */
     public ?string $href = null;
     /**
-     * The URL the form is submitted to (only when htmlElement is 'form').
+     * The URL the form is submitted to; it renders the button inside a 'form' element unless htmlElement says otherwise.
      */
     public ?string $action = null;
     /**
-     * The HTTP method of the form (only when htmlElement is 'form'); methods other than GET and POST are sent as POST with a '_method' field.
+     * The HTTP method of the form (only when the button is rendered as a 'form'); methods other than GET and POST are sent as POST with a '_method' field.
      */
     public string $method = 'POST';
     /**
@@ -79,6 +80,7 @@ class Button
     public ?string $value = null;
     private ?string $customColor = null;
     private ?string $customVariant = null;
+    private bool $hasExplicitHtmlElement = false;
 
     public function __construct(
         private readonly TranslatorInterface $translator,
@@ -135,6 +137,7 @@ class Button
         $this->resolveColor($color);
         $this->resolveVariant($variant, null !== $color && '' !== $color);
 
+        $this->hasExplicitHtmlElement = null !== $htmlElement && '' !== $htmlElement;
         if ($htmlElement instanceof ButtonElement) {
             $this->htmlElement = $htmlElement;
         } else {
@@ -151,6 +154,21 @@ class Button
 
         // unknown sizes fall back to the base 'md' size, which emits no CSS class
         $this->size = \is_string($size) ? (Size::tryFrom($size) ?? Size::Medium) : $size;
+    }
+
+    // this can't be done in mount() because 'href' and 'action' are set after calling it
+    #[PostMount]
+    public function inferHtmlElement(): void
+    {
+        if ($this->hasExplicitHtmlElement) {
+            return;
+        }
+
+        if (null !== $this->href && '' !== $this->href) {
+            $this->htmlElement = ButtonElement::A;
+        } elseif (null !== $this->action && '' !== $this->action) {
+            $this->htmlElement = ButtonElement::Form;
+        }
     }
 
     public function getDefaultCssClass(): string

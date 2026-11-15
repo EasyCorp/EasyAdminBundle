@@ -147,7 +147,7 @@ links in the ``actions`` block:
         A new EasyAdmin version has been released.
 
         <twig:block name="actions">
-            <twig:ea:Button htmlElement="a" href="/changelog" size="sm">Read the changelog</twig:ea:Button>
+            <twig:ea:Button href="/changelog" size="sm">Read the changelog</twig:ea:Button>
         </twig:block>
     </twig:ea:Alert>
 
@@ -263,12 +263,26 @@ for ``primary``, ``outline`` for ``default`` and ``light`` for the other colors:
 
     <twig:ea:Button variant="ghost" icon="fa-xmark" aria-label="Close"/>
 
-Use ``htmlElement="a"`` and ``href`` to render a link that looks like a
-button, or ``htmlElement="form"`` with ``action`` and ``method`` to render the
-button inside its own form. Other props are ``size`` (``sm``, ``md`` or
-``lg``), ``withTrailingIcon`` (to display the icon after the label),
-``inactive`` (to disable the button) and ``isBlock`` (to take all the
-available width).
+Set the ``href`` prop to render a link that looks like a button, or the
+``action`` prop (and optionally ``method``) to render the button inside its
+own form:
+
+.. code-block:: twig
+
+    <twig:ea:Button href="/invoices/new" color="primary">New invoice</twig:ea:Button>
+
+    <twig:ea:Button action="/invoices/42" method="DELETE" color="danger">
+        Delete invoice
+    </twig:ea:Button>
+
+The component chooses the HTML element for you: ``<a>`` when there's a
+``href``, ``<form>`` when there's an ``action`` and ``<button>`` otherwise.
+Set the ``htmlElement`` prop (``a``, ``form`` or ``button``) only when you
+need a different element.
+
+Other props are ``size`` (``sm``, ``md`` or ``lg``), ``withTrailingIcon`` (to
+display the icon after the label), ``inactive`` (to disable the button) and
+``isBlock`` (to take all the available width).
 
 Flag
 ----

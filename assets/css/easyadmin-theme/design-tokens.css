@@ -115,4 +115,10 @@
     --ea-control-height-lg: clamp(2rem, calc(var(--ea-spacing) * 18), 2.25rem);
     --ea-control-padding-x: clamp(0.5rem, calc(var(--ea-spacing) * 5), 0.625rem);
     --ea-control-padding-x-lg: clamp(0.75rem, calc(var(--ea-spacing) * 8), 1rem);
+
+    /* thumbnails are the tallest contents of datagrid rows, so compact backends don't fit
+       more rows unless they shrink too. As controls, they only have their regular size (50px)
+       and one smaller size (36px) for spacings below the default one. The formula goes from
+       one size to the other between the 'sm' (1.75px) and 'md' (2px) spacings */
+    --ea-datagrid-thumbnail-size: clamp(2.25rem, calc(var(--ea-spacing) * 56 - 3.875rem), 3.125rem);
 }

@@ -163,10 +163,10 @@ final class Theme
     /**
      * Sets the base spacing unit from which all the paddings, margins and gaps of
      * the backend are derived; it defines the density of the whole interface.
-     * Controls (buttons, inputs, switches) only get one size smaller with values
-     * below "md", and they don't get larger with values above it. It accepts a CSS
-     * length in "px" or "rem" units or one of these presets: "xs", "sm", "md"
-     * (the default look), "lg", "xl".
+     * Controls (buttons, inputs, switches) and the images of tables only get one
+     * size smaller with values below "md", and they don't get larger with values
+     * above it. It accepts a CSS length in "px" or "rem" units or one of these
+     * presets: "xs", "sm", "md" (the default look), "lg", "xl".
      */
     public function spacing(string $value): self
     {

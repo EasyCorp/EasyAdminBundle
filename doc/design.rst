@@ -607,6 +607,10 @@ case, add one image for each and hide the other one with CSS::
         display: none;
     }
 
+If the logo has a single color, you don't need two images. Render an inline
+SVG from a template instead, as explained in
+:ref:`the dashboard configuration <dashboard-configuration>`.
+
 .. _design-recipe-font:
 
 Your Company's Font

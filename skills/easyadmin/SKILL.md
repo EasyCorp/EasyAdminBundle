@@ -133,7 +133,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `linkToDashboard('Home', 'fa fa-home')`, `linkToLogout(...)`,
   `linkToExitImpersonation(...)`, `section('Catalog')` and
   `subMenu('Blog', 'fa fa-book')->setSubItems([...])`. There are no other
-  factories, and the parent of a submenu links to nothing. <!-- src/Config/MenuItem.php::linkToRoute; src/Config/MenuItem.php::linkToUrl; src/Config/MenuItem.php::subMenu; doc/dashboards.rst:705-706 -->
+  factories, and the parent of a submenu links to nothing. <!-- src/Config/MenuItem.php::linkToRoute; src/Config/MenuItem.php::linkToUrl; src/Config/MenuItem.php::subMenu; doc/dashboards.rst:731-732 -->
 - `linkToRoute()` to a Symfony route that does not exist renders a menu that
   looks fine and fails with `RouteNotFoundException` when clicked. Link only to
   routes that exist or that you create in the same change; never guess route
@@ -141,7 +141,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - `index()` belongs to the dashboard interface: do not add arguments to it.
   Inject services through the constructor. To open a CRUD page instead of a
   dashboard, redirect from it:
-  `return $this->redirectToRoute('admin_product_index');`. <!-- src/Contracts/Controller/DashboardControllerInterface.php::index; doc/dashboards.rst:147-150; src/Resources/skeleton/dashboard.tpl:14-19; doc/dashboards.rst:371-380 -->
+  `return $this->redirectToRoute('admin_product_index');`. <!-- src/Contracts/Controller/DashboardControllerInterface.php::index; doc/dashboards.rst:147-150; src/Resources/skeleton/dashboard.tpl:14-19; doc/dashboards.rst:397-406 -->
 <!-- rules:end -->
 
 ## CRUD controller
@@ -337,10 +337,10 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   through Symfony form themes (`Crud::addFormTheme()`), not through field templates. <!-- src/Config/Crud.php::overrideTemplate; src/Config/Crud.php::addFormTheme; src/Field/FieldTrait.php::setTemplatePath; doc/fields.rst:934-936 -->
 - Backend CSS lives in cascade layers (`vendor`, `ea`, `ea-overrides`), so
   unlayered custom CSS wins without `!important`. Override design tokens on
-  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:487-511; doc/design.rst:314-316; doc/design.rst:1407-1411 -->
+  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:487-511; doc/design.rst:314-316; doc/design.rst:1411-1415 -->
 - Custom pages extend `@EasyAdmin/page/content.html.twig`, not `@EasyAdmin/layout.html.twig`: only the former styles the
   HTML of the `main` block (headings, lists, tables, blue links). Elsewhere, add the `ea-prose` class (`ea-not-prose` opts out).
-  Don't write CSS for those elements: unlayered CSS beats these styles. <!-- templates/page/content.html.twig; doc/design.rst:727-827 -->
+  Don't write CSS for those elements: unlayered CSS beats these styles. <!-- templates/page/content.html.twig; doc/design.rst:731-831 -->
 - Use the shipped Twig components in custom templates instead of raw
   Bootstrap markup (`<twig:ea:Button>`, `<twig:ea:Badge>`, `<twig:ea:Alert>`,
   `<twig:ea:Icon>`, `<twig:ea:Modal>` and the others in `doc/components.rst`).

@@ -200,6 +200,8 @@ explained later)::
                 ->setTitle('ACME Corp.')
                 // you can include HTML contents too (e.g. to link to an image)
                 ->setTitle('<img src="..."> ACME <small>Corp.</small>')
+                // if the HTML is long, render it from a template (see below)
+                ->setTitle($this->renderView('admin/_dashboard_logo.html.twig'))
 
                 // by default EasyAdmin displays a black square as its default favicon;
                 // use this method to display a custom favicon: the given path is passed
@@ -274,6 +276,30 @@ explained later)::
             ;
         }
     }
+
+When the title is a logo with some text, the HTML is easier to maintain in
+its own template. Render it with the ``renderView()`` method, as shown in the
+example above. This template is rendered before EasyAdmin creates the admin
+context, so you can't use the ``ea`` variable in it:
+
+.. code-block:: twig
+
+    {# templates/admin/_dashboard_logo.html.twig #}
+    <span class="d-inline-flex align-items-center gap-2">
+        <svg width="28" height="28" viewBox="0 0 40 40" role="img" aria-label="Acme">
+            <path fill="currentColor" d="..."/>
+        </svg>
+        Acme Admin
+    </span>
+
+.. tip::
+
+    The title uses a different text color in the light and dark color schemes.
+    An inline SVG with ``fill="currentColor"`` takes that color, so the logo
+    always matches the text next to it. An SVG file loaded with ``<img>`` can't
+    do this, because the browser renders it as a separate document. If the
+    logo has more than one color, use
+    :ref:`a different image for each color scheme <design-recipe-logo>`.
 
 The ``renderContentMaximized()``, ``renderSidebarMinimized()``, ``disableDarkMode()``,
 ``generateRelativeUrls()`` and ``useEntityTranslations()`` methods accept an optional

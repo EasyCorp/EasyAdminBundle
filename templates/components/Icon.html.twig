@@ -6,8 +6,9 @@
     {% elseif icon.svgContents %}
         {{ icon.svgContents|raw }}
     {% else %}
+        {% set prefixesToReplace = {'fa fa-': 'fa:', 'fas fa-': 'fa-solid:', 'fa-solid fa-': 'fa6-solid:'} %}
         {% guard function ux_icon %}
-            {{ ux_icon(icon.name, attributes.all) }}
+            {{ ux_icon(icon.name|replace(prefixesToReplace), attributes.all) }}
         {% endguard %}
     {% endif %}
 </span>

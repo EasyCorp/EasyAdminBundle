@@ -380,6 +380,8 @@ final class Action implements \Stringable
     {
         if ($asTextLink) {
             $this->dto->setStyle(ButtonStyle::Text);
+        } else {
+            $this->dto->setStyle(ButtonStyle::Solid);
         }
 
         return $this;

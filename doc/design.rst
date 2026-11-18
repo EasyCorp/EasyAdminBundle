@@ -842,7 +842,7 @@ the rest of the backend and they follow your theme:
 
 .. code-block:: twig
 
-    <twig:ea:Button color="primary" htmlElement="a" href="{{ invoice_url }}">
+    <twig:ea:Button color="primary" href="{{ invoice_url }}">
         Download invoice
     </twig:ea:Button>
     <twig:ea:Badge color="success">Paid</twig:ea:Badge>

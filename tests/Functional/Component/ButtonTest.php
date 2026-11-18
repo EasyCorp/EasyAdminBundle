@@ -39,6 +39,63 @@ class ButtonTest extends AbstractFieldFunctionalTestCase
         self::assertStringContainsString('</a>', $html);
     }
 
+    public function testHrefWithoutHtmlElementRendersALink(): void
+    {
+        $html = $this->renderButton('<twig:ea:Button href="https://example.com">Go</twig:ea:Button>');
+
+        self::assertStringContainsString('<a class="btn btn-secondary btn-outline" role="button" href="https://example.com">', $html);
+        self::assertStringNotContainsString('<button', $html);
+        self::assertStringNotContainsString('type="submit"', $html);
+    }
+
+    public function testInactiveHrefWithoutHtmlElementRendersAnInactiveLink(): void
+    {
+        $html = $this->renderButton('<twig:ea:Button href="https://example.com" inactive>Go</twig:ea:Button>');
+
+        self::assertStringContainsString('<a class="btn btn-secondary btn-outline disabled" role="button" aria-disabled="true" tabindex="-1">', $html);
+        self::assertStringNotContainsString('href', $html);
+    }
+
+    public function testExplicitHtmlElementWinsOverHref(): void
+    {
+        $html = $this->renderButton('<twig:ea:Button htmlElement="button" href="https://example.com">Go</twig:ea:Button>');
+
+        self::assertStringContainsString('<button class="btn btn-secondary btn-outline" type="submit">', $html);
+        self::assertStringNotContainsString('href', $html);
+    }
+
+    public function testEmptyHrefAndActionRenderAButton(): void
+    {
+        $html = $this->renderButton('<twig:ea:Button href="" action="{{ null }}">Go</twig:ea:Button>');
+
+        self::assertStringContainsString('<button class="btn btn-secondary btn-outline" type="submit">', $html);
+        self::assertStringNotContainsString('<form', $html);
+    }
+
+    public function testActionWithoutHtmlElementRendersAForm(): void
+    {
+        $html = $this->renderButton('<twig:ea:Button action="/delete" method="delete">Delete</twig:ea:Button>');
+
+        self::assertStringContainsString('<form action="/delete" method="POST">', $html);
+        self::assertStringContainsString('<input type="hidden" name="_method" value="DELETE">', $html);
+        self::assertStringContainsString('<button class="btn btn-secondary btn-outline" type="submit">', $html);
+    }
+
+    public function testExplicitHtmlElementWinsOverAction(): void
+    {
+        $html = $this->renderButton('<twig:ea:Button htmlElement="button" action="/delete">Delete</twig:ea:Button>');
+
+        self::assertStringNotContainsString('<form', $html);
+    }
+
+    public function testHrefWinsOverActionWhenThereIsNoHtmlElement(): void
+    {
+        $html = $this->renderButton('<twig:ea:Button href="/orders" action="/delete">Orders</twig:ea:Button>');
+
+        self::assertStringContainsString('<a class="btn btn-secondary btn-outline" role="button" href="/orders">', $html);
+        self::assertStringNotContainsString('<form', $html);
+    }
+
     public function testLinkWithoutHrefOmitsTheAttribute(): void
     {
         $html = $this->renderButton('<twig:ea:Button htmlElement="a">Go</twig:ea:Button>');

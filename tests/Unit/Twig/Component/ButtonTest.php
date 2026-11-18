@@ -172,6 +172,34 @@ class ButtonTest extends TestCase
         yield ['unknown', ButtonElement::Button];
     }
 
+    #[DataProvider('provideInferredHtmlElements')]
+    public function testHtmlElementIsInferredFromHrefAndAction(string|ButtonElement|null $htmlElement, ?string $href, ?string $action, ButtonElement $expected): void
+    {
+        $button = $this->createButton();
+        $button->mount(htmlElement: $htmlElement);
+        $button->href = $href;
+        $button->action = $action;
+        $button->inferHtmlElement();
+
+        $this->assertSame($expected, $button->htmlElement);
+    }
+
+    public static function provideInferredHtmlElements(): iterable
+    {
+        yield 'no URL' => [null, null, null, ButtonElement::Button];
+        yield 'href' => [null, '/orders', null, ButtonElement::A];
+        yield 'action' => [null, null, '/delete', ButtonElement::Form];
+        yield 'href and action' => [null, '/orders', '/delete', ButtonElement::A];
+        yield 'empty href' => [null, '', null, ButtonElement::Button];
+        yield 'empty action' => [null, null, '', ButtonElement::Button];
+        yield 'empty element and href' => ['', '/orders', null, ButtonElement::A];
+        yield 'explicit button and href' => ['button', '/orders', null, ButtonElement::Button];
+        yield 'explicit enum button and action' => [ButtonElement::Button, null, '/delete', ButtonElement::Button];
+        yield 'explicit form and href' => ['form', '/orders', null, ButtonElement::Form];
+        yield 'explicit link and action' => ['a', null, '/delete', ButtonElement::A];
+        yield 'unknown element and href' => ['unknown', '/orders', null, ButtonElement::Button];
+    }
+
     #[DataProvider('provideTypes')]
     public function testMountType(string|ButtonType|null $type, ButtonType $expected): void
     {

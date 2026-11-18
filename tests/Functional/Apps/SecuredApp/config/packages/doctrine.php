@@ -25,13 +25,20 @@ if (class_exists(Composer\InstalledVersions::class)) {
     }
 
     $doctrineBundleVersion = Composer\InstalledVersions::getVersion('doctrine/doctrine-bundle');
+    $doctrineOrmVersion = Composer\InstalledVersions::getVersion('doctrine/orm');
+
+    // ORM 3.8 deprecates not opting into the schema editor API, which needs DBAL 4.5
+    if (null !== $doctrineBundleVersion && version_compare($doctrineBundleVersion, '3.4.0', '>=')
+        && null !== $doctrineOrmVersion && version_compare($doctrineOrmVersion, '3.8.0', '>=')
+        && null !== $doctrineDbalVersion && version_compare($doctrineDbalVersion, '4.5.0', '>=')) {
+        $config['orm']['use_schema_editor_api'] = true;
+    }
 
     if (null !== $doctrineBundleVersion && version_compare($doctrineBundleVersion, '3.1.0', '<')) {
         $config['orm']['controller_resolver'] = [
             'auto_mapping' => false,
         ];
 
-        $doctrineOrmVersion = Composer\InstalledVersions::getVersion('doctrine/orm');
         if (null !== $doctrineOrmVersion && version_compare($doctrineOrmVersion, '3.4.0', '>=') && \PHP_VERSION_ID >= 80400) {
             $config['orm']['enable_native_lazy_objects'] = true;
         }

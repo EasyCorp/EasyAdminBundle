@@ -43,6 +43,9 @@ final class FilterFactory
         Types::DATETIMETZ_MUTABLE => DateTimeFilter::class,
         Types::DATETIME_IMMUTABLE => DateTimeFilter::class,
         Types::DATETIMETZ_IMMUTABLE => DateTimeFilter::class,
+        // don't use Types::DATETIME_UTC_* because they were added in Doctrine DBAL 4.5
+        'datetime_utc' => DateTimeFilter::class,
+        'datetime_utc_immutable' => DateTimeFilter::class,
         Types::DATEINTERVAL => ComparisonFilter::class,
         Types::DECIMAL => NumericFilter::class,
         Types::FLOAT => NumericFilter::class,

@@ -820,36 +820,38 @@ Mapping Between Doctrine Types and EasyAdmin Fields
 The following table shows the recommended EasyAdmin field(s) to use depending
 on the `Doctrine DBAL Type`_ of your entity properties:
 
-========================  ===========================================================
-Doctrine Type             Recommended EasyAdmin Fields
-========================  ===========================================================
-``array``                 ``ArrayField`` (Doctrine DBAL 3 only)
-``ascii_string``          ``TextField``
-``bigint``                ``TextField``
-``binary``                (not supported)
-``blob``                  (not supported)
-``boolean``               ``BooleanField``
-``date_immutable``        ``DateField``
-``date``                  ``DateField``
-``datetime_immutable``    ``DateTimeField``
-``datetime``              ``DateTimeField``
-``datetimetz_immutable``  ``DateTimeField``
-``datetimetz``            ``DateTimeField``
-``dateinterval``          ``TextField``
-``decimal``               ``NumberField``
-``float``                 ``NumberField``
-``guid``                  ``TextField``
-``integer``               ``IntegerField``
-``json_array``            ``ArrayField`` (Doctrine DBAL 2 only)
-``json``                  ``TextField``, ``TextareaField``, ``CodeEditorField``, ``ArrayField``
-``object``                ``TextField``, ``TextareaField``, ``CodeEditorField`` (Doctrine DBAL 3 only)
-``simple_array``          ``ArrayField``
-``smallint``              ``IntegerField``
-``string``                ``TextField``
-``text``                  ``TextareaField``, ``TextEditorField``, ``CodeEditorField``
-``time_immutable``        ``TimeField``
-``time``                  ``TimeField``
-========================  ===========================================================
+==========================  ===========================================================
+Doctrine Type               Recommended EasyAdmin Fields
+==========================  ===========================================================
+``array``                   ``ArrayField`` (Doctrine DBAL 3 only)
+``ascii_string``            ``TextField``
+``bigint``                  ``TextField``
+``binary``                  (not supported)
+``blob``                    (not supported)
+``boolean``                 ``BooleanField``
+``date_immutable``          ``DateField``
+``date``                    ``DateField``
+``datetime_immutable``      ``DateTimeField``
+``datetime``                ``DateTimeField``
+``datetimetz_immutable``    ``DateTimeField``
+``datetimetz``              ``DateTimeField``
+``datetime_utc_immutable``  ``DateTimeField`` (Doctrine DBAL 4.5 or newer)
+``datetime_utc``            ``DateTimeField`` (Doctrine DBAL 4.5 or newer)
+``dateinterval``            ``TextField``
+``decimal``                 ``NumberField``
+``float``                   ``NumberField``
+``guid``                    ``TextField``
+``integer``                 ``IntegerField``
+``json_array``              ``ArrayField`` (Doctrine DBAL 2 only)
+``json``                    ``TextField``, ``TextareaField``, ``CodeEditorField``, ``ArrayField``
+``object``                  ``TextField``, ``TextareaField``, ``CodeEditorField`` (Doctrine DBAL 3 only)
+``simple_array``            ``ArrayField``
+``smallint``                ``IntegerField``
+``string``                  ``TextField``
+``text``                    ``TextareaField``, ``TextEditorField``, ``CodeEditorField``
+``time_immutable``          ``TimeField``
+``time``                    ``TimeField``
+==========================  ===========================================================
 
 In addition to these, EasyAdmin includes other field types for specific values:
 

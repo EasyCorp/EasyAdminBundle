@@ -49,6 +49,9 @@ final class FieldFactory
         Types::DATETIME_IMMUTABLE => DateTimeField::class,
         Types::DATETIMETZ_MUTABLE => DateTimeField::class,
         Types::DATETIMETZ_IMMUTABLE => DateTimeField::class,
+        // don't use Types::DATETIME_UTC_* because they were added in Doctrine DBAL 4.5
+        'datetime_utc' => DateTimeField::class,
+        'datetime_utc_immutable' => DateTimeField::class,
         Types::DECIMAL => NumberField::class,
         Types::FLOAT => NumberField::class,
         Types::GUID => TextField::class,

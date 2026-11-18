@@ -93,6 +93,9 @@ class FilterFactoryTest extends TestCase
         yield 'datetime immutable type' => ['publishedAt', Types::DATETIME_IMMUTABLE, DateTimeFilter::class];
         yield 'date mutable type' => ['birthDate', Types::DATE_MUTABLE, DateTimeFilter::class];
         yield 'time mutable type' => ['startTime', Types::TIME_MUTABLE, DateTimeFilter::class];
+        // these types are string literals because their constants need Doctrine DBAL 4.5
+        yield 'datetime utc mutable type' => ['createdAt', 'datetime_utc', DateTimeFilter::class];
+        yield 'datetime utc immutable type' => ['publishedAt', 'datetime_utc_immutable', DateTimeFilter::class];
 
         // numeric filters
         yield 'integer type' => ['quantity', Types::INTEGER, NumericFilter::class];

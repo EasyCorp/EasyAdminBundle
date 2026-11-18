@@ -49,6 +49,9 @@ final class DateTimeConfiguratorTest extends TestCase
         yield 'nested date field' => ['author.birthDate', 'birthDate', Types::DATE_MUTABLE, 'value_type', DateType::class];
         yield 'nested time field' => ['author.wakeUpTime', 'wakeUpTime', Types::TIME_MUTABLE, 'value_type', TimeType::class];
         yield 'nested immutable datetime field' => ['author.createdAt', 'createdAt', Types::DATETIME_IMMUTABLE, 'value_type_options.input', 'datetime_immutable'];
+        // these types are string literals because their constants need Doctrine DBAL 4.5
+        yield 'immutable UTC datetime field' => ['createdAt', 'createdAt', 'datetime_utc_immutable', 'value_type_options.input', 'datetime_immutable'];
+        yield 'mutable UTC datetime field' => ['updatedAt', 'updatedAt', 'datetime_utc', 'value_type_options.input', null];
     }
 
     public function testConfigureIgnoresUnmappedProperties(): void

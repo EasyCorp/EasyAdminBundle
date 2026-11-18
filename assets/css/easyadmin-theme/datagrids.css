@@ -268,8 +268,8 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions {
 .datagrid .ea-lightbox-thumbnail img {
     background: var(--white);
     border-radius: var(--border-radius);
-    max-block-size: 50px;
-    max-inline-size: 100px;
+    max-block-size: var(--ea-datagrid-thumbnail-size);
+    max-inline-size: calc(var(--ea-datagrid-thumbnail-size) * 2);
 }
 .datagrid tr:hover .ea-lightbox-thumbnail img {
     outline: var(--border-width) solid var(--border-color);

@@ -149,9 +149,10 @@ Corners and Spacing
     Theme::new()->radius('0.3rem');
 
 ``spacing()`` changes how much space elements take. Use a smaller value to fit
-more data on the screen. The size of the text doesn't change, and controls
-(buttons, inputs and switches) only have two sizes: they get one size smaller
-with values below ``md`` and they don't grow with values above it::
+more data on the screen. The size of the text doesn't change. Controls
+(buttons, inputs and switches) and the images of ``ImageField`` in the tables
+of the ``index`` page only have two sizes: they get one size smaller with
+values below ``md`` and they don't grow with values above it::
 
     // the presets are 'xs', 'sm', 'md', 'lg' and 'xl'
     Theme::new()->spacing('xs');

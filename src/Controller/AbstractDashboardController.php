@@ -120,4 +120,10 @@ abstract class AbstractDashboardController extends AbstractController implements
     {
         return Filters::new();
     }
+
+    public static function isCrudControllerAllowed(string $crudControllerFqcn): bool
+    {
+        // By default, all CRUD controllers are allowed
+        return true;
+    }
 }

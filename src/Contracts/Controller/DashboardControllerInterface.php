@@ -39,4 +39,6 @@ interface DashboardControllerInterface
     public function configureFilters(): Filters;
 
     public function index(): Response;
+
+    public static function isCrudControllerAllowed(string $crudControllerFqcn): bool;
 }

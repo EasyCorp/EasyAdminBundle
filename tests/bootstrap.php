@@ -73,9 +73,18 @@ Doctrine\Deprecations\Deprecation::enableWithTriggerError();
 // PHPUnit only reports the deprecations triggered inside tests, but the containers of the
 // test apps are compiled here (and reused by the tests), so collect them while doing that
 $bootstrapDeprecations = [];
-$collectBootstrapDeprecations = static function (int $type, string $message, string $file, int $line) use (&$bootstrapDeprecations): bool {
+$expectedBootstrapDeprecations = [
+    // SecuredApp defines access_control rules with many roles on purpose: Symfony still
+    // supports them and EasyAdmin must decide them like Symfony does
+    'Since symfony/security-bundle 8.2: Configuring an access control rule with many "roles" is deprecated, use "allow_if" or role hierarchy instead.',
+];
+$collectBootstrapDeprecations = static function (int $type, string $message, string $file, int $line) use (&$bootstrapDeprecations, $expectedBootstrapDeprecations): bool {
     if (\E_DEPRECATED !== $type && \E_USER_DEPRECATED !== $type) {
         return false;
+    }
+
+    if (\in_array($message, $expectedBootstrapDeprecations, true)) {
+        return true;
     }
 
     $bootstrapDeprecations[$message] = sprintf('%s (%s:%d)', $message, $file, $line);

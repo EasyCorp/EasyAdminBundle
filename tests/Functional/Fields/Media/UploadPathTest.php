@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\
 use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -113,7 +114,15 @@ class UploadPathTest extends AbstractFieldFunctionalTestCase
 
         $form = $this->getForm(EntityPropertyDirectoryUploadCrudController::class, Action::EDIT, $entity->getId());
         $form[$this->getFileInputName('fileField')]->upload($sourcePath);
-        $this->client->submit($form);
+        try {
+            $this->client->submit($form);
+        } catch (FileException $e) {
+            // on Windows the absolute upload dir starts with a drive letter (e.g. 'D:\') and
+            // ':' is not valid inside a directory name, so the file can't be written at all
+            if ('\\' !== \DIRECTORY_SEPARATOR) {
+                throw $e;
+            }
+        }
 
         static::assertFileDoesNotExist(\dirname($uploadDir).'/'.$hash.'.txt');
         $this->entityManager->clear();

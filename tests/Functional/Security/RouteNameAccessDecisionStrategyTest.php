@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Kernel;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\PriorityStrategyKernel;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\UnanimousStrategyKernel;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -27,8 +28,12 @@ class RouteNameAccessDecisionStrategyTest extends WebTestCase
     }
 
     /**
+     * Symfony 8.2 deprecates the rules with many roles, but it still supports them, so
+     * EasyAdmin must keep deciding them like Symfony does.
+     *
      * @param class-string<Kernel> $kernelClass
      */
+    #[IgnoreDeprecations]
     #[DataProvider('provideAccessControlDecisions')]
     public function testRouteNameGivesTheSameDecisionAsTheRouteUrl(string $kernelClass, string $routeName, string $username, int $expectedStatusCode): void
     {

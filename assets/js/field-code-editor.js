@@ -39,16 +39,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (codeBlock.dataset.numberOfRows !== '') {
             const wrapper = editor.getWrapperElement();
-            // the height must include the vertical padding of the lines and the border of
-            // the editor, or the last row is partially hidden
-            const linesStyle = getComputedStyle(wrapper.querySelector('.CodeMirror-lines'));
-            const verticalPadding =
-                Number.parseFloat(linesStyle.paddingTop) + Number.parseFloat(linesStyle.paddingBottom);
-            const verticalBorder = wrapper.offsetHeight - wrapper.clientHeight;
-            const height =
-                editor.defaultTextHeight() * codeBlock.dataset.numberOfRows + verticalPadding + verticalBorder;
-            wrapper.style.setProperty('height', `${height}px`, 'important');
-            wrapper.style.setProperty('max-block-size', 'none');
+            const setHeight = () => {
+                // the height must include the vertical padding of the lines and the border of
+                // the editor, or the last row is partially hidden
+                const linesStyle = getComputedStyle(wrapper.querySelector('.CodeMirror-lines'));
+                const verticalPadding =
+                    Number.parseFloat(linesStyle.paddingTop) + Number.parseFloat(linesStyle.paddingBottom);
+                const verticalBorder = wrapper.offsetHeight - wrapper.clientHeight;
+                const height =
+                    editor.defaultTextHeight() * codeBlock.dataset.numberOfRows + verticalPadding + verticalBorder;
+                wrapper.style.setProperty('height', `${height}px`, 'important');
+                wrapper.style.setProperty('max-block-size', 'none');
+            };
+
+            // the editor can be inside a hidden tab or a collapsed collection entry; it can't be
+            // measured there (CodeMirror reports a line height of 1px), so wait until it's displayed
+            if (0 !== wrapper.offsetHeight) {
+                setHeight();
+            } else {
+                const resizeObserver = new ResizeObserver(() => {
+                    if (0 === wrapper.offsetHeight) {
+                        return;
+                    }
+
+                    resizeObserver.disconnect();
+                    setHeight();
+                    editor.refresh();
+                });
+                resizeObserver.observe(wrapper);
+            }
         }
     });
 });

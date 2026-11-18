@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\TextAlign;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldTraitAwareInterface;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Intl\Currencies;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -11,7 +11,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class MoneyField implements FieldInterface
+final class MoneyField implements FieldTraitAwareInterface
 {
     use FieldTrait;
 

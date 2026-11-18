@@ -2,14 +2,14 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldTraitAwareInterface;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class TimezoneField implements FieldInterface
+final class TimezoneField implements FieldTraitAwareInterface
 {
     use FieldTrait;
 

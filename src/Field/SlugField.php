@@ -3,14 +3,14 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldTraitAwareInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\SlugType;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Jonathan Scheiber <contact@jmsche.fr>
  */
-final class SlugField implements FieldInterface
+final class SlugField implements FieldTraitAwareInterface
 {
     use FieldTrait;
 

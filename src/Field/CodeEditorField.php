@@ -3,14 +3,14 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldTraitAwareInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class CodeEditorField implements FieldInterface
+final class CodeEditorField implements FieldTraitAwareInterface
 {
     use FieldTrait;
 

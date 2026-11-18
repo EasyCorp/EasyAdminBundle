@@ -3,6 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Factory;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\FieldMapping;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
@@ -170,6 +172,37 @@ class FieldFactoryTest extends KernelTestCase
         yield [User::class, 'blogPosts', Field\CollectionField::class];
         yield [Category::class, 'blogPosts', Field\AssociationField::class];
         yield [BlogPost::class, 'categories', Field\AssociationField::class];
+    }
+
+    #[DataProvider('utcDateTimeTypes')]
+    public function testUtcDateTimeTypesAreTurnedIntoDateTimeFields(string $doctrineType): void
+    {
+        // Doctrine ORM 2.x uses arrays, Doctrine ORM 3.x uses FieldMapping objects
+        $fieldMapping = class_exists(FieldMapping::class)
+            ? new FieldMapping($doctrineType, 'createdAt', 'created_at')
+            : ['fieldName' => 'createdAt', 'type' => $doctrineType, 'columnName' => 'created_at'];
+
+        $classMetadata = $this->createStub(ClassMetadata::class);
+        $classMetadata->method('getSingleIdentifierFieldName')->willReturn('id');
+        $classMetadata->method('hasAssociation')->willReturn(false);
+        $classMetadata->method('getFieldMapping')->willReturn($fieldMapping);
+        $classMetadata->fieldMappings = ['createdAt' => $fieldMapping];
+
+        $fieldCollection = new FieldCollection(['createdAt']);
+
+        $this->fieldFactory->processFields(new EntityDto(\stdClass::class, $classMetadata), $fieldCollection, Crud::PAGE_INDEX);
+
+        $this->assertSame(Field\DateTimeField::class, $fieldCollection->getByProperty('createdAt')?->getFieldFqcn());
+    }
+
+    /**
+     * The metadata of these types is stubbed (instead of adding columns to a test entity)
+     * because they need Doctrine DBAL 4.5 and the test suite also runs with older versions.
+     */
+    public static function utcDateTimeTypes(): \Generator
+    {
+        yield ['datetime_utc'];
+        yield ['datetime_utc_immutable'];
     }
 
     /**

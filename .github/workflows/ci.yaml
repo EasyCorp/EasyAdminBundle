@@ -95,6 +95,9 @@ jobs:
                     # Symfony 7.1, 7.2, 7.3 and 8.0 are no longer maintained and their last twig-bridge
                     # releases call TemplateWrapper::unwrap() without the Environment argument that
                     # twig/twig 3.29 requires, so those jobs pin Twig to the last working version.
+                    # Symfony 7.2, 7.3 and 8.0 also install DoctrineBundle versions older than 3.4, which
+                    # use the type registry deprecated in doctrine/dbal 4.6 and can't enable the schema
+                    # editor API that doctrine/orm 3.8 deprecates not using, so those jobs pin both.
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "6.4.*"
@@ -110,13 +113,13 @@ jobs:
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "7.2.*"
-                      composer_args: "--with 'twig/twig:<3.29'"
+                      composer_args: "--with 'twig/twig:<3.29' --with 'doctrine/dbal:<4.6' --with 'doctrine/orm:<3.8'"
                       stability: "stable"
                       allow_failure: false
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "7.3.*"
-                      composer_args: "--with 'twig/twig:<3.29'"
+                      composer_args: "--with 'twig/twig:<3.29' --with 'doctrine/dbal:<4.6' --with 'doctrine/orm:<3.8'"
                       stability: "stable"
                       allow_failure: false
                     - os: ubuntu-latest
@@ -127,11 +130,11 @@ jobs:
                     # Symfony 8.0 is no longer maintained and its last doctrine-bridge release (8.0.15)
                     # calls GenerateSchemaEventArgs::setSchema(), which doctrine/orm >= 3.6.8 only accepts
                     # when doctrine/dbal >= 4.5 is installed (see symfony/symfony#65235). Composer installs
-                    # DBAL 4.5 now, so don't pin the ORM: doctrine/orm < 3.6.8 triggers DBAL 4.5 deprecations.
+                    # DBAL 4.5 now, so don't pin the ORM below 3.6.8: older versions trigger DBAL 4.5 deprecations.
                     - os: ubuntu-latest
                       php_version: "8.4"
                       symfony_version: "8.0.*"
-                      composer_args: "--with 'twig/twig:<3.29'"
+                      composer_args: "--with 'twig/twig:<3.29' --with 'doctrine/dbal:<4.6' --with 'doctrine/orm:<3.8'"
                       stability: "stable"
                       allow_failure: false
                     - os: ubuntu-latest

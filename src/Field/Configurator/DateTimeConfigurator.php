@@ -100,7 +100,8 @@ final readonly class DateTimeConfigurator implements FieldConfiguratorInterface
         // @phpstan-ignore function.impossibleType, nullCoalesce.offset (backward compatibility with Doctrine ORM 2.x)
         $fieldType = \is_array($fieldMapping) ? ($fieldMapping['type'] ?? null) : $fieldMapping->type;
 
-        $isImmutableDateTime = \in_array($fieldType, [Types::DATETIMETZ_IMMUTABLE, Types::DATETIME_IMMUTABLE, Types::DATE_IMMUTABLE, Types::TIME_IMMUTABLE], true);
+        // don't use Types::DATETIME_UTC_IMMUTABLE because it was added in Doctrine DBAL 4.5
+        $isImmutableDateTime = \in_array($fieldType, [Types::DATETIMETZ_IMMUTABLE, Types::DATETIME_IMMUTABLE, 'datetime_utc_immutable', Types::DATE_IMMUTABLE, Types::TIME_IMMUTABLE], true);
         if ($isImmutableDateTime) {
             $field->setFormTypeOptionIfNotSet('input', 'datetime_immutable');
         }

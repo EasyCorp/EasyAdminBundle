@@ -14,7 +14,8 @@ Basic Information
 
 * **PHP Class**: ``EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField``
 * **Doctrine DBAL Type** used to store this value: ``datetime``, ``datetime_immutable``,
-  ``datetimetz`` or ``datetimetz_immutable``
+  ``datetimetz``, ``datetimetz_immutable``, ``datetime_utc`` or
+  ``datetime_utc_immutable`` (the last two need Doctrine DBAL 4.5 or newer)
 * **Symfony Form Type** used to render the field: `DateTimeType`_
 * **Rendered as**:
 

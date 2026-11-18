@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Filter;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
@@ -147,10 +146,7 @@ final class EntityFilter implements FilterInterface
 
         if ($identifierValue instanceof Uuid || $identifierValue instanceof Ulid) {
             try {
-                return Type::getType($identifierType)->convertToDatabaseValue(
-                    $identifierValue,
-                    $entityManager->getConnection()->getDatabasePlatform()
-                );
+                return $entityManager->getConnection()->convertToDatabaseValue($identifierValue, $identifierType);
             } catch (\Throwable) {
                 // if the conversion fails we cannot process the uid parameter value
             }

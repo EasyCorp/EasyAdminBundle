@@ -69,6 +69,9 @@ $testAppKernels = [
 // every time they happen instead of only the first time
 Doctrine\Deprecations\Deprecation::withoutDeduplication();
 Doctrine\Deprecations\Deprecation::enableWithTriggerError();
+// DBAL 4.6 deprecates the mutable date/time types, but the test entities keep using them
+// because EasyAdmin supports those types in all the DBAL versions that include them
+Doctrine\Deprecations\Deprecation::ignoreDeprecations('https://github.com/doctrine/dbal/pull/7575');
 
 // PHPUnit only reports the deprecations triggered inside tests, but the containers of the
 // test apps are compiled here (and reused by the tests), so collect them while doing that

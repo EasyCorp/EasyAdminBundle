@@ -63,7 +63,8 @@ final class DateTimeConfigurator implements FilterConfiguratorInterface
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.input', 'datetime_immutable');
         }
 
-        if (\in_array($fieldType, [Types::DATETIME_IMMUTABLE, Types::DATETIMETZ_IMMUTABLE], true)) {
+        // don't use Types::DATETIME_UTC_IMMUTABLE because it was added in Doctrine DBAL 4.5
+        if (\in_array($fieldType, [Types::DATETIME_IMMUTABLE, Types::DATETIMETZ_IMMUTABLE, 'datetime_utc_immutable'], true)) {
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.input', 'datetime_immutable');
         }
     }

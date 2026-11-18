@@ -2,9 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Form;
 
+use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\GuidType;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\TypeRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -27,21 +29,19 @@ class CrudAutocompleteSubscriberTest extends TestCase
     private const UUID_STRING = '1ecc57ff-5604-6800-83f2-5765340cd236';
     private const ULID_STRING = '01KH71DKRTZA5EJNDT8PKHH66M';
 
-    protected function setUp(): void
-    {
-        // the subscriber inspects the globally registered Doctrine types, so reset
-        // 'uuid' and 'ulid' to the Symfony UID types to not depend on the test execution order
-        self::registerDoctrineType('uuid', UuidType::class);
-        self::registerDoctrineType('ulid', UlidType::class);
-    }
+    /**
+     * @var array<string, class-string<Type>>
+     */
+    private array $doctrineTypes = ['uuid' => UuidType::class, 'ulid' => UlidType::class];
 
     protected function tearDown(): void
     {
-        // some tests override the 'uuid' and 'ulid' types in the global Doctrine type
-        // registry, so restore the Symfony UID types to not leak the overridden types
-        // into other test classes running in the same PHPUnit process
-        self::registerDoctrineType('uuid', UuidType::class);
-        self::registerDoctrineType('ulid', UlidType::class);
+        // before Doctrine DBAL 4.6 the types are registered in a global registry, so restore
+        // the Symfony UID types to not leak the types overridden by some tests into other
+        // test classes running in the same PHPUnit process
+        if (!method_exists(Configuration::class, 'setTypeProvider')) {
+            self::registerGlobalDoctrineTypes(['uuid' => UuidType::class, 'ulid' => UlidType::class]);
+        }
     }
 
     #[DataProvider('idFieldInDifferentPlatformsData')]
@@ -138,7 +138,7 @@ class CrudAutocompleteSubscriberTest extends TestCase
         // third-party types registered for the 'uuid'/'ulid' type names may use a different
         // storage format than the Symfony UID types (e.g. ramsey/uuid-doctrine stores UUIDs
         // as strings), so the subscriber must pass the submitted values through unchanged
-        Type::overrideType($fieldType, GuidType::class);
+        $this->doctrineTypes[$fieldType] = GuidType::class;
 
         $platform = new $platformClass();
         $capturedData = null;
@@ -189,9 +189,31 @@ class CrudAutocompleteSubscriberTest extends TestCase
         ];
     }
 
-    private static function registerDoctrineType(string $name, string $className): void
+    /**
+     * Since Doctrine DBAL 4.6 each connection has its own types; older versions
+     * only have a global registry shared by all connections.
+     */
+    private function createConnectionConfiguration(): Configuration
     {
-        Type::hasType($name) ? Type::overrideType($name, $className) : Type::addType($name, $className);
+        $configuration = new Configuration();
+
+        if (method_exists($configuration, 'setTypeProvider')) {
+            $configuration->setTypeProvider(new TypeRegistry($this->doctrineTypes));
+        } else {
+            self::registerGlobalDoctrineTypes($this->doctrineTypes);
+        }
+
+        return $configuration;
+    }
+
+    /**
+     * @param array<string, class-string<Type>> $doctrineTypes
+     */
+    private static function registerGlobalDoctrineTypes(array $doctrineTypes): void
+    {
+        foreach ($doctrineTypes as $name => $className) {
+            Type::hasType($name) ? Type::overrideType($name, $className) : Type::addType($name, $className);
+        }
     }
 
     private function createFormEvent(
@@ -213,6 +235,7 @@ class CrudAutocompleteSubscriberTest extends TestCase
 
         $connection = $this->createMock(Connection::class);
         $connection->method('getDatabasePlatform')->willReturn($platform);
+        $connection->method('getConfiguration')->willReturn($this->createConnectionConfiguration());
 
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getClassMetadata')->with($className)->willReturn($classMetadata);

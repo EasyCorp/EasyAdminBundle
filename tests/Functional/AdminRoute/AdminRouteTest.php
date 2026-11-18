@@ -999,7 +999,7 @@ class AdminRouteTest extends WebTestCase
         // the test app uses an in-memory SQLite database with no schema, so create it on the fly
         $metadata = $entityManager->getMetadataFactory()->getAllMetadata();
         $schemaTool = new SchemaTool($entityManager);
-        $schemaTool->dropSchema($metadata);
+        $schemaTool->dropDatabase();
         $schemaTool->createSchema($metadata);
 
         $entity = new AdminRouteTestEntity();

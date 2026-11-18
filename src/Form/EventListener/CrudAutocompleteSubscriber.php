@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\EventListener;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\Types\UlidType;
@@ -99,7 +100,7 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
                 // so convert the submitted values only when the registered type is the Symfony one, whose
                 // storage format is the one assumed by the conversion made below; otherwise, pass the values
                 // through unchanged and let the registered type convert them when running the query
-                $idFieldDoctrineType = Type::hasType($idFieldType) ? Type::getType($idFieldType) : null;
+                $idFieldDoctrineType = $this->findDoctrineType($options['em']->getConnection(), $idFieldType);
                 $isSymfonyUlidType = null === $idFieldDoctrineType || $idFieldDoctrineType instanceof UlidType;
                 $isSymfonyUuidType = null === $idFieldDoctrineType || $idFieldDoctrineType instanceof UuidType;
 
@@ -136,5 +137,20 @@ class CrudAutocompleteSubscriber implements EventSubscriberInterface
         unset($options['em'], $options['loader'], $options['empty_data'], $options['choice_list'], $options['choices_as_values']);
 
         $form->add('autocomplete', EntityType::class, $options);
+    }
+
+    private function findDoctrineType(Connection $connection, string $typeName): ?Type
+    {
+        $configuration = $connection->getConfiguration();
+
+        // Doctrine DBAL 4.6 deprecated the global type registry and each connection has its own types
+        // @phpstan-ignore function.alreadyNarrowedType (backward compatibility with Doctrine DBAL < 4.6)
+        if (method_exists($configuration, 'getTypeProvider')) {
+            $typeProvider = $configuration->getTypeProvider();
+
+            return $typeProvider->has($typeName) ? $typeProvider->get($typeName) : null;
+        }
+
+        return Type::hasType($typeName) ? Type::getType($typeName) : null;
     }
 }

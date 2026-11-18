@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\DefaultSchemaManagerFactory;
+use Doctrine\DBAL\Schema\Schema;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Column;
@@ -50,6 +51,11 @@ class EntityFilterTypeTest extends TypeTestCase
         $config->setMetadataCache(new ArrayAdapter());
         $config->setMetadataDriverImpl(new AttributeDriver([__DIR__ => 'EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Type'], true));
 
+        // ORM 3.8 deprecates not opting into the schema editor API, which needs DBAL 4.5
+        if (method_exists($config, 'setUseSchemaEditorApi') && method_exists(Schema::class, 'edit')) {
+            $config->setUseSchemaEditorApi(true);
+        }
+
         // DBAL 4 always uses this factory; DBAL 3 deprecates not configuring it
         $config->setSchemaManagerFactory(new DefaultSchemaManagerFactory());
 
@@ -72,7 +78,7 @@ class EntityFilterTypeTest extends TypeTestCase
         ];
 
         try {
-            $schemaTool->dropSchema($classes);
+            $schemaTool->dropDatabase();
         } catch (\Exception) {
         }
 

@@ -24,7 +24,7 @@ trait FieldTrait
         $this->dto = new FieldDto();
     }
 
-    public function __clone(): void
+    public function __clone()
     {
         $this->dto = clone $this->dto;
     }

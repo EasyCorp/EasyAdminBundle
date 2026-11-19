@@ -1,4 +1,8 @@
 const eaCollectionHandler = (event) => {
+    document.querySelectorAll('[data-ea-collection-field]').forEach((collection) => {
+        EaCollectionProperty.updateCollectionItemCssClasses(collection);
+    });
+
     document.querySelectorAll('button.field-collection-add-button').forEach((addButton) => {
         const collection = addButton.closest('[data-ea-collection-field]');
 
@@ -7,7 +11,6 @@ const eaCollectionHandler = (event) => {
         }
 
         EaCollectionProperty.handleAddButton(addButton, collection);
-        EaCollectionProperty.updateCollectionItemCssClasses(collection);
     });
 
     document.querySelectorAll('button.field-collection-delete-button').forEach((deleteButton) => {
@@ -88,8 +91,9 @@ const EaCollectionProperty = {
         if (null === collection) {
             return;
         }
-
-        const collectionItems = collection.querySelectorAll('.field-collection-item');
+        const collectionItems = Array.from(collection.querySelectorAll('.field-collection-item')).filter(
+            (item) => item.closest('[data-ea-collection-field]') === collection
+        );
         collectionItems.forEach((item) =>
             item.classList.remove('field-collection-item-first', 'field-collection-item-last')
         );

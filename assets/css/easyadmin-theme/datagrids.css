@@ -278,9 +278,14 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions {
 
 /* the background of the highlight reaches past the text, and browsers paint inline elements in
    order: it would cover the previous letter, but not the next one. The negative z-index paints
-   it below all the letters, and 'isolation' keeps it above the background of its parent */
+   it below all the letters, and this stacking context keeps it above the background of its parent.
+   The context is created with 'position' + 'z-index' instead of 'isolation' because WebKit does
+   not create one from 'isolation' when the parent is a non-positioned inline element (e.g. the
+   <span title> wrapper of text fields): in Safari the highlight then painted behind the row
+   background and the searched term was invisible, only the text after the match was readable */
 .datagrid :has(> mark) {
-    isolation: isolate;
+    position: relative;
+    z-index: 0;
 }
 .datagrid mark {
     position: relative;

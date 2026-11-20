@@ -19,7 +19,7 @@ class IntegerFieldTest extends AbstractFieldFunctionalTestCase
         static::assertCount(1, $entityRow, 'Entity row should exist');
 
         $integerFieldCell = $entityRow->filter('td[data-column="integerField"]');
-        static::assertStringContainsString('12345', $integerFieldCell->text());
+        static::assertSame('12,345', $integerFieldCell->text());
     }
 
     public function testIntegerFieldDisplaysOnDetail(): void
@@ -40,7 +40,7 @@ class IntegerFieldTest extends AbstractFieldFunctionalTestCase
             if (false !== stripos($label, 'IntegerField') || false !== stripos($label, 'Integer Field')) {
                 $fieldFound = true;
                 $fieldValue = $groupCrawler->filter('.field-value')->text();
-                static::assertStringContainsString('67890', $fieldValue);
+                static::assertSame('67,890', $fieldValue);
                 break;
             }
         }

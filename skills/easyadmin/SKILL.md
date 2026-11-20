@@ -158,6 +158,8 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - In `createIndexQueryBuilder()`, call `parent::createIndexQueryBuilder(...)`
   and use the literal root alias `entity` (`->andWhere('entity.owner = :user')`).
   Global Doctrine filters hide rows silently. <!-- src/Orm/EntityRepository.php::createQueryBuilder; doc/fields.rst:178-185; doc/crud.rst:603-606 -->
+- Index pages load displayed to-one associations in one query per target class and count to-many `AssociationField` values with one `COUNT`; never add `fetch: 'EAGER'` for that.
+  Fetch join the rest (inverse one-to-one, nested hops, getters reading collections) in `createIndexQueryBuilder()`: see `references/patterns.md` section 14. <!-- src/Orm/ToOneAssociationLoader.php::load; src/Orm/ToManyAssociationCounter.php::preload; doc/fields/AssociationField.rst:360-411 -->
 - Link to admin pages like to any other Symfony route: `$this->redirectToRoute('admin_product_detail', ['entityId' => $id])`
   in PHP, `path('admin_product_edit', {entityId: post.id})` in Twig. Reserve
   `AdminUrlGeneratorInterface` (`$this->container->get(AdminUrlGeneratorInterface::class)`
@@ -334,7 +336,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:426-445 -->
 - Override page templates with `Crud::overrideTemplate('crud/index', 'admin/product/index.html.twig')`
   and field templates with `->setTemplatePath()`. The `new` and `edit` pages render form fields
-  through Symfony form themes (`Crud::addFormTheme()`), not through field templates. <!-- src/Config/Crud.php::overrideTemplate; src/Config/Crud.php::addFormTheme; src/Field/FieldTrait.php::setTemplatePath; doc/fields.rst:934-936 -->
+  through Symfony form themes (`Crud::addFormTheme()`), not through field templates. <!-- src/Config/Crud.php::overrideTemplate; src/Config/Crud.php::addFormTheme; src/Field/FieldTrait.php::setTemplatePath; doc/fields.rst:938-940 -->
 - Backend CSS lives in cascade layers (`vendor`, `ea`, `ea-overrides`), so
   unlayered custom CSS wins without `!important`. Override design tokens on
   `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:487-511; doc/design.rst:314-316; doc/design.rst:1411-1415 -->

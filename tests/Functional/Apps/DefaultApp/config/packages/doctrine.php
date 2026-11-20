@@ -1,7 +1,10 @@
 <?php
 
 $config = [
-    'dbal' => (require \dirname(__DIR__, 3).'/test_database.php')('default'),
+    'dbal' => (require \dirname(__DIR__, 3).'/test_database.php')('default') + [
+        // the test kernel doesn't run in debug mode, so this is needed to log the executed queries
+        'profiling' => true,
+    ],
 
     'orm' => [
         'naming_strategy' => 'doctrine.orm.naming_strategy.underscore_number_aware',

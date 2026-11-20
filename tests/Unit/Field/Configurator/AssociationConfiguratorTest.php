@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\AssociationConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\ToManyAssociationCounter;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\BlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\CategoryCrudController;
@@ -46,6 +47,7 @@ class AssociationConfiguratorTest extends AbstractFieldTestCase
             static::getContainer()->get(FieldFactory::class),
             static::getContainer()->get(CrudPermissionCheckerInterface::class),
             static::getContainer()->get(EntityRepository::class),
+            static::getContainer()->get(ToManyAssociationCounter::class),
         );
     }
 
@@ -228,6 +230,7 @@ class AssociationConfiguratorTest extends AbstractFieldTestCase
             static::getContainer()->get(FieldFactory::class),
             $permissionChecker,
             static::getContainer()->get(EntityRepository::class),
+            static::getContainer()->get(ToManyAssociationCounter::class),
         );
     }
 

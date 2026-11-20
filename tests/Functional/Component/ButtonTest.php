@@ -202,6 +202,19 @@ class ButtonTest extends AbstractFieldFunctionalTestCase
         self::assertStringContainsString('aria-label="Close"', $html);
     }
 
+    public function testNoLabelSpanWhenContentRendersEmpty(): void
+    {
+        $html = $this->renderButton(<<<'TWIG'
+            <twig:ea:Button icon="internal:check">
+                {% set label = '' %}
+                {%- if label is not empty -%}<span class="action-label">{{ label }}</span>{%- endif -%}
+            </twig:ea:Button>
+            TWIG);
+
+        self::assertStringContainsString('btn-icon', $html);
+        self::assertStringNotContainsString('btn-label', $html);
+    }
+
     public function testAttributeValuesAreEscaped(): void
     {
         $html = $this->renderButton('<twig:ea:Button data-title="{{ \'a\' ~ \'"\' ~ \'b\' }}">x</twig:ea:Button>');

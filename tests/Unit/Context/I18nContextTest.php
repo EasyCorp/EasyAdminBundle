@@ -31,4 +31,24 @@ class I18nContextTest extends TestCase
         self::assertSame(TextDirection::RTL, $i18n->getTextDirection());
         self::assertSame('admin', $i18n->getTranslationDomain());
     }
+
+    public function testOverrideTemplate(): void
+    {
+        $context = I18nContext::forTesting();
+        self::assertSame('@EasyAdmin/layout.html.twig', $context->getTemplatePath('layout'));
+
+        $context->overrideTemplate('layout', 'admin/layout.html.twig');
+
+        self::assertSame('admin/layout.html.twig', $context->getTemplatePath('layout'));
+    }
+
+    public function testOverrideTemplateFailsForUndefinedTemplateNames(): void
+    {
+        $context = I18nContext::forTesting();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The "foo" template is not defined in EasyAdmin.');
+
+        $context->overrideTemplate('foo', 'admin/foo.html.twig');
+    }
 }

@@ -229,7 +229,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   linked with `Action::new('publish', 'Publish', 'fa fa-check')->linkToCrudAction('publish')`
   and added with `$actions->add(Crud::PAGE_INDEX, $publish)`. Without the
   attribute, rendering the page throws
-  `is missing the #[AdminRoute] attribute`. <!-- src/Factory/ActionFactory.php::generateActionUrl; src/Attribute/AdminRoute.php::__construct; doc/actions.rst:843-847 -->
+  `is missing the #[AdminRoute] attribute`. <!-- src/Factory/ActionFactory.php::generateActionUrl; src/Attribute/AdminRoute.php::__construct; doc/actions.rst:844-848 -->
 - `#[AdminRoute]` accepts only `path`, `name`, `options`, `allowedDashboards`
   and `deniedDashboards`. There is no `methods` argument: HTTP methods,
   requirements and defaults go inside `options`. Allowed methods are GET,
@@ -241,22 +241,23 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `controller_resolver.auto_mapping`, add `#[MapEntity]` to the argument; with
   `{entityId}` use the mapped form `{entityId:product.id}`. Only when a typed
   argument is impossible, inject `AdminContext $context` and read
-  `$context->getEntity()->getInstance()`, which is nullable and untyped. <!-- src/Router/AdminRouteGenerator.php:761-764; src/Router/AdminRouteGenerator.php::getEntityIdPlaceholderName; doc/actions.rst:849-862; src/Dto/EntityDto.php::getInstance -->
+  `$context->getEntity()->getInstance()`, which is nullable and untyped. <!-- src/Router/AdminRouteGenerator.php:761-764; src/Router/AdminRouteGenerator.php::getEntityIdPlaceholderName; doc/actions.rst:850-863; src/Dto/EntityDto.php::getInstance -->
 - Batch actions also need `#[AdminRoute('/approve', name: 'approve', options: ['methods' => ['POST']])]`
   on the method, receive `BatchActionDto $batchActionDto`
   (`getEntityIds()`, `getEntityFqcn()`, `getCsrfToken()`), are created with
   `Action::new('approve')->linkToCrudAction('approve')->createAsBatchAction()`
   and are added with `$actions->addBatchAction($approve)`; they exist only on
-  the index page. <!-- src/Factory/ActionFactory.php::processGlobalActions; src/Dto/BatchActionDto.php::getEntityIds; src/Config/Actions.php::addBatchAction; doc/actions.rst:904-938 -->
-- EasyAdmin adds no CSRF token to a custom action rendered with
-  `->renderAsForm()`: the `<form method="POST">` holds only the button. Only
-  the built-in delete action (`ea-delete-<controllerFqcn>`), batch actions and
-  the boolean toggle carry tokens. Never validate a token you did not put
-  there. To protect a custom action, add the token to the URL with
-  `->linkToRoute('app_publish', fn (Product $product) => ['id' => $product->getId(), 'token' => ...])`
-  (the closure receives the entity) and check it with
-  `$this->isCsrfTokenValid('publish'.$product->getId(), $request->query->get('token'))`.
-  Full recipe in `references/patterns.md`. <!-- templates/components/Button.html.twig:29-38; templates/crud/includes/_action_confirmation_modal.html.twig:4; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; src/Field/BooleanField.php::CSRF_TOKEN_NAME; src/Factory/ActionFactory.php::generateActionUrl; tests/Functional/Actions/CustomActionCsrfTest.php -->
+  the index page. <!-- src/Factory/ActionFactory.php::processGlobalActions; src/Dto/BatchActionDto.php::getEntityIds; src/Config/Actions.php::addBatchAction; doc/actions.rst:948-982 -->
+- A custom action rendered with `->renderAsForm()` submits a
+  `<form method="POST">` with a hidden `token` field whose token ID is
+  `ea-action-<controllerFqcn>` of the CRUD controller that renders it (absent
+  when CSRF protection is disabled or the request has no session). Validating
+  it is opt-in: check
+  `$this->isCsrfTokenValid('ea-action-'.static::class, $request->getPayload()->getString('token'))`
+  and deny access (403) when it fails. The built-in delete action
+  (`ea-delete-<controllerFqcn>`), batch actions and the boolean toggle carry
+  their own tokens with their own token IDs.
+  Full recipe in `references/patterns.md`. <!-- templates/components/Button.html.twig:29-45; doc/actions.rst:881-922; templates/crud/includes/_action_confirmation_modal.html.twig:4; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; src/Field/BooleanField.php::CSRF_TOKEN_NAME; src/Factory/ActionFactory.php::generateActionUrl; tests/Functional/Actions/CustomActionCsrfTest.php -->
 - Permissions belong to the `Actions` collection, not to `Action`:
   `$actions->setPermission('publish', 'ROLE_EDITOR')` and
   `$actions->setPermission(Action::DELETE, 'ROLE_ADMIN')`.
@@ -269,7 +270,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - `setCssClass()` drops the default `.btn-*` and `.action-<name>` classes (and
   with them the selectors used by the test helpers), `addCssClass()` keeps
   them; `displayIf()` on a global action receives no entity; removing or
-  disabling `Action::DELETE` also removes `Action::BATCH_DELETE`. <!-- src/Config/Actions.php::remove; src/Config/Actions.php::disable; src/Factory/ActionFactory.php::applyCssClasses; doc/actions.rst:764-768; doc/actions.rst:220-222 -->
+  disabling `Action::DELETE` also removes `Action::BATCH_DELETE`. <!-- src/Config/Actions.php::remove; src/Config/Actions.php::disable; src/Factory/ActionFactory.php::applyCssClasses; doc/actions.rst:765-769; doc/actions.rst:220-222 -->
 - `autocomplete` and `renderFilters` are built-in action names: do not use
   them for custom actions. <!-- src/Router/AdminRouteGenerator.php::BUILT_IN_ACTION_NAMES -->
 <!-- rules:end -->
@@ -432,6 +433,6 @@ source_contains: templates/crud/includes/_action_confirmation_modal.html.twig | 
 source_contains: templates/page/content.html.twig | {% block body_class 'page-content' %}
 source_contains: doc/security.rst | is_granted($permission, $item)
 source_contains: doc/actions.rst | controller_resolver.auto_mapping
-source_not_contains: templates/components/Button.html.twig | csrf_token
-source_not_contains: templates/components/Button.html.twig | _token
+source_contains: templates/components/Button.html.twig | csrf_token('ea-action-' ~ (ea().crud.controllerFqcn ?? ''))
+source_contains: templates/components/ActionMenu/ActionList/Item.html.twig | csrf_token('ea-action-' ~ (ea().crud.controllerFqcn ?? ''))
 -->

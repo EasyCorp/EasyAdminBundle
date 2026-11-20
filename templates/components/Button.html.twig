@@ -34,6 +34,13 @@
                 <input type="hidden" name="_method" value="{{ this.method }}">
             {% endif %}
 
+            {# the token ID includes the CRUD controller, so the token is not valid for other CRUD controllers #}
+            {% guard function csrf_token %}
+                {% if app.request and app.request.hasSession %}
+                    <input type="hidden" name="token" value="{{ csrf_token('ea-action-' ~ (ea().crud.controllerFqcn ?? '')) }}">
+                {% endif %}
+            {% endguard %}
+
             <button {{- attributes.defaults(button_defaults) }}>{{ button_content }}</button>
         </form>
     {% else %}

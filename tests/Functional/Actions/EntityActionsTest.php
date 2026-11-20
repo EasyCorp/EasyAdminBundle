@@ -2,12 +2,15 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Actions;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\ActionGroupsFormMainActionCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Actions\EntityActionsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\BlogPostFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\CategoryFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests for entity action features including displayIf(), custom actions,
@@ -268,6 +271,11 @@ class EntityActionsTest extends AbstractCrudTestCase
 
         // Verify the form uses POST method
         static::assertSame('POST', $formAction->first()->attr('method'), 'Form action should use POST method');
+
+        // Verify the form includes a CSRF token to validate in the action
+        $tokenInput = $formAction->filter('input[type="hidden"][name="token"]');
+        static::assertCount(1, $tokenInput, 'Form action should include a hidden CSRF token field');
+        static::assertNotEmpty($tokenInput->attr('value'), 'The CSRF token of the form action should not be empty');
     }
 
     public function testRenderAsFormInDropdownCreatesHiddenForm(): void
@@ -290,6 +298,71 @@ class EntityActionsTest extends AbstractCrudTestCase
         $hiddenForm = $parentLi->filter('form');
         static::assertCount(1, $hiddenForm, 'Hidden form should exist for dropdown action with renderAsForm()');
         static::assertSame('POST', $hiddenForm->attr('method'), 'Hidden form should use POST method');
+
+        // Verify the hidden form includes a CSRF token to validate in the action
+        $tokenInput = $hiddenForm->filter('input[type="hidden"][name="token"]');
+        static::assertCount(1, $tokenInput, 'Hidden form should include a hidden CSRF token field');
+        static::assertNotEmpty($tokenInput->attr('value'), 'The CSRF token of the hidden form should not be empty');
+    }
+
+    #[DataProvider('provideRenderAsFormCsrfTokens')]
+    public function testRenderAsFormCsrfTokenIsValidatedByTheAction(?string $invalidCsrfToken, bool $actionIsExpectedToSucceed): void
+    {
+        $inactiveEntity = CategoryFactory::createOne(['name' => 'Category 1', 'active' => false]);
+        $entityId = $inactiveEntity->getId();
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $row = $crawler->filter(sprintf('tr[data-id="%s"]', $entityId));
+        $actionItem = $row->filter('[data-action-name="csrfProtectedActivate"]');
+        static::assertCount(1, $actionItem, 'CSRF-protected action should exist in the dropdown');
+
+        $form = $actionItem->closest('li')->filter('form')->form();
+        if (null !== $invalidCsrfToken) {
+            $form['token'] = $invalidCsrfToken;
+        }
+        $this->client->submit($form);
+
+        $this->entityManager->clear();
+        $updatedEntity = $this->entityManager->getRepository(Category::class)->find($entityId);
+
+        if ($actionIsExpectedToSucceed) {
+            static::assertResponseIsSuccessful();
+            static::assertTrue($updatedEntity->isActive(), 'The action should be executed when the CSRF token is valid');
+        } else {
+            static::assertResponseStatusCodeSame(403);
+            static::assertFalse($updatedEntity->isActive(), 'The action should not be executed when the CSRF token is invalid');
+        }
+    }
+
+    public function testRenderAsFormCsrfTokenOfAnotherCrudControllerIsRejected(): void
+    {
+        $inactiveEntity = CategoryFactory::createOne(['name' => 'Category 1', 'active' => false]);
+        $entityId = $inactiveEntity->getId();
+
+        // a valid token of the same session, but printed by another CRUD controller
+        $otherCrudControllerUrl = $this->adminUrlGenerator->setDashboard(DashboardController::class)->setController(ActionGroupsFormMainActionCrudController::class)->setAction(Action::INDEX)->generateUrl();
+        $otherCrudControllerCrawler = $this->client->request('GET', $otherCrudControllerUrl);
+        $otherCrudControllerToken = $otherCrudControllerCrawler->filter('.global-actions form input[name="token"]')->attr('value');
+        static::assertNotEmpty($otherCrudControllerToken, 'The other CRUD controller should render a CSRF token');
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $actionItem = $crawler->filter(sprintf('tr[data-id="%s"]', $entityId))->filter('[data-action-name="csrfProtectedActivate"]');
+        $form = $actionItem->closest('li')->filter('form')->form();
+        $form['token'] = $otherCrudControllerToken;
+        $this->client->submit($form);
+
+        $this->entityManager->clear();
+        $updatedEntity = $this->entityManager->getRepository(Category::class)->find($entityId);
+
+        static::assertResponseStatusCodeSame(403);
+        static::assertFalse($updatedEntity->isActive(), 'The action should not be executed with the CSRF token of another CRUD controller');
+    }
+
+    public static function provideRenderAsFormCsrfTokens(): \Generator
+    {
+        yield 'empty CSRF token' => ['', false];
+        yield 'invalid CSRF token' => ['123abc', false];
+        yield 'valid CSRF token' => [null, true];
     }
 
     public function testSetHtmlAttributesOnAction(): void

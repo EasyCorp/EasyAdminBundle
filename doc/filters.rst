@@ -158,6 +158,16 @@ Options:
 * ``canSelectMultiple()`` (``false``): allows selecting multiple values
 * ``renderExpanded()`` (``false``): renders as checkboxes/radio buttons instead of dropdown
 
+``setChoices()`` also accepts a list of PHP enum cases. The filter uses the
+backing value of each case (or its name for enums that are not backed) as the
+value to filter by. If the enum implements ``TranslatableInterface``, each
+case is used as its own translatable label; otherwise, the label is the case
+name::
+
+    use App\Enum\PostStatus;
+
+    $filters->add(ChoiceFilter::new('status')->setChoices(PostStatus::cases()));
+
 ComparisonFilter
 ~~~~~~~~~~~~~~~~
 

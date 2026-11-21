@@ -59,7 +59,10 @@ final class ChoiceFilter implements FilterInterface
      */
     public function setTranslatableChoices(array $choiceGenerator): self
     {
-        // support passing a list of enum cases (e.g. MyEnum::cases()) ...
+        // support passing a list of enum cases (e.g. MyEnum::cases()). In that case,
+        // the submitted value must be the enum backing value (or its name for
+        // UnitEnum), otherwise the keys (0, 1, 2, ...) of the list would be submitted
+        // and the query would never match any row.
         if ($this->isEnumList($choiceGenerator)) {
             $choiceGenerator = $this->indexEnumCasesByValue($choiceGenerator);
         }

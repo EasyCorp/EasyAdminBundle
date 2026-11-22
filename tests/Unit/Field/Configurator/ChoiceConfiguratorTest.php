@@ -155,6 +155,55 @@ class ChoiceConfiguratorTest extends AbstractFieldTestCase
         $this->assertSame(PriorityUnitEnum::class, $fieldDto->getFormTypeOption('class'));
     }
 
+    /**
+     * @param array<mixed>|callable   $emptyChoices
+     * @param class-string<\UnitEnum> $enumClass
+     */
+    #[DataProvider('emptyEnumChoices')]
+    public function testEmptyChoicesOfEnumPropertyAreNotReplacedByAllEnumCases(array|callable $emptyChoices, string $enumClass): void
+    {
+        $field = ChoiceField::new(self::PROPERTY_NAME)->setChoices($emptyChoices);
+        $field->getAsDto()->setDoctrineMetadata(['enumType' => $enumClass]);
+
+        $fieldDto = $this->configure($field);
+
+        $this->assertSame([], $fieldDto->getFormTypeOption('choices'));
+        $this->assertSame(EnumType::class, $fieldDto->getFormType());
+        $this->assertSame($enumClass, $fieldDto->getFormTypeOption('class'));
+    }
+
+    public static function emptyEnumChoices(): iterable
+    {
+        yield 'array' => [[], StatusBackedEnum::class];
+        yield 'callable' => [static fn (): array => [], StatusBackedEnum::class];
+        yield 'unit enum' => [static fn (): array => [], PriorityUnitEnum::class];
+        yield 'translatable enum' => [static fn (): array => [], TranslatableStatusBackedEnum::class];
+    }
+
+    public function testEmptyChoicesOfEnumClassFormOptionAreNotReplacedByAllEnumCases(): void
+    {
+        $field = ChoiceField::new(self::PROPERTY_NAME)->setChoices([]);
+        $field->setFormTypeOption('class', StatusBackedEnum::class);
+
+        $fieldDto = $this->configure($field);
+
+        $this->assertSame([], $fieldDto->getFormTypeOption('choices'));
+        $this->assertSame(EnumType::class, $fieldDto->getFormType());
+    }
+
+    public function testCallableReturningNullListsAllEnumCases(): void
+    {
+        $field = ChoiceField::new(self::PROPERTY_NAME)->setChoices(static fn () => null);
+        $field->getAsDto()->setDoctrineMetadata(['enumType' => StatusBackedEnum::class]);
+
+        $formChoices = array_combine(
+            array_column(StatusBackedEnum::cases(), 'name'),
+            StatusBackedEnum::cases(),
+        );
+
+        $this->assertSame($formChoices, $this->configure($field)->getFormTypeOption('choices'));
+    }
+
     public static function fieldTypes(): iterable
     {
         yield [ChoiceField::class, true];

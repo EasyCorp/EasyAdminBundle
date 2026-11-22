@@ -36,10 +36,8 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $isMultipleChoice = true === $field->getCustomOption(ChoiceField::OPTION_ALLOW_MULTIPLE_CHOICES);
 
         $choices = $this->getChoices($field->getCustomOption(ChoiceField::OPTION_CHOICES), $entityDto, $field);
-
-        if (null === $choices) {
-            $choices = [];
-        }
+        $areChoicesConfigured = null !== $choices;
+        $choices ??= [];
 
         // support for enums
         $elementIsEnum = array_unique(array_map(static function ($element): bool {
@@ -52,10 +50,12 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         $enumTypeClass = \is_string($classFormOption) && enum_exists($classFormOption)
             ? $classFormOption
             : $field->getDoctrineMetadata()->get('enumType');
+        $isEnumProperty = null !== $enumTypeClass && enum_exists($enumTypeClass);
 
         // if no choices are passed to the field, check if it's related to an Enum;
-        // in that case, get all the possible values of the Enum
-        if (0 === \count($choices) && null !== $enumTypeClass && enum_exists($enumTypeClass)) {
+        // in that case, get all the possible values of the Enum (an empty list of
+        // choices is kept as is, because it means that no value is valid)
+        if (!$areChoicesConfigured && $isEnumProperty) {
             $choices = $enumTypeClass::cases();
             $allChoicesAreEnums = true;
         }
@@ -69,7 +69,9 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             $areChoicesTranslatable = $choicesSupportTranslatableInterface = true;
         }
 
-        if ($allChoicesAreEnums && array_is_list($choices) && \count($choices) > 0) {
+        // an empty list of choices on an enum property still needs EnumType, because
+        // ChoiceType can't handle the enum value stored in the property
+        if ($allChoicesAreEnums && array_is_list($choices) && (\count($choices) > 0 || $isEnumProperty)) {
             $processedEnumChoices = [];
             foreach ($choices as $choice) {
                 $processedEnumChoices[$choice->name] = $choice;

@@ -128,4 +128,23 @@ class LocaleFieldTest extends AbstractFieldFunctionalTestCase
         $localeFieldCell = $entityRow->filter('td[data-column="localeField"]');
         static::assertCount(1, $localeFieldCell, 'Locale field cell should exist even with null value');
     }
+
+    public function testLocaleFieldWithUnknownCode(): void
+    {
+        $entity = $this->createFieldTestEntity([
+            'localeField' => 'en-US',
+        ]);
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrlSortedByIdDesc());
+        static::assertResponseIsSuccessful();
+        $cell = $crawler->filter(sprintf('tr[data-id="%d"] td[data-column="localeField"]', $entity->getId()));
+        static::assertStringContainsString('Unknown "en-US" locale code', $cell->text());
+
+        $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
+        static::assertResponseIsSuccessful();
+        static::assertStringContainsString('Unknown "en-US" locale code', $crawler->filter('.content-body')->text());
+
+        $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
+        static::assertResponseIsSuccessful();
+    }
 }

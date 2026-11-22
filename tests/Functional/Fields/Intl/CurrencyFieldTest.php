@@ -128,4 +128,23 @@ class CurrencyFieldTest extends AbstractFieldFunctionalTestCase
         $currencyFieldCell = $entityRow->filter('td[data-column="currencyField"]');
         static::assertCount(1, $currencyFieldCell, 'Currency field cell should exist even with null value');
     }
+
+    public function testCurrencyFieldWithUnknownCode(): void
+    {
+        $entity = $this->createFieldTestEntity([
+            'currencyField' => 'ZZZ',
+        ]);
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrlSortedByIdDesc());
+        static::assertResponseIsSuccessful();
+        $cell = $crawler->filter(sprintf('tr[data-id="%d"] td[data-column="currencyField"]', $entity->getId()));
+        static::assertStringContainsString('Unknown "ZZZ" currency code', $cell->text());
+
+        $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
+        static::assertResponseIsSuccessful();
+        static::assertStringContainsString('Unknown "ZZZ" currency code', $crawler->filter('.content-body')->text());
+
+        $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
+        static::assertResponseIsSuccessful();
+    }
 }

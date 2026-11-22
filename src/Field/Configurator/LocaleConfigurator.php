@@ -36,12 +36,9 @@ final class LocaleConfigurator implements FieldConfiguratorInterface
             return;
         }
 
-        $localeName = $this->getLocaleName($localeCode);
-        if (null === $localeName) {
-            throw new \InvalidArgumentException(sprintf('The "%s" value used as the locale code of the "%s" field is not a valid ICU locale code.', $localeCode, $field->getProperty()));
-        }
-
-        $field->setFormattedValue($localeName);
+        // the stored value can be written outside of the backend without validation, so an
+        // unknown code must not break the pages that display it (same as in CountryField)
+        $field->setFormattedValue($this->getLocaleName($localeCode) ?? sprintf('Unknown "%s" locale code', $localeCode));
     }
 
     private function getLocaleName(string $localeCode): ?string

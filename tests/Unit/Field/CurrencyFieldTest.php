@@ -64,11 +64,12 @@ class CurrencyFieldTest extends AbstractFieldTestCase
 
     public function testFieldWithInvalidCurrencyCode(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-
         $field = CurrencyField::new('currency');
         $field->setValue('INVALID');
-        $this->configure($field);
+        $fieldDto = $this->configure($field);
+
+        self::assertSame('INVALID', $fieldDto->getValue());
+        self::assertSame(['name' => 'Unknown "INVALID" currency code', 'symbol' => 'INVALID'], $fieldDto->getFormattedValue());
     }
 
     public function testFieldWithNoCurrency(): void

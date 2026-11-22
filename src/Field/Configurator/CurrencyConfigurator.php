@@ -38,13 +38,16 @@ final class CurrencyConfigurator implements FieldConfiguratorInterface
         }
 
         $currencyName = $this->getCurrencyName($currencyCode);
-        if (null === $currencyName) {
-            throw new \InvalidArgumentException(sprintf('The "%s" value used as the currency code of the "%s" field is not a valid ICU currency code.', $currencyCode, $field->getProperty()));
-        }
-
         $currencySymbol = $this->getCurrencySymbol($currencyCode);
-        if (null === $currencySymbol) {
-            throw new \InvalidArgumentException(sprintf('The "%s" value used as the currency code of the "%s" field has no valid ICU currency symbol associated to it.', $currencyCode, $field->getProperty()));
+        if (null === $currencyName || null === $currencySymbol) {
+            // the stored value can be written outside of the backend without validation, so an
+            // unknown code must not break the pages that display it (same as in CountryField)
+            $field->setFormattedValue([
+                'name' => sprintf('Unknown "%s" currency code', $currencyCode),
+                'symbol' => $currencyCode,
+            ]);
+
+            return;
         }
 
         $field->setFormattedValue([

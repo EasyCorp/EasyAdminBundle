@@ -43,12 +43,9 @@ final class LanguageConfigurator implements FieldConfiguratorInterface
             return;
         }
 
-        $languageName = $this->getLanguageName($languageCode, $usesAlpha3Codes);
-        if (null === $languageName) {
-            throw new \InvalidArgumentException(sprintf('The "%s" value used as the language code of the "%s" field is not a valid ICU language code.', $languageCode, $field->getProperty()));
-        }
-
-        $field->setFormattedValue($languageName);
+        // the stored value can be written outside of the backend without validation, so an
+        // unknown code must not break the pages that display it (same as in CountryField)
+        $field->setFormattedValue($this->getLanguageName($languageCode, $usesAlpha3Codes) ?? sprintf('Unknown "%s" language code', $languageCode));
     }
 
     private function getLanguageName(string $languageCode, bool $usesAlpha3Codes): ?string

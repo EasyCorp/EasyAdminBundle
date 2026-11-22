@@ -128,4 +128,23 @@ class LanguageFieldTest extends AbstractFieldFunctionalTestCase
         $languageFieldCell = $entityRow->filter('td[data-column="languageField"]');
         static::assertCount(1, $languageFieldCell, 'Language field cell should exist even with null value');
     }
+
+    public function testLanguageFieldWithUnknownCode(): void
+    {
+        $entity = $this->createFieldTestEntity([
+            'languageField' => 'xx',
+        ]);
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrlSortedByIdDesc());
+        static::assertResponseIsSuccessful();
+        $cell = $crawler->filter(sprintf('tr[data-id="%d"] td[data-column="languageField"]', $entity->getId()));
+        static::assertStringContainsString('Unknown "xx" language code', $cell->text());
+
+        $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
+        static::assertResponseIsSuccessful();
+        static::assertStringContainsString('Unknown "xx" language code', $crawler->filter('.content-body')->text());
+
+        $this->client->request('GET', $this->generateEditFormUrl($entity->getId()));
+        static::assertResponseIsSuccessful();
+    }
 }

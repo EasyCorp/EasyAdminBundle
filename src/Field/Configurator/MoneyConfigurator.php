@@ -64,10 +64,6 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
             $currencyCode = $value->getCurrency()->getCode();
         }
 
-        if (null !== $currencyCode && CurrencyField::CURRENCY_NONE !== $currencyCode && !Currencies::exists($currencyCode)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" value used as the currency of the "%s" money field is not a valid ICU currency code.', $currencyCode, $field->getProperty()));
-        }
-
         $field->setFormType(EaMoneyType::class);
         $field->setFormTypeOption('currency', $currencyCode);
         $field->setFormTypeOption('ea_money_object', true);
@@ -88,16 +84,12 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
 
         $divisor = $field->getFormTypeOption('divisor');
         $amount = (int) $value->getAmount() / $divisor;
-        $formattedValue = $this->intlFormatter->formatCurrency($amount, $currencyCode, ['fraction_digit' => $numDecimals]);
-        $field->setFormattedValue($formattedValue);
+        $field->setFormattedValue($this->formatAmount($amount, $currencyCode, $numDecimals));
     }
 
     private function configureForScalarValue(FieldDto $field, EntityDto $entityDto): void
     {
         $currencyCode = $this->getCurrency($field, $entityDto);
-        if (null !== $currencyCode && CurrencyField::CURRENCY_NONE !== $currencyCode && !Currencies::exists($currencyCode)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" value used as the currency of the "%s" money field is not a valid ICU currency code.', $currencyCode, $field->getProperty()));
-        }
         $field->setFormTypeOption('currency', $currencyCode);
 
         $numDecimals = $field->getCustomOption(MoneyField::OPTION_NUM_DECIMALS);
@@ -112,8 +104,19 @@ final class MoneyConfigurator implements FieldConfiguratorInterface
 
         $divisor = $field->getFormTypeOption('divisor');
         $amount = $field->getValue() / $divisor;
-        $formattedValue = $this->intlFormatter->formatCurrency($amount, $currencyCode, ['fraction_digit' => $numDecimals]);
-        $field->setFormattedValue($formattedValue);
+        $field->setFormattedValue($this->formatAmount($amount, $currencyCode, $numDecimals));
+    }
+
+    private function formatAmount(int|float $amount, string $currencyCode, int $numDecimals): string
+    {
+        if (CurrencyField::CURRENCY_NONE === $currencyCode || Currencies::exists($currencyCode)) {
+            return $this->intlFormatter->formatCurrency($amount, $currencyCode, ['fraction_digit' => $numDecimals]);
+        }
+
+        // the currency comes from the entity data (setCurrency() rejects unknown codes), which can be written
+        // outside of the backend without validation; ICU can't format some of those codes or alters them
+        // (e.g. it truncates them to three letters), so display the amount followed by the stored code
+        return sprintf('%s %s', $this->intlFormatter->formatNumber($amount, ['fraction_digit' => $numDecimals]), $currencyCode);
     }
 
     private function getCurrency(FieldDto $field, EntityDto $entityDto): ?string

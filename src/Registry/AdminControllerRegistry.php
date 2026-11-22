@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Registry;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\CacheKey;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Registry\AdminControllerRegistryInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
@@ -22,9 +23,12 @@ final class AdminControllerRegistry implements AdminControllerRegistryInterface
     private ?array $crudFqcnToEntityFqcnMap = null;
     /** @var array<class-string, class-string>|null */
     private ?array $entityFqcnToCrudFqcnMap = null;
+    /** @var array<class-string, array<class-string, class-string>> */
+    private array $dashboardEntityFqcnToCrudFqcnMap = [];
 
     public function __construct(
         private readonly CacheItemPoolInterface $cache,
+        private readonly ?AdminContextProviderInterface $adminContextProvider = null,
     ) {
     }
 
@@ -68,7 +72,17 @@ final class AdminControllerRegistry implements AdminControllerRegistryInterface
             $this->loadCrudEntityCache();
         }
 
-        return $this->entityFqcnToCrudFqcnMap[$entityFqcn] ?? null;
+        $dashboardFqcn = $this->adminContextProvider?->getContext()?->getDashboardControllerFqcn();
+        if (null === $dashboardFqcn) {
+            return $this->entityFqcnToCrudFqcnMap[$entityFqcn] ?? null;
+        }
+
+        // a dashboard can exclude CRUD controllers (allowedControllers/deniedControllers options of
+        // #[AdminDashboard]), so prefer the ones available in it (e.g. to build embedded forms); the
+        // fallback keeps dashboards without a controller of their own for the entity working
+        return $this->getDashboardEntityFqcnToCrudFqcnMap($dashboardFqcn)[$entityFqcn]
+            ?? $this->entityFqcnToCrudFqcnMap[$entityFqcn]
+            ?? null;
     }
 
     public function findEntityByCrudController(string $crudControllerFqcn): ?string
@@ -111,6 +125,21 @@ final class AdminControllerRegistry implements AdminControllerRegistryInterface
         }
 
         return $this->routeToControllerFqcnMap;
+    }
+
+    /**
+     * @param class-string $dashboardFqcn
+     *
+     * @return array<class-string, class-string>
+     */
+    private function getDashboardEntityFqcnToCrudFqcnMap(string $dashboardFqcn): array
+    {
+        if (!isset($this->dashboardEntityFqcnToCrudFqcnMap[$dashboardFqcn])) {
+            $dashboardCrudControllers = $this->cache->getItem(CacheKey::ROUTE_ATTRIBUTES_TO_NAME)->get()[$dashboardFqcn] ?? [];
+            $this->dashboardEntityFqcnToCrudFqcnMap[$dashboardFqcn] = array_flip(array_intersect_key($this->crudFqcnToEntityFqcnMap, $dashboardCrudControllers));
+        }
+
+        return $this->dashboardEntityFqcnToCrudFqcnMap[$dashboardFqcn];
     }
 
     private function loadDashboardRoutesCache(): void

@@ -3,9 +3,16 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Registry;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\CacheKey;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class AdminControllerRegistryTest extends TestCase
 {
@@ -202,6 +209,54 @@ class AdminControllerRegistryTest extends TestCase
 
         $resolvedEntityFqcn = $registry->findEntityByCrudController($crudFqcn);
         $this->assertSame($entityFqcn, $resolvedEntityFqcn);
+    }
+
+    #[DataProvider('provideCurrentDashboards')]
+    public function testFindCrudControllerByEntityPrefersControllersOfCurrentDashboard(?string $currentDashboardFqcn, string $entityFqcn, ?string $expectedCrudControllerFqcn): void
+    {
+        $cache = new ArrayAdapter();
+
+        $item = $cache->getItem(CacheKey::CRUD_FQCN_TO_ENTITY_FQCN);
+        $item->set([
+            'App\Controller\GuestUserCrudController' => 'App\Entity\User',
+            'App\Controller\InvoiceCrudController' => 'App\Entity\Invoice',
+            'App\Controller\UserCrudController' => 'App\Entity\User',
+        ]);
+        $cache->save($item);
+
+        $item = $cache->getItem(CacheKey::ROUTE_ATTRIBUTES_TO_NAME);
+        $item->set([
+            'App\Controller\DashboardController' => [
+                '' => ['' => 'admin'],
+                'App\Controller\GuestUserCrudController' => ['index' => 'admin_guest_user_index'],
+                'App\Controller\InvoiceCrudController' => ['index' => 'admin_invoice_index'],
+                'App\Controller\UserCrudController' => ['index' => 'admin_user_index'],
+            ],
+            'App\Controller\GuestDashboardController' => [
+                '' => ['' => 'admin_guest'],
+                'App\Controller\GuestUserCrudController' => ['index' => 'admin_guest_guest_user_index'],
+            ],
+        ]);
+        $cache->save($item);
+
+        $requestStack = new RequestStack();
+        if (null !== $currentDashboardFqcn) {
+            $adminContext = AdminContext::forTesting(dashboardContext: DashboardContext::forTesting(dashboardControllerFqcn: $currentDashboardFqcn));
+            $requestStack->push(new Request(attributes: [EA::CONTEXT_REQUEST_ATTRIBUTE => $adminContext]));
+        }
+
+        $registry = new AdminControllerRegistry($cache, new AdminContextProvider($requestStack));
+
+        $this->assertSame($expectedCrudControllerFqcn, $registry->findCrudControllerByEntity($entityFqcn));
+    }
+
+    public static function provideCurrentDashboards(): iterable
+    {
+        yield 'dashboard with all controllers returns the last registered one' => ['App\Controller\DashboardController', 'App\Entity\User', 'App\Controller\UserCrudController'];
+        yield 'restricted dashboard returns its own controller' => ['App\Controller\GuestDashboardController', 'App\Entity\User', 'App\Controller\GuestUserCrudController'];
+        yield 'restricted dashboard without a controller for the entity falls back to the application-wide one' => ['App\Controller\GuestDashboardController', 'App\Entity\Invoice', 'App\Controller\InvoiceCrudController'];
+        yield 'unknown entity returns null' => ['App\Controller\GuestDashboardController', 'App\Entity\Product', null];
+        yield 'no current dashboard returns the last registered one' => [null, 'App\Entity\User', 'App\Controller\UserCrudController'];
     }
 
     public function testRouteMapsAreLazilyLoaded(): void

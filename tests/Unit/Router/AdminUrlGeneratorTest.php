@@ -271,11 +271,7 @@ class AdminUrlGeneratorTest extends KernelTestCase
         ]);
         $registryCache->save($item);
 
-        $adminControllers = new AdminControllerRegistry(
-            $registryCache,
-            [], // crudFqcnToEntityFqcnMap
-            ['App\Controller\Admin\DashboardController', 'App\Controller\Admin\CustomHtmlAttributeDashboardController']
-        );
+        $adminControllers = new AdminControllerRegistry($registryCache);
 
         $router = self::getContainer()->get('router');
 

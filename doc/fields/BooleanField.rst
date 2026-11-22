@@ -72,6 +72,12 @@ prefer to not allow changing the property value in this way, use this option::
 
     yield BooleanField::new('...')->renderAsSwitch(false);
 
+The switch saves the new value through the ``edit`` action, so it follows the
+same rules as the ``edit`` form. It's rendered as disabled when the user
+can't run the ``edit`` action, when the ``edit`` form is disabled (e.g. with
+``Crud::setFormOptions()``) or when the user can't run any of the "save"
+actions of the ``edit`` page (see :ref:`security-permissions-actions`).
+
 ``renderAsSuccessSwitch``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 

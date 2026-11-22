@@ -120,7 +120,8 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         }
 
         // the value of this form option must be a string to properly propagate it as an HTML attribute value
-        $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', true === $field->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS) ? 'false' : 'true');
+        $escapeHtml = $field->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS);
+        $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', false === $escapeHtml ? 'true' : 'false');
 
         $fieldValue = $field->getValue();
         $isIndexOrDetail = \in_array($context->getCrud()->getCurrentPage(), [Crud::PAGE_INDEX, Crud::PAGE_DETAIL], true);
@@ -169,8 +170,11 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
             }
         }
         $field->setFormattedValue(new TranslatableChoiceMessageCollection($choiceMessages, $isRenderedAsBadge));
-        // choice labels are defined by the developer and they can contain HTML contents
-        $field->setCustomOption(FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML, true);
+        // labels are usually defined by the developer and can contain HTML, so they are only
+        // escaped when the field asks for it explicitly (e.g. because labels come from stored data)
+        if (true !== $escapeHtml) {
+            $field->setCustomOption(FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML, true);
+        }
     }
 
     /**

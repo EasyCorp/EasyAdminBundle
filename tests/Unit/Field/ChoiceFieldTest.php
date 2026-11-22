@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field;
 
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ChoiceConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Fixtures\ChoiceField\PriorityUnitEnum;
@@ -9,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Fixtures\ChoiceField\Status
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\Fixtures\ChoiceField\TranslatableStatusBackedEnum;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessage;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableChoiceMessageCollection;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use function Symfony\Component\Translation\t;
 
@@ -33,7 +36,8 @@ class ChoiceFieldTest extends AbstractFieldTestCase
         self::assertFalse($fieldDto->getCustomOption(ChoiceField::OPTION_RENDER_EXPANDED));
         // default widget is set to autocomplete by configurator when expanded is false
         self::assertSame(ChoiceField::WIDGET_AUTOCOMPLETE, $fieldDto->getCustomOption(ChoiceField::OPTION_WIDGET));
-        self::assertTrue($fieldDto->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS));
+        self::assertNull($fieldDto->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS));
+        self::assertSame('false', $fieldDto->getFormTypeOption('attr.data-ea-autocomplete-render-items-as-html'));
         self::assertSame(ChoiceType::class, $fieldDto->getFormType());
         self::assertStringContainsString('field-select', $fieldDto->getCssClass());
     }
@@ -469,6 +473,39 @@ class ChoiceFieldTest extends AbstractFieldTestCase
 
         self::assertFalse($fieldDto->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS));
         self::assertSame('true', $fieldDto->getFormTypeOption('attr.data-ea-autocomplete-render-items-as-html'));
+    }
+
+    #[TestWith([Crud::PAGE_INDEX])]
+    #[TestWith([Crud::PAGE_DETAIL])]
+    public function testLabelsAreRenderedAsHtmlByDefault(string $pageName): void
+    {
+        $field = ChoiceField::new('foo')->setChoices(['<b>Bold</b>' => 1]);
+        $field->setValue(1);
+        $fieldDto = $this->configure($field, $pageName);
+
+        self::assertTrue($fieldDto->getCustomOption(FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML));
+    }
+
+    #[TestWith([Crud::PAGE_INDEX])]
+    #[TestWith([Crud::PAGE_DETAIL])]
+    public function testLabelsAreEscapedWhenEscapeHtmlIsEnabledExplicitly(string $pageName): void
+    {
+        $field = ChoiceField::new('foo')->setChoices(['<b>Bold</b>' => 1])->escapeHtml();
+        $field->setValue(1);
+        $fieldDto = $this->configure($field, $pageName);
+
+        self::assertNull($fieldDto->getCustomOption(FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML));
+    }
+
+    #[TestWith([Crud::PAGE_INDEX])]
+    #[TestWith([Crud::PAGE_DETAIL])]
+    public function testLabelsAreRenderedAsHtmlWhenEscapeHtmlIsDisabled(string $pageName): void
+    {
+        $field = ChoiceField::new('foo')->setChoices(['<b>Bold</b>' => 1])->escapeHtml(false);
+        $field->setValue(1);
+        $fieldDto = $this->configure($field, $pageName);
+
+        self::assertTrue($fieldDto->getCustomOption(FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML));
     }
 
     public function testFieldWithNullValue(): void

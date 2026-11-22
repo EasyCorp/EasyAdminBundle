@@ -140,6 +140,9 @@ to remove the uploaded image. Use this option to hide that checkbox::
 
     yield ImageField::new('...')->isDeletable(false);
 
+When this option is disabled, the field also ignores any deletion sent in the
+submitted form data, so users can't remove the stored images of this field.
+
 ``isDownloadable``
 ~~~~~~~~~~~~~~~~~~
 

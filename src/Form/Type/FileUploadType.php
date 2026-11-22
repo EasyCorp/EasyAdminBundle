@@ -379,9 +379,12 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $state = $config->getAttribute('state');
         $state->setCurrentFiles($currentFiles);
         $state->setUploadedFiles($uploadedFiles);
-        $state->setDelete($children['delete']->getData());
+        // the 'delete' and 'deleted_files' children exist even when deleting files is not
+        // allowed (the form theme only hides their controls), so their values must be ignored
+        $allowDelete = true === $config->getOption('allow_delete');
+        $state->setDelete($allowDelete && true === $children['delete']->getData());
 
-        $deletedFilesJson = $children['deleted_files']->getData();
+        $deletedFilesJson = $allowDelete ? $children['deleted_files']->getData() : null;
         $deletedFileNames = \is_string($deletedFilesJson) ? json_decode($deletedFilesJson, true) : [];
         $state->setDeletedFiles(\is_array($deletedFileNames) ? $deletedFileNames : []);
         $state->setRemovedFiles([]);

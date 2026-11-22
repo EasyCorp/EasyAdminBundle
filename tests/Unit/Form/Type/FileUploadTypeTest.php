@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Form\Type;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\Extension\Validator\ViolationMapper\ViolationMapperInterface;
@@ -116,5 +117,48 @@ class FileUploadTypeTest extends TypeTestCase
         ]);
 
         $this->assertSame('custom/path/', $form->getConfig()->getOption('download_path'));
+    }
+
+    #[DataProvider('provideDeletionSubmissions')]
+    public function testSubmittedDeletionIsIgnoredWhenDeleteIsNotAllowed(bool $multiple, array $submittedData): void
+    {
+        touch($this->projectDir.'/public/uploads/files/foo.txt');
+        $form = $this->factory->create(FileUploadType::class, null, [
+            'upload_dir' => 'public/uploads/files',
+            'multiple' => $multiple,
+            'allow_delete' => false,
+        ]);
+        $form->setData($multiple ? ['foo.txt'] : 'foo.txt');
+
+        $form->submit($submittedData);
+
+        $this->assertTrue($form->isSynchronized());
+        $this->assertSame($multiple ? ['foo.txt'] : 'foo.txt', $form->getData());
+        $this->assertFalse($form->getConfig()->getAttribute('state')->isModified());
+    }
+
+    #[DataProvider('provideDeletionSubmissions')]
+    public function testSubmittedDeletionIsAppliedWhenDeleteIsAllowed(bool $multiple, array $submittedData): void
+    {
+        touch($this->projectDir.'/public/uploads/files/foo.txt');
+        $form = $this->factory->create(FileUploadType::class, null, [
+            'upload_dir' => 'public/uploads/files',
+            'multiple' => $multiple,
+        ]);
+        $form->setData($multiple ? ['foo.txt'] : 'foo.txt');
+
+        $form->submit($submittedData);
+
+        $this->assertTrue($form->isSynchronized());
+        $this->assertSame($multiple ? [] : null, $form->getData());
+        $this->assertTrue($form->getConfig()->getAttribute('state')->isModified());
+    }
+
+    public static function provideDeletionSubmissions(): iterable
+    {
+        yield 'single file, delete checkbox' => [false, ['delete' => '1']];
+        yield 'single file, deleted files' => [false, ['deleted_files' => '["foo.txt"]']];
+        yield 'multiple files, delete checkbox' => [true, ['delete' => '1']];
+        yield 'multiple files, deleted files' => [true, ['deleted_files' => '["foo.txt"]']];
     }
 }

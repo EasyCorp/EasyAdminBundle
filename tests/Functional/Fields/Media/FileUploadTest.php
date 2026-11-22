@@ -108,6 +108,61 @@ class FileUploadTest extends AbstractFieldFunctionalTestCase
         }
     }
 
+    #[DataProvider('notDeletableFileProvider')]
+    public function testSubmittedDeletionIsIgnoredWhenFileIsNotDeletable(string $property, bool $deleteAll, array $replacedFileBehaviorQuery): void
+    {
+        $multiple = \in_array($property, ['multipleFileField', 'multipleImageField'], true);
+        $oldPath = $this->caseDirectory.'/old.png';
+        file_put_contents($this->uploadDir.$oldPath, base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII='));
+
+        $entity = $this->createFieldTestEntity([
+            $property => $multiple ? [$oldPath] : $oldPath,
+            'slugField' => $this->caseDirectory,
+        ]);
+        $getter = 'get'.ucfirst($property);
+        $entityId = $entity->getId();
+
+        $crawler = $this->client->request('GET', $this->getCrudUrl(Action::EDIT, $entityId, ['notDeletable' => true] + $replacedFileBehaviorQuery));
+        static::assertResponseIsSuccessful();
+        $form = $crawler->filter('form[name="FieldTestEntity"]')->form();
+        $widget = $crawler->filter(sprintf('#FieldTestEntity_%s_file', $property))->closest('[data-ea-fileupload-field]');
+        $cards = $widget->filter('.ea-fileupload-card');
+        static::assertCount(1, $cards);
+        static::assertCount(0, $widget->filter('[data-ea-fileupload-delete-card], [data-ea-fileupload-clear-all], input[type="checkbox"]'));
+
+        // the widget renders no delete controls, so the values they would send are added to the request by hand
+        $values = $form->getPhpValues();
+        if ($deleteAll) {
+            $values['FieldTestEntity'][$property]['delete'] = '1';
+        } else {
+            $values['FieldTestEntity'][$property]['deleted_files'] = json_encode([$cards->eq(0)->attr('data-filename')]);
+        }
+        $this->client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
+
+        static::assertResponseRedirects();
+        $this->entityManager->clear();
+        $savedEntity = $this->fieldTestEntities->find($entityId);
+        static::assertNotNull($savedEntity);
+        static::assertSame($multiple ? [$oldPath] : $oldPath, $savedEntity->$getter());
+        static::assertFileExists($this->uploadDir.$oldPath);
+    }
+
+    public static function notDeletableFileProvider(): iterable
+    {
+        $replacedFileBehaviors = [
+            'delete policy' => [],
+            'keep policy' => ['keepReplacedFiles' => true],
+            'keep or fail policy' => ['keepReplacedFilesOrFail' => true],
+        ];
+
+        foreach (['fileField', 'multipleFileField', 'imageField', 'multipleImageField'] as $property) {
+            foreach ($replacedFileBehaviors as $policy => $query) {
+                yield $property.' delete all with '.$policy => [$property, true, $query];
+                yield $property.' individual deletion with '.$policy => [$property, false, $query];
+            }
+        }
+    }
+
     public static function fileDeletionProvider(): iterable
     {
         foreach (['fileField', 'multipleFileField', 'imageField', 'multipleImageField'] as $property) {

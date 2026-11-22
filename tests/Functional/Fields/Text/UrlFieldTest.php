@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Text;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\DomCrawler\Crawler;
 
 class UrlFieldTest extends AbstractFieldFunctionalTestCase
@@ -95,6 +96,26 @@ class UrlFieldTest extends AbstractFieldFunctionalTestCase
         $entity = $this->fieldTestEntities->findOneBy(['urlField' => $url]);
         static::assertNotNull($entity, 'Entity should be created with the submitted URL value');
         static::assertSame($url, $entity->getUrlField());
+    }
+
+    #[TestWith(['javascript:alert(1)'])]
+    #[TestWith(["java\tscript:alert(1)"])]
+    #[TestWith(["javascript\n:alert(1)"])]
+    #[TestWith(["java\rscript:alert(1)"])]
+    public function testDangerousUrlIsNotRenderedAsLinkOnIndexAndDetail(string $url): void
+    {
+        $entity = $this->createFieldTestEntity([
+            'urlField' => $url,
+        ]);
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrlSortedByIdDesc());
+        $urlFieldCell = $crawler->filter(sprintf('tr[data-id="%d"] td[data-column="urlField"]', $entity->getId()));
+        static::assertCount(1, $urlFieldCell);
+        static::assertCount(0, $urlFieldCell->filter('a'), 'A dangerous URL must not be rendered as a link on the index page');
+
+        $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
+        static::assertCount(0, $crawler->filter('.content-body .field-group .field-value a[href*="alert(1)"]'), 'A dangerous URL must not be rendered as a link on the detail page');
+        static::assertStringContainsString('alert(1)', $crawler->filter('.content-body')->text());
     }
 
     public function testUrlFieldWithNullValue(): void

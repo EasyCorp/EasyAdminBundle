@@ -92,6 +92,13 @@ class UrlFieldTest extends AbstractFieldTestCase
     #[TestWith(["\tjavascript:alert(1)"])]
     #[TestWith(["\njavascript:alert(1)"])]
     #[TestWith(["\x00javascript:alert(1)"])]
+    #[TestWith(["java\tscript:alert(1)"])]
+    #[TestWith(["javascript\n:alert(1)"])]
+    #[TestWith(["java\rscript:alert(1)"])]
+    #[TestWith(["java\r\nscript:alert(1)"])]
+    #[TestWith(["da\tta:text/html,<script>alert(1)</script>"])]
+    #[TestWith(["vb\rscript:msgbox(1)"])]
+    #[TestWith(["fi\nle:///etc/passwd"])]
     public function testDangerousSchemesAreMarkedUnsafe(string $url): void
     {
         $this->initializeConfigurator();

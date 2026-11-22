@@ -1,0 +1,9 @@
+{# Actions
+   Use the actions block to add buttons or links under the message (e.g. to
+   create the first item). #}
+<twig:ea:EmptyState message="You haven't created any product yet.">
+    <twig:block name="actions">
+        <twig:ea:Button htmlElement="a" href="#" color="primary" variant="solid" size="sm" icon="internal:plus">Create product</twig:ea:Button>
+        <twig:ea:Button htmlElement="a" href="#" size="sm">Import from CSV</twig:ea:Button>
+    </twig:block>
+</twig:ea:EmptyState>

@@ -1,0 +1,185 @@
+{% types {
+    states: 'array<string, string>',
+    current_state: 'string',
+    highlighted_usage: 'string',
+    documentation: 'array<string, ?array>',
+} %}
+{% extends '@EasyAdmin/ui_kit/layout.html.twig' %}
+
+{% import '@EasyAdmin/ui_kit/_api_reference.html.twig' as api_reference %}
+{% import '@EasyAdmin/ui_kit/dashboard/_widget.html.twig' as ui_kit %}
+
+{% set state = current_state %}
+
+{% block content_title %}Dashboard widgets{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path(ea().dashboardRouteName) }}">{{ ea().dashboardTitle|striptags }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path(ea().dashboardRouteName ~ '_ea_ui_kit_index') }}">UI Kit</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Dashboard widgets</li>
+{% endblock %}
+
+{% block page_actions %}
+    {% if 'no_widgets' != state %}
+        {% set period_body %}
+            <select class="form-select form-select-sm" aria-label="Period">
+                <option>Last 7 days</option>
+                <option selected>Last 30 days</option>
+                <option>Last 12 months</option>
+            </select>
+            <twig:ea:Button size="sm" type="button" icon="internal:download">Export</twig:ea:Button>
+        {% endset %}
+        {{ ui_kit.widget({name: 'period', type: 'twig', toolbar: true}, state, period_body) }}
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+    <p class="ea-ui-kit-readable">The built-in widgets of EasyAdmin in each of their states, with the same HTML that the <code>Widget:Grid</code> and <code>Widget</code> components render. Their contents are static, so the loading state never ends and the error state can't be retried.</p>
+
+    <nav class="ea-ui-kit-theme-picker" aria-label="Widget state">
+        {% for state_name, state_label in states %}
+            <a class="ea-ui-kit-theme-option" href="{{ path(ea().dashboardRouteName ~ '_ea_ui_kit_dashboard', 'loaded' == state_name ? {} : {state: state_name}) }}" {{ state_name == state ? 'aria-current="page"' }}>{{ state_label }}</a>
+        {% endfor %}
+    </nav>
+
+    <div class="ea-ui-kit-dashboard">
+        <div class="ea-widget-grid">
+            {% if 'no_widgets' == state %}
+                <twig:ea:EmptyState message="{{ 'widget.no_widgets'|trans(domain: 'EasyAdminBundle') }}" />
+            {% else %}
+                {% set is_empty = 'empty' == state %}
+
+                <section class="ea-widget-section" data-ea-widget-section="sales" aria-labelledby="ea-widgets-section-sales-title">
+                    <header class="ea-widget-section-header">
+                        <h2 class="ea-widget-section-title" id="ea-widgets-section-sales-title"><span>Sales</span></h2>
+                        <p class="ea-widget-section-help">Orders and revenue of all stores in the selected period.</p>
+                    </header>
+
+                    <div class="ea-widgets">
+                        {% set body %}{% if is_empty %}<twig:ea:EmptyState />{% else %}<twig:ea:Stat :value="'$48,210.50'" :delta="12.4" description="Compared to the previous period" />{% endif %}{% endset %}
+                        {{ ui_kit.widget({name: 'revenue', type: 'stat', cols: 3, label: 'Revenue'}, state, body) }}
+
+                        {% set body %}{% if is_empty %}<twig:ea:EmptyState />{% else %}<twig:ea:Stat :value="1204" :delta="-3.5" />{% endif %}{% endset %}
+                        {{ ui_kit.widget({name: 'orders', type: 'stat', cols: 3, label: 'Orders', icon: 'internal:file-lines', link_url: '#', link_label: 'View all'}, state, body) }}
+
+                        {% set body %}{% if is_empty %}<twig:ea:EmptyState />{% else %}<twig:ea:Stat :value="'2.1%'" :delta="-0.4" :increaseIsGood="false" />{% endif %}{% endset %}
+                        {{ ui_kit.widget({name: 'refund-rate', type: 'stat', cols: 3, label: 'Refund rate', help: 'Refunded orders of all orders'}, state, body) }}
+
+                        {% set body %}{% if is_empty %}<twig:ea:EmptyState />{% else %}<twig:ea:Stat :value="'2.4 days'" :delta="0" :increaseIsGood="false" />{% endif %}{% endset %}
+                        {{ ui_kit.widget({name: 'delivery-time', type: 'stat', cols: 3, label: 'Average delivery time', link_url: '#'}, state, body) }}
+
+                        {% set body %}
+                            {% if is_empty %}
+                                <twig:ea:EmptyState />
+                            {% else %}
+                                <twig:ea:BarChart :data="{Dec: 31200, Jan: 28400, Feb: 30100, Mar: 35800, Apr: 33900, May: 38200, Jun: 41500, Jul: 39800, Aug: 36400, Sep: 42100, Oct: 45600, Nov: 48210}" ariaLabel="Revenue per month" />
+                            {% endif %}
+                        {% endset %}
+                        {{ ui_kit.widget({name: 'revenue-per-month', type: 'chart', cols: 6, label: 'Revenue per month'}, state, body) }}
+
+                        {% set body %}
+                            {% if is_empty %}
+                                <twig:ea:EmptyState message="There are no orders in the selected period." />
+                            {% else %}
+                                {{ ui_kit.list_items([
+                                    {title: 'Order #10482', description: 'Anna Smith · 3 items', value: '$129.90'},
+                                    {title: 'Order #10481', description: 'Liam Johnson · 1 item', value: '$45.00'},
+                                    {title: 'Order #10480', description: 'Sofia Garcia · 5 items', value: '$312.40'},
+                                    {title: 'Order #10479', description: 'Noah Brown · 2 items', value: '$78.15'},
+                                    {title: 'Order #10478', description: 'Emma Wilson · 1 item', value: '$19.99'},
+                                ]) }}
+                            {% endif %}
+                        {% endset %}
+                        {{ ui_kit.widget({name: 'latest-orders', type: 'list', cols: 6, label: 'Latest orders', link_url: '#', link_label: 'View all'}, state, body) }}
+                    </div>
+                </section>
+
+                <section class="ea-widget-section" data-ea-widget-section="customers" aria-labelledby="ea-widgets-section-customers-title">
+                    <header class="ea-widget-section-header">
+                        <h2 class="ea-widget-section-title" id="ea-widgets-section-customers-title"><twig:ea:Icon name="internal:user" class="ea-widget-section-icon" aria-hidden="true" /><span>Customers</span></h2>
+                    </header>
+
+                    <div class="ea-widgets">
+                        {% set body %}
+                            {% if is_empty %}
+                                <twig:ea:EmptyState />
+                            {% else %}
+                                {{ ui_kit.list_items([
+                                    {title: 'Sofia Garcia', description: '42 orders', value: '$8,420', icon: 'internal:user'},
+                                    {title: 'Anna Smith', description: '35 orders', value: '$6,915', icon: 'internal:user'},
+                                    {title: 'Liam Johnson', description: '28 orders', value: '$5,230', icon: 'internal:user'},
+                                    {title: 'Emma Wilson', description: '24 orders', value: '$4,870', icon: 'internal:user'},
+                                    {title: 'Noah Brown', description: '19 orders', value: '$3,410', icon: 'internal:user'},
+                                    {title: 'Olivia Martin', description: '17 orders', value: '$3,115', icon: 'internal:user'},
+                                    {title: 'Lucas Davis', description: '15 orders', value: '$2,780', icon: 'internal:user'},
+                                    {title: 'Mia Taylor', description: '12 orders', value: '$2,240', icon: 'internal:user'},
+                                ]) }}
+                            {% endif %}
+                        {% endset %}
+                        {{ ui_kit.widget({name: 'top-customers', type: 'list', cols: 4, rows: 2, label: 'Top customers', help: 'This widget is two rows tall; its list scrolls'}, state, body) }}
+
+                        {% set body %}{% if is_empty %}<twig:ea:EmptyState />{% else %}<twig:ea:Stat :value="318" :delta="8.2" description="Customers who placed their first order" />{% endif %}{% endset %}
+                        {{ ui_kit.widget({name: 'new-customers', type: 'stat', cols: 4, label: 'New customers'}, state, body) }}
+
+                        {% set body %}<twig:ea:Progress :value="is_empty ? 0 : 1320" :max="1100" ariaLabel="Quarterly customers goal" />{% endset %}
+                        {{ ui_kit.widget({name: 'customers-goal', type: 'progress', cols: 4, label: 'Quarterly customers goal'}, state, body) }}
+
+                        {% set body %}
+                            {% if is_empty %}
+                                <twig:ea:EmptyState />
+                            {% else %}
+                                <twig:ea:BarChart :data="{Mon: 41, Tue: 38, Wed: 52, Thu: 47, Fri: 61, Sat: 29, Sun: 22}" ariaLabel="Sign-ups per day" />
+                            {% endif %}
+                        {% endset %}
+                        {{ ui_kit.widget({name: 'signups', type: 'chart', cols: 8, label: 'Sign-ups per day'}, state, body) }}
+
+                        {% set body %}<twig:ea:Progress :value="is_empty ? 0 : 64" ariaLabel="Customers with a complete profile" />{% endset %}
+                        {{ ui_kit.widget({name: 'complete-profiles', type: 'progress', cols: 4, label: 'Complete profiles', help: 'Customers with a shipping address and a phone number'}, state, body) }}
+
+                        {% set body %}{% if is_empty %}<twig:ea:EmptyState />{% else %}<twig:ea:Stat :value="'4.65 / 5'" :delta="1.2" description="Average rating of the reviews" />{% endif %}{% endset %}
+                        {{ ui_kit.widget({name: 'satisfaction', type: 'stat', cols: 4, label: 'Satisfaction'}, state, body) }}
+                    </div>
+                </section>
+
+                <section class="ea-widget-section">
+                    <div class="ea-widgets">
+                        {% set body %}
+                            <twig:ea:Alert variant="warning" title="3 orders could not be shipped" icon="internal:circle-exclamation">
+                                This widget is rendered without a card. The shipping addresses of these orders are incomplete.
+                            </twig:ea:Alert>
+                        {% endset %}
+                        {{ ui_kit.widget({name: 'shipping-issues', type: 'twig', cols: 12, cardless: true, heading_level: 2}, state, body) }}
+
+                        {% set body %}
+                            <p>A Twig widget renders any template of your application. Use it for contents that the other widgets don't cover, like this welcome message.</p>
+                            <twig:ea:Button htmlElement="a" href="#" color="primary" variant="solid" size="sm" icon="internal:plus">Create product</twig:ea:Button>
+                            <twig:ea:Button htmlElement="a" href="#" size="sm" icon="internal:gear">Store settings</twig:ea:Button>
+                        {% endset %}
+                        {{ ui_kit.widget({name: 'welcome', type: 'twig', cols: 12, label: 'Welcome back', icon: 'internal:home', heading_level: 2}, state, body) }}
+                    </div>
+                </section>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr class="ea-ui-kit-divider">
+    <section class="ea-ui-kit-reference" id="api-reference" aria-labelledby="api-reference-title">
+        <h2 id="api-reference-title">API Reference</h2>
+        <p>Configure the widgets in the <code>configureWidgets()</code> method of your dashboard controller. The dashboard page renders all of them; use these components to render them in your own templates:</p>
+        {# the highlighter escapes all the code, so its output is safe #}
+        <pre class="ea-ui-kit-source ea-ui-kit-source-standalone"><code>{{ highlighted_usage|raw }}</code></pre>
+
+        {% for component_name, component_documentation in documentation %}
+            {% set section_id = 'component-' ~ component_name|lower|replace({':': '-'}) %}
+            <section class="ea-ui-kit-sub-component" id="{{ section_id }}" aria-labelledby="{{ section_id }}-title">
+                <h3 id="{{ section_id }}-title"><code>&lt;twig:ea:{{ component_name }}&gt;</code></h3>
+                {% if component_documentation.props|default([]) is not empty %}
+                    <div>{{ api_reference.render_props_table(component_documentation.props) }}</div>
+                {% endif %}
+                {% if component_documentation.blocks|default([]) is not empty %}
+                    <div>{{ api_reference.render_blocks_table(component_documentation.blocks) }}</div>
+                {% endif %}
+            </section>
+        {% endfor %}
+    </section>
+{% endblock %}

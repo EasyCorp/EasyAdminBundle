@@ -16,6 +16,8 @@ return static function (ContainerConfigurator $container) {
     $services->load('EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Functional\\Apps\\DefaultApp\\', '../src/*')
         ->exclude('../{Entity,Tests,Kernel.php}');
 
+    // widgets are value objects with a private constructor, so they can't be controllers
     $services->load('EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Functional\\Apps\\DefaultApp\\Controller\\', '../src/Controller/')
+        ->exclude('../src/Controller/Widgets/Contract/*Widget.php')
         ->tag('controller.service_arguments');
 };

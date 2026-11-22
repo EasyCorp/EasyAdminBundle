@@ -1,0 +1,57 @@
+{# @var this \EasyCorp\Bundle\EasyAdminBundle\Twig\Component\BarChart #}
+{% if this.empty %}
+    <twig:ea:EmptyState />
+{% else %}
+    {% set bars = this.bars %}
+    {% set baseline_y = this.baselineY %}
+    <figure {{ attributes.defaults({class: 'ea-bar-chart', 'aria-label': this.ariaLabel}) }}>
+        <div class="ea-bar-chart-axis" aria-hidden="true">
+            <span class="ea-bar-chart-axis-max">{{ this.formattedMaxValue }}</span>
+            <span class="ea-bar-chart-axis-min">{{ this.formattedMinValue }}</span>
+        </div>
+
+        {# screen readers read the data table instead of the plot #}
+        <div class="ea-bar-chart-plot" aria-hidden="true">
+            <svg focusable="false">
+                {# unlabeled guides that help to compare the height of the bars #}
+                {% for grid_y in [0, 25, 50, 75, 100] %}
+                    <line class="ea-bar-chart-grid" x1="0" y1="{{ grid_y }}%" x2="100%" y2="{{ grid_y }}%" />
+                {% endfor %}
+                <line class="ea-bar-chart-baseline" x1="0" y1="{{ baseline_y }}%" x2="100%" y2="{{ baseline_y }}%" />
+                {# each bar is drawn inside its own viewport, which clips the corners of the
+                   end that touches the zero line, so only the other end looks rounded #}
+                {% for bar in bars %}
+                    <svg x="{{ bar.x }}%" y="{{ bar.y }}%" width="{{ bar.width }}%" height="{{ bar.height }}%">
+                        <rect class="ea-bar-chart-bar{{ bar.negative ? ' ea-bar-chart-bar-negative' }}" width="100%" height="100%"><title>{{ bar.label }}: {{ bar.formattedValue }}</title></rect>
+                    </svg>
+                {% endfor %}
+            </svg>
+        </div>
+
+        <div class="ea-bar-chart-labels" aria-hidden="true">
+            {% for bar in bars %}
+                <span class="ea-bar-chart-label" title="{{ bar.label }}">{{ bar.label }}</span>
+            {% endfor %}
+        </div>
+
+        <table class="visually-hidden">
+            {% if this.ariaLabel is not null %}
+                <caption>{{ this.ariaLabel }}</caption>
+            {% endif %}
+            <thead>
+                <tr>
+                    <th scope="col">{{ 'chart.label'|trans(domain: 'EasyAdminBundle') }}</th>
+                    <th scope="col">{{ 'chart.value'|trans(domain: 'EasyAdminBundle') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bar in bars %}
+                    <tr>
+                        <th scope="row">{{ bar.label }}</th>
+                        <td>{{ bar.formattedValue }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </figure>
+{% endif %}

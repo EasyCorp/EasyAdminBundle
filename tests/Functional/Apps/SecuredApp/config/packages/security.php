@@ -1,6 +1,7 @@
 <?php
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Kernel;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Security\RequestSubjectVoter;
 use Symfony\Component\Security\Core\User\InMemoryUser;
 
 $configuration = [
@@ -47,6 +48,11 @@ $configuration = [
 
     'access_control' => [
         ['path' => '^/admin/secure', 'roles' => ['ROLE_ADMIN']],
+        // these rules match the dashboard page but not the URL that serves the contents of its widgets
+        ['path' => '^/admin/exact-path-widgets$', 'roles' => ['ROLE_ADMIN']],
+        ['route' => '^secured_widgets_route_rule_admin$', 'roles' => ['ROLE_ADMIN']],
+        // the voter of this attribute needs the request, which is the subject when Symfony checks these rules
+        ['path' => '^/admin/request-subject-widgets$', 'roles' => [RequestSubjectVoter::ADMIN_REQUEST]],
         ['path' => '^/admin', 'roles' => ['ROLE_USER']],
     ],
 ];

@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Daha fazla sonuç yok',
         'loading-more-results' => 'Daha fazla…',
     ],
+
+    'chart' => [
+        'label' => 'Etiket',
+        'value' => 'Değer',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Görüntülenecek veri yok',
+        'error' => 'Bu içerik yüklenemedi.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Yükleniyor…',
+    ],
+
+    'stat' => [
+        'increase' => 'Artış',
+        'decrease' => 'Azalış',
+        'no_change' => 'Değişiklik yok',
+        'delta_good' => 'iyi',
+        'delta_bad' => 'kötü',
+    ],
+
+    'widget' => [
+        'retry' => 'Tekrar dene',
+        'no_widgets' => 'Burada henüz gösterilecek bir şey yok.',
+    ],
 ];

@@ -13,6 +13,8 @@ Table of Contents
 -----------------
 
 * :doc:`Dashboards </dashboards>` (main menu, user menu, admin context, translations)
+* :doc:`Dashboard Widgets </widgets>` (stats, charts, lists, layout,
+  lazy loading, cache, custom widgets)
 * :doc:`CRUD controllers </crud>` (entities, pagination, search, sorting, forms)
 * :doc:`Design </design>` (theme colors and fonts, UI Kit, CSS variables, recipes,
   custom pages, templates, custom CSS/JS assets)
@@ -35,7 +37,7 @@ Table of Contents
 * :doc:`Appendix: EasyAdmin Pro </pro>` (installation and setup of the Pro
   features)
 * :doc:`Appendix: Twig Components </components>` (reusable UI components: badges, buttons,
-  icons, modals, dropdown menus)
+  cards, stats, charts, icons, modals, dropdown menus)
 
 Technical Requirements
 ----------------------

@@ -169,4 +169,31 @@ return [
         'no-more-results' => '沒有更多結果',
         'loading-more-results' => '正在載入更多結果⋯⋯',
     ],
+
+    'chart' => [
+        'label' => '標籤',
+        'value' => '數值',
+    ],
+
+    'empty_state' => [
+        'empty' => '沒有可顯示的資料',
+        'error' => '無法載入此內容。',
+    ],
+
+    'skeleton' => [
+        'loading' => '載入中…',
+    ],
+
+    'stat' => [
+        'increase' => '增加',
+        'decrease' => '減少',
+        'no_change' => '無變化',
+        'delta_good' => '良好',
+        'delta_bad' => '不佳',
+    ],
+
+    'widget' => [
+        'retry' => '再試一次',
+        'no_widgets' => '這裡目前沒有可顯示的內容。',
+    ],
 ];

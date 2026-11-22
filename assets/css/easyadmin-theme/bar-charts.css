@@ -1,0 +1,141 @@
+/* Bar charts
+/* ------------------------------------------------------------------------- */
+
+/* the bars are drawn from left to right in the SVG, so the labels must follow
+   the same direction in right-to-left languages */
+.ea-bar-chart {
+    block-size: 100%;
+    column-gap: var(--ea-sp-4);
+    container-type: inline-size;
+    direction: ltr;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: minmax(var(--bar-chart-min-height), 1fr) auto;
+    /* a size container has no width of its own, so without this the chart
+       collapses when its parent sizes it by its contents (e.g. a flex row) */
+    inline-size: 100%;
+    margin: 0;
+    position: relative;
+    row-gap: var(--ea-sp-3);
+}
+
+.ea-bar-chart-axis {
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    font-size: var(--font-size-xs);
+    font-variant-numeric: tabular-nums;
+    grid-column: 1;
+    grid-row: 1;
+    justify-content: space-between;
+    line-height: var(--line-height-none);
+    text-align: end;
+}
+
+.ea-bar-chart-plot {
+    grid-column: 2;
+    grid-row: 1;
+    position: relative;
+}
+.ea-bar-chart-plot > svg {
+    block-size: 100%;
+    display: block;
+    inline-size: 100%;
+    inset: 0;
+    overflow: visible;
+    position: absolute;
+}
+
+.ea-bar-chart-grid {
+    stroke: var(--bar-chart-grid-color);
+    stroke-width: 1;
+}
+
+.ea-bar-chart-baseline {
+    stroke: var(--bar-chart-baseline-color);
+    stroke-width: 1;
+}
+
+/* the bar is taller than its viewport by the size of its radius, so the rounded
+   corners of the end that touches the zero line are outside of it and not displayed */
+.ea-bar-chart-bar {
+    fill: var(--bar-chart-bar-color);
+    /* 'height' and not 'block-size': this is the geometry of an SVG shape, not the size of a box */
+    height: calc(100% + var(--bar-chart-bar-radius));
+    rx: var(--bar-chart-bar-radius);
+    transition: opacity var(--ea-duration-default) var(--ea-ease-out);
+}
+.ea-bar-chart-bar-negative {
+    fill: var(--bar-chart-bar-negative-color);
+    y: calc(0px - var(--bar-chart-bar-radius));
+}
+.ea-bar-chart-bar:hover {
+    opacity: 0.8;
+}
+
+.ea-bar-chart-labels {
+    display: flex;
+    grid-column: 2;
+    grid-row: 2;
+    min-inline-size: 0;
+}
+
+/* each label takes the same width as the slot of its bar */
+.ea-bar-chart-label {
+    color: var(--text-muted);
+    flex: 1 1 0;
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-tight);
+    min-inline-size: 0;
+    overflow: hidden;
+    padding-inline: var(--ea-sp-1);
+    text-align: center;
+    text-overflow: ellipsis;
+    unicode-bidi: plaintext;
+    white-space: nowrap;
+}
+
+/* with many bars, only some labels are displayed so they remain readable */
+.ea-bar-chart-labels:has(> :nth-child(13)) > .ea-bar-chart-label:nth-child(even) {
+    visibility: hidden;
+}
+.ea-bar-chart-labels:has(> :nth-child(25)) > .ea-bar-chart-label:not(:nth-child(4n + 1)) {
+    visibility: hidden;
+}
+.ea-bar-chart-labels:has(> :nth-child(49)) > .ea-bar-chart-label:not(:nth-child(8n + 1)) {
+    visibility: hidden;
+}
+/* when some labels are hidden, the visible ones use the room of their hidden neighbors instead of being cut */
+.ea-bar-chart-labels:has(> :nth-child(13)) > .ea-bar-chart-label {
+    overflow: visible;
+    text-overflow: clip;
+}
+
+@container (max-width: 480px) {
+    .ea-bar-chart-labels:has(> :nth-child(7)) > .ea-bar-chart-label:nth-child(even) {
+        visibility: hidden;
+    }
+    .ea-bar-chart-labels:has(> :nth-child(7)) > .ea-bar-chart-label {
+        overflow: visible;
+        text-overflow: clip;
+    }
+    .ea-bar-chart-labels:has(> :nth-child(13)) > .ea-bar-chart-label:not(:nth-child(4n + 1)) {
+        visibility: hidden;
+    }
+    .ea-bar-chart-labels:has(> :nth-child(25)) > .ea-bar-chart-label:not(:nth-child(8n + 1)) {
+        visibility: hidden;
+    }
+}
+
+/* forced colors mode may keep the theme colors of SVG shapes, which can be invisible on its background */
+@media (forced-colors: active) {
+    .ea-bar-chart-bar {
+        fill: CanvasText;
+    }
+    .ea-bar-chart-bar-negative {
+        fill: GrayText;
+    }
+    .ea-bar-chart-baseline {
+        stroke: CanvasText;
+    }
+}

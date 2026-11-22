@@ -1,0 +1,8 @@
+{# Contents under the value
+   The extra block is displayed between the value and the description. It's empty
+   by default; put any contents in it, like a small chart made by yourself. #}
+<twig:ea:Stat label="Visits" :value="58210" :delta="11.4" description="Last 7 days">
+    <twig:block name="extra">
+        <div class="ea-ui-kit-placeholder">Your contents</div>
+    </twig:block>
+</twig:ea:Stat>

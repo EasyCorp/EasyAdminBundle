@@ -1,0 +1,9 @@
+{# @var widget \EasyCorp\Bundle\EasyAdminBundle\Dto\WidgetDto #}
+{# the retry button reloads the widget from its URL, so it's only displayed when the widget has one #}
+<twig:ea:EmptyState status="error" message="{{ 'empty_state.error'|trans(domain: 'EasyAdminBundle') }}">
+    <twig:block name="actions">
+        {%- if is_retryable ?? false -%}
+            <twig:ea:Button type="button" variant="outline" size="sm" data-ea-widget-retry>{{ 'widget.retry'|trans(domain: 'EasyAdminBundle') }}</twig:ea:Button>
+        {%- endif -%}
+    </twig:block>
+</twig:ea:EmptyState>

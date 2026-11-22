@@ -28,5 +28,12 @@
 @import "./autocomplete.css" layer(components);
 @import "./errors.css" layer(components);
 @import "./pages.css" layer(components);
+@import "./cards.css" layer(components);
+@import "./stats.css" layer(components);
+@import "./progress.css" layer(components);
+@import "./skeletons.css" layer(components);
+@import "./empty-states.css" layer(components);
+@import "./bar-charts.css" layer(components);
+@import "./widgets.css" layer(components);
 
 @import "./utilities.css" layer(utilities);

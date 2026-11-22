@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Žádné další položky',
         'loading-more-results' => 'Načítají se další položky…',
     ],
+
+    'chart' => [
+        'label' => 'Popisek',
+        'value' => 'Hodnota',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Žádná data k zobrazení',
+        'error' => 'Tento obsah se nepodařilo načíst.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Načítání…',
+    ],
+
+    'stat' => [
+        'increase' => 'Nárůst',
+        'decrease' => 'Pokles',
+        'no_change' => 'Beze změny',
+        'delta_good' => 'dobré',
+        'delta_bad' => 'špatné',
+    ],
+
+    'widget' => [
+        'retry' => 'Zkusit znovu',
+        'no_widgets' => 'Zatím tu není nic k zobrazení.',
+    ],
 ];

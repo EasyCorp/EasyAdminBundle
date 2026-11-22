@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Tidak ada hasil lagi',
         'loading-more-results' => 'Memuat hasil lainnya…',
     ],
+
+    'chart' => [
+        'label' => 'Label',
+        'value' => 'Nilai',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Tidak ada data untuk ditampilkan',
+        'error' => 'Konten ini tidak dapat dimuat.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Memuat…',
+    ],
+
+    'stat' => [
+        'increase' => 'Naik',
+        'decrease' => 'Turun',
+        'no_change' => 'Tidak ada perubahan',
+        'delta_good' => 'baik',
+        'delta_bad' => 'buruk',
+    ],
+
+    'widget' => [
+        'retry' => 'Coba lagi',
+        'no_widgets' => 'Belum ada yang bisa ditampilkan di sini.',
+    ],
 ];

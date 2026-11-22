@@ -8,6 +8,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Widget\WidgetConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Widget\WidgetContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
@@ -34,6 +36,8 @@ class EasyAdminBundle extends AbstractBundle
     public const TAG_FIELD_CONFIGURATOR = 'ea.field_configurator';
     public const TAG_FILTER_CONFIGURATOR = 'ea.filter_configurator';
     public const TAG_ACTIONS_EXTENSION = 'ea.actions_extension';
+    public const TAG_WIDGET_CONTEXT_PROVIDER = 'ea.widget_context_provider';
+    public const TAG_WIDGET_CONFIGURATOR = 'ea.widget_configurator';
     public const PARAMETER_UI_KIT_ENABLED = 'easyadmin.ui_kit.enabled';
 
     /**
@@ -61,6 +65,12 @@ class EasyAdminBundle extends AbstractBundle
 
         $container->registerForAutoconfiguration(ActionsExtensionInterface::class)
             ->addTag(self::TAG_ACTIONS_EXTENSION);
+
+        $container->registerForAutoconfiguration(WidgetContextProviderInterface::class)
+            ->addTag(self::TAG_WIDGET_CONTEXT_PROVIDER);
+
+        $container->registerForAutoconfiguration(WidgetConfiguratorInterface::class)
+            ->addTag(self::TAG_WIDGET_CONFIGURATOR);
 
         $configurator->import('../config/services.php');
 

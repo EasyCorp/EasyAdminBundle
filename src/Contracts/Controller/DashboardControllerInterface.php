@@ -9,11 +9,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Widget\WidgetInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Widget\WidgetSection;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * This must be implemented by all backend dashboards.
+ *
+ * @method iterable<WidgetInterface|WidgetSection> configureWidgets() Returns the widgets (WidgetInterface objects) and widget sections (WidgetSection objects) displayed in the dashboard
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */

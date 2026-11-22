@@ -564,4 +564,54 @@ class ThemeTest extends TestCase
         yield [Font::AtkinsonHyperlegibleNext];
         yield ['Inter'];
     }
+
+    public function testChartColorIsNotSetByDefault(): void
+    {
+        $cssVariables = Theme::new()->getAsDto()->getCssVariables();
+
+        $this->assertArrayNotHasKey('--ea-chart-color', $cssVariables['common']);
+        $this->assertArrayNotHasKey('--ea-chart-color', $cssVariables['dark']);
+    }
+
+    public function testPredefinedChartColorSetsBothColorSchemes(): void
+    {
+        $cssVariables = Theme::new()->chartColor(ThemeColor::Emerald)->getAsDto()->getCssVariables();
+
+        $this->assertSame('var(--emerald-500)', $cssVariables['common']['--ea-chart-color']);
+        $this->assertSame('var(--emerald-400)', $cssVariables['dark']['--ea-chart-color']);
+    }
+
+    public function testNeutralChartColorUsesTheGrayRampOfTheTheme(): void
+    {
+        $cssVariables = Theme::new()->chartColor('neutral')->getAsDto()->getCssVariables();
+
+        $this->assertSame('var(--gray-500)', $cssVariables['common']['--ea-chart-color']);
+        $this->assertSame('var(--gray-500)', $cssVariables['dark']['--ea-chart-color']);
+    }
+
+    public function testCustomChartColorIsUsedInBothColorSchemes(): void
+    {
+        $cssVariables = Theme::new()->chartColor('#0d9488')->getAsDto()->getCssVariables();
+
+        $this->assertSame('#0d9488', $cssVariables['common']['--ea-chart-color']);
+        $this->assertArrayNotHasKey('--ea-chart-color', $cssVariables['dark']);
+    }
+
+    public function testChartColorDarkVariant(): void
+    {
+        $cssVariables = Theme::new()->chartColor('#0d9488', dark: ThemeColor::Teal)->getAsDto()->getCssVariables();
+        $this->assertSame('var(--teal-400)', $cssVariables['dark']['--ea-chart-color']);
+
+        $cssVariables = Theme::new()->chartColor(ThemeColor::Teal, dark: 'oklch(0.7 0.1 180)')->getAsDto()->getCssVariables();
+        $this->assertSame('var(--teal-500)', $cssVariables['common']['--ea-chart-color']);
+        $this->assertSame('oklch(0.7 0.1 180)', $cssVariables['dark']['--ea-chart-color']);
+    }
+
+    public function testChartColorRejectsInvalidValues(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('given to the chartColor() method is not a valid color');
+
+        Theme::new()->chartColor('red; } body { display: none');
+    }
 }

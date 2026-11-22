@@ -336,8 +336,22 @@
         .ea-ui-kit-skeleton-w70 { inline-size: 70%; }
         .ea-ui-kit-skeleton-w75 { inline-size: 75%; }
         .ea-ui-kit-skeleton-w80 { inline-size: 80%; }
-        .ea-ui-kit-form-fields {
+        .ea-ui-kit-form-fields,
+        .ea-ui-kit-dashboard {
             margin-block-start: var(--ea-sp-12);
+        }
+        .ea-ui-kit-grid {
+            display: grid;
+            gap: var(--ea-sp-12);
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        }
+        .ea-ui-kit-placeholder {
+            border: var(--border-width) dashed var(--border-color);
+            border-radius: var(--border-radius);
+            color: var(--text-muted);
+            font-size: var(--font-size-xs);
+            padding: var(--ea-sp-4);
+            text-align: center;
         }
         .ea-ui-kit-index {
             display: grid;

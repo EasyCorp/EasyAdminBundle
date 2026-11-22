@@ -204,7 +204,7 @@ inside the Composer package. It describes the public API and the rules that keep
 generated code working on the current version, so it changes together with the code:
 
 - After changing a public method, constant or attribute in `src/Config/`,
-  `src/Field/`, `src/Filter/`, `src/Attribute/`, `src/Test/`, `src/Controller/Abstract*`
+  `src/Field/`, `src/Filter/`, `src/Widget/`, `src/Attribute/`, `src/Test/`, `src/Controller/Abstract*`
   or `src/Router/AdminUrlGenerator.php`, run `make skill-api-reference` and commit
   the regenerated `skills/easyadmin/references/api.md` (a unit test fails otherwise)
 - After adding an entry to `UPGRADE.md`, review the rules and the "Legacy" section of

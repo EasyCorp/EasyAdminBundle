@@ -49,10 +49,14 @@ each class declares itself. A `self` return type means the call is chainable.
 - [Config\Option\TextAlign](#configoptiontextalign)
 - [Config\Option\TextDirection](#configoptiontextdirection)
 - [Config\Option\ThemeColor](#configoptionthemecolor)
+- [Config\Option\WidgetPlacement](#configoptionwidgetplacement)
 - [Config\Theme](#configtheme)
 - [Config\UserMenu](#configusermenu)
 - [Contracts\Controller\CrudControllerInterface](#contractscontrollercrudcontrollerinterface)
 - [Contracts\Controller\DashboardControllerInterface](#contractscontrollerdashboardcontrollerinterface)
+- [Contracts\Widget\WidgetConfiguratorInterface](#contractswidgetwidgetconfiguratorinterface)
+- [Contracts\Widget\WidgetContextProviderInterface](#contractswidgetwidgetcontextproviderinterface)
+- [Contracts\Widget\WidgetInterface](#contractswidgetwidgetinterface)
 - [Controller\AbstractCrudController](#controllerabstractcrudcontroller)
 - [Controller\AbstractDashboardController](#controllerabstractdashboardcontroller)
 - [Field\ArrayField](#fieldarrayfield)
@@ -112,6 +116,15 @@ each class declares itself. A `self` return type means the call is chainable.
 - [Test\Trait\CrudTestIndexAsserts](#testtraitcrudtestindexasserts)
 - [Test\Trait\CrudTestSelectors](#testtraitcrudtestselectors)
 - [Test\Trait\CrudTestUrlGeneration](#testtraitcrudtesturlgeneration)
+- [Widget\ChartWidget](#widgetchartwidget)
+- [Widget\ListItem](#widgetlistitem)
+- [Widget\ListWidget](#widgetlistwidget)
+- [Widget\ProgressWidget](#widgetprogresswidget)
+- [Widget\StatWidget](#widgetstatwidget)
+- [Widget\TwigWidget](#widgettwigwidget)
+- [Widget\WidgetContext](#widgetwidgetcontext)
+- [Widget\WidgetSection](#widgetwidgetsection)
+- [Widget\WidgetTrait](#widgetwidgettrait)
 
 ## Attribute\AdminDashboard
 
@@ -610,11 +623,19 @@ const Violet = …
 const Yellow = …
 ```
 
+## Config\Option\WidgetPlacement
+
+```
+const Grid = …
+const Toolbar = …
+```
+
 ## Config\Theme
 
 ```
 static new(): self
 
+chartColor(ThemeColor|string $color, ThemeColor|string|null $dark = null): self
 font(Font|string|null $base = null, Font|string|null $monospace = null, ?int $baseWeight = null, ?array $features = null): self
 getAsDto(): ThemeDto
 grays(string $grayScale, ?string $dark = null): self
@@ -680,6 +701,25 @@ configureUserMenu(UserInterface $user): UserMenu
 index(): Response
 ```
 
+## Contracts\Widget\WidgetConfiguratorInterface
+
+```
+configure(WidgetDto $widget, WidgetContext $context): void
+supports(WidgetDto $widget): bool
+```
+
+## Contracts\Widget\WidgetContextProviderInterface
+
+```
+getAttributes(Request $request): array
+```
+
+## Contracts\Widget\WidgetInterface
+
+```
+getAsDto(): WidgetDto
+```
+
 ## Controller\AbstractCrudController
 
 ```
@@ -727,7 +767,9 @@ configureDashboard(): Dashboard
 configureFilters(): Filters
 configureMenuItems(): iterable
 configureUserMenu(UserInterface $user): UserMenu
+configureWidgets(): iterable
 index(): Response
+renderWidget(string $widgetName): Response
 ```
 
 ## Field\ArrayField
@@ -1757,4 +1799,150 @@ protected generateFilterRenderUrl(?string $dashboardFqcn = null, ?string $contro
 protected generateIndexUrl(?string $query = null, ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
 protected generateNewFormUrl(?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
 protected getCrudUrl(string $action, int|string|null $entityId = null, array $options = [], ?string $dashboardFqcn = null, ?string $controllerFqcn = null): string
+```
+
+## Widget\ChartWidget
+
+```
+const OPTION_DATA = 'data'
+
+static new(TranslatableInterface|string|null $label = null): self
+
+setData(array|callable $data): self
+```
+
+Also accepts every WidgetTrait method (see [Widget\WidgetTrait](#widgetwidgettrait)).
+
+## Widget\ListItem
+
+```
+static new(string $title): self
+
+getDescription(): ?string
+getIcon(): ?string
+getTitle(): string
+getUrl(): ?string
+getValue(): float|int|string|null
+setDescription(?string $description): self
+setIcon(?string $icon): self
+setUrl(?string $url): self
+setValue(float|int|string|null $value): self
+```
+
+## Widget\ListWidget
+
+```
+const OPTION_EMPTY_MESSAGE = 'emptyMessage'
+const OPTION_ITEMS = 'items'
+
+static new(TranslatableInterface|string|null $label = null): self
+
+setEmptyMessage(TranslatableInterface|string $message): self
+setItems(Traversable|array|callable $items): self
+```
+
+Also accepts every WidgetTrait method (see [Widget\WidgetTrait](#widgetwidgettrait)).
+
+## Widget\ProgressWidget
+
+```
+const OPTION_TARGET = 'target'
+const OPTION_VALUE = 'value'
+
+static new(TranslatableInterface|string|null $label = null): self
+
+setTarget(callable|float|int $target): self
+setValue(callable|float|int $value): self
+```
+
+Also accepts every WidgetTrait method (see [Widget\WidgetTrait](#widgetwidgettrait)).
+
+## Widget\StatWidget
+
+```
+const OPTION_DELTA = 'delta'
+const OPTION_DESCRIPTION = 'description'
+const OPTION_INCREASE_IS_GOOD = 'increaseIsGood'
+const OPTION_VALUE = 'value'
+const OPTION_VALUE_FORMATTER = 'valueFormatter'
+
+static new(TranslatableInterface|string|null $label = null): self
+
+formatValue(?callable $callable): self
+setDelta(callable|float|int $delta, bool $increaseIsGood = true): self
+setDescription(TranslatableInterface|string $description): self
+setValue(mixed $value): self
+```
+
+Also accepts every WidgetTrait method (see [Widget\WidgetTrait](#widgetwidgettrait)).
+
+## Widget\TwigWidget
+
+```
+const OPTION_TEMPLATE_PATH = 'templatePath'
+const OPTION_TEMPLATE_VARS = 'templateVars'
+
+static new(TranslatableInterface|string|null $label = null): self
+
+setTemplate(string $path, array|callable $vars = []): self
+```
+
+Also accepts every WidgetTrait method (see [Widget\WidgetTrait](#widgetwidgettrait)).
+
+## Widget\WidgetContext
+
+```
+getAttribute(string $name, mixed $default = null): mixed
+getAttributes(): array
+getDashboardControllerFqcn(): string
+getRequest(): Request
+getUser(): ?UserInterface
+getWidget(): WidgetDto
+hasAttribute(string $name): bool
+resolve(mixed $valueOrCallable): mixed
+```
+
+## Widget\WidgetSection
+
+```
+static new(TranslatableInterface|string|null $label = null, ?string $icon = null): self
+
+addCssClass(string $cssClass): self
+getAsDto(): WidgetSectionDto
+setCssClass(string $cssClass): self
+setHelp(TranslatableInterface|string $help): self
+setName(string $name): self
+setPermission(Expression|string $permission): self
+```
+
+## Widget\WidgetTrait
+
+```
+addAssetMapperEntries(Asset|string ...$entryNamesOrAssets): self
+addCssClass(string $cssClass): self
+addCssFiles(Asset|string ...$pathsOrAssets): self
+addHtmlContentsToBody(string ...$contents): self
+addHtmlContentsToHead(string ...$contents): self
+addJsFiles(Asset|string ...$pathsOrAssets): self
+addRepriseEntries(Asset|string ...$entryNamesOrAssets): self
+addWebpackEncoreEntries(Asset|string ...$entryNamesOrAssets): self
+getAsDto(): WidgetDto
+renderWithoutCard(bool $withoutCard = true): self
+setCache(int $seconds, bool $shared = false): self
+setColumns(int $columns): self
+setCssClass(string $cssClass): self
+setCustomOption(string $optionName, mixed $optionValue): self
+setDefaultColumns(int $columns): self
+setHelp(TranslatableInterface|string $help): self
+setIcon(?string $icon): self
+setLabel(TranslatableInterface|string|null $label): self
+setLazy(bool $lazy = true): self
+setLink(string $url, TranslatableInterface|string|null $label = null): self
+setName(string $name): self
+setPermission(Expression|string $permission): self
+setPlacement(WidgetPlacement $placement): self
+setRefreshInterval(int $seconds): self
+setRows(int $rows): self
+setTemplateName(string $name): self
+setTemplatePath(string $path): self
 ```

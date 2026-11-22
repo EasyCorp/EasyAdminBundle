@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Context;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
@@ -61,5 +62,46 @@ class DashboardContextTest extends TestCase
         $context = DashboardContext::forTesting(mainMenu: $menu);
 
         self::assertSame($menu, $context->getMainMenu());
+    }
+
+    public function testExtraAssetsAreLazyLoadedAndMergedOnce(): void
+    {
+        $callCount = 0;
+        $dashboardAssets = new AssetsDto();
+        $dashboardAssets->addCssAsset(new AssetDto('dashboard.css'));
+
+        $context = DashboardContext::forTesting(assets: $dashboardAssets);
+        $context->setExtraAssetsBuilder(static function () use (&$callCount): AssetsDto {
+            ++$callCount;
+            $extraAssets = new AssetsDto();
+            $extraAssets->addCssAsset(new AssetDto('widget.css'));
+            $extraAssets->addJsAsset(new AssetDto('widget.js'));
+
+            return $extraAssets;
+        });
+
+        self::assertSame(0, $callCount);
+
+        $assets = $context->getAssets();
+        $context->getAssets();
+
+        self::assertSame(1, $callCount);
+        self::assertSame(['dashboard.css', 'widget.css'], array_keys($assets->getCssAssets()));
+        self::assertSame(['widget.js'], array_keys($assets->getJsAssets()));
+    }
+
+    public function testExtraAssetsBuilderCanReadTheAssets(): void
+    {
+        $context = DashboardContext::forTesting();
+        $context->setExtraAssetsBuilder(static function () use (&$context): AssetsDto {
+            self::assertSame([], $context->getAssets()->getCssAssets());
+
+            $extraAssets = new AssetsDto();
+            $extraAssets->addCssAsset(new AssetDto('widget.css'));
+
+            return $extraAssets;
+        });
+
+        self::assertSame(['widget.css'], array_keys($context->getAssets()->getCssAssets()));
     }
 }

@@ -169,4 +169,31 @@ return [
         'no-more-results' => '没有更多结果',
         'loading-more-results' => '载入更多结果…',
     ],
+
+    'chart' => [
+        'label' => '标签',
+        'value' => '数值',
+    ],
+
+    'empty_state' => [
+        'empty' => '没有可显示的数据',
+        'error' => '无法加载此内容。',
+    ],
+
+    'skeleton' => [
+        'loading' => '加载中…',
+    ],
+
+    'stat' => [
+        'increase' => '增加',
+        'decrease' => '减少',
+        'no_change' => '无变化',
+        'delta_good' => '良好',
+        'delta_bad' => '不佳',
+    ],
+
+    'widget' => [
+        'retry' => '重试',
+        'no_widgets' => '这里暂时没有可显示的内容。',
+    ],
 ];

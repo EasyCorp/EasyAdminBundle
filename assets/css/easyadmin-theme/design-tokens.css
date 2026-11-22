@@ -19,6 +19,11 @@
 
     --ea-primary: oklch(0.205 0 0);
 
+    /* the color of charts and progress bars; it's not the primary color because
+       that one is tuned for buttons and text, and it's too strong for large areas.
+       A mid gray is readable on light and dark backgrounds, so both schemes use it */
+    --ea-chart-color: var(--gray-500);
+
     /* the color of text and icons that sit ON a solid --ea-primary fill (primary
        buttons, active pagination...); it's its own per-scheme token because a
        light primary (e.g. yellow, or the near-white of the dark scheme) needs a

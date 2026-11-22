@@ -10,6 +10,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\WidgetFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Widget\WidgetRenderer;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Config\Resource\ReflectionClassResource;
 use Symfony\Component\Routing\Route;
@@ -23,6 +26,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         Action::SAVE_AND_RETURN, 'autocomplete', 'renderFilters',
     ];
 
+    private const WIDGET_ROUTE_OPTION = 'ea_widget';
     private const DEFAULT_ROUTES_CONFIG = [
         Action::INDEX => [
             'actionName' => Action::INDEX,
@@ -157,9 +161,25 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
             $dashboardRouteName = $dashboardRouteConfig['routeName'];
             $dashboardRoutePath = $dashboardRouteConfig['routePath'];
             $dashboardRouteOptions = $dashboardRouteConfig['routeOptions'];
+            if (WidgetFactory::RENDER_WIDGET_METHOD === ($addedRouteNames[$dashboardRouteName]['actionName'] ?? null)) {
+                throw new \RuntimeException(sprintf('The route name of the "%s" dashboard ("%s") is the same as the name of the route that the "%s" dashboard generates to serve the contents of its widgets. Change the route name of one of them.', $dashboardFqcn, $dashboardRouteName, (string) $addedRouteNames[$dashboardRouteName]['controllerFqcn']));
+            }
+
             $adminRoute = $this->createDashboardRoute($dashboardRoutePath, $dashboardRouteOptions, $dashboardFqcn);
             $adminRoutes[$dashboardRouteName] = $adminRoute;
             $addedRouteNames[$dashboardRouteName] = ['type' => 'dashboard', 'controllerFqcn' => $dashboardFqcn, 'actionName' => null];
+
+            // the route that serves the contents of the dashboard widgets; dashboards that implement the
+            // interface without extending the abstract controller may not define the method that serves them
+            if (method_exists($dashboardFqcn, WidgetFactory::RENDER_WIDGET_METHOD) && !$this->usesWidgetPlaceholder($adminRoute, $dashboardFqcn)) {
+                $widgetRouteName = $dashboardRouteName.WidgetRenderer::ROUTE_NAME_SUFFIX;
+                if (isset($addedRouteNames[$widgetRouteName])) {
+                    throw new \RuntimeException(sprintf('The "%s" dashboard generates a route named "%s" to serve the contents of its widgets, but that route name is already used by another route in your application. Change the route name of one of them.', $dashboardFqcn, $widgetRouteName));
+                }
+
+                $adminRoutes[$widgetRouteName] = $this->createWidgetRoute($dashboardRoutePath, $dashboardRouteOptions, $dashboardFqcn);
+                $addedRouteNames[$widgetRouteName] = ['type' => 'dashboard', 'controllerFqcn' => $dashboardFqcn, 'actionName' => WidgetFactory::RENDER_WIDGET_METHOD];
+            }
 
             // then, create the routes of the CRUD controllers associated with the dashboard
             foreach ($this->crudControllers as $crudController) {
@@ -824,6 +844,46 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
     }
 
     /**
+     * The route that serves the contents of widgets can't be added to a dashboard route
+     * that already has a placeholder with its name. Dashboards without widgets don't
+     * need that route, so they keep working; the rest must rename the placeholder.
+     *
+     * @param class-string<DashboardControllerInterface> $dashboardFqcn
+     */
+    private function usesWidgetPlaceholder(Route $dashboardRoute, string $dashboardFqcn): bool
+    {
+        if (!\in_array(WidgetRenderer::ROUTE_PARAMETER, $dashboardRoute->compile()->getVariables(), true)) {
+            return false;
+        }
+
+        $definesWidgets = method_exists($dashboardFqcn, 'configureWidgets')
+            && AbstractDashboardController::class !== (new \ReflectionMethod($dashboardFqcn, 'configureWidgets'))->getDeclaringClass()->getName();
+        if ($definesWidgets) {
+            throw new \RuntimeException(sprintf('The route of the "%s" dashboard uses a placeholder called "{%s}", which is reserved for the route that serves the contents of its widgets. Rename that placeholder.', $dashboardFqcn, WidgetRenderer::ROUTE_PARAMETER));
+        }
+
+        return true;
+    }
+
+    /**
+     * The route has the same options as the dashboard route (host, schemes, condition, etc.)
+     * so the widgets are served under the same conditions as the page that displays them.
+     *
+     * @param array<string, mixed>                       $routeOptions
+     * @param class-string<DashboardControllerInterface> $dashboardFqcn
+     */
+    private function createWidgetRoute(string $dashboardRoutePath, array $routeOptions, string $dashboardFqcn): Route
+    {
+        $route = $this->createDashboardRoute(rtrim($dashboardRoutePath, '/').'/_widget/{'.WidgetRenderer::ROUTE_PARAMETER.'}', $routeOptions, $dashboardFqcn);
+        $route->setDefault('_controller', $dashboardFqcn.'::'.WidgetFactory::RENDER_WIDGET_METHOD);
+        $route->setRequirement(WidgetRenderer::ROUTE_PARAMETER, '[a-zA-Z0-9_-]+');
+        $route->setMethods(['GET']);
+        $route->setOption(self::WIDGET_ROUTE_OPTION, true);
+
+        return $route;
+    }
+
+    /**
      * @template T of object
      *
      * @param class-string    $classFqcn
@@ -913,6 +973,12 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                 EA::CRUD_ACTION => $route->getDefault(EA::CRUD_ACTION),
                 'entityIdParamName' => $entityIdParamName,
             ];
+
+            // widget routes have the same dashboard, CRUD controller and action as the route of their
+            // dashboard, so they would replace it as the route used to generate the dashboard URL
+            if (true === $route->getOption(self::WIDGET_ROUTE_OPTION)) {
+                continue;
+            }
 
             $routeFqcnToRouteName[$route->getDefault(EA::DASHBOARD_CONTROLLER_FQCN)][$route->getDefault(EA::CRUD_CONTROLLER_FQCN) ?? ''][$route->getDefault(EA::CRUD_ACTION) ?? ''] = $routeName;
         }

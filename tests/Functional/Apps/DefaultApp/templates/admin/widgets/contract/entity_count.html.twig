@@ -1,0 +1,7 @@
+{# @var widget \EasyCorp\Bundle\EasyAdminBundle\Dto\WidgetDto #}
+{# @var context \EasyCorp\Bundle\EasyAdminBundle\Widget\WidgetContext #}
+<twig:contract:EntityCount
+    :widgetName="widget.name"
+    :entity="widget.customOption('entity')"
+    :range="context.getAttribute('range')"
+/>

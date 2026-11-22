@@ -49,7 +49,11 @@ final readonly class AdminContextFactory
         private ActionFactory $actionFactory,
         private ?EntityTranslationIdGeneratorInterface $entityTranslationIdGenerator,
         private TranslatorInterface $translator,
+        private ?WidgetFactory $widgetFactory = null,
     ) {
+        if (null === $widgetFactory) {
+            @trigger_deprecation('easycorp/easyadmin-bundle', '5.11.0', 'Not passing a "%s" instance as the 9th argument of "%s()" is deprecated and it will be required in EasyAdmin 6.0.', WidgetFactory::class, __METHOD__);
+        }
     }
 
     public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $actionName = null): AdminContext
@@ -96,6 +100,12 @@ final readonly class AdminContextFactory
             return $this->menuFactory->createUserMenu($dashboardController->configureUserMenu($user));
         });
 
+        // the assets of widgets are only needed in the dashboard page; they are added lazily because
+        // building the widgets runs user code that may need the AdminContext, which doesn't exist yet
+        if (null !== $this->widgetFactory && $this->isDashboardIndexRequest($request, $dashboardController, $crudController)) {
+            $dashboardContext->setExtraAssetsBuilder(fn (): AssetsDto => $this->widgetFactory->getWidgets()->getAssets());
+        }
+
         $adminContext = new AdminContext($requestContext, $crudContext, $dashboardContext, $i18nContext);
 
         // build actions with extensions and update the CrudDto
@@ -104,6 +114,20 @@ final readonly class AdminContextFactory
         $crudDto?->setActionsConfig($actionConfigDto);
 
         return $adminContext;
+    }
+
+    private function isDashboardIndexRequest(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): bool
+    {
+        if (null !== $crudController || null !== $request->query->get(EA::ROUTE_NAME)) {
+            return false;
+        }
+
+        $controller = $request->attributes->get('_controller');
+        if (\is_array($controller)) {
+            $controller = (\is_object($controller[0] ?? null) ? $controller[0]::class : ($controller[0] ?? '')).'::'.($controller[1] ?? '');
+        }
+
+        return $dashboardController::class.'::index' === $controller;
     }
 
     private function getDashboardDto(DashboardControllerInterface $dashboardControllerInstance): DashboardDto

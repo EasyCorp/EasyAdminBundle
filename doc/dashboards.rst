@@ -280,52 +280,63 @@ Customizing the Dashboard Contents
 Generated dashboards display by default a "Welcome Page" with some useful links.
 In a real application you'll need to customize this page to display your own contents.
 
-Dashboards usually display widgets and charts with stats. EasyAdmin doesn't
-provide any way of creating those widgets yet. It's in our list of future features,
-but meanwhile you can use the `Symfony UX Chart.js`_ bundle to create those charts
-and render them in your own Twig template::
+The usual contents of a dashboard are **widgets**: key numbers, charts,
+progress bars and lists of recent items. Define them in the
+``configureWidgets()`` method of your dashboard and EasyAdmin displays them
+instead of the Welcome Page::
 
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
-    use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
-    use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-    use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
-    use Symfony\UX\Chartjs\Model\Chart;
+    use EasyCorp\Bundle\EasyAdminBundle\Widget\ChartWidget;
+    use EasyCorp\Bundle\EasyAdminBundle\Widget\StatWidget;
+
+    #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
+    class DashboardController extends AbstractDashboardController
+    {
+        // ...
+
+        public function configureWidgets(): iterable
+        {
+            yield StatWidget::new('Customers')
+                ->setValue(fn () => $this->customerRepository->count([]));
+
+            yield ChartWidget::new('Orders per month')
+                ->setData(fn () => $this->orderRepository->countPerMonth());
+        }
+    }
+
+Read the :doc:`Dashboard Widgets </widgets>` article to learn about all the
+built-in widgets, their layout, permissions, lazy loading and cache, and
+how to create your own widgets.
+
+If you prefer to design the dashboard page yourself, render your own Twig
+template in the ``index()`` method::
+
+    use App\Repository\OrderRepository;
+    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+    use Symfony\Component\HttpFoundation\Response;
 
     #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
     class DashboardController extends AbstractDashboardController
     {
         public function __construct(
-            private ChartBuilderInterface $chartBuilder,
+            private OrderRepository $orderRepository,
         ) {
-        }
-
-        // ... you'll also need to load some CSS/JavaScript assets to render
-        // the charts; this is explained later in the chapter about Design
-        public function configureAssets(): Assets
-        {
-            return Assets::new()
-                ->addAssetMapperEntry('charts');
         }
 
         public function index(): Response
         {
-            $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
-            // ...set chart data and options somehow
-
             return $this->render('admin/my-dashboard.html.twig', [
-                'chart' => $chart,
+                'latest_orders' => $this->orderRepository->findLatest(10),
             ]);
         }
     }
 
-See :ref:`the section about custom web assets <crud-design-custom-web-assets>` to
-learn how to load the CSS and JavaScript files needed to render those charts.
-
 .. note::
 
     As explained earlier, ``index()`` cannot take arguments, so dependencies like
-    ``ChartBuilderInterface`` must be injected in the controller constructor.
+    ``OrderRepository`` must be injected in the controller constructor.
 
 To use EasyAdmin's built-in layout on your custom dashboard (e.g. the main menu
 bar on the left - explained in the next section), make your template extend
@@ -341,8 +352,14 @@ some blocks:
         {# ... #}
     {% endblock main %}
 
+If your template must also display the widgets defined in
+``configureWidgets()``, extend ``@EasyAdmin/page/dashboard.html.twig``
+instead (:ref:`see details <widgets-custom-contents>`).
+
 Read the section about :ref:`overriding EasyAdmin templates <template-customization>`
-to learn about all the blocks that you can override.
+to learn about all the blocks that you can override. See
+:ref:`the section about custom web assets <crud-design-custom-web-assets>` to
+learn how to load the CSS and JavaScript files needed by your template.
 
 Another popular option is to avoid having a dashboard at all and instead redirect
 to the most common task for people working on the backend. This requires
@@ -1331,7 +1348,6 @@ forms and they will look exactly like the rest of the backend forms:
 .. _`logout feature`: https://symfony.com/doc/current/security.html#logging-out
 .. _`Symfony translation`: https://symfony.com/doc/current/components/translation.html
 .. _`translation domain`: https://symfony.com/doc/current/components/translation.html#using-message-domains
-.. _`Symfony UX Chart.js`: https://symfony.com/bundles/ux-chartjs/current/index.html
 .. _`custom Symfony route loader`: https://symfony.com/doc/current/routing/custom_route_loader.html
 .. _`Symfony UX Icons`: https://symfony.com/bundles/ux-icons/current/index.html
 .. _`Symfony Flex`: https://symfony.com/doc/current/setup/flex.html

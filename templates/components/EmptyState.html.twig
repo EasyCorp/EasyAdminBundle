@@ -1,0 +1,41 @@
+{% props
+    ## string|null A short heading displayed above the message (e.g. 'No orders yet'); it's escaped, use the `title` block to include HTML contents.
+    title = null,
+    ## string|null The text that explains why there are no contents (default: a generic "No data" message or, for the 'error' status, a generic error message; there's no default message when the empty state has a title).
+    message = null,
+    ## string|null The name of the icon displayed above the message (default: a folder icon or, for the 'error' status, an exclamation icon).
+    icon = null,
+    ## 'empty'|'error' The kind of state (a string or an enum case with one of these values): there are no contents to display or the contents could not be loaded.
+    status = 'empty',
+%}
+
+{% set status_value = status.value is defined ? status.value : status %}
+{% set is_error = 'error' == status_value %}
+{% set icon_name = icon ?: (is_error ? 'internal:circle-exclamation' : 'internal:folder-open') %}
+{% set title_html -%}
+    {## The heading of the empty state; it replaces the `title` prop and can contain HTML. -#}
+    {% block title %}{{ title }}{% endblock %}
+{%- endset %}
+{% set has_title = title_html|trim is not empty %}
+{% set message_html -%}
+    {## The message of the empty state; it replaces the `message` prop and can contain HTML. -#}
+    {% block message %}{{ message ?: (has_title ? '' : (is_error ? 'empty_state.error' : 'empty_state.empty')|trans(domain: 'EasyAdminBundle')) }}{% endblock %}
+{%- endset %}
+{% set has_message = message_html|trim is not empty %}
+{% set actions_html -%}
+    {## Buttons or links displayed under the message (e.g. to retry an action or to create the first item). -#}
+    {% block actions %}{% endblock %}
+{%- endset %}
+
+<div {{ attributes.defaults({class: html_classes('ea-empty-state', {'ea-empty-state-error': is_error})}) }}>
+    <twig:ea:Icon :name="icon_name" class="ea-empty-state-icon" aria-hidden="true" />
+    {% if has_title %}
+        <div class="ea-empty-state-title">{{ title_html }}</div>
+    {% endif %}
+    {% if has_message %}
+        <div class="ea-empty-state-message">{{ message_html }}</div>
+    {% endif %}
+    {% if actions_html|trim is not empty %}
+        <div class="ea-empty-state-actions">{{ actions_html }}</div>
+    {% endif %}
+</div>

@@ -1,0 +1,8 @@
+{# Shapes
+   The stat, chart, list and progress variants have the outline of the contents of the built-in widgets, which display them while they load. #}
+<div class="ea-ui-kit-grid">
+    <twig:ea:Card title="Stat"><twig:block name="content"><twig:ea:Skeleton variant="stat" /></twig:block></twig:ea:Card>
+    <twig:ea:Card title="Progress"><twig:block name="content"><twig:ea:Skeleton variant="progress" /></twig:block></twig:ea:Card>
+    <twig:ea:Card title="List"><twig:block name="content"><twig:ea:Skeleton variant="list" :lines="3" /></twig:block></twig:ea:Card>
+    <twig:ea:Card title="Chart"><twig:block name="content"><twig:ea:Skeleton variant="chart" /></twig:block></twig:ea:Card>
+</div>

@@ -1,0 +1,16 @@
+{# @var widget \EasyCorp\Bundle\EasyAdminBundle\Dto\WidgetDto #}
+{% trans_default_domain ea().i18n.translationDomain %}
+{% set description = widget.customOption('description') %}
+{# widgets displayed in a card show their label in the card header #}
+{% set is_frameless = widget.renderedWithoutCard or 'toolbar' == widget.placement.value %}
+{% if data.value is null or data.value is same as('') %}
+    <twig:ea:EmptyState />
+{% else %}
+    <twig:ea:Stat
+        :label="is_frameless and widget.label is not empty ? widget.label|trans|striptags : null"
+        :value="data.value"
+        :delta="data.delta"
+        :increaseIsGood="widget.customOption('increaseIsGood')"
+        :description="description is empty ? null : description|trans"
+    />
+{% endif %}

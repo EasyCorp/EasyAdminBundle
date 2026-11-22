@@ -85,7 +85,7 @@ replacement of each one is in `references/traps.md` and the full explanation
 in `vendor/easycorp/easyadmin-bundle/UPGRADE.md`. `linkToCrudAction()` itself
 still exists: 4.x code that uses it compiles and fails at render time until
 the target method gets `#[AdminRoute]`.
-<!-- UPGRADE.md:214-233; UPGRADE.md:325-337; UPGRADE.md:323-578 -->
+<!-- UPGRADE.md:318-337; UPGRADE.md:429-441; UPGRADE.md:427-682 -->
 
 ## Project conventions
 
@@ -100,6 +100,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 | Task | Read |
 |---|---|
 | Dashboard, main menu, user menu, locales, dark mode | `doc/dashboards.rst` |
+| Dashboard widgets | `doc/widgets.rst` |
 | CRUD options: labels, sorting, search, pagination, URLs | `doc/crud.rst` |
 | Which field class to use, form layout (tabs, fieldsets, columns), custom fields | `doc/fields.rst` |
 | Options of one field | `doc/fields/<FieldName>.rst` |
@@ -119,21 +120,21 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `#[AdminDashboard(routePath: '/admin', routeName: 'admin')]` and both
   arguments are required. Without it, route generation throws and no admin
   route exists. Do not add a Symfony `#[Route]` to `index()`: no other way of
-  configuring the dashboard route works. <!-- src/Router/AdminRouteGenerator.php:607-619; src/Attribute/AdminDashboard.php::__construct; doc/dashboards.rst:96-97 -->
+  configuring the dashboard route works. <!-- src/Router/AdminRouteGenerator.php:627-639; src/Attribute/AdminDashboard.php::__construct; doc/dashboards.rst:96-97 -->
 - The project needs `config/routes/easyadmin.yaml` with `resource: .` and
   `type: easyadmin.routes`. Symfony Flex creates it; without Flex, create it
   by hand. <!-- src/Router/AdminRouteLoader.php::ROUTE_LOADER_TYPE; doc/dashboards.rst:55-64 -->
 - Link CRUD controllers with
   `MenuItem::linkTo(ProductCrudController::class, 'Products', 'fa fa-box')`:
   controller class first, then label, then icon. `MenuItem::linkToCrud()` was
-  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:352-368 -->
+  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:456-472 -->
 - The other factories put the label first:
   `MenuItem::linkToRoute('Reports', 'fa fa-chart-bar', 'app_reports', ['year' => 2026])`,
   `linkToUrl('Website', 'fa fa-globe', 'https://example.com')`,
   `linkToDashboard('Home', 'fa fa-home')`, `linkToLogout(...)`,
   `linkToExitImpersonation(...)`, `section('Catalog')` and
   `subMenu('Blog', 'fa fa-book')->setSubItems([...])`. There are no other
-  factories, and the parent of a submenu links to nothing. <!-- src/Config/MenuItem.php::linkToRoute; src/Config/MenuItem.php::linkToUrl; src/Config/MenuItem.php::subMenu; doc/dashboards.rst:658-663 -->
+  factories, and the parent of a submenu links to nothing. <!-- src/Config/MenuItem.php::linkToRoute; src/Config/MenuItem.php::linkToUrl; src/Config/MenuItem.php::subMenu; doc/dashboards.rst:712-713 -->
 - `linkToRoute()` to a Symfony route that does not exist renders a menu that
   looks fine and fails with `RouteNotFoundException` when clicked. Link only to
   routes that exist or that you create in the same change; never guess route
@@ -141,7 +142,20 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - `index()` belongs to the dashboard interface: do not add arguments to it.
   Inject services through the constructor. To open a CRUD page instead of a
   dashboard, redirect from it:
-  `return $this->redirectToRoute('admin_product_index');`. <!-- src/Contracts/Controller/DashboardControllerInterface.php::index; doc/dashboards.rst:301-305; src/Resources/skeleton/dashboard.tpl:14-19; doc/dashboards.rst:332-337 -->
+  `return $this->redirectToRoute('admin_product_index');`. <!-- src/Contracts/Controller/DashboardControllerInterface.php::index; doc/dashboards.rst:137-140; src/Resources/skeleton/dashboard.tpl:14-19; doc/dashboards.rst:381-387 -->
+<!-- rules:end -->
+
+## Dashboard widgets
+
+<!-- rules:start -->
+- Dashboard `configureWidgets(): iterable` yields `StatWidget`,
+  `ChartWidget`, `ProgressWidget`, `ListWidget`, `TwigWidget` and
+  `WidgetSection`; keep `index()` as `parent::index()` (recipe 14,
+  `references/patterns.md`). <!-- src/Controller/AbstractDashboardController.php::configureWidgets; src/Controller/AbstractDashboardController.php::index; doc/widgets.rst:15-60 -->
+- Query data in closures (`->setValue(fn () => $repo->count([]))`), which
+  run only on render. Read page state (`?range=`) from a
+  `WidgetContextProviderInterface` service via `$context->getAttribute()`:
+  `setCache()` keys ignore the query string. <!-- src/Widget/WidgetContext.php::resolve; src/Contracts/Widget/WidgetContextProviderInterface.php::getAttributes; src/Widget/WidgetRenderer.php::renderBody; doc/widgets.rst:721-728 -->
 <!-- rules:end -->
 
 ## CRUD controller
@@ -149,7 +163,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 <!-- rules:start -->
 - Declare `public static function getEntityFqcn(): string` (the base class
   does not) and add `/** @extends AbstractCrudController<Product> */` above
-  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:561-578 -->
+  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:665-682 -->
 - Overrides must keep the interface signatures: `createEntity(string $entityFqcn): ?object`
   (overrides may keep `: object`),
   `persistEntity(EntityManagerInterface $entityManager, object $entityInstance): void`,
@@ -194,7 +208,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - Form layout uses the static methods `FormField::addTab('Details')`,
   `FormField::addFieldset('Pricing')`, `FormField::addColumn(6)` and
   `FormField::addRow()`. `FormField::addPanel()` was removed in 5.0. The first
-  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:476-488 -->
+  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:580-592 -->
 - `ChoiceField`: `setChoices(['Draft' => 'draft'])`,
   `renderAsBadges(['draft' => 'warning', 'published' => 'success'])` (types:
   success, warning, danger, info, primary, secondary, light, dark),
@@ -233,7 +247,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - `#[AdminRoute]` accepts only `path`, `name`, `options`, `allowedDashboards`
   and `deniedDashboards`. There is no `methods` argument: HTTP methods,
   requirements and defaults go inside `options`. Allowed methods are GET,
-  POST, PUT, PATCH, DELETE and HEAD; the default is GET and POST. <!-- src/Attribute/AdminRoute.php::__construct; src/Router/AdminRouteGenerator.php:740-744 -->
+  POST, PUT, PATCH, DELETE and HEAD; the default is GET and POST. <!-- src/Attribute/AdminRoute.php::__construct; src/Router/AdminRouteGenerator.php:760-764 -->
 - `{id}` (or `{entityId}`) in the path is what makes a custom action an
   entity action: the route carries the entity id and Symfony injects the typed
   entity (`public function publish(Product $product)`). Without the
@@ -241,7 +255,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `controller_resolver.auto_mapping`, add `#[MapEntity]` to the argument; with
   `{entityId}` use the mapped form `{entityId:product.id}`. Only when a typed
   argument is impossible, inject `AdminContext $context` and read
-  `$context->getEntity()->getInstance()`, which is nullable and untyped. <!-- src/Router/AdminRouteGenerator.php:701-704; src/Router/AdminRouteGenerator.php::getEntityIdPlaceholderName; doc/actions.rst:744-757; src/Dto/EntityDto.php::getInstance -->
+  `$context->getEntity()->getInstance()`, which is nullable and untyped. <!-- src/Router/AdminRouteGenerator.php:721-724; src/Router/AdminRouteGenerator.php::getEntityIdPlaceholderName; doc/actions.rst:744-757; src/Dto/EntityDto.php::getInstance -->
 - Batch actions also need `#[AdminRoute('/approve', name: 'approve', options: ['methods' => ['POST']])]`
   on the method, receive `BatchActionDto $batchActionDto`
   (`getEntityIds()`, `getEntityFqcn()`, `getCsrfToken()`), are created with
@@ -265,7 +279,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - Rendering methods are `renderAsLink()`, `renderAsButton()` and
   `renderAsForm()`; the `displayAs*()` names were removed in 5.0. Style them
   with `asPrimaryAction()`, `asDangerAction()` (also Success, Warning, Info)
-  or `asTextLink()`, and add `askConfirmation()` for a confirmation modal. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; UPGRADE.md:439-455 -->
+  or `asTextLink()`, and add `askConfirmation()` for a confirmation modal. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; UPGRADE.md:543-559 -->
 - `setCssClass()` drops the default `.btn-*` and `.action-<name>` classes (and
   with them the selectors used by the test helpers), `addCssClass()` keeps
   them; `displayIf()` on a global action receives no entity; removing or
@@ -331,13 +345,13 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 
 <!-- rules:start -->
 - The `ea` Twig global was removed; call the `ea()` function, which returns
-  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:214-233 -->
+  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:318-337 -->
 - Override page templates with `Crud::overrideTemplate('crud/index', 'admin/product/index.html.twig')`
   and field templates with `->setTemplatePath()`. The `new` and `edit` pages render form fields
   through Symfony form themes (`Crud::addFormTheme()`), not through field templates. <!-- src/Config/Crud.php::overrideTemplate; src/Config/Crud.php::addFormTheme; src/Field/FieldTrait.php::setTemplatePath; doc/fields.rst:1066-1069 -->
 - Backend CSS lives in cascade layers (`vendor`, `ea`, `ea-overrides`), so
   unlayered custom CSS wins without `!important`. Override design tokens on
-  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:275-299; doc/design.rst:314-316; doc/design.rst:1400-1404 -->
+  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:379-403; doc/design.rst:314-316; doc/design.rst:1400-1404 -->
 - Custom pages extend `@EasyAdmin/page/content.html.twig`, not `@EasyAdmin/layout.html.twig`: only the former styles the
   HTML of the `main` block (headings, lists, tables, blue links). Elsewhere, add the `ea-prose` class (`ea-not-prose` opts out).
   Don't write CSS for those elements: unlayered CSS beats these styles. <!-- templates/page/content.html.twig; doc/design.rst:718-821 -->
@@ -361,6 +375,9 @@ must_exist: EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem::linkToUrl
 must_exist: EasyCorp\Bundle\EasyAdminBundle\Config\Menu\SubMenuItem::keepOpen
 must_exist: EasyCorp\Bundle\EasyAdminBundle\Config\Menu\MenuItemTrait::setPermission
 must_exist: EasyCorp\Bundle\EasyAdminBundle\Config\Actions::setPermission
+must_exist: EasyCorp\Bundle\EasyAdminBundle\Widget\StatWidget::setValue
+must_exist: EasyCorp\Bundle\EasyAdminBundle\Widget\WidgetContext::getAttribute
+must_exist: EasyCorp\Bundle\EasyAdminBundle\Contracts\Widget\WidgetContextProviderInterface::getAttributes
 must_exist: EasyCorp\Bundle\EasyAdminBundle\Config\Actions::addBatchAction
 must_exist: EasyCorp\Bundle\EasyAdminBundle\Config\Action::renderAsForm
 must_exist: EasyCorp\Bundle\EasyAdminBundle\Config\Action::linkToCrudAction
@@ -404,6 +421,7 @@ constant: EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField::CSRF_TOKEN_NAME = 
 constant: EasyCorp\Bundle\EasyAdminBundle\Config\Crud::PAGE_INDEX = index
 constant: EasyCorp\Bundle\EasyAdminBundle\Config\Action::BATCH_DELETE = batchDelete
 doc_file: doc/dashboards.rst
+doc_file: doc/widgets.rst
 doc_file: doc/crud.rst
 doc_file: doc/fields.rst
 doc_file: doc/actions.rst
@@ -412,6 +430,8 @@ doc_file: doc/tests.rst
 doc_file: doc/events.rst
 doc_file: UPGRADE.md
 source_contains: src/Factory/ActionFactory.php | is missing the #[AdminRoute] attribute
+source_contains: src/Controller/AbstractDashboardController.php | $definesWidgets = self::class !==
+source_contains: src/Widget/WidgetRenderer.php | $this->getContextAttributesHash($request),
 source_contains: src/Twig/Component/Badge.php | Passing a color ("%s") in the "variant" prop of the <twig:ea:Badge> component is deprecated
 source_contains: src/Factory/ActionFactory.php | Batch actions can be added only to the "index" page
 source_contains: src/Router/AdminRouteGenerator.php | must apply the #[AdminDashboard] attribute

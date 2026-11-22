@@ -606,6 +606,13 @@
                 .list-pagination,
                 .ea-sidebar,
                 .form-tabs-tablist,
+                .ea-widget-grid,
+                .ea-card,
+                .ea-stat,
+                .ea-progress,
+                .ea-skeleton,
+                .ea-empty-state,
+                .ea-bar-chart,
                 form
             ):not(.ea-prose),
         :is(
@@ -653,6 +660,13 @@
                 .list-pagination,
                 .ea-sidebar,
                 .form-tabs-tablist,
+                .ea-widget-grid,
+                .ea-card,
+                .ea-stat,
+                .ea-progress,
+                .ea-skeleton,
+                .ea-empty-state,
+                .ea-bar-chart,
                 form
             )
             *:not(.ea-prose, .ea-prose *),
@@ -702,6 +716,13 @@
                 .list-pagination,
                 .ea-sidebar,
                 .form-tabs-tablist,
+                .ea-widget-grid,
+                .ea-card,
+                .ea-stat,
+                .ea-progress,
+                .ea-skeleton,
+                .ea-empty-state,
+                .ea-bar-chart,
                 form
             )
             *
@@ -761,6 +782,13 @@
                 .list-pagination,
                 .ea-sidebar,
                 .form-tabs-tablist,
+                .ea-widget-grid,
+                .ea-card,
+                .ea-stat,
+                .ea-progress,
+                .ea-skeleton,
+                .ea-empty-state,
+                .ea-bar-chart,
                 form
             ):not(.ea-prose),
         :is(
@@ -808,6 +836,13 @@
                 .list-pagination,
                 .ea-sidebar,
                 .form-tabs-tablist,
+                .ea-widget-grid,
+                .ea-card,
+                .ea-stat,
+                .ea-progress,
+                .ea-skeleton,
+                .ea-empty-state,
+                .ea-bar-chart,
                 form
             )
             *:not(.ea-prose, .ea-prose *),
@@ -857,6 +892,13 @@
                 .list-pagination,
                 .ea-sidebar,
                 .form-tabs-tablist,
+                .ea-widget-grid,
+                .ea-card,
+                .ea-stat,
+                .ea-progress,
+                .ea-skeleton,
+                .ea-empty-state,
+                .ea-bar-chart,
                 form
             )
             *
@@ -964,6 +1006,13 @@
                         .list-pagination,
                         .ea-sidebar,
                         .form-tabs-tablist,
+                        .ea-widget-grid,
+                        .ea-card,
+                        .ea-stat,
+                        .ea-progress,
+                        .ea-skeleton,
+                        .ea-empty-state,
+                        .ea-bar-chart,
                         form
                     )
                     *,
@@ -1050,6 +1099,13 @@
                         .list-pagination,
                         .ea-sidebar,
                         .form-tabs-tablist,
+                        .ea-widget-grid,
+                        .ea-card,
+                        .ea-stat,
+                        .ea-progress,
+                        .ea-skeleton,
+                        .ea-empty-state,
+                        .ea-bar-chart,
                         form
                     )
                     *,

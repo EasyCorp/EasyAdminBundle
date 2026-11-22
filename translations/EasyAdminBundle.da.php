@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Ikke flere resultater',
         'loading-more-results' => 'Indlæser flere resultater…',
     ],
+
+    'chart' => [
+        'label' => 'Etiket',
+        'value' => 'Værdi',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Ingen data at vise',
+        'error' => 'Indholdet kunne ikke indlæses.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Indlæser…',
+    ],
+
+    'stat' => [
+        'increase' => 'Stigning',
+        'decrease' => 'Fald',
+        'no_change' => 'Ingen ændring',
+        'delta_good' => 'godt',
+        'delta_bad' => 'dårligt',
+    ],
+
+    'widget' => [
+        'retry' => 'Prøv igen',
+        'no_widgets' => 'Der er ikke noget at vise her endnu.',
+    ],
 ];

@@ -90,6 +90,7 @@ optional, and you don't have to write any CSS:
 Method              What it changes                          Default
 ==================  =======================================  ====================
 ``primaryColor()``  Buttons, switches, active menu item...   ``neutral``
+``chartColor()``    Charts and progress bars                 ``neutral``
 ``radius()``        All the rounded corners                  ``md``
 ``spacing()``       All paddings and gaps                    ``md``
 ``grays()``         Backgrounds, borders and gray text       ``neutral``
@@ -134,6 +135,30 @@ whichever is more readable. Vivid colors, such as orange (``#f97316``), get
 black text because white text is hard to read on them. In the light color
 scheme, the active menu item is also black. If you prefer white text, use a
 darker version of the color (``#c2410c``).
+
+.. _design-chart-color:
+
+Chart Color
+~~~~~~~~~~~
+
+Charts and progress bars (e.g. the ones displayed by the
+:doc:`dashboard widgets </widgets>`) don't use the primary color, because a
+color that works well for buttons and text is too strong for large areas.
+They are gray by default. Use ``chartColor()`` to change their color with the
+same values as ``primaryColor()``: one of the predefined colors or your own
+color, with an optional version for the dark color scheme::
+
+    Theme::new()->chartColor(ThemeColor::Emerald);
+
+    Theme::new()->chartColor('#0d9488');
+    Theme::new()->chartColor('#0d9488', dark: '#2dd4bf');
+
+.. versionadded:: 5.11
+
+    The ``chartColor()`` method was introduced in EasyAdmin 5.11.
+
+If you prefer CSS, set the ``--ea-chart-color`` custom property in your own
+stylesheet.
 
 .. _design-corners-spacing:
 

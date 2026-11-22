@@ -1,5 +1,5 @@
 {
-  "app.css": "app.c2e43f4f.css",
+  "app.css": "app.8deeb2d5.css",
   "app.js": "app.9ed40cfa.js",
   "form.js": "form.e609da1d.js",
   "page-layout.js": "page-layout.2aee6c36.js",
@@ -15,6 +15,7 @@
   "field-text-editor.css": "field-text-editor.0a39cb2f.css",
   "field-text-editor.js": "field-text-editor.e8abd05d.js",
   "login.js": "login.c9004e96.js",
+  "widgets.js": "widgets.fe5767d8.js",
   "fonts/fa-solid-900.ttf": "fonts/fa-solid-900.ad1782c7.ttf",
   "fonts/fa-brands-400.ttf": "fonts/fa-brands-400.26b80c88.ttf",
   "fonts/fa-solid-900.woff2": "fonts/fa-solid-900.83a538a0.woff2",

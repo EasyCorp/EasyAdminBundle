@@ -1,0 +1,104 @@
+/* Stats
+/* ------------------------------------------------------------------------- */
+
+.ea-stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ea-sp-2);
+    min-inline-size: 0;
+}
+
+.ea-stat-label {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.ea-stat-main {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ea-sp-2) var(--ea-sp-4);
+}
+
+.ea-stat-value {
+    color: var(--text-color);
+    font-size: var(--stat-value-font-size);
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--stat-value-font-weight);
+    letter-spacing: var(--heading-letter-spacing);
+    line-height: var(--line-height-tight);
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+}
+
+.ea-stat-delta {
+    align-items: center;
+    background-color: var(--stat-delta-bg);
+    border-radius: var(--border-radius-pill);
+    color: var(--stat-delta-color);
+    display: inline-flex;
+    font-size: var(--font-size-xs);
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--font-weight-medium);
+    gap: var(--ea-sp-1);
+    line-height: var(--line-height-normal);
+    padding: 0 var(--ea-sp-3);
+    white-space: nowrap;
+}
+.ea-stat-delta-good {
+    --stat-delta-bg: var(--stat-delta-good-bg);
+    --stat-delta-color: var(--stat-delta-good-color);
+}
+.ea-stat-delta-bad {
+    --stat-delta-bg: var(--stat-delta-bad-bg);
+    --stat-delta-color: var(--stat-delta-bad-color);
+}
+.ea-stat-delta-neutral {
+    --stat-delta-bg: var(--stat-delta-neutral-bg);
+    --stat-delta-color: var(--stat-delta-neutral-color);
+}
+
+/* the sign is written before the number, so it must stay there in right-to-left languages */
+.ea-stat-delta-value {
+    direction: ltr;
+    unicode-bidi: isolate;
+}
+
+.ea-stat-delta-icon {
+    block-size: 1em;
+    flex-shrink: 0;
+    inline-size: 1em;
+}
+
+.ea-stat-extra {
+    margin-block-start: var(--ea-sp-2);
+    min-inline-size: 0;
+}
+
+.ea-stat-description {
+    color: var(--text-muted);
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-snug);
+    margin: 0;
+}
+
+/* only stats inside widgets adapt to their width; the stat isn't a size container
+   itself because then it would be zero-width in flex rows (e.g. the page toolbar) */
+@container ea-widget (max-width: 240px) {
+    .ea-stat-value {
+        font-size: min(var(--stat-value-font-size), var(--font-size-xxl));
+    }
+}
+@container ea-widget (max-width: 160px) {
+    .ea-stat-description {
+        display: none;
+    }
+}
+
+/* in forced colors mode the background of the delta disappears, so a border keeps its shape */
+@media (forced-colors: active) {
+    .ea-stat-delta {
+        border: var(--border-width) solid currentColor;
+    }
+}

@@ -1,0 +1,5 @@
+{# Data
+   Pass the values as pairs of labels and values; the bars are displayed in the same
+   order. Screen readers read the values in a hidden table instead of the chart,
+   and the label is the caption of that table. #}
+<twig:ea:BarChart :data="{Mon: 120, Tue: 95, Wed: 143, Thu: 88, Fri: 170, Sat: 64, Sun: 41}" ariaLabel="Orders per day" />

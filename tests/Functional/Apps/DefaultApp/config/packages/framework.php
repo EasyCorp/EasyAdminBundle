@@ -14,6 +14,12 @@ $configuration = [
         'log' => true,
     ],
     'test' => true,
+    'assets' => [
+        'packages' => [
+            // used by the widget assets of WidgetsContractTest, like the assets of a third-party bundle
+            'contract_widgets' => ['base_path' => '/bundles/contractwidgets'],
+        ],
+    ],
     'handle_all_throwables' => true,
     'validation' => [
         'email_validation_mode' => 'html5',

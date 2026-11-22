@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'No hi ha més resultats',
         'loading-more-results' => 'Carregant més resultats…',
     ],
+
+    'chart' => [
+        'label' => 'Etiqueta',
+        'value' => 'Valor',
+    ],
+
+    'empty_state' => [
+        'empty' => 'No hi ha dades per mostrar',
+        'error' => 'No s\'ha pogut carregar aquest contingut.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Carregant…',
+    ],
+
+    'stat' => [
+        'increase' => 'Augment',
+        'decrease' => 'Disminució',
+        'no_change' => 'Sense canvis',
+        'delta_good' => 'bo',
+        'delta_bad' => 'dolent',
+    ],
+
+    'widget' => [
+        'retry' => 'Torna-ho a provar',
+        'no_widgets' => 'Encara no hi ha res per mostrar aquí.',
+    ],
 ];

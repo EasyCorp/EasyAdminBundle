@@ -1,0 +1,44 @@
+/* Empty states
+/* ------------------------------------------------------------------------- */
+
+.ea-empty-state {
+    align-items: center;
+    block-size: 100%;
+    color: var(--text-muted);
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--ea-sp-4);
+    justify-content: center;
+    padding: var(--ea-sp-8) var(--ea-sp-4);
+    text-align: center;
+}
+
+.ea-empty-state-icon {
+    color: var(--empty-state-icon-color);
+    font-size: var(--icon-size-lg);
+}
+.ea-empty-state-error .ea-empty-state-icon {
+    color: var(--empty-state-error-icon-color);
+}
+
+.ea-empty-state-title {
+    color: var(--text-color);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-snug);
+    max-inline-size: 40ch;
+}
+
+.ea-empty-state-message {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-snug);
+    max-inline-size: 40ch;
+}
+
+.ea-empty-state-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ea-sp-4);
+    justify-content: center;
+}

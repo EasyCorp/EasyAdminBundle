@@ -25,11 +25,26 @@ class <?= $class_name; ?> extends AbstractDashboardController
         //     return $this->redirectToRoute('...');
         // }
 
-        // Option 3. You can render some custom template to display a proper dashboard with widgets, etc.
-        // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
+        // Option 3. You can render your own template (tip: extend from @EasyAdmin/page/dashboard.html.twig
+        // to keep the widgets, or from @EasyAdmin/page/content.html.twig to start from an empty page)
         //
         // return $this->render('some/path/my-dashboard.html.twig');
     }
+
+    // Uncomment this method to display widgets in your dashboard instead of the welcome page
+    // (add the 'use' statements of the widget classes of the EasyCorp\Bundle\EasyAdminBundle\Widget namespace)
+    //
+    // public function configureWidgets(): iterable
+    // {
+    //     yield StatWidget::new('Users')->setValue(1250)->setDelta(8.2);
+    //     yield ChartWidget::new('Sign-ups')->setData(['Mon' => 12, 'Tue' => 19, 'Wed' => 7]);
+    //     yield ListWidget::new('Latest orders')->setItems([
+    //         ListItem::new('Order #1042')->setDescription('2 items')->setValue('$129.90'),
+    //     ]);
+    //
+    //     // values can also be closures, which run only when the widget is displayed:
+    //     // yield StatWidget::new('Products')->setValue(fn () => $this->productRepository->count([]));
+    // }
 
     public function configureDashboard(): Dashboard
     {

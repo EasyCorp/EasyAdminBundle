@@ -1,0 +1,47 @@
+{# @var this \EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Stat #}
+<div {{ attributes.defaults({class: 'ea-stat'}) }}>
+    {% if this.label is not null %}
+        <div class="ea-stat-label">{{ this.label }}</div>
+    {% endif %}
+
+    <div class="ea-stat-main">
+        <div class="ea-stat-value">
+            {##- The main value; it replaces the formatted `value` prop (e.g. to add a currency or a unit). -#}
+            {%- block value %}{{ this.formattedValue }}{% endblock -%}
+        </div>
+
+        {% set delta_direction = this.deltaDirection %}
+        {% if delta_direction is not null %}
+            <span class="ea-stat-delta {{ this.deltaCssClass }}">
+                {%- if 'increase' == delta_direction -%}
+                    <svg class="ea-stat-delta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+                    <span class="visually-hidden">{{ 'stat.increase'|trans(domain: 'EasyAdminBundle') }} </span>
+                {%- elseif 'decrease' == delta_direction -%}
+                    <svg class="ea-stat-delta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m7 7 10 10"/><path d="M17 7v10H7"/></svg>
+                    <span class="visually-hidden">{{ 'stat.decrease'|trans(domain: 'EasyAdminBundle') }} </span>
+                {%- else -%}
+                    <svg class="ea-stat-delta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/></svg>
+                    <span class="visually-hidden">{{ 'stat.no_change'|trans(domain: 'EasyAdminBundle') }} </span>
+                {%- endif -%}
+                <span class="ea-stat-delta-value">{{ this.formattedDelta }}</span>
+                {%- if 'ea-stat-delta-good' == this.deltaCssClass -%}
+                    <span class="visually-hidden"> ({{ 'stat.delta_good'|trans(domain: 'EasyAdminBundle') }})</span>
+                {%- elseif 'ea-stat-delta-bad' == this.deltaCssClass -%}
+                    <span class="visually-hidden"> ({{ 'stat.delta_bad'|trans(domain: 'EasyAdminBundle') }})</span>
+                {%- endif -%}
+            </span>
+        {% endif %}
+    </div>
+
+    {% set extra_html -%}
+        {## Optional contents displayed under the value (e.g. a small chart or a progress bar); it's empty by default. -#}
+        {% block extra %}{% endblock %}
+    {%- endset %}
+    {% if extra_html|trim is not empty %}
+        <div class="ea-stat-extra">{{ extra_html }}</div>
+    {% endif %}
+
+    {% if this.description is not null %}
+        <p class="ea-stat-description">{{ this.description }}</p>
+    {% endif %}
+</div>

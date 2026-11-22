@@ -1,0 +1,6 @@
+{# Custom value
+   The value block replaces the formatted value, so it can contain HTML (e.g. to
+   display the unit in a smaller text). #}
+<twig:ea:Stat label="Storage used" :delta="2.3" :increaseIsGood="false">
+    <twig:block name="value">684 <small class="text-muted">GB</small></twig:block>
+</twig:ea:Stat>

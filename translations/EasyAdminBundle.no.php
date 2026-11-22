@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Ingen flere resultater',
         'loading-more-results' => 'Laster flere resultater…',
     ],
+
+    'chart' => [
+        'label' => 'Etikett',
+        'value' => 'Verdi',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Ingen data å vise',
+        'error' => 'Innholdet kunne ikke lastes inn.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Laster…',
+    ],
+
+    'stat' => [
+        'increase' => 'Økning',
+        'decrease' => 'Nedgang',
+        'no_change' => 'Ingen endring',
+        'delta_good' => 'bra',
+        'delta_bad' => 'dårlig',
+    ],
+
+    'widget' => [
+        'retry' => 'Prøv igjen',
+        'no_widgets' => 'Det er ingenting å vise her ennå.',
+    ],
 ];

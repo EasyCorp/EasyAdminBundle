@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Ni več rezultatov',
         'loading-more-results' => 'Nalagam več zadetkov …',
     ],
+
+    'chart' => [
+        'label' => 'Oznaka',
+        'value' => 'Vrednost',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Ni podatkov za prikaz',
+        'error' => 'Te vsebine ni bilo mogoče naložiti.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Nalaganje…',
+    ],
+
+    'stat' => [
+        'increase' => 'Povečanje',
+        'decrease' => 'Zmanjšanje',
+        'no_change' => 'Brez spremembe',
+        'delta_good' => 'dobro',
+        'delta_bad' => 'slabo',
+    ],
+
+    'widget' => [
+        'retry' => 'Poskusi znova',
+        'no_widgets' => 'Tu še ni ničesar za prikaz.',
+    ],
 ];

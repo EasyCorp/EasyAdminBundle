@@ -1,0 +1,5 @@
+{# @var this \EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Widgets\Contract\EntityCount #}
+{% set range = this.range %}
+<twig:ea:Stat :value="this.count" :description="'Range ' ~ range">
+    <twig:block name="extra"><span class="contract-chart">Chart for {{ range }}</span></twig:block>
+</twig:ea:Stat>

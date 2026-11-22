@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Žiadne ďalšie výsledky',
         'loading-more-results' => 'Načítajú sa ďalšie výsledky…',
     ],
+
+    'chart' => [
+        'label' => 'Popis',
+        'value' => 'Hodnota',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Žiadne dáta na zobrazenie',
+        'error' => 'Tento obsah sa nepodarilo načítať.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Načítava sa…',
+    ],
+
+    'stat' => [
+        'increase' => 'Nárast',
+        'decrease' => 'Pokles',
+        'no_change' => 'Bez zmeny',
+        'delta_good' => 'dobré',
+        'delta_bad' => 'zlé',
+    ],
+
+    'widget' => [
+        'retry' => 'Skúsiť znova',
+        'no_widgets' => 'Zatiaľ tu nie je nič na zobrazenie.',
+    ],
 ];

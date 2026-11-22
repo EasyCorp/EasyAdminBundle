@@ -38,6 +38,7 @@ Encore
     .addEntry('field-textarea', './assets/js/field-textarea.js')
     .addEntry('field-text-editor', './assets/js/field-text-editor.js')
     .addEntry('login', './assets/js/login.js')
+    .addEntry('widgets', './assets/js/widgets.js')
 
     // the font files are copied by the url() of assets/css/easyadmin-theme/fonts.css;
     // their OFL license must be distributed with them

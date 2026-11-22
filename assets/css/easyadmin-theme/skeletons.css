@@ -1,0 +1,134 @@
+/* Skeletons (placeholders displayed while contents load)
+/* ------------------------------------------------------------------------- */
+
+.ea-skeleton-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ea-sp-4);
+}
+
+/* the pulse keeps every shape of a placeholder in step, whatever its size, and only
+   animates the opacity, so many placeholders on a page cost no repaints */
+.ea-skeleton-line,
+.ea-skeleton-block {
+    animation: ea-skeleton-pulse var(--skeleton-animation-duration) cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    background-color: var(--skeleton-bg);
+}
+
+.ea-skeleton-line {
+    block-size: 1lh;
+    border-radius: var(--border-radius);
+    display: block;
+}
+.ea-skeleton-text > .ea-skeleton-line:last-child:not(:nth-child(2)) {
+    inline-size: 60%;
+}
+
+/* the shapes below are built with the same lines, sized like the contents they replace */
+.ea-skeleton-stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ea-sp-4);
+}
+.ea-skeleton-stat-value {
+    block-size: var(--stat-value-font-size);
+    inline-size: 55%;
+}
+.ea-skeleton-stat-description {
+    block-size: var(--font-size-sm);
+    inline-size: 80%;
+}
+
+/* the bars keep the same heights on every load, so the placeholder doesn't look like new data */
+.ea-skeleton-chart {
+    align-items: flex-end;
+    block-size: 100%;
+    display: flex;
+    gap: var(--ea-sp-4);
+    min-block-size: var(--skeleton-block-min-height);
+}
+.ea-skeleton-chart-bar {
+    block-size: 60%;
+    border-end-end-radius: 0;
+    border-end-start-radius: 0;
+    flex: 1 1 0;
+}
+.ea-skeleton-chart-bar:nth-child(4n + 2) {
+    block-size: 45%;
+}
+.ea-skeleton-chart-bar:nth-child(4n + 3) {
+    block-size: 85%;
+}
+.ea-skeleton-chart-bar:nth-child(4n) {
+    block-size: 70%;
+}
+.ea-skeleton-chart-bar:nth-child(8n + 1) {
+    block-size: 100%;
+}
+
+.ea-skeleton-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ea-sp-10);
+}
+.ea-skeleton-list-item {
+    column-gap: var(--ea-sp-8);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: var(--ea-sp-3);
+}
+.ea-skeleton-list-title {
+    block-size: var(--font-size-base);
+    inline-size: 45%;
+}
+.ea-skeleton-list-value {
+    block-size: var(--font-size-base);
+    inline-size: calc(var(--ea-spacing) * 28);
+}
+.ea-skeleton-list-description {
+    block-size: var(--font-size-sm);
+    inline-size: 30%;
+}
+
+.ea-skeleton-progress-bar {
+    block-size: var(--progress-height);
+    border-radius: var(--border-radius-full);
+}
+
+/* the height of the container is often unknown (e.g. 'auto'), so the block also has a minimum height */
+.ea-skeleton-block {
+    block-size: 100%;
+    border-radius: var(--border-radius-lg);
+    flex: 1;
+    inline-size: 100%;
+    min-block-size: var(--skeleton-block-min-height);
+}
+
+@keyframes ea-skeleton-pulse {
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ea-skeleton-line,
+    .ea-skeleton-block {
+        animation: none;
+    }
+}
+
+/* forced colors mode removes background colors, which would hide the placeholders */
+@media (forced-colors: active) {
+    .ea-skeleton-line,
+    .ea-skeleton-block {
+        background-color: GrayText;
+        forced-color-adjust: none;
+    }
+}
+
+@media print {
+    .ea-skeleton-line,
+    .ea-skeleton-block {
+        animation: none;
+    }
+}

@@ -1,0 +1,5 @@
+{# @var widget \EasyCorp\Bundle\EasyAdminBundle\Dto\WidgetDto #}
+{% trans_default_domain ea().i18n.translationDomain %}
+{% set progress_label = widget.label is empty ? null : widget.label|trans|striptags %}
+{# the title of the card already names the widget, so the label is only the accessible name of the bar #}
+<twig:ea:Progress :value="data.value" :max="data.target" :ariaLabel="progress_label" />

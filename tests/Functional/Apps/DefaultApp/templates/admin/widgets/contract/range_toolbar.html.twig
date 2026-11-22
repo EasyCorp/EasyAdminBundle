@@ -1,0 +1,4 @@
+{% set current_range = context.getAttribute('range') %}
+{% for range in ranges %}
+    <a class="contract-range{{ range == current_range ? ' active' }}" href="{{ path(ea().dashboardRouteName, {range: range}) }}">{{ range }}</a>
+{% endfor %}

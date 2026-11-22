@@ -530,12 +530,14 @@ final class ApiReferenceGenerator
             ['Config/Menu', '*.php', self::MEMBERS_PUBLIC],
             ['Config/Option', '*.php', self::MEMBERS_CONSTANTS],
             ['Contracts/Controller', '*.php', self::MEMBERS_PUBLIC],
+            ['Contracts/Widget', '*.php', self::MEMBERS_PUBLIC],
             ['Controller', 'Abstract*.php', self::MEMBERS_ALL],
             ['Field', '*.php', self::MEMBERS_PUBLIC],
             ['Filter', '*.php', self::MEMBERS_PUBLIC],
             ['Router', 'AdminUrlGenerator.php', self::MEMBERS_PUBLIC],
             ['Test', '*.php', self::MEMBERS_ALL],
             ['Test/Trait', '*.php', self::MEMBERS_ALL],
+            ['Widget', '*.php', self::MEMBERS_PUBLIC],
         ];
     }
 

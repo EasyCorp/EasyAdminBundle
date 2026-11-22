@@ -1,0 +1,108 @@
+/* Progress bars
+/* ------------------------------------------------------------------------- */
+
+.ea-progress {
+    align-items: center;
+    display: flex;
+    gap: var(--ea-sp-6);
+    min-inline-size: 0;
+}
+
+/* the native <progress> element needs its own pseudo-elements in each engine */
+.ea-progress-bar {
+    appearance: none;
+    background-color: var(--progress-track-bg);
+    block-size: var(--progress-height);
+    border: 0;
+    border-radius: var(--border-radius-full);
+    color: var(--progress-value-bg);
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+}
+.ea-progress-bar::-webkit-progress-bar {
+    background-color: var(--progress-track-bg);
+    border-radius: var(--border-radius-full);
+}
+.ea-progress-bar::-webkit-progress-value {
+    background-color: var(--progress-value-bg);
+    border-radius: var(--border-radius-full);
+    transition: inline-size var(--ea-duration-slower) var(--ea-ease-out);
+}
+.ea-progress-bar::-moz-progress-bar {
+    background-color: var(--progress-value-bg);
+    border-radius: var(--border-radius-full);
+}
+
+/* with a visible label, the label and the percentage are displayed above the bar */
+.ea-progress-labelled {
+    align-items: stretch;
+    flex-direction: column;
+    gap: var(--ea-sp-3);
+}
+.ea-progress-labelled > .ea-progress-bar {
+    flex: none;
+    inline-size: 100%;
+}
+
+.ea-progress-header {
+    align-items: baseline;
+    display: flex;
+    gap: var(--ea-sp-4);
+    justify-content: space-between;
+    min-inline-size: 0;
+}
+
+.ea-progress-label {
+    color: var(--text-color);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-snug);
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+}
+
+.ea-progress-value {
+    color: var(--text-color);
+    flex-shrink: 0;
+    font-size: var(--font-size-sm);
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--font-weight-medium);
+    /* the same width for every value, so the bars of a list of progress bars have the same length */
+    min-inline-size: 4ch;
+    text-align: end;
+}
+.ea-progress-header > .ea-progress-value {
+    color: var(--text-muted);
+    font-weight: var(--font-weight-normal);
+    min-inline-size: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ea-progress-bar::-webkit-progress-value {
+        transition: none;
+    }
+}
+
+/* forced colors mode removes background colors, which would hide the bar;
+   each engine needs its own rule because an unknown pseudo-element invalidates the whole rule */
+@media (forced-colors: active) {
+    .ea-progress-bar {
+        border: var(--border-width) solid CanvasText;
+    }
+    .ea-progress-bar::-webkit-progress-value {
+        background-color: Highlight;
+        forced-color-adjust: none;
+    }
+    .ea-progress-bar::-moz-progress-bar {
+        background-color: Highlight;
+        forced-color-adjust: none;
+    }
+}
+
+/* browsers don't print background colors by default, which would hide the bar */
+@media print {
+    .ea-progress-bar {
+        print-color-adjust: exact;
+    }
+}

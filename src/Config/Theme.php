@@ -84,6 +84,8 @@ final class Theme
     private ?string $grayRampPrefix = null;
     private ?string $darkGrayRampPrefix = null;
     private ?string $primaryOnSurface = null;
+    private ?string $chartColor = null;
+    private ?string $darkChartColor = null;
     private Font|string|null $baseFont = null;
     private Font|string|null $monospaceFont = null;
     private ?int $baseFontWeight = null;
@@ -143,6 +145,36 @@ final class Theme
         } else {
             [$this->darkPrimaryColor, $this->darkPrimaryForeground] = [$darkPreset[2], $darkPreset[3]];
         }
+
+        return $this;
+    }
+
+    /**
+     * Sets the color of the charts and progress bars of the backend (e.g. the
+     * ones displayed by dashboard widgets). Use one of the ThemeColor cases (or
+     * their values: "neutral", "blue", "emerald", etc.) to apply a predefined color
+     * tuned for both color schemes, or any color in the hexadecimal ("#15803d"),
+     * "rgb()", "hsl()" or "oklch()" formats, without an alpha channel.
+     *
+     * The optional $dark argument defines a different color for the dark color
+     * scheme. If not set, predefined colors use their own dark variant and
+     * custom colors use the same color in both schemes.
+     */
+    public function chartColor(string|ThemeColor $color, string|ThemeColor|null $dark = null): self
+    {
+        $color = $color instanceof ThemeColor ? $color->value : $color;
+        $dark = $dark instanceof ThemeColor ? $dark->value : $dark;
+        $isPreset = null !== ThemeColor::tryFrom($color);
+
+        $this->chartColor = $isPreset ? self::chartColorPreset($color, false) : self::validateColor($color, 'chartColor');
+
+        if (null === $dark) {
+            $this->darkChartColor = $isPreset ? self::chartColorPreset($color, true) : null;
+
+            return $this;
+        }
+
+        $this->darkChartColor = null !== ThemeColor::tryFrom($dark) ? self::chartColorPreset($dark, true) : self::validateColor($dark, 'chartColor');
 
         return $this;
     }
@@ -251,7 +283,21 @@ final class Theme
             $this->monospaceFont,
             $this->baseFontWeight,
             $this->baseFontFeatures,
+            $this->chartColor,
+            $this->darkChartColor,
         );
+    }
+
+    // charts use a middle step of the color ramps: the steps used for the primary
+    // color are tuned for buttons and text, and they are too strong for large areas
+    private static function chartColorPreset(string $color, bool $dark): string
+    {
+        // a mid gray is readable on both light and dark backgrounds, so it's the same in both color schemes
+        if (ThemeColor::Neutral->value === $color) {
+            return 'var(--gray-500)';
+        }
+
+        return sprintf('var(--%s-%d)', $color, $dark ? 400 : 500);
     }
 
     private static function validateFontWeight(int $weight): int
@@ -339,7 +385,7 @@ final class Theme
     // the returned values are emitted verbatim inside an inline <style> element,
     // so this validation is a security boundary against CSS injection, not just
     // a usability check: only strictly anchored color grammars are accepted
-    private static function validateColor(string $color): string
+    private static function validateColor(string $color, string $methodName = 'primaryColor'): string
     {
         $color = trim($color);
 
@@ -364,7 +410,7 @@ final class Theme
             }
         }
 
-        throw new \InvalidArgumentException(sprintf('The "%s" value given to the primaryColor() method is not a valid color. Use the hexadecimal ("#15803d"), "rgb()", "hsl()" or "oklch()" formats, without an alpha channel, or one of these predefined colors: "%s".', $color, implode('", "', array_keys(self::PRIMARY_COLOR_PRESETS))));
+        throw new \InvalidArgumentException(sprintf('The "%s" value given to the %s() method is not a valid color. Use the hexadecimal ("#15803d"), "rgb()", "hsl()" or "oklch()" formats, without an alpha channel, or one of these predefined colors: "%s".', $color, $methodName, implode('", "', array_keys(self::PRIMARY_COLOR_PRESETS))));
     }
 
     /**

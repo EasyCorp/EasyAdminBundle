@@ -406,6 +406,40 @@
     --alert-dark-color: var(--badge-dark-color);
     --alert-dark-border-color: color-mix(in srgb, var(--badge-dark-tone) var(--alert-tint-border-amount), transparent);
 
+    --card-bg: var(--content-bg);
+    --card-border-color: var(--border-color);
+    --card-border-radius: var(--border-radius-lg);
+    --card-shadow: 0 1px 2px 0 color-mix(in srgb, var(--black) 5%, transparent);
+    --card-title-color: var(--text-color);
+    --card-help-color: var(--form-help-color);
+    --card-icon-color: var(--text-muted);
+    /* the delta of stats reuses the colors of light badges, which have enough contrast on their tinted background */
+    --stat-value-font-size: var(--font-size-xxxl);
+    --stat-value-font-weight: var(--font-weight-semibold);
+    --stat-delta-good-bg: var(--badge-success-bg);
+    --stat-delta-good-color: var(--badge-success-color);
+    --stat-delta-bad-bg: var(--badge-danger-bg);
+    --stat-delta-bad-color: var(--badge-danger-color);
+    --stat-delta-neutral-bg: var(--badge-secondary-bg);
+    --stat-delta-neutral-color: var(--badge-secondary-color);
+    --progress-height: var(--ea-sp-4);
+    --progress-track-bg: color-mix(in oklab, var(--ea-chart-color) 18%, transparent);
+    --progress-value-bg: var(--ea-chart-color);
+    --skeleton-bg: color-mix(in oklab, var(--gray-200) 50%, var(--gray-100));
+    --skeleton-block-min-height: 96px;
+    --skeleton-animation-duration: 2s;
+    --empty-state-icon-color: var(--text-tertiary-color);
+    --empty-state-error-icon-color: var(--badge-danger-color);
+    --bar-chart-bar-color: var(--ea-chart-color);
+    /* half of the radius of the theme: bars are thin, so the radius of cards and buttons is too round for them */
+    --bar-chart-bar-radius: var(--border-radius-sm);
+    /* mixed with the text color (not with the background) to tell it apart from the
+       positive bars and keep a 3:1 contrast against the card in both color schemes */
+    --bar-chart-bar-negative-color: color-mix(in oklab, var(--ea-chart-color) 55%, var(--text-color));
+    --bar-chart-baseline-color: var(--border-color);
+    --bar-chart-grid-color: color-mix(in oklab, var(--border-color) 60%, transparent);
+    --bar-chart-min-height: 160px;
+
     --button-padding-y-sm: 0;
     --button-padding-x-sm: var(--ea-control-padding-x);
     --button-padding-y-md: 0;
@@ -848,6 +882,9 @@
     --badge-info-outline-color: var(--badge-info-color);
     --alert-tint-border-amount: 35%;
     --alert-warning-tint-border-amount: 25%;
+
+    --card-shadow: none;
+    --skeleton-bg: var(--gray-800);
 
     --button-focus-outline-color: var(--ea-primary-strong);
 

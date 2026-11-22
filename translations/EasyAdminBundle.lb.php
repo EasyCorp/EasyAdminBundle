@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Keng weider Resultater',
         'loading-more-results' => 'Méi Resultater gi lueden…',
     ],
+
+    'chart' => [
+        'label' => 'Label',
+        'value' => 'Value',
+    ],
+
+    'empty_state' => [
+        'empty' => 'No data to display',
+        'error' => 'This content could not be loaded.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Loading…',
+    ],
+
+    'stat' => [
+        'increase' => 'Increase',
+        'decrease' => 'Decrease',
+        'no_change' => 'No change',
+        'delta_good' => 'good',
+        'delta_bad' => 'bad',
+    ],
+
+    'widget' => [
+        'retry' => 'Try again',
+        'no_widgets' => 'There is nothing to show here yet.',
+    ],
 ];

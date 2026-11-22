@@ -1,0 +1,95 @@
+{% props
+    ## string|null The title of the card (it's escaped; use the `title` block to include HTML contents).
+    title = null,
+    ## string|null The name of the icon displayed before the title.
+    icon = null,
+    ## string|null A short help message displayed under the title (it's escaped; use the `help` block to include HTML contents).
+    help = null,
+    ## string|null The URL of the link displayed at the end of the header.
+    linkUrl = null,
+    ## string|null The text of the link; when it's empty, the link only displays an arrow icon.
+    linkLabel = null,
+    ## string|null The `id` attribute of the title element (e.g. to reference it with `aria-labelledby`).
+    titleId = null,
+    ## int The level of the heading element of the title, from 2 (`h2`) to 6 (`h6`).
+    headingLevel = 3,
+%}
+
+{# the blocks are rendered into variables first because the header and the
+   footer are only displayed when they have some contents #}
+{% set title_html -%}
+    {## The title of the card; it replaces the `title` prop and can contain HTML. -#}
+    {% block title %}{{ title }}{% endblock %}
+{%- endset %}
+{% set help_html -%}
+    {## The help message of the card; it replaces the `help` prop and can contain HTML. -#}
+    {% block help %}{{ help }}{% endblock %}
+{%- endset %}
+{% set link_label_html -%}
+    {## The text of the link; it replaces the `linkLabel` prop and can contain HTML. -#}
+    {% block link_label %}{{ linkLabel }}{% endblock %}
+{%- endset %}
+{% set actions_html -%}
+    {## Extra contents displayed at the end of the header (e.g. buttons or a dropdown). -#}
+    {% block actions %}{% endblock %}
+{%- endset %}
+{% set footer_html -%}
+    {## Contents displayed at the bottom of the card. -#}
+    {% block footer %}{% endblock %}
+{%- endset %}
+
+{% set has_title = title_html|trim is not empty %}
+{% set has_help = help_html|trim is not empty %}
+{% set has_link_label = link_label_html|trim is not empty %}
+{% set has_actions = actions_html|trim is not empty %}
+{% set has_footer = footer_html|trim is not empty %}
+{% set heading_tag = 'h' ~ max(2, min(6, headingLevel|default(3) + 0)) %}
+{% set title_element_id = titleId ?: null %}
+{# a link with only an icon takes its accessible name from the title of the card #}
+{% if title_element_id is null and has_title and linkUrl and not has_link_label %}
+    {% set title_element_id = 'ea-card-title-' ~ random() %}
+{% endif %}
+
+<div {{ attributes.defaults({class: 'ea-card'}) }}>
+    {% if icon or has_title or has_help or linkUrl or has_actions %}
+        <div class="ea-card-header">
+            {% if icon %}
+                <twig:ea:Icon name="{{ icon }}" class="ea-card-icon" aria-hidden="true" />
+            {% endif %}
+
+            {% if has_title or has_help %}
+                <div class="ea-card-heading">
+                    {% if has_title %}
+                        <{{ heading_tag }} class="ea-card-title" {%- if title_element_id %} id="{{ title_element_id }}"{% endif %}>{{ title_html }}</{{ heading_tag }}>
+                    {% endif %}
+                    {% if has_help %}
+                        <div class="ea-card-help">{{ help_html }}</div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if has_actions %}
+                <div class="ea-card-actions">{{ actions_html }}</div>
+            {% endif %}
+
+            {% if linkUrl %}
+                <a class="ea-card-link" href="{{ linkUrl }}"
+                    {%- if not has_link_label -%}
+                        {%- if has_title %} aria-labelledby="{{ title_element_id }}"{% else %} aria-label="{{ linkUrl }}"{% endif -%}
+                    {%- endif %}>
+                    {%- if has_link_label %}<span class="ea-card-link-label">{{ link_label_html }}</span>{% endif -%}
+                    <twig:ea:Icon name="internal:chevron-right" class="ea-card-link-icon" aria-hidden="true" />
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="ea-card-body">
+        {## The main contents of the card. -#}
+        {% block content %}{% endblock %}
+    </div>
+
+    {% if has_footer %}
+        <div class="ea-card-footer">{{ footer_html }}</div>
+    {% endif %}
+</div>

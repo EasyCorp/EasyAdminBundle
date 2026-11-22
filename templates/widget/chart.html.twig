@@ -1,0 +1,8 @@
+{# @var widget \EasyCorp\Bundle\EasyAdminBundle\Dto\WidgetDto #}
+{% trans_default_domain ea().i18n.translationDomain %}
+{% if data.bars is empty %}
+    <twig:ea:EmptyState />
+{% else %}
+    {% set chart_label = widget.label is empty ? null : widget.label|trans|striptags %}
+    <twig:ea:BarChart :data="data.bars" :ariaLabel="chart_label" />
+{% endif %}

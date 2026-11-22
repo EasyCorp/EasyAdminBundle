@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Daugiau rezultatų nėra',
         'loading-more-results' => 'Kraunama daugiau rezultatų…',
     ],
+
+    'chart' => [
+        'label' => 'Etiketė',
+        'value' => 'Reikšmė',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Nėra rodytinų duomenų',
+        'error' => 'Šio turinio nepavyko įkelti.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Įkeliama…',
+    ],
+
+    'stat' => [
+        'increase' => 'Padidėjimas',
+        'decrease' => 'Sumažėjimas',
+        'no_change' => 'Be pokyčių',
+        'delta_good' => 'gerai',
+        'delta_bad' => 'blogai',
+    ],
+
+    'widget' => [
+        'retry' => 'Bandyti dar kartą',
+        'no_widgets' => 'Čia dar nėra ką rodyti.',
+    ],
 ];

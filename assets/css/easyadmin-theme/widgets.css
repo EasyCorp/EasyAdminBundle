@@ -1,0 +1,370 @@
+/* Dashboard widgets
+/* ------------------------------------------------------------------------- */
+
+/* the grid follows the width of the dashboard (not of the viewport), so it also
+   works when the sidebar is collapsed or the dashboard is rendered in a narrow
+   column of a custom page. All default placements use :where() (zero specificity)
+   so any rule of the application (grid-column, grid-area, order...) wins */
+.ea-widget-grid {
+    container: ea-widget-grid / inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ea-sp-16);
+}
+
+/* rows are as tall as their contents ('grid-auto-rows: auto'); widgets with
+   setRows(N) don't fix the row height, they get a minimum height of N rows of
+   --ea-widget-row-size plus the gaps between them. When that minimum is taller
+   than the contents of the rows they span, the grid shares the extra height
+   among those rows, so the widgets next to them stretch to match */
+.ea-widgets {
+    --ea-widget-gap: var(--ea-sp-8);
+    --ea-widget-row-size: calc(var(--ea-spacing) * 60);
+    display: grid;
+    gap: var(--ea-widget-gap);
+    grid-auto-rows: auto;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.ea-widget {
+    container: ea-widget / inline-size;
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+}
+
+:where(.ea-widget-rows-1) {
+    --ea-widget-rows: 1;
+}
+:where(.ea-widget-rows-2) {
+    --ea-widget-rows: 2;
+}
+:where(.ea-widget-rows-3) {
+    --ea-widget-rows: 3;
+}
+:where(.ea-widget-rows-4) {
+    --ea-widget-rows: 4;
+}
+:where(.ea-widget-rows-5) {
+    --ea-widget-rows: 5;
+}
+:where(.ea-widget-rows-6) {
+    --ea-widget-rows: 6;
+}
+
+@container ea-widget-grid (min-width: 36rem) {
+    .ea-widgets {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    :where(.ea-widget) {
+        grid-column: 1 / -1;
+    }
+    /* 5 and 6 of 12 columns are half-width widgets too, so two of them still
+       sit side by side instead of each one taking a whole row */
+    :where(
+            .ea-widget-cols-1,
+            .ea-widget-cols-2,
+            .ea-widget-cols-3,
+            .ea-widget-cols-4,
+            .ea-widget-cols-5,
+            .ea-widget-cols-6
+        ) {
+        grid-column: span 3;
+    }
+}
+
+@container ea-widget-grid (min-width: 62rem) {
+    .ea-widgets {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    :where(.ea-widget-cols-1) {
+        grid-column: span 1;
+    }
+    :where(.ea-widget-cols-2) {
+        grid-column: span 2;
+    }
+    :where(.ea-widget-cols-3) {
+        grid-column: span 3;
+    }
+    :where(.ea-widget-cols-4) {
+        grid-column: span 4;
+    }
+    :where(.ea-widget-cols-5) {
+        grid-column: span 5;
+    }
+    :where(.ea-widget-cols-6) {
+        grid-column: span 6;
+    }
+    :where(.ea-widget-cols-7) {
+        grid-column: span 7;
+    }
+    :where(.ea-widget-cols-8) {
+        grid-column: span 8;
+    }
+    :where(.ea-widget-cols-9) {
+        grid-column: span 9;
+    }
+    :where(.ea-widget-cols-10) {
+        grid-column: span 10;
+    }
+    :where(.ea-widget-cols-11) {
+        grid-column: span 11;
+    }
+    :where(.ea-widget-cols-12) {
+        grid-column: span 12;
+    }
+    :where(.ea-widget-rows-2) {
+        grid-row: span 2;
+    }
+    :where(.ea-widget-rows-3) {
+        grid-row: span 3;
+    }
+    :where(.ea-widget-rows-4) {
+        grid-row: span 4;
+    }
+    :where(.ea-widget-rows-5) {
+        grid-row: span 5;
+    }
+    :where(.ea-widget-rows-6) {
+        grid-row: span 6;
+    }
+    /* the minimum height only applies where widgets span rows; otherwise the
+       widgets next to a tall one would stretch into mostly empty cards */
+    :where(
+            .ea-widget-rows-1,
+            .ea-widget-rows-2,
+            .ea-widget-rows-3,
+            .ea-widget-rows-4,
+            .ea-widget-rows-5,
+            .ea-widget-rows-6
+        ) {
+        min-block-size: calc(
+            var(--ea-widget-rows) *
+            var(--ea-widget-row-size) +
+            (var(--ea-widget-rows) - 1) *
+            var(--ea-widget-gap)
+        );
+    }
+    /* the contents of widgets with rows don't make the widget taller (flex-basis 0 and
+       size containment): they scroll inside the height given by the grid */
+    .ea-widget-rows-1 .ea-widget-body,
+    .ea-widget-rows-2 .ea-widget-body,
+    .ea-widget-rows-3 .ea-widget-body,
+    .ea-widget-rows-4 .ea-widget-body,
+    .ea-widget-rows-5 .ea-widget-body,
+    .ea-widget-rows-6 .ea-widget-body {
+        contain: size;
+        flex: 1 1 0;
+        min-block-size: 0;
+        overflow: auto;
+    }
+}
+
+/* the card fills the whole grid cell, so all the widgets of a row have the same height.
+   Only widget cards are size containers: inline-size containment ignores the width of
+   the contents, so a card outside a grid (e.g. in a flex row) would be zero-width */
+.ea-widget > .ea-widget-card {
+    block-size: 100%;
+    container-type: inline-size;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-block-size: 0;
+}
+.ea-widget-card > .ea-card-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-block-size: 0;
+}
+.ea-widget-body {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    transition: opacity var(--ea-duration-slow) var(--ea-ease-in-out);
+}
+
+/* sections */
+.ea-widget-section-header {
+    margin-block-end: var(--ea-sp-8);
+}
+.ea-widget-section-title {
+    align-items: center;
+    color: var(--text-color);
+    display: flex;
+    font-size: var(--font-size-lg);
+    font-weight: var(--heading-font-weight);
+    gap: var(--ea-sp-4);
+    letter-spacing: var(--heading-letter-spacing);
+    line-height: var(--line-height-tight);
+    margin: 0;
+}
+.ea-widget-section-icon {
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+.ea-widget-section-help {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+    margin: var(--ea-sp-2) 0 0;
+}
+
+/* toolbar widgets (next to the page title) */
+.ea-widget-toolbar {
+    /* inline-size containment would make the widget zero-width inside the flex toolbar */
+    container-type: normal;
+    align-items: center;
+    display: inline-flex;
+    flex-direction: row;
+}
+.ea-widget-toolbar > .ea-widget-body {
+    align-items: center;
+    display: inline-flex;
+    gap: var(--ea-sp-4);
+}
+/* the toolbar is one line tall: its placeholder and its error message can't have the size they have in cards */
+.ea-widget-toolbar[data-ea-widget-lazy] .ea-widget-body {
+    min-block-size: 0;
+}
+.ea-widget-toolbar .ea-skeleton-block {
+    block-size: var(--ea-sp-16);
+    inline-size: calc(var(--ea-spacing) * 80);
+    min-block-size: 0;
+}
+.ea-widget-toolbar .ea-empty-state {
+    flex-direction: row;
+    gap: var(--ea-sp-4);
+    padding: 0;
+}
+.ea-widget-toolbar .ea-empty-state-icon {
+    font-size: var(--font-size-base);
+}
+
+/* loading states: on refresh, the old contents stay visible until the new ones arrive;
+   they are dimmed only when the request is slow, so fast refreshes don't make the widget flash */
+.ea-widget-loading:not([data-ea-widget-lazy]) .ea-widget-body {
+    opacity: 0.6;
+    transition-delay: var(--ea-duration-slower);
+}
+
+/* the body of widgets with rows can be focused to scroll it with the keyboard,
+   and the JavaScript code focuses the body after reloading its contents */
+.ea-widget-body:focus-visible {
+    border-radius: var(--border-radius);
+    outline: var(--ea-focus-ring-width) solid var(--button-focus-outline-color);
+    outline-offset: var(--ea-sp-1);
+}
+
+/* lazy widgets reserve roughly the height of their contents, so the page doesn't
+   jump when they load */
+.ea-widget {
+    --ea-widget-placeholder-size: calc(var(--ea-spacing) * 48);
+}
+.ea-widget-stat {
+    --ea-widget-placeholder-size: calc(var(--ea-spacing) * 32);
+}
+.ea-widget-progress {
+    --ea-widget-placeholder-size: calc(var(--ea-spacing) * 10);
+}
+.ea-widget-chart {
+    --ea-widget-placeholder-size: calc(var(--ea-spacing) * 100);
+}
+.ea-widget-list {
+    --ea-widget-placeholder-size: calc(var(--ea-spacing) * 120);
+}
+/* a grid makes the skeleton fill the whole body, whatever its height */
+.ea-widget[data-ea-widget-lazy]:not(.ea-widget-toolbar) .ea-widget-body {
+    display: grid;
+}
+/* the body already reserves the height, so the minimum height of the skeleton must not make it taller */
+.ea-widget[data-ea-widget-lazy] .ea-skeleton-block {
+    min-block-size: 0;
+}
+.ea-widget[data-ea-widget-lazy]:not(.ea-widget-toolbar) .ea-widget-body {
+    min-block-size: var(--ea-widget-placeholder-size);
+}
+
+/* contents of the list widget */
+.ea-widget-list-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ea-widget-list-item {
+    align-items: center;
+    display: flex;
+    gap: var(--ea-sp-6);
+    padding-block: var(--ea-sp-5);
+}
+.ea-widget-list-item + .ea-widget-list-item {
+    border-block-start: var(--border-width) solid var(--border-color);
+}
+
+.ea-widget-list-item-icon {
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.ea-widget-list-item-content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-inline-size: 0;
+}
+
+/* long titles wrap up to two lines instead of being cut, so most of them can be read */
+.ea-widget-list-item-title {
+    -webkit-box-orient: vertical;
+    color: var(--text-color);
+    display: -webkit-box;
+    font-weight: var(--font-weight-medium);
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+a.ea-widget-list-item-title {
+    text-decoration: none;
+}
+a.ea-widget-list-item-title:hover {
+    text-decoration: underline;
+}
+a.ea-widget-list-item-title:focus-visible {
+    border-radius: var(--border-radius);
+    outline: var(--ea-focus-ring-width) solid var(--button-focus-outline-color);
+    outline-offset: var(--ea-sp-1);
+}
+
+.ea-widget-list-item-description {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ea-widget-list-item-value {
+    color: var(--text-color);
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+    margin-inline-start: auto;
+    text-align: end;
+    white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* the duration (not the whole transition) is removed to keep the delay of the dimming */
+    .ea-widget-body {
+        transition-duration: 0s;
+    }
+}
+
+@media print {
+    .ea-widget {
+        break-inside: avoid;
+    }
+    .ea-widget-section-header {
+        break-after: avoid;
+    }
+}

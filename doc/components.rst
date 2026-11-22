@@ -225,6 +225,34 @@ badge:
 
     <twig:ea:Badge variant="outline"><twig:ea:Flag countryCode="JP"/> Japan</twig:ea:Badge>
 
+BarChart
+--------
+
+Renders a vertical bar chart of a single series of values, like the one
+displayed by the :doc:`chart widget </widgets>`. Pass the values in the
+``data`` prop as ``label => value`` pairs and a name for the chart in the
+``ariaLabel`` prop. The bars are hidden from assistive technologies, which
+get the same values in a visually hidden table:
+
+.. code-block:: twig
+
+    <twig:ea:BarChart :data="{'Jan': 120, 'Feb': 95, 'Mar': 143}"
+        ariaLabel="Sign-ups per month"/>
+
+    <twig:ea:BarChart :data="sales_per_month" ariaLabel="{{ 'Sales'|trans }}"/>
+
+The bars are displayed in the same order as the data. Values must be
+numbers (numeric strings are converted to numbers) and they can be
+negative: those bars are displayed below the zero line. When the data is
+empty, the component displays the ``EmptyState`` component instead.
+
+The chart is an SVG image rendered without JavaScript. Each bar shows its
+label and formatted value when hovering it, and the component includes a
+hidden table with all the data for screen readers. The ``ariaLabel`` prop
+is the accessible name of the chart and the caption of that table. The
+chart doesn't display it, so add a visible title next to the chart when
+it needs one (e.g. with the ``title`` prop of the ``Card`` component).
+
 Button
 ------
 
@@ -269,6 +297,92 @@ button inside its own form. Other props are ``size`` (``sm``, ``md`` or
 ``lg``), ``withTrailingIcon`` (to display the icon after the label),
 ``inactive`` (to disable the button) and ``isBlock`` (to take all the
 available width).
+
+Card
+----
+
+Renders a box with an optional header (icon, title, help message, link and
+actions), a body and an optional footer. It's the box that surrounds each
+:doc:`dashboard widget </widgets>`:
+
+.. code-block:: twig
+
+    <twig:ea:Card title="Latest orders" icon="fa-receipt" linkUrl="/admin/order" linkLabel="See all">
+        <twig:block name="content">
+            {# ... #}
+        </twig:block>
+    </twig:ea:Card>
+
+The ``title``, ``help`` and ``linkLabel`` props are escaped. Use the
+``title``, ``help`` and ``link_label`` blocks instead when they need HTML
+contents. Use the ``actions`` block to add buttons or other contents at the
+end of the header, and the ``footer`` block to add contents at the bottom
+of the card:
+
+.. code-block:: twig
+
+    <twig:ea:Card help="Updated every hour">
+        <twig:block name="title">Revenue <twig:ea:Badge color="success">+8%</twig:ea:Badge></twig:block>
+        <twig:block name="actions">
+            <twig:ea:Button size="sm" variant="ghost" icon="fa-download" aria-label="Download"/>
+        </twig:block>
+        <twig:block name="content">{# ... #}</twig:block>
+        <twig:block name="footer">Data from the billing system</twig:block>
+    </twig:ea:Card>
+
+The header is only rendered when the card has an icon, a title, a help
+message, a link or actions. The title is an ``<h3>`` element by default;
+change it with the ``headingLevel`` prop (from ``2`` to ``6``). Use the
+``titleId`` prop to set the ``id`` attribute of the title (e.g. to
+reference it in an ``aria-labelledby`` attribute). A link without label
+only displays an arrow icon, and it takes its accessible name from the
+title of the card.
+
+EmptyState
+----------
+
+Displays a message when there are no contents to show (e.g. an empty list)
+or when the contents couldn't be loaded. It's what widgets display when
+they have no data:
+
+.. code-block:: twig
+
+    <twig:ea:EmptyState/>
+
+    <twig:ea:EmptyState message="There are no orders yet." icon="fa-receipt"/>
+
+Without a message, the component displays a generic "no data" message.
+Use the ``title`` prop to display a short heading above the message (e.g.
+in the empty state of a whole page). When there's a title, the message is
+optional and the component doesn't display the generic message:
+
+.. code-block:: twig
+
+    <twig:ea:EmptyState title="No orders yet" icon="fa-receipt"
+        message="Orders appear here when customers buy something.">
+        <twig:block name="actions">
+            <twig:ea:Button htmlElement="a" href="/admin/order/new" color="primary">
+                Create order
+            </twig:ea:Button>
+        </twig:block>
+    </twig:ea:EmptyState>
+
+The ``title`` and ``message`` props are escaped. Use the ``title`` and
+``message`` blocks instead when they need HTML contents, and the
+``actions`` block to display buttons or links under the message. Use the
+``status="error"`` prop for errors: it changes the default icon and
+message (the ``status`` prop also accepts a backed enum case whose value
+is ``empty`` or ``error``):
+
+.. code-block:: twig
+
+    <twig:ea:EmptyState status="error" message="The report couldn't be generated.">
+        <twig:block name="actions">
+            <twig:ea:Button htmlElement="a" href="/admin/reports" size="sm">
+                Try again
+            </twig:ea:Button>
+        </twig:block>
+    </twig:ea:EmptyState>
 
 Flag
 ----
@@ -479,6 +593,41 @@ Several props toggle the elements displayed by the component:
     ``<twig:ea:Pagination paginator="{{ paginator }}"/>``. Both ways of configuring
     the component are mutually exclusive.
 
+Progress
+--------
+
+Renders a progress bar with the percentage of a value compared to a
+maximum value, like the one displayed by the
+:doc:`progress widget </widgets>`:
+
+.. code-block:: twig
+
+    <twig:ea:Progress value="{{ 32500 }}" max="{{ 50000 }}"
+        ariaLabel="Monthly sales goal"/>
+
+    {# the maximum is 100 by default #}
+    <twig:ea:Progress value="{{ 75 }}" ariaLabel="Profile completed"
+        showValue="{{ false }}"/>
+
+The bar is a native ``<progress>`` element. The percentage is displayed
+next to the bar unless you pass ``showValue="{{ false }}"``. Values above
+the maximum fill the whole bar, but the percentage shows the real number
+(e.g. ``130%``). A maximum of ``0`` or less displays ``0%``.
+
+The ``ariaLabel`` prop is the accessible name of the bar, and it's not
+displayed. Use the ``label`` prop instead to display a text above the bar,
+with the percentage at the end of the same line. The visible label is
+also the accessible name of the bar, so it doesn't need an ``ariaLabel``.
+Use the ``label`` block when the label needs HTML contents:
+
+.. code-block:: twig
+
+    <twig:ea:Progress label="Storage" value="{{ 7.2 }}" max="{{ 10 }}"/>
+
+    <twig:ea:Progress value="{{ used_seats }}" max="{{ total_seats }}">
+        <twig:block name="label">Seats <small>(Team plan)</small></twig:block>
+    </twig:ea:Progress>
+
 Sidebar
 -------
 
@@ -563,6 +712,73 @@ hovering an item shows a tooltip with its label, hovering an item with a
 submenu shows the submenu as a flyout panel, and the footer is hidden
 (arbitrary contents can't fit in the icon rail).
 
+Skeleton
+--------
+
+Renders a placeholder while some contents are loading. It's what
+:ref:`lazy widgets <widgets-lazy-cache-refresh>` display before their
+contents are loaded:
+
+.. code-block:: twig
+
+    {# three lines of text #}
+    <twig:ea:Skeleton/>
+
+    <twig:ea:Skeleton lines="{{ 5 }}"/>
+
+    {# a box that fills all the width and height of its container #}
+    <twig:ea:Skeleton variant="block"/>
+
+    {# the outline of a list of four items #}
+    <twig:ea:Skeleton variant="list" lines="{{ 4 }}"/>
+
+The ``variant`` prop accepts ``text`` (the default), ``block`` and the
+shapes of the contents of the built-in widgets: ``stat``, ``chart``,
+``list`` and ``progress`` (as strings or as a backed enum case with one of
+these values). The ``lines`` prop sets the number of lines of
+the ``text`` variant and of items of the ``list`` variant (``3`` by
+default). Screen readers announce a generic "Loading" message; change it
+with the ``label`` prop. The animation is disabled when the user prefers
+reduced motion.
+
+Stat
+----
+
+Renders a key number, like the one displayed by the
+:doc:`stat widget </widgets>`: a label, the value, its change compared to
+a previous period and a short description:
+
+.. code-block:: twig
+
+    <twig:ea:Stat label="Revenue" value="{{ 48250.5 }}" delta="{{ 8.2 }}" description="Compared to last month"/>
+
+Integer and float values are formatted for the locale of the current user.
+Strings are displayed as they are. Use the ``value`` block to display a
+value with custom formatting:
+
+.. code-block:: twig
+
+    <twig:ea:Stat label="Revenue">
+        <twig:block name="value">{{ revenue|number_format(2) }} <small>EUR</small></twig:block>
+    </twig:ea:Stat>
+
+The ``delta`` prop is a percentage (``8.2`` means ``+8.2%``). It's
+displayed rounded to one decimal, with an icon that shows if the value
+increased or decreased. An increase is displayed as good news and a
+decrease as bad news; pass ``increaseIsGood="{{ false }}"`` when a lower
+value is better (e.g. for costs or errors).
+
+Use the ``extra`` block to display other contents under the value (it's
+empty by default):
+
+.. code-block:: twig
+
+    <twig:ea:Stat label="Visits" value="{{ visits }}">
+        <twig:block name="extra">
+            <twig:ea:BarChart :data="visits_per_day" ariaLabel="Visits per day"/>
+        </twig:block>
+    </twig:ea:Stat>
+
 Switch
 ------
 
@@ -639,6 +855,61 @@ form validation errors of the fields in that tab:
     .. code-block:: twig
 
         <twig:ea:Tabs tabs="{{ field.getCustomOption('tabs') }}" translationDomain="{{ ea().i18n.translationDomain }}"/>
+
+Widget
+------
+
+Renders a single widget defined in the ``configureWidgets()`` method of the
+current dashboard. Pass the name of the widget (the one set with its
+``setName()`` method or, by default, the slug of its label):
+
+.. code-block:: twig
+
+    <twig:ea:Widget name="latest-orders"/>
+
+The component renders nothing when the current user can't see the widget
+and it throws an exception when the dashboard has no widget with that name.
+The title of the widget is an ``<h3>`` heading; change it with the
+``headingLevel`` prop (from ``2`` to ``6``) to fit the headings of your page.
+Read :ref:`the widgets docs <widgets-custom-template>` to learn how to use
+it in your own dashboard templates.
+
+Widget:Grid
+-----------
+
+Renders the widgets defined in the ``configureWidgets()`` method of the
+current dashboard. It's what the default dashboard page renders, so you
+only need it when
+:ref:`rendering your own dashboard template <widgets-custom-template>`:
+
+.. code-block:: twig
+
+    {# renders all the sections and widgets #}
+    <twig:ea:Widget:Grid/>
+
+    {# renders only the section called 'sales' #}
+    <twig:ea:Widget:Grid section="sales"/>
+
+    {# renders the widgets displayed next to the page title #}
+    <twig:ea:Widget:Grid placement="toolbar"/>
+
+The ``section`` prop is the name of a section (the one set with its
+``setName()`` method or, by default, the slug of its label). When the
+section doesn't exist or the current user can't see it, the component
+renders no widgets. The ``placement`` prop accepts ``grid`` (the default)
+and ``toolbar``. Any other value is ignored and the component renders the
+grid widgets.
+
+When the current user can't see any widget of the dashboard, the component
+displays a message. Use the ``empty`` block to change it:
+
+.. code-block:: twig
+
+    <twig:ea:Widget:Grid>
+        <twig:block name="empty">
+            <twig:ea:EmptyState message="Nothing to see here yet."/>
+        </twig:block>
+    </twig:ea:Widget:Grid>
 
 .. _`Twig Components`: https://symfony.com/bundles/ux-twig-component/current/index.html
 .. _`shadcn/ui Sidebar`: https://ui.shadcn.com/docs/components/base/sidebar

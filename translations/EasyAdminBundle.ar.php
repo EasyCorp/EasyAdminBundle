@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'لا يوجد نتائج أٌخرى',
         'loading-more-results' => 'جاري تحميل نتائج إضافية…',
     ],
+
+    'chart' => [
+        'label' => 'التسمية',
+        'value' => 'القيمة',
+    ],
+
+    'empty_state' => [
+        'empty' => 'لا توجد بيانات للعرض',
+        'error' => 'تعذّر تحميل هذا المحتوى.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'جارٍ التحميل…',
+    ],
+
+    'stat' => [
+        'increase' => 'زيادة',
+        'decrease' => 'انخفاض',
+        'no_change' => 'لا تغيير',
+        'delta_good' => 'جيد',
+        'delta_bad' => 'سيئ',
+    ],
+
+    'widget' => [
+        'retry' => 'حاول مرة أخرى',
+        'no_widgets' => 'لا يوجد ما يمكن عرضه هنا حتى الآن.',
+    ],
 ];

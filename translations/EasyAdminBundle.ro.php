@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Nu mai sunt rezultate',
         'loading-more-results' => 'Se încarcă mai multe rezultate…',
     ],
+
+    'chart' => [
+        'label' => 'Etichetă',
+        'value' => 'Valoare',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Nu există date de afișat',
+        'error' => 'Acest conținut nu a putut fi încărcat.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Se încarcă…',
+    ],
+
+    'stat' => [
+        'increase' => 'Creștere',
+        'decrease' => 'Scădere',
+        'no_change' => 'Fără modificare',
+        'delta_good' => 'bine',
+        'delta_bad' => 'rău',
+    ],
+
+    'widget' => [
+        'retry' => 'Încearcă din nou',
+        'no_widgets' => 'Nu există încă nimic de afișat aici.',
+    ],
 ];

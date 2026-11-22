@@ -3,7 +3,9 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\CacheKey;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\AdvancedOptionsDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\BuiltInActionCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\FooController;
@@ -11,8 +13,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controll
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\FooBatchCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\FooBatchResolvedCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\FooCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\InterfaceOnlyRouteDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\InvalidDetailPathCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\InvalidDetailPathDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\RootPathDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\WidgetParameterDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\WidgetParameterWithWidgetsDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Router\Fixtures\WidgetRouteNameDashboardController;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -196,5 +203,107 @@ class AdminRouteGeneratorTest extends KernelTestCase
 
         $this->assertNotNull($routes->get('admin_foo_batch_delete'));
         $this->assertNotNull($routes->get('admin_foo_batches_delete'));
+    }
+
+    public function testWidgetRouteIsGeneratedForEachDashboard(): void
+    {
+        $cache = new ArrayAdapter();
+        $adminRouteGenerator = new AdminRouteGenerator([new DashboardController(), new SecondDashboardController()], [], $cache);
+
+        $routes = $adminRouteGenerator->generateAll();
+
+        $widgetRoute = $routes->get('admin_widget');
+        $this->assertNotNull($widgetRoute);
+        $this->assertSame('/admin/_widget/{widgetName}', $widgetRoute->getPath());
+        $this->assertSame(['GET'], $widgetRoute->getMethods());
+        $this->assertSame('[a-zA-Z0-9_-]+', $widgetRoute->getRequirement('widgetName'));
+        $this->assertSame(DashboardController::class.'::renderWidget', $widgetRoute->getDefault('_controller'));
+        $this->assertSame(DashboardController::class, $widgetRoute->getDefault(EA::DASHBOARD_CONTROLLER_FQCN));
+        $this->assertTrue($widgetRoute->getDefault(EA::ROUTE_CREATED_BY_EASYADMIN));
+        $this->assertNull($widgetRoute->getDefault(EA::CRUD_CONTROLLER_FQCN));
+
+        $this->assertSame('/second-admin/_widget/{widgetName}', $routes->get('second_admin_widget')?->getPath());
+
+        // the widget route has the same attributes as the dashboard route, but it must not replace it as the dashboard URL
+        $this->assertSame('admin', $adminRouteGenerator->findRouteName(DashboardController::class));
+        $this->assertSame('second_admin', $adminRouteGenerator->findRouteName(SecondDashboardController::class));
+        $this->assertSame(['admin_widget', 'second_admin_widget'], array_values(array_filter(
+            array_keys($cache->getItem(CacheKey::ROUTE_NAME_TO_ATTRIBUTES)->get()),
+            static fn (string $routeName): bool => str_ends_with($routeName, '_widget'),
+        )), 'widget requests need the route attributes to create the admin context');
+    }
+
+    public function testWidgetRouteHasTheOptionsOfTheDashboardRoute(): void
+    {
+        $adminRouteGenerator = new AdminRouteGenerator([new AdvancedOptionsDashboardController()], [], new ArrayAdapter());
+
+        $widgetRoute = $adminRouteGenerator->generateAll()->get('advanced_admin_widget');
+
+        $this->assertNotNull($widgetRoute);
+        $this->assertSame('/advanced-admin/_widget/{widgetName}', $widgetRoute->getPath());
+        $this->assertSame('admin.example.com', $widgetRoute->getHost());
+        $this->assertSame(['https'], $widgetRoute->getSchemes());
+        $this->assertSame('context.getMethod() in ["GET", "HEAD"]', $widgetRoute->getCondition());
+        $this->assertSame(['GET'], $widgetRoute->getMethods());
+    }
+
+    public function testWidgetRouteOfDashboardWithRootPath(): void
+    {
+        $adminRouteGenerator = new AdminRouteGenerator([new RootPathDashboardController()], [], new ArrayAdapter());
+
+        $this->assertSame('/_widget/{widgetName}', $adminRouteGenerator->generateAll()->get('root_admin_widget')?->getPath());
+    }
+
+    public function testNoWidgetRouteWhenTheDashboardPathUsesItsPlaceholderAndThereAreNoWidgets(): void
+    {
+        $adminRouteGenerator = new AdminRouteGenerator([new WidgetParameterDashboardController()], [], new ArrayAdapter());
+
+        $routes = $adminRouteGenerator->generateAll();
+
+        $this->assertSame('/admin/{widgetName}', $routes->get('widget_parameter_admin')?->getPath());
+        $this->assertNull($routes->get('widget_parameter_admin_widget'));
+        foreach ($routes as $route) {
+            $route->compile();
+        }
+    }
+
+    public function testDashboardWithWidgetsCantUseTheWidgetPlaceholderInItsPath(): void
+    {
+        $adminRouteGenerator = new AdminRouteGenerator([new WidgetParameterWithWidgetsDashboardController()], [], new ArrayAdapter());
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('The route of the "%s" dashboard uses a placeholder called "{widgetName}", which is reserved for the route that serves the contents of its widgets. Rename that placeholder.', WidgetParameterWithWidgetsDashboardController::class));
+
+        $adminRouteGenerator->generateAll();
+    }
+
+    public function testNoWidgetRouteForDashboardsWithoutRenderWidgetMethod(): void
+    {
+        $adminRouteGenerator = new AdminRouteGenerator([new InterfaceOnlyRouteDashboardController()], [], new ArrayAdapter());
+
+        $routes = $adminRouteGenerator->generateAll();
+
+        $this->assertNotNull($routes->get('plain_admin'));
+        $this->assertNull($routes->get('plain_admin_widget'));
+    }
+
+    public function testDashboardRouteNameCollidingWithAPreviousWidgetRoute(): void
+    {
+        $adminRouteGenerator = new AdminRouteGenerator([new DashboardController(), new WidgetRouteNameDashboardController()], [], new ArrayAdapter());
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('The route name of the "%s" dashboard ("admin_widget") is the same as the name of the route that the "%s" dashboard generates to serve the contents of its widgets.', WidgetRouteNameDashboardController::class, DashboardController::class));
+
+        $adminRouteGenerator->generateAll();
+    }
+
+    public function testWidgetRouteCollidingWithAPreviousDashboardRoute(): void
+    {
+        $adminRouteGenerator = new AdminRouteGenerator([new WidgetRouteNameDashboardController(), new DashboardController()], [], new ArrayAdapter());
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('The "%s" dashboard generates a route named "admin_widget" to serve the contents of its widgets, but that route name is already used', DashboardController::class));
+
+        $adminRouteGenerator->generateAll();
     }
 }

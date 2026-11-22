@@ -1,0 +1,48 @@
+{# @var this \EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Widget\Grid #}
+{% trans_default_domain ea().i18n.translationDomain %}
+{% if this.toolbar %}
+    {% for widget in this.toolbarWidgets %}
+        <twig:ea:Widget name="{{ widget.name }}" />
+    {% endfor %}
+{% else %}
+    <div {{ attributes.defaults({class: 'ea-widget-grid'}) }}>
+        {% for section in this.sections %}
+            {% set section_label = section.label is empty ? null : section.label|trans %}
+            {% set section_help = section.help is empty ? null : section.help|trans %}
+            {% set section_title_id = section.name is null ? null : 'ea-widgets-section-' ~ section.name ~ '-title' %}
+
+            <section class="{{ html_classes('ea-widget-section', section.cssClass) }}"
+                {%- if section.name is not null %} data-ea-widget-section="{{ section.name }}"{% endif %}
+                {%- if section_label is not null and section_title_id is not null %} aria-labelledby="{{ section_title_id }}"{% endif %}>
+                {% if section_label is not null or section_help is not null %}
+                    <header class="ea-widget-section-header">
+                        {% if section_label is not null %}
+                            {# section labels and help messages are written by the developer, so they can contain HTML #}
+                            <h2 class="ea-widget-section-title" {%- if section_title_id is not null %} id="{{ section_title_id }}"{% endif %}>
+                                {%- if section.icon %}<twig:ea:Icon name="{{ section.icon }}" class="ea-widget-section-icon" aria-hidden="true" />{% endif -%}
+                                <span>{{ section_label|raw }}</span>
+                            </h2>
+                        {% endif %}
+                        {% if section_help is not null %}
+                            <p class="ea-widget-section-help">{{ section_help|raw }}</p>
+                        {% endif %}
+                    </header>
+                {% endif %}
+
+                <div class="ea-widgets">
+                    {% for widget in section.widgets %}
+                        {# without a section title, the titles of the widgets are the next level after the page title #}
+                        <twig:ea:Widget name="{{ widget.name }}" headingLevel="{{ section_label is null ? 2 : 3 }}" />
+                    {% endfor %}
+                </div>
+            </section>
+        {% endfor %}
+
+        {% if this.empty %}
+            {## Displayed when the dashboard has no widgets for the current user. -#}
+            <twig:block name="empty">
+                <twig:ea:EmptyState message="{{ 'widget.no_widgets'|trans(domain: 'EasyAdminBundle') }}" />
+            </twig:block>
+        {% endif %}
+    </div>
+{% endif %}

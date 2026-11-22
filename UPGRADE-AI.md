@@ -3,6 +3,87 @@ AI Upgrade Guide
 
 This guide is for AI agents. If you are a human, read [UPGRADE.md](UPGRADE.md) instead.
 
+## EasyAdmin 5.11.0
+
+Use this prompt to upgrade backends for the dashboard widget changes made in EasyAdmin 5.11.0.
+
+<upgrade-prompt version="5.11.0">
+
+EasyAdmin 5.11.0 adds dashboard widgets. `AbstractDashboardController` has two
+new public methods (`configureWidgets(): iterable` and
+`renderWidget(string $widgetName): Response`) and every dashboard that extends it
+gets a new route named `<dashboard route name>_widget` with the path
+`<dashboard route path>/_widget/{widgetName}`. `DashboardControllerInterface`
+declares `configureWidgets()` with a `@method` annotation (it becomes a real
+interface method in 6.0), and `AdminContextFactory::__construct()` has a new
+optional last argument (`WidgetFactory`). Search the project (PHP, routing
+config) and apply what's relevant. Skip what doesn't apply.
+
+## Required changes
+
+1. Find classes that extend `AbstractDashboardController` and define a method
+   named `configureWidgets` or `renderWidget` that is not meant to be the new
+   EasyAdmin method. Rename those methods (and update their callers):
+
+   ```php
+   // before
+   public function renderWidget(string $type, int $limit): Response
+   // after
+   public function renderReportWidget(string $type, int $limit): Response
+   ```
+
+2. Read the `routeName` and `routePath` of each `#[AdminDashboard]` attribute.
+   Find routes of the application (attributes, `config/routes/`) named
+   `<routeName>_widget` or whose path starts with `<routePath>/_widget/`.
+   Rename them or change their path:
+
+   ```php
+   // before: collides with the route of #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
+   #[Route('/admin/_widget/{widgetName}', name: 'admin_widget')]
+   // after
+   #[Route('/admin/report-widget/{name}', name: 'admin_report_widget')]
+   ```
+
+3. Find classes that extend `AbstractDashboardController` and don't define the
+   `index()` method. If the application imports the route attributes of their
+   directory (e.g. `type: attribute` in `config/routes.yaml`), find uses of the
+   route named after each class and its `index` method (e.g.
+   `app_admin_dashboard_index`) in `path()`, `url()`, `redirectToRoute()` and
+   `generateUrl()`. Replace that name with the `routeName` of the
+   `#[AdminDashboard]` attribute of the class:
+
+   ```php
+   // before
+   return $this->redirectToRoute('app_admin_dashboard_index');
+   // after: #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
+   return $this->redirectToRoute('admin');
+   ```
+
+## Optional changes
+
+1. Find classes that implement `DashboardControllerInterface` without
+   extending `AbstractDashboardController`. Add this method to them:
+
+   ```php
+   public function configureWidgets(): iterable
+   {
+       return [];
+   }
+   ```
+
+2. Find code that creates `AdminContextFactory` with `new` (e.g. in tests or
+   service decorators). Pass the `WidgetFactory` service as the new last (9th)
+   argument:
+
+   ```php
+   // before
+   new AdminContextFactory($tokenStorage, $menuFactory, $controllerRegistry, $entityFactory, $routeGenerator, $actionFactory, $translationIdGenerator, $translator);
+   // after
+   new AdminContextFactory($tokenStorage, $menuFactory, $controllerRegistry, $entityFactory, $routeGenerator, $actionFactory, $translationIdGenerator, $translator, $widgetFactory);
+   ```
+
+</upgrade-prompt>
+
 ## EasyAdmin 5.10.1
 
 Use this prompt to upgrade backends for the string callable, route option and CSRF token changes made in EasyAdmin 5.10.1.

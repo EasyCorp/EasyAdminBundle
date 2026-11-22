@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'אין עוד תוצאות',
         'loading-more-results' => 'טוען עוד תוצאות…',
     ],
+
+    'chart' => [
+        'label' => 'תווית',
+        'value' => 'ערך',
+    ],
+
+    'empty_state' => [
+        'empty' => 'אין נתונים להצגה',
+        'error' => 'לא ניתן היה לטעון את התוכן הזה.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'טוען…',
+    ],
+
+    'stat' => [
+        'increase' => 'עלייה',
+        'decrease' => 'ירידה',
+        'no_change' => 'ללא שינוי',
+        'delta_good' => 'טוב',
+        'delta_bad' => 'רע',
+    ],
+
+    'widget' => [
+        'retry' => 'נסו שוב',
+        'no_widgets' => 'אין עדיין מה להציג כאן.',
+    ],
 ];

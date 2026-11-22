@@ -26,6 +26,8 @@ final class DashboardContext
     private $mainMenuBuilder;
     /** @var (callable(): UserMenuDto)|null */
     private $userMenuBuilder;
+    /** @var (callable(): AssetsDto)|null */
+    private $extraAssetsBuilder;
 
     public function __construct(
         private readonly DashboardDto $dashboardDto,
@@ -54,6 +56,19 @@ final class DashboardContext
     public function setUserMenuBuilder(callable $builder): void
     {
         $this->userMenuBuilder = $builder;
+    }
+
+    /**
+     * Sets the lazy builder of the assets added to the ones configured in the
+     * dashboard (e.g. the assets of the widgets displayed in the dashboard page).
+     * The builder is a callable that returns AssetsDto and it's executed the
+     * first time that the assets are requested.
+     *
+     * @internal Used by AdminContextFactory
+     */
+    public function setExtraAssetsBuilder(callable $builder): void
+    {
+        $this->extraAssetsBuilder = $builder;
     }
 
     public function getDashboardDto(): DashboardDto
@@ -96,6 +111,12 @@ final class DashboardContext
 
     public function getAssets(): AssetsDto
     {
+        if (null !== $extraAssetsBuilder = $this->extraAssetsBuilder) {
+            // the builder is removed first because it can read these assets while it runs
+            $this->extraAssetsBuilder = null;
+            $this->assets->mergeWith($extraAssetsBuilder());
+        }
+
         return $this->assets;
     }
 

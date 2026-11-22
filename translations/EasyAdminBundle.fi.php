@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Ei enempää tuloksia',
         'loading-more-results' => 'Ladataan lisää tuloksia…',
     ],
+
+    'chart' => [
+        'label' => 'Nimiö',
+        'value' => 'Arvo',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Ei näytettäviä tietoja',
+        'error' => 'Sisällön lataaminen epäonnistui.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Ladataan…',
+    ],
+
+    'stat' => [
+        'increase' => 'Kasvu',
+        'decrease' => 'Lasku',
+        'no_change' => 'Ei muutosta',
+        'delta_good' => 'hyvä',
+        'delta_bad' => 'huono',
+    ],
+
+    'widget' => [
+        'retry' => 'Yritä uudelleen',
+        'no_widgets' => 'Täällä ei ole vielä mitään näytettävää.',
+    ],
 ];

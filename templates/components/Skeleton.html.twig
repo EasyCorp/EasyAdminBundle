@@ -1,0 +1,37 @@
+{% props
+    ## 'text'|'block'|'stat'|'chart'|'list'|'progress' The shape of the placeholder (a string or an enum case with one of these values): some lines of text, a box that fills its container, or the outline of a key number, a bar chart, a list of items or a progress bar.
+    variant = 'text',
+    ## int The number of lines of the 'text' variant and of items of the 'list' variant.
+    lines = 3,
+    ## string|null The text read by screen readers (default: a generic "Loading…" message).
+    label = null,
+%}
+
+{% set variant_value = variant.value is defined ? variant.value : variant %}
+{% set variant = variant_value in ['text', 'block', 'stat', 'chart', 'list', 'progress'] ? variant_value : 'text' %}
+{% set line_count = max(1, lines|default(1) + 0) %}
+<div {{ attributes.defaults({class: 'ea-skeleton ea-skeleton-' ~ variant, role: 'status'}) }}>
+    <span class="visually-hidden">{{ label ?: 'skeleton.loading'|trans(domain: 'EasyAdminBundle') }}</span>
+    {%- if 'text' == variant %}
+        {%- for i in 1..line_count %}
+            <span class="ea-skeleton-line" aria-hidden="true"></span>
+        {%- endfor %}
+    {%- elseif 'stat' == variant %}
+        <span class="ea-skeleton-line ea-skeleton-stat-value" aria-hidden="true"></span>
+        <span class="ea-skeleton-line ea-skeleton-stat-description" aria-hidden="true"></span>
+    {%- elseif 'chart' == variant %}
+        {%- for i in 1..8 %}
+            <span class="ea-skeleton-line ea-skeleton-chart-bar" aria-hidden="true"></span>
+        {%- endfor %}
+    {%- elseif 'list' == variant %}
+        {%- for i in 1..line_count %}
+            <span class="ea-skeleton-list-item" aria-hidden="true">
+                <span class="ea-skeleton-line ea-skeleton-list-title"></span>
+                <span class="ea-skeleton-line ea-skeleton-list-value"></span>
+                <span class="ea-skeleton-line ea-skeleton-list-description"></span>
+            </span>
+        {%- endfor %}
+    {%- elseif 'progress' == variant %}
+        <span class="ea-skeleton-line ea-skeleton-progress-bar" aria-hidden="true"></span>
+    {% endif %}
+</div>

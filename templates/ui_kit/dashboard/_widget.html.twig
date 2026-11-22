@@ -1,0 +1,62 @@
+{# renders the same HTML as the Widget component but with static contents, because the
+   widgets of the UI Kit don't come from the configureWidgets() method of the dashboard.
+   They never have a URL, so the JavaScript code that loads widgets ignores them #}
+{% macro widget(widget, state, body) %}
+    {% set is_toolbar = widget.toolbar ?? false %}
+    {% set has_card = not is_toolbar and not (widget.cardless ?? false) %}
+    {% set is_labelled = has_card and (widget.label ?? null) is not empty %}
+    {% set title_id = 'ea-widget-' ~ widget.name ~ '-title' %}
+    {% set body_scrolls = not is_toolbar and widget.rows is defined %}
+    {% set css_classes = ['ea-widget', 'ea-widget-' ~ widget.type] %}
+    {% set css_classes = css_classes|merge(is_toolbar ? ['ea-widget-toolbar'] : ['ea-widget-cols-' ~ widget.cols]) %}
+    {% set css_classes = css_classes|merge(widget.rows is defined ? ['ea-widget-rows-' ~ widget.rows] : []) %}
+    {% set css_classes = css_classes|merge(has_card ? [] : ['ea-widget-cardless']) %}
+
+    {% set body_html %}
+        <div class="ea-widget-body" data-ea-widget-body aria-busy="{{ 'loading' == state ? 'true' : 'false' }}"
+            {%- if body_scrolls %} tabindex="0"{% if is_labelled %} role="region" aria-labelledby="{{ title_id }}"{% endif %}{% endif %}>
+            {%- if 'loading' == state -%}
+                <twig:ea:Skeleton variant="{{ not is_toolbar and widget.type in ['stat', 'chart', 'list', 'progress'] ? widget.type : 'block' }}" lines="{{ 4 }}" />
+            {%- elseif 'errors' == state -%}
+                {# the button is displayed to show the complete error state, although it does nothing here #}
+                {{ include('@EasyAdmin/widget/_error.html.twig', {is_retryable: true}) }}
+            {%- else -%}
+                {{ body }}
+            {%- endif -%}
+        </div>
+    {% endset %}
+
+    <div class="{{ css_classes|join(' ') }}" data-ea-widget="{{ widget.name }}"
+        {%- if 'loading' == state %} data-ea-widget-lazy="true"{% endif %}
+        {%- if is_labelled %} role="group" aria-labelledby="{{ title_id }}"{% endif %}>
+        {% if has_card %}
+            <twig:ea:Card class="ea-widget-card" icon="{{ widget.icon ?? '' }}" titleId="{{ title_id }}" headingLevel="{{ widget.heading_level ?? 3 }}" title="{{ widget.label ?? '' }}" help="{{ widget.help ?? '' }}" linkUrl="{{ widget.link_url ?? '' }}" linkLabel="{{ widget.link_label ?? '' }}">
+                <twig:block name="content">{{ body_html }}</twig:block>
+            </twig:ea:Card>
+        {% else %}
+            {{ body_html }}
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{# the same HTML as the widget/list.html.twig template #}
+{% macro list_items(items) %}
+    <ul class="ea-widget-list-items">
+        {% for item in items %}
+            <li class="ea-widget-list-item">
+                {% if item.icon is defined %}
+                    <twig:ea:Icon name="{{ item.icon }}" class="ea-widget-list-item-icon" aria-hidden="true" />
+                {% endif %}
+                <div class="ea-widget-list-item-content">
+                    <a class="ea-widget-list-item-title" href="#">{{ item.title }}</a>
+                    {% if item.description is defined %}
+                        <span class="ea-widget-list-item-description">{{ item.description }}</span>
+                    {% endif %}
+                </div>
+                {% if item.value is defined %}
+                    <span class="ea-widget-list-item-value">{{ item.value }}</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}

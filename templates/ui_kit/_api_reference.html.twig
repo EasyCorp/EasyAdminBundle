@@ -1,0 +1,51 @@
+{# renders the `...` parts of a documentation comment as code #}
+{% macro render_documentation(text) %}
+    {%- for part in text|split('`') -%}
+        {%- if loop.index is even %}<code>{{ part }}</code>{% else %}{{ part }}{% endif -%}
+    {%- endfor -%}
+{% endmacro %}
+
+{# uses the same colors as the syntax highlighting of the Symfony Docs #}
+{% macro default_value_css_class(value) -%}
+    {%- if value starts with "'" -%}hl-string
+    {%- elseif value in ['true', 'false', 'null'] or value matches '/^-?\\d+(\\.\\d+)?$/' -%}hl-literal
+    {%- endif -%}
+{%- endmacro %}
+
+{% macro render_props_table(props) %}
+    <div class="table-responsive">
+        <table class="table datagrid">
+            <thead>
+                <tr><th scope="col">Prop Name</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr>
+            </thead>
+            <tbody>
+                {% for prop in props|sort((a, b) => a.name|lower <=> b.name|lower) %}
+                    <tr>
+                        <td><code>{{ prop.name }}</code></td>
+                        <td><code>{{ prop.type }}</code></td>
+                        <td>{% if prop.required %}<em>required</em>{% else %}<code class="{{ _self.default_value_css_class(prop.default) }}">{{ prop.default }}</code>{% endif %}</td>
+                        <td>{{ _self.render_documentation(prop.description) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}
+
+{% macro render_blocks_table(blocks) %}
+    <div class="table-responsive">
+        <table class="table datagrid">
+            <thead>
+                <tr><th scope="col">Block Name</th><th scope="col">Description</th></tr>
+            </thead>
+            <tbody>
+                {% for block in blocks %}
+                    <tr>
+                        <td><code>{{ block.name }}</code></td>
+                        <td>{{ _self.render_documentation(block.description) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}

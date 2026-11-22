@@ -1,0 +1,43 @@
+{% props
+    ## int|float The current value (e.g. the amount raised so far).
+    value = 0,
+    ## int|float The value that represents the 100% of the progress (the same as the `max` attribute of the `progress` HTML element).
+    max = 100,
+    ## string|null A text displayed above the bar, with the percentage at the end of its line (it's escaped; use the `label` block to include HTML contents).
+    label = null,
+    ## string|null The accessible name of the progress bar when there is no visible label (e.g. 'Monthly sales goal').
+    ariaLabel = null,
+    ## bool Whether to display the percentage next to the bar (or next to the label, when there is one).
+    showValue = true,
+%}
+
+{% set current_value = value|default(0) + 0 %}
+{% set max_value = max|default(0) + 0 %}
+{# values above the maximum fill the bar but the percentage shows the real number (e.g. 120%) #}
+{% set percentage = max_value > 0 ? (current_value / max_value * 100)|round + 0 : 0 %}
+{% set bar_max = max_value > 0 ? max_value : 1 %}
+{% set bar_value = max_value > 0 ? max(0, min(current_value, max_value)) : 0 %}
+
+{% set label_html -%}
+    {## The text displayed above the bar; it replaces the `label` prop and can contain HTML. -#}
+    {% block label %}{{ label }}{% endblock %}
+{%- endset %}
+{% set has_label = label_html|trim is not empty %}
+{% set label_id = has_label ? 'ea-progress-label-' ~ random() : null %}
+
+<div {{ attributes.defaults({class: html_classes('ea-progress', {'ea-progress-labelled': has_label})}) }}>
+    {% if has_label %}
+        <div class="ea-progress-header">
+            <span class="ea-progress-label" id="{{ label_id }}">{{ label_html }}</span>
+            {% if showValue %}
+                <span class="ea-progress-value" aria-hidden="true">{{ percentage }}%</span>
+            {% endif %}
+        </div>
+    {% endif %}
+    {# the bar stops at the maximum, so screen readers need the real percentage (e.g. 120%) #}
+    <progress class="ea-progress-bar" value="{{ bar_value }}" max="{{ bar_max }}" aria-valuetext="{{ percentage }}%"
+        {%- if has_label %} aria-labelledby="{{ label_id }}"{% elseif ariaLabel %} aria-label="{{ ariaLabel }}"{% endif %}>{{ percentage }}%</progress>
+    {% if showValue and not has_label %}
+        <span class="ea-progress-value" aria-hidden="true">{{ percentage }}%</span>
+    {% endif %}
+</div>

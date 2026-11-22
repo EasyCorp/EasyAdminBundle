@@ -1,0 +1,58 @@
+{# @var this \EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Widget #}
+{% trans_default_domain ea().i18n.translationDomain %}
+{% set widget = this.widget %}
+{% if widget is not null %}
+    {# the contents of component blocks can't see the default translation domain
+       of this template, so everything is translated here, outside of them #}
+    {% set widget_label = widget.label is empty ? null : widget.label|trans %}
+    {% set widget_help = widget.help is empty ? null : widget.help|trans %}
+    {% set widget_link_label = widget.linkLabel is empty ? null : widget.linkLabel|trans %}
+    {% set widget_title_id = 'ea-widget-' ~ widget.name ~ '-title' %}
+    {% set widget_body = this.body %}
+    {% set widget_has_card = this.hasCard %}
+    {% set widget_is_labelled = widget_has_card and widget_label is not null %}
+    {# the Widget:Grid component passes the level that fits the heading of the section (if any) #}
+    {% set widget_heading_level = this.headingLevel %}
+    {# the body of widgets with rows scrolls, so it must be reachable with the keyboard #}
+    {% set widget_body_scrolls = widget.rows is not null and not this.inToolbar %}
+
+    <div {{ attributes.defaults(this.defaultAttributes) }}
+        {%- if widget_is_labelled %} role="group" aria-labelledby="{{ widget_title_id }}"{% endif %}>
+        {% set widget_body_html %}
+            <div class="ea-widget-body" data-ea-widget-body aria-busy="{{ widget_body is null ? 'true' : 'false' }}"
+                {%- if widget_body_scrolls %} tabindex="0"{% if widget_is_labelled %} role="region" aria-labelledby="{{ widget_title_id }}"{% endif %}{% endif %}>
+                {%- if widget_body is null -%}
+                    {# the placeholder of the built-in widgets has the shape of their contents #}
+                    <twig:ea:Skeleton variant="{{ not this.inToolbar and widget.type in ['stat', 'chart', 'list', 'progress'] ? widget.type : 'block' }}" lines="{{ 4 }}" />
+                {%- else -%}
+                    {{ widget_body|raw }}
+                {%- endif -%}
+            </div>
+        {% endset %}
+
+        {% if widget_has_card %}
+            {# labels, help messages and link labels are written by the developer, so they can contain HTML #}
+            <twig:ea:Card class="ea-widget-card" icon="{{ widget.icon }}" titleId="{{ widget_title_id }}" headingLevel="{{ widget_heading_level }}" linkUrl="{{ widget.linkUrl }}">
+                <twig:block name="title">{{ widget_label|raw }}</twig:block>
+                <twig:block name="help">{{ widget_help|raw }}</twig:block>
+                <twig:block name="link_label">{{ widget_link_label|raw }}</twig:block>
+                <twig:block name="content">{{ widget_body_html|raw }}</twig:block>
+            </twig:ea:Card>
+        {% else %}
+            {{ widget_body_html|raw }}
+        {% endif %}
+
+        {% if this.fragmentUrl is not null %}
+            {# displayed by the JavaScript code when the contents can't be loaded #}
+            <template data-ea-widget-error-template>{{ this.errorBody|raw }}</template>
+        {% endif %}
+    </div>
+
+    {% if this.includesScript %}
+        {% guard function csp_nonce %}
+            <script src="{{ asset('widgets.js', ea().assets.defaultAssetPackageName) }}" nonce="{{ csp_nonce('script') }}" defer></script>
+        {% else %}
+            <script src="{{ asset('widgets.js', ea().assets.defaultAssetPackageName) }}" defer></script>
+        {% endguard %}
+    {% endif %}
+{% endif %}

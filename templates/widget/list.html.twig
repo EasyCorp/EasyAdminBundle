@@ -1,0 +1,30 @@
+{# @var widget \EasyCorp\Bundle\EasyAdminBundle\Dto\WidgetDto #}
+{% trans_default_domain ea().i18n.translationDomain %}
+{% if data.items is empty %}
+    {% set empty_message = widget.customOption('emptyMessage') %}
+    <twig:ea:EmptyState :message="empty_message is empty ? null : empty_message|trans" />
+{% else %}
+    <ul class="ea-widget-list-items">
+        {% for item in data.items %}
+            {# @var item \EasyCorp\Bundle\EasyAdminBundle\Widget\ListItem #}
+            <li class="ea-widget-list-item">
+                {% if item.icon is not empty %}
+                    <twig:ea:Icon name="{{ item.icon }}" class="ea-widget-list-item-icon" aria-hidden="true" />
+                {% endif %}
+                <div class="ea-widget-list-item-content">
+                    {% if item.url is not empty %}
+                        <a class="ea-widget-list-item-title" href="{{ item.url }}">{{ item.title }}</a>
+                    {% else %}
+                        <span class="ea-widget-list-item-title">{{ item.title }}</span>
+                    {% endif %}
+                    {% if item.description is not empty %}
+                        <span class="ea-widget-list-item-description">{{ item.description }}</span>
+                    {% endif %}
+                </div>
+                {% if item.value is not null and item.value is not same as('') %}
+                    <span class="ea-widget-list-item-value">{{ item.value }}</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

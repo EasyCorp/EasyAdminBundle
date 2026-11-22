@@ -1,0 +1,7 @@
+{# When a lower value is better
+   Set increaseIsGood to false for values that should go down (e.g. costs, errors
+   or response times): a negative delta is then good news and a positive one bad news. #}
+<div class="ea-ui-kit-grid">
+    <twig:ea:Stat label="Average response time" value="1.8 h" :delta="-12.5" :increaseIsGood="false" />
+    <twig:ea:Stat label="Failed payments" :value="42" :delta="6.1" :increaseIsGood="false" />
+</div>

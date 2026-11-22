@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Niet meer resultaten gevonden…',
         'loading-more-results' => 'Meer resultaten laden…',
     ],
+
+    'chart' => [
+        'label' => 'Label',
+        'value' => 'Waarde',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Geen gegevens om weer te geven',
+        'error' => 'Deze inhoud kon niet worden geladen.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Laden…',
+    ],
+
+    'stat' => [
+        'increase' => 'Stijging',
+        'decrease' => 'Daling',
+        'no_change' => 'Geen verandering',
+        'delta_good' => 'goed',
+        'delta_bad' => 'slecht',
+    ],
+
+    'widget' => [
+        'retry' => 'Opnieuw proberen',
+        'no_widgets' => 'Er is hier nog niets om te tonen.',
+    ],
 ];

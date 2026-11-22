@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Nincs több találat',
         'loading-more-results' => 'Töltés…',
     ],
+
+    'chart' => [
+        'label' => 'Címke',
+        'value' => 'Érték',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Nincs megjeleníthető adat',
+        'error' => 'Ezt a tartalmat nem sikerült betölteni.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Betöltés…',
+    ],
+
+    'stat' => [
+        'increase' => 'Növekedés',
+        'decrease' => 'Csökkenés',
+        'no_change' => 'Nincs változás',
+        'delta_good' => 'jó',
+        'delta_bad' => 'rossz',
+    ],
+
+    'widget' => [
+        'retry' => 'Újrapróbálkozás',
+        'no_widgets' => 'Itt még nincs mit megjeleníteni.',
+    ],
 ];

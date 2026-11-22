@@ -39,6 +39,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormLayoutFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\WidgetFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ArrayConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\AssociationConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\AvatarConfigurator;
@@ -108,11 +109,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\EntityTranslationIdGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Alert;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Badge;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\BarChart;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Button;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Flag;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Icon;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Pagination;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Stat;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Widget as WidgetComponent;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Widget\Grid as WidgetGridComponent;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
+use EasyCorp\Bundle\EasyAdminBundle\Widget\WidgetRenderer;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
@@ -242,6 +248,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(5, service(ActionFactory::class))
             ->arg(6, service(EntityTranslationIdGeneratorInterface::class))
             ->arg(7, service('translator'))
+            ->arg(8, service(WidgetFactory::class))
 
         ->set(AdminUrlGenerator::class)
             // I don't know if we truly need the share() method to get a new instance of the
@@ -546,6 +553,39 @@ return static function (ContainerConfigurator $container) {
 
         ->set(Button::class)
             ->arg(0, service('translator'))
+            ->tag('twig.component')
+
+        ->set(WidgetFactory::class)
+            ->arg(0, service(AdminContextProvider::class))
+            ->arg(1, service(ControllerFactory::class))
+            ->arg(2, service(AuthorizationChecker::class))
+
+        ->set(WidgetRenderer::class)
+            ->arg(0, service('twig'))
+            ->arg(1, service(AdminContextProvider::class))
+            ->arg(2, tagged_iterator(EasyAdminBundle::TAG_WIDGET_CONTEXT_PROVIDER))
+            ->arg(3, service('cache.app'))
+            ->arg(4, service('router'))
+            ->arg(5, service('logger')->nullOnInvalid())
+            ->arg(6, param('kernel.debug'))
+            ->arg(7, tagged_iterator(EasyAdminBundle::TAG_WIDGET_CONFIGURATOR))
+            ->tag('monolog.logger', ['channel' => 'easyadmin'])
+
+        ->set(WidgetGridComponent::class)
+            ->arg(0, service(WidgetFactory::class))
+            ->tag('twig.component')
+
+        ->set(WidgetComponent::class)
+            ->arg(0, service(WidgetFactory::class))
+            ->arg(1, service(WidgetRenderer::class))
+            ->tag('twig.component')
+
+        ->set(Stat::class)
+            ->arg(0, service(IntlFormatter::class))
+            ->tag('twig.component')
+
+        ->set(BarChart::class)
+            ->arg(0, service(IntlFormatter::class))
             ->tag('twig.component')
     ;
 };

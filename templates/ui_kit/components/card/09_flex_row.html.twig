@@ -1,0 +1,14 @@
+{# Outside a grid
+   A card is as wide as its contents in layouts that don't stretch it, such as a
+   row of flex items, and stacked cards are as tall as their contents. #}
+<div class="d-flex flex-wrap align-items-start gap-3">
+    <twig:ea:Card title="Orders">
+        <twig:block name="content">152 orders today</twig:block>
+    </twig:ea:Card>
+    <twig:ea:Card title="Refunds" icon="internal:file-lines">
+        <twig:block name="content">3 refunds waiting for approval</twig:block>
+    </twig:ea:Card>
+    <twig:ea:Card>
+        <twig:block name="content">Free shipping until Friday</twig:block>
+    </twig:ea:Card>
+</div>

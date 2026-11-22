@@ -1,0 +1,11 @@
+{# Visible label
+   The label prop displays a text above the bar, with the percentage at the end
+   of the same line. The label is also the accessible name of the bar, so it
+   doesn't need an ariaLabel. Use the label block to include HTML contents. #}
+<div class="d-flex flex-column gap-4">
+    <twig:ea:Progress label="Storage" :value="7.2" :max="10" />
+    <twig:ea:Progress label="Profile completed" :value="40" :showValue="false" />
+    <twig:ea:Progress :value="32500" :max="50000">
+        <twig:block name="label">Monthly sales goal <strong>(50,000 EUR)</strong></twig:block>
+    </twig:ea:Progress>
+</div>

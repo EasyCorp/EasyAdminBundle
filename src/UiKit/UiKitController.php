@@ -89,7 +89,15 @@ final class UiKitController
         'errors' => 'Errors',
         'disabled' => 'Disabled',
     ];
+    private const DASHBOARD_STATES = [
+        'loaded' => 'Loaded',
+        'loading' => 'Loading',
+        'empty' => 'Empty',
+        'errors' => 'Errors',
+        'no_widgets' => 'No widgets',
+    ];
     private const TYPOGRAPHY_SAMPLE_TEMPLATE = '@EasyAdmin/ui_kit/foundations/_typography_sample.html.twig';
+    private const DASHBOARD_USAGE_TEMPLATE = '@EasyAdmin/ui_kit/dashboard/_usage.html.twig';
     // the namespace mapped to the 'ea:' prefix in EasyAdminExtension::prepend()
     private const COMPONENTS_NAMESPACE = 'EasyCorp\\Bundle\\EasyAdminBundle\\Twig\\Component\\';
     // these examples use FontAwesome icon names, which only work when the dashboard uses that icon set
@@ -102,6 +110,7 @@ final class UiKitController
         'circle-exclamation' => ['fa-solid fa-circle-exclamation', 'circle-alert'],
         'circle-info' => ['fa-solid fa-circle-info', 'info'],
         'delete' => ['fa-regular fa-trash-can', 'trash'],
+        'desktop' => ['fa-solid fa-desktop', 'monitor'],
         'detail' => ['fa-regular fa-eye', 'eye'],
         'dots-horizontal' => ['fa-solid fa-ellipsis', 'ellipsis'],
         'download' => ['fa-solid fa-download', 'download'],
@@ -175,6 +184,31 @@ final class UiKitController
             'examples' => $this->findExamples($name),
             'documentation' => $this->findDocumentation($components[$name]),
             'sub_components_documentation' => $this->findSubComponentsDocumentation($components[$name]),
+        ]));
+    }
+
+    /**
+     * Renders the built-in widgets in each of their states with the same HTML as the
+     * Widget component. The widgets of the UI Kit don't come from the configureWidgets()
+     * method of the dashboard, so their HTML is static and they're never loaded with
+     * JavaScript (e.g. the loading state stays forever).
+     */
+    #[AdminRoute(path: '/dashboard', name: 'dashboard', options: ['methods' => ['GET']])]
+    public function dashboard(Request $request): Response
+    {
+        $state = $request->query->getString('state', 'loaded');
+        if (!\array_key_exists($state, self::DASHBOARD_STATES)) {
+            throw new NotFoundHttpException(sprintf('The dashboard reference of the UI Kit doesn\'t include any state called "%s".', $state));
+        }
+
+        return new Response($this->twig->render('@EasyAdmin/ui_kit/dashboard.html.twig', [
+            'states' => self::DASHBOARD_STATES,
+            'current_state' => $state,
+            'highlighted_usage' => $this->highlighter->highlight(rtrim($this->twig->getLoader()->getSourceContext(self::DASHBOARD_USAGE_TEMPLATE)->getCode())),
+            'documentation' => [
+                'Widget:Grid' => $this->findDocumentation('Widget/Grid'),
+                'Widget' => $this->findDocumentation('Widget'),
+            ],
         ]));
     }
 

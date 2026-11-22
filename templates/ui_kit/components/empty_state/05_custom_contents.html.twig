@@ -1,0 +1,10 @@
+{# Custom contents
+   The title and message blocks replace the props with the same name, so they
+   can contain HTML (the props are always escaped). #}
+<twig:ea:EmptyState icon="internal:folder-open">
+    <twig:block name="title">No invoices in <strong>November</strong></twig:block>
+    <twig:block name="message">
+        Invoices are created when orders are shipped.<br>
+        Check the <a href="#">pending orders</a> to see what will be invoiced next.
+    </twig:block>
+</twig:ea:EmptyState>

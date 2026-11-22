@@ -3,6 +3,61 @@ Upgrade Guide
 
 This guide is for humans. If you are an AI agent, read [UPGRADE-AI.md](UPGRADE-AI.md) instead.
 
+## EasyAdmin 5.11.0
+
+### New Methods in `AbstractDashboardController`
+
+`AbstractDashboardController` defines two new public methods for the new
+dashboard widgets: `configureWidgets(): iterable` and
+`renderWidget(string $widgetName): Response`. If your dashboard already defines
+methods with those names for other purposes, rename your methods. Otherwise,
+PHP throws a fatal error when their signatures are not compatible, or
+EasyAdmin calls your methods as if they were the new ones.
+
+### New Route for the Widgets of Each Dashboard
+
+Each dashboard that extends `AbstractDashboardController` gets a new route to
+load the contents of its widgets. Its name is the dashboard route name plus
+`_widget` (e.g. `admin_widget`) and its path is the dashboard path plus
+`/_widget/{widgetName}` (e.g. `/admin/_widget/{widgetName}`). EasyAdmin only
+detects collisions with the other routes that it generates. If one of your own
+routes uses that name or that path, rename it or change its path; otherwise,
+one route silently replaces the other.
+
+### `configureWidgets()` Will Be Part of `DashboardControllerInterface`
+
+`DashboardControllerInterface` declares a new `configureWidgets()` method with
+a `@method` annotation, and it will be a real method of the interface in
+EasyAdmin 6.0. This only affects you if your dashboard implements the
+interface without extending `AbstractDashboardController`. Add this method
+to it (it can return an empty array):
+
+```php
+public function configureWidgets(): iterable
+{
+    return [];
+}
+```
+
+### `AdminContextFactory` Has a New Constructor Argument
+
+`AdminContextFactory::__construct()` has a new last argument with the
+`WidgetFactory` service. Not passing it still works, but it's deprecated and
+it will be required in EasyAdmin 6.0. This only affects you if you create
+this factory yourself.
+
+### Removed the `#[Route]` Attribute of `AbstractDashboardController::index()`
+
+The `index()` method of `AbstractDashboardController` no longer has the
+`#[Route('/admin')]` attribute. EasyAdmin doesn't use that attribute: the route
+of a dashboard comes from its `#[AdminDashboard]` attribute. This only affects
+you if your dashboard doesn't define the `index()` method and your application
+imports the routes of its controller attributes. In that case, your application
+had an extra `/admin` route (named after the controller, e.g.
+`app_admin_dashboard_index`) that no longer exists. If you use that route name
+(e.g. in `path()` or `redirectToRoute()`), replace it with the route name of
+the `#[AdminDashboard]` attribute.
+
 ## EasyAdmin 5.10.1
 
 ### Strings Are No Longer Called as PHP Functions

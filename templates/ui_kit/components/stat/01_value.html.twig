@@ -1,0 +1,9 @@
+{# Value
+   Integers and floats are formatted for the current locale (pass them with the
+   colon syntax so they aren't strings). Strings are displayed as they are, which
+   is useful for values that you format yourself (e.g. amounts of money). #}
+<div class="ea-ui-kit-grid">
+    <twig:ea:Stat label="Orders" :value="12480" />
+    <twig:ea:Stat label="Average rating" :value="4.65" />
+    <twig:ea:Stat label="Revenue" value="$48,210.50" />
+</div>

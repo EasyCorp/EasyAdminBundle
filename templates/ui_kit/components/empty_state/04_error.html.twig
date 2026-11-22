@@ -1,0 +1,10 @@
+{# Error
+   The error status tells that the contents couldn't be loaded. It uses a
+   generic error message and icon by default. #}
+<twig:ea:EmptyState status="error" />
+<hr>
+<twig:ea:EmptyState status="error" message="The payment provider didn't respond.">
+    <twig:block name="actions">
+        <twig:ea:Button type="button" variant="outline" size="sm">Try again</twig:ea:Button>
+    </twig:block>
+</twig:ea:EmptyState>

@@ -1,0 +1,13 @@
+{# Link
+   Add a link at the end of the header to the page with more details. Without a
+   label, the link only displays an arrow and takes its accessible name from the
+   title of the card. #}
+<div class="ea-ui-kit-grid">
+    <twig:ea:Card title="Latest invoices" linkUrl="#" linkLabel="View all">
+        <twig:block name="content">12 invoices were sent this week.</twig:block>
+    </twig:ea:Card>
+
+    <twig:ea:Card title="Support tickets" linkUrl="#">
+        <twig:block name="content">3 tickets are waiting for an answer.</twig:block>
+    </twig:ea:Card>
+</div>

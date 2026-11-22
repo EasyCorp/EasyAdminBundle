@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'No hay más resultados',
         'loading-more-results' => 'Cargando más resultados…',
     ],
+
+    'chart' => [
+        'label' => 'Etiqueta',
+        'value' => 'Valor',
+    ],
+
+    'empty_state' => [
+        'empty' => 'No hay datos que mostrar',
+        'error' => 'No se ha podido cargar este contenido.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Cargando…',
+    ],
+
+    'stat' => [
+        'increase' => 'Aumento',
+        'decrease' => 'Disminución',
+        'no_change' => 'Sin cambios',
+        'delta_good' => 'bueno',
+        'delta_bad' => 'malo',
+    ],
+
+    'widget' => [
+        'retry' => 'Reintentar',
+        'no_widgets' => 'Todavía no hay nada que mostrar aquí.',
+    ],
 ];

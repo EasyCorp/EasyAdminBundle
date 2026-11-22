@@ -76,6 +76,12 @@ final class TemplateRegistry
         'label/inaccessible' => '@EasyAdmin/label/inaccessible.html.twig',
         'label/null' => '@EasyAdmin/label/null.html.twig',
         'label/undefined' => '@EasyAdmin/label/undefined.html.twig',
+        'page/dashboard' => '@EasyAdmin/page/dashboard.html.twig',
+        'widget/chart' => '@EasyAdmin/widget/chart.html.twig',
+        'widget/list' => '@EasyAdmin/widget/list.html.twig',
+        'widget/progress' => '@EasyAdmin/widget/progress.html.twig',
+        'widget/stat' => '@EasyAdmin/widget/stat.html.twig',
+        'widget/twig' => '@EasyAdmin/widget/twig.html.twig',
     ];
 
     private function __construct()

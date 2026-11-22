@@ -61,6 +61,8 @@ final readonly class ThemeDto
         private ?int $baseFontWeight = null,
         /** @var list<string>|null */
         private ?array $baseFontFeatures = null,
+        private ?string $chartColor = null,
+        private ?string $darkChartColor = null,
     ) {
     }
 
@@ -87,6 +89,16 @@ final readonly class ThemeDto
     public function getPrimaryOnSurface(): ?string
     {
         return $this->primaryOnSurface;
+    }
+
+    public function getChartColor(): ?string
+    {
+        return $this->chartColor;
+    }
+
+    public function getDarkChartColor(): ?string
+    {
+        return $this->darkChartColor;
     }
 
     public function getRadius(): ?string
@@ -199,6 +211,14 @@ final readonly class ThemeDto
             $dark['--ea-primary'] = $this->darkPrimaryColor;
             $dark['--ea-primary-foreground'] = $this->darkPrimaryForeground;
             $dark += self::checkIcons($this->darkPrimaryForeground);
+        }
+
+        if (null !== $this->chartColor) {
+            $common['--ea-chart-color'] = $this->chartColor;
+        }
+
+        if (null !== $this->darkChartColor) {
+            $dark['--ea-chart-color'] = $this->darkChartColor;
         }
 
         if (null !== $this->radius) {

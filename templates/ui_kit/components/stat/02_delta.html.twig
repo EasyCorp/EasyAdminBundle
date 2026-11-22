@@ -1,0 +1,9 @@
+{# Delta
+   The delta is the percentage change of the value compared to a previous period
+   (e.g. 8.2 means +8.2%). A positive delta is displayed as good news, a negative
+   one as bad news and a zero delta as neutral. #}
+<div class="ea-ui-kit-grid">
+    <twig:ea:Stat label="New customers" :value="318" :delta="8.2" />
+    <twig:ea:Stat label="Orders" :value="1204" :delta="-3.5" />
+    <twig:ea:Stat label="Returns" :value="27" :delta="0" />
+</div>

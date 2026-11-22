@@ -21,6 +21,7 @@ is the running example, with `name`, `slug`, `description`, `priceInCents`,
 11. [Form layout with tabs, fieldsets and columns](#11-form-layout-with-tabs-fieldsets-and-columns)
 12. [Functional test](#12-functional-test)
 13. [Event subscriber](#13-event-subscriber)
+14. [Dashboard widgets](#14-dashboard-widgets)
 
 ## 1. Dashboard with a sectioned menu
 
@@ -508,3 +509,68 @@ final class ProductSlugSubscriber implements EventSubscriberInterface
 
 Overriding `persistEntity()` in the controller is the alternative when the
 logic belongs to a single CRUD.
+
+## 14. Dashboard widgets
+
+```php
+// src/Controller/Admin/DashboardController.php
+namespace App\Controller\Admin;
+
+use App\Repository\OrderRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Widget\ChartWidget;
+use EasyCorp\Bundle\EasyAdminBundle\Widget\ListItem;
+use EasyCorp\Bundle\EasyAdminBundle\Widget\ListWidget;
+use EasyCorp\Bundle\EasyAdminBundle\Widget\StatWidget;
+use EasyCorp\Bundle\EasyAdminBundle\Widget\WidgetContext;
+use EasyCorp\Bundle\EasyAdminBundle\Widget\WidgetSection;
+
+#[AdminDashboard(routePath: '/admin', routeName: 'admin')]
+class DashboardController extends AbstractDashboardController
+{
+    public function __construct(private readonly OrderRepository $orderRepository)
+    {
+    }
+
+    public function configureWidgets(): iterable
+    {
+        yield StatWidget::new('Revenue')
+            ->setValue(fn () => $this->orderRepository->getRevenueOfThisMonth())
+            ->setDelta(fn () => $this->orderRepository->getRevenueChange())
+            ->setCache(600, shared: true);
+
+        yield WidgetSection::new('Orders', 'fa fa-receipt');
+        yield ChartWidget::new('Orders per month')
+            ->setData(fn () => $this->orderRepository->countPerMonth())
+            ->setColumns(8)
+            ->setLazy();
+        yield ListWidget::new('My latest orders')
+            ->setColumns(4)
+            ->setPermission('ROLE_SALES')
+            ->setItems(fn (WidgetContext $context) => array_map(
+                fn ($order) => ListItem::new($order->getReference())->setValue($order->getTotal()),
+                $this->orderRepository->findLatestOf($context->getUser(), 5),
+            ));
+    }
+}
+```
+
+- Closures receive the `WidgetContext` only when their first parameter
+  accepts it; otherwise they are called without arguments. Strings and arrays
+  are never called as functions.
+- Widget names are the slug of their label; give a `setName()` to widgets
+  with a translatable label that use `setLazy()`, `setCache()` or
+  `setRefreshInterval()`. Lazy and refreshing widgets need a dashboard that
+  extends `AbstractDashboardController`.
+- Custom contents: `TwigWidget::new('Notes')->setTemplate('admin/notes.html.twig', ['x' => 1])`
+  (use `setTemplate()`, not `setTemplatePath()`). Custom widget classes
+  implement `WidgetInterface`, use `WidgetTrait` and store what they display
+  with the protected `setDataEntry('products', $valueOrClosure)` (read as
+  `data.products` in the template) and their configuration with
+  `setCustomOption()` (read as `widget.customOption('...')`). Widgets can't
+  get services: query data in closures or, for reusable widgets, in a service
+  that implements `WidgetConfiguratorInterface` (`supports(WidgetDto)`,
+  `configure(WidgetDto, WidgetContext)`), which runs right before rendering
+  the contents and fills them with `$widget->setData('count', $value)`. All
+  details are in `doc/widgets.rst`.

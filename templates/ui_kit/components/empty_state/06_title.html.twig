@@ -1,0 +1,11 @@
+{# Title
+   Add a title to display a short heading above the message (e.g. in the empty
+   state of a whole page). When there's a title, the message is optional and
+   there's no default message. #}
+<twig:ea:EmptyState title="No orders yet" message="Orders appear here when customers buy something in your store." icon="internal:file-lines">
+    <twig:block name="actions">
+        <twig:ea:Button htmlElement="a" href="#" color="primary" variant="solid" size="sm" icon="internal:plus">Create order</twig:ea:Button>
+    </twig:block>
+</twig:ea:EmptyState>
+<hr>
+<twig:ea:EmptyState title="No results" icon="internal:search" />

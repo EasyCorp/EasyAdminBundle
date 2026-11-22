@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Ez dago emaitza gehiagorik',
         'loading-more-results' => 'Emaitza gehiago kargatzen…',
     ],
+
+    'chart' => [
+        'label' => 'Etiketa',
+        'value' => 'Balioa',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Ez dago erakusteko daturik',
+        'error' => 'Ezin izan da eduki hau kargatu.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Kargatzen…',
+    ],
+
+    'stat' => [
+        'increase' => 'Gehikuntza',
+        'decrease' => 'Murrizketa',
+        'no_change' => 'Aldaketarik ez',
+        'delta_good' => 'ona',
+        'delta_bad' => 'txarra',
+    ],
+
+    'widget' => [
+        'retry' => 'Saiatu berriro',
+        'no_widgets' => 'Oraindik ez dago hemen erakusteko ezer.',
+    ],
 ];

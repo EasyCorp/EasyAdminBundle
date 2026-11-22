@@ -169,4 +169,31 @@ return [
         'no-more-results' => 'Inga fler resultat',
         'loading-more-results' => 'Laddar fler resultat…',
     ],
+
+    'chart' => [
+        'label' => 'Etikett',
+        'value' => 'Värde',
+    ],
+
+    'empty_state' => [
+        'empty' => 'Inga data att visa',
+        'error' => 'Innehållet kunde inte läsas in.',
+    ],
+
+    'skeleton' => [
+        'loading' => 'Läser in…',
+    ],
+
+    'stat' => [
+        'increase' => 'Ökning',
+        'decrease' => 'Minskning',
+        'no_change' => 'Ingen förändring',
+        'delta_good' => 'bra',
+        'delta_bad' => 'dåligt',
+    ],
+
+    'widget' => [
+        'retry' => 'Försök igen',
+        'no_widgets' => 'Det finns inget att visa här ännu.',
+    ],
 ];

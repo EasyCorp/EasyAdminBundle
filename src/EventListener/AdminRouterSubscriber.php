@@ -15,8 +15,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\WidgetFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use EasyCorp\Bundle\EasyAdminBundle\Widget\WidgetRenderer;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -133,6 +135,10 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
         }
 
         $dashboardControllerFqcn = $request->attributes->get(EA::DASHBOARD_CONTROLLER_FQCN);
+        if ($dashboardControllerFqcn.'::'.WidgetFactory::RENDER_WIDGET_METHOD === $request->attributes->get('_controller')) {
+            $this->assertDashboardAccessIsGranted($request);
+        }
+
         if (null === $dashboardControllerInstance = $this->getDashboardControllerInstance($dashboardControllerFqcn, $request)) {
             return;
         }
@@ -276,7 +282,7 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
     private function getSymfonyControllerFqcn(Request $request): ?string
     {
         $targetRoute = $this->resolveTargetRoute($request);
-        $this->assertTargetRouteAccessIsGranted($targetRoute['request']);
+        $this->assertAccessControlIsGranted($targetRoute['request'], sprintf('Access to the "%s" route is denied by an access control rule; it cannot be reached through an EasyAdmin custom action.', $targetRoute['request']->attributes->get('_route')));
 
         return $targetRoute['parameters']['_controller'] ?? null;
     }
@@ -351,7 +357,7 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
      * to pass several attributes at once) is not portable across the Symfony versions this
      * bundle supports.
      */
-    private function assertTargetRouteAccessIsGranted(Request $request): void
+    private function assertAccessControlIsGranted(Request $request, string $accessDeniedMessage): void
     {
         if (!$this->locator->has(AccessMapInterface::class) || !$this->locator->has(AuthorizationCheckerInterface::class)) {
             return;
@@ -364,12 +370,48 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
         }
 
         foreach ($attributes as $attribute) {
-            if ($this->get(AuthorizationCheckerInterface::class)->isGranted($attribute)) {
+            // like Symfony does, the request is the subject (e.g. 'allow_if' expressions can use it)
+            if ($this->get(AuthorizationCheckerInterface::class)->isGranted($attribute, $request)) {
                 return;
             }
         }
 
-        throw new AccessDeniedException(sprintf('Access to the "%s" route is denied by an access control rule; it cannot be reached through an EasyAdmin custom action.', $request->attributes->get('_route')));
+        throw new AccessDeniedException($accessDeniedMessage);
+    }
+
+    /**
+     * The contents of widgets are served from their own URL and route, so an 'access_control'
+     * rule that only matches the dashboard page (e.g. its exact path or its route name) doesn't
+     * match them. The widgets show data of that page, so the rules of the page are evaluated
+     * here against a request for it.
+     */
+    private function assertDashboardAccessIsGranted(Request $request): void
+    {
+        $widgetRouteName = (string) $request->attributes->get('_route');
+        // localized routes are named '<canonical route name>.<locale>'
+        $canonicalWidgetRouteName = (string) $request->attributes->get('_canonical_route', $widgetRouteName);
+        if (!str_ends_with($canonicalWidgetRouteName, WidgetRenderer::ROUTE_NAME_SUFFIX)) {
+            return;
+        }
+
+        $canonicalDashboardRouteName = substr($canonicalWidgetRouteName, 0, -\strlen(WidgetRenderer::ROUTE_NAME_SUFFIX));
+        $routeParams = $request->attributes->all('_route_params');
+        unset($routeParams[WidgetRenderer::ROUTE_PARAMETER]);
+        $dashboardUrl = $this->generateTargetRouteUrl($canonicalDashboardRouteName, array_filter($routeParams, is_scalar(...)));
+
+        $basePath = $request->getBasePath();
+        if ('' !== $basePath && str_starts_with($dashboardUrl, $basePath)) {
+            $dashboardUrl = mb_substr($dashboardUrl, mb_strlen($basePath));
+        }
+
+        $dashboardRequest = $request->duplicate();
+        $dashboardRequest->attributes->set('_route', $canonicalDashboardRouteName.substr($widgetRouteName, \strlen($canonicalWidgetRouteName)));
+        $dashboardRequest->attributes->set('_controller', $request->attributes->get(EA::DASHBOARD_CONTROLLER_FQCN).'::index');
+        $dashboardRequest->attributes->remove(WidgetRenderer::ROUTE_PARAMETER);
+        $dashboardRequest->attributes->set('_route_params', $routeParams);
+        $dashboardRequest->server->set('REQUEST_URI', $dashboardUrl);
+
+        $this->assertAccessControlIsGranted($dashboardRequest, 'Access to the widgets of this dashboard is denied by an access control rule of the dashboard page.');
     }
 
     /**

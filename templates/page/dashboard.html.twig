@@ -1,0 +1,25 @@
+{# the 'ea' variable can't be set here because {% extends %} is evaluated
+   before any {% set %} (see the comment in page/content.html.twig) #}
+{% extends ea().templatePath('layout') %}
+{% trans_default_domain ea().i18n.translationDomain %}
+
+{% block body_class 'page-dashboard' %}
+
+{% block content_title %}{{ ea().dashboardTitle|raw }}{% endblock %}
+
+{% block page_actions %}
+    <twig:ea:Widget:Grid placement="toolbar" />
+{% endblock %}
+
+{% block main %}
+    {# contents displayed above the widgets #}
+    {% block dashboard_before_widgets %}{% endblock %}
+
+    {# the widgets returned by the configureWidgets() method of the dashboard #}
+    {% block dashboard_widgets %}
+        <twig:ea:Widget:Grid />
+    {% endblock %}
+
+    {# contents displayed below the widgets #}
+    {% block dashboard_after_widgets %}{% endblock %}
+{% endblock %}

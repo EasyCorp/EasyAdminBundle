@@ -387,17 +387,17 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
      */
     private function assertDashboardAccessIsGranted(Request $request): void
     {
+        // when routes are localized, Symfony stores the name without the locale suffix in '_route'
         $widgetRouteName = (string) $request->attributes->get('_route');
-        // localized routes are named '<canonical route name>.<locale>'
-        $canonicalWidgetRouteName = (string) $request->attributes->get('_canonical_route', $widgetRouteName);
-        if (!str_ends_with($canonicalWidgetRouteName, WidgetRenderer::ROUTE_NAME_SUFFIX)) {
+        if (!str_ends_with($widgetRouteName, WidgetRenderer::ROUTE_NAME_SUFFIX)) {
             return;
         }
 
-        $canonicalDashboardRouteName = substr($canonicalWidgetRouteName, 0, -\strlen(WidgetRenderer::ROUTE_NAME_SUFFIX));
+        $dashboardRouteName = substr($widgetRouteName, 0, -\strlen(WidgetRenderer::ROUTE_NAME_SUFFIX));
+        // the route params include '_locale', so the URL of the dashboard is generated for the same locale
         $routeParams = $request->attributes->all('_route_params');
         unset($routeParams[WidgetRenderer::ROUTE_PARAMETER]);
-        $dashboardUrl = $this->generateTargetRouteUrl($canonicalDashboardRouteName, array_filter($routeParams, is_scalar(...)));
+        $dashboardUrl = $this->generateTargetRouteUrl($dashboardRouteName, array_filter($routeParams, is_scalar(...)));
 
         $basePath = $request->getBasePath();
         if ('' !== $basePath && str_starts_with($dashboardUrl, $basePath)) {
@@ -405,7 +405,7 @@ readonly class AdminRouterSubscriber implements EventSubscriberInterface
         }
 
         $dashboardRequest = $request->duplicate();
-        $dashboardRequest->attributes->set('_route', $canonicalDashboardRouteName.substr($widgetRouteName, \strlen($canonicalWidgetRouteName)));
+        $dashboardRequest->attributes->set('_route', $dashboardRouteName);
         $dashboardRequest->attributes->set('_controller', $request->attributes->get(EA::DASHBOARD_CONTROLLER_FQCN).'::index');
         $dashboardRequest->attributes->remove(WidgetRenderer::ROUTE_PARAMETER);
         $dashboardRequest->attributes->set('_route_params', $routeParams);

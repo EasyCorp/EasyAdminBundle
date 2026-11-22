@@ -51,6 +51,8 @@ $configuration = [
         // these rules match the dashboard page but not the URL that serves the contents of its widgets
         ['path' => '^/admin/exact-path-widgets$', 'roles' => ['ROLE_ADMIN']],
         ['route' => '^secured_widgets_route_rule_admin$', 'roles' => ['ROLE_ADMIN']],
+        // when routes are localized (see i18n_routes.php), this rule only matches the Spanish dashboard page
+        ['path' => '^/admin/es/admin/exact-path-widgets$', 'roles' => ['ROLE_ADMIN']],
         // the voter of this attribute needs the request, which is the subject when Symfony checks these rules
         ['path' => '^/admin/request-subject-widgets$', 'roles' => [RequestSubjectVoter::ADMIN_REQUEST]],
         ['path' => '^/admin', 'roles' => ['ROLE_USER']],

@@ -12,7 +12,7 @@ return static function (ContainerConfigurator $container) {
     ;
 
     $services->load('EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Functional\\Apps\\SecuredApp\\', '../src/*')
-        ->exclude('../{Entity,Tests,Kernel.php}');
+        ->exclude('../{Entity,Tests,Kernel.php,I18nKernel.php}');
 
     $services->load('EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\Functional\\Apps\\SecuredApp\\Controller\\', '../src/Controller/')
         ->tag('controller.service_arguments');

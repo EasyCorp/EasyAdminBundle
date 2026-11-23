@@ -108,6 +108,14 @@ class FieldTestEntityCrudController extends AbstractCrudController
                 $field->keepReplacedFile();
             }
 
+            if ($this->getContext()?->getRequest()->query->getBoolean('keepReplacedFilesOrFail')) {
+                $field->keepReplacedFileOrFail();
+            }
+
+            if ($this->getContext()?->getRequest()->query->getBoolean('notDeletable')) {
+                $field->isDeletable(false);
+            }
+
             if ($this->getContext()?->getRequest()->query->getBoolean('allowRiskyInlineRender')) {
                 $field->allowRiskyInlineRender();
             }

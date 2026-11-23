@@ -190,9 +190,11 @@ Check the Permissions of Another CRUD Controller
 
 EasyAdmin applies the ``setPermission()`` and ``setEntityPermission()``
 configuration of a CRUD controller before rendering a link to it (for example,
-the link of an ``AssociationField`` to the related entity). The entity
-permission is not applied to the lists of choices that display the entities of
-another CRUD controller, as explained in :ref:`security-fields`.
+the link of an ``AssociationField`` to the related entity). If the entity
+permission denies the related entity, the link is removed but its string
+representation is still displayed. The entity permission is not applied either
+to the lists of choices that display the entities of another CRUD controller,
+as explained in :ref:`security-fields`.
 
 If your own code renders links or embedded blocks that belong to another CRUD
 controller (e.g. in a custom field configurator), use the
@@ -297,6 +299,12 @@ permissions to see some items:
 .. image:: images/easyadmin-list-hidden-results.png
    :alt: Index page with some results hidden because user does not have enough permissions
 
+The entity permission is checked for each item after the database query runs.
+The search, sorting, filters and pagination are part of that query, so the
+denied items still count for the pagination and for the message about hidden
+results, and the search terms, the sort order and the filters still consider
+their values.
+
 The entity permission also applies when the form of the CRUD controller is
 nested in the form of another CRUD controller (with the
 ``renderAsEmbeddedForm()`` option of ``AssociationField`` or with the entries
@@ -312,14 +320,56 @@ The permissions of the actions of that CRUD controller (configured with
 .. caution::
 
     The entity permission only applies to the pages and forms of the CRUD
-    controller that defines it. Other CRUD controllers that display the same
-    entity as a list of choices (for example, in the form of an
-    ``AssociationField`` or in an ``EntityFilter``) still list all its items
-    and users can select any of them.
+    controller that defines it. Other features can still display the ID and
+    the string representation of the denied items:
 
-    If users must not select certain items in an
-    :doc:`AssociationField </fields/AssociationField>`, use its
-    ``setQueryBuilder()`` option to remove those items from the list.
+    * the ``autocomplete`` action of the same CRUD controller, which returns
+      all the items that match the query of its ``createIndexQueryBuilder()``
+      method;
+    * the ``AssociationField`` of other CRUD controllers, which display the
+      related item in the ``index`` and ``detail`` pages and list all its
+      items as choices in forms (the same happens in an ``EntityFilter``).
+
+To keep some items away from a user, remove them from the database query.
+Override the ``createIndexQueryBuilder()`` method of the CRUD controller,
+which is used by the ``index`` page and by the ``autocomplete`` action, and
+keep the ``setEntityPermission()`` option to protect the other actions::
+
+    namespace App\Controller\Admin;
+
+    use Doctrine\ORM\QueryBuilder;
+    use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+    use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+
+    class InvoiceCrudController extends AbstractCrudController
+    {
+        // ...
+
+        public function createIndexQueryBuilder(
+            SearchDto $searchDto,
+            EntityDto $entityDto,
+            FieldCollection $fields,
+            FilterCollection $filters,
+        ): QueryBuilder {
+            $queryBuilder = parent::createIndexQueryBuilder(
+                $searchDto, $entityDto, $fields, $filters
+            );
+
+            return $queryBuilder
+                ->andWhere('entity.owner = :owner')
+                ->setParameter('owner', $this->getUser());
+        }
+    }
+
+In the CRUD controllers that display these items in an
+:doc:`AssociationField </fields/AssociationField>`, use its
+``setQueryBuilder()`` option to remove them from the list of choices. In the
+``index`` and ``detail`` pages, the field displays the item related to each
+entity, so use the ``setPermission()`` option of the field to hide it from
+the users who must not see it.
 
 .. _security-expressions:
 

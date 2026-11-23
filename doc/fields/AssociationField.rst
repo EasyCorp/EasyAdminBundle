@@ -322,9 +322,10 @@ object as its first argument and returns the modified ``QueryBuilder``::
 .. note::
 
     The ``setEntityPermission()`` option of the CRUD controller of the related
-    entity doesn't remove any items from the list of this field. If some users
-    must not select certain items, remove them with this option. Read more
-    about :ref:`restricting the items displayed to users <security-fields>`.
+    entity doesn't remove any items from the list of this field (or from the
+    results of its autocomplete). If some users must not select certain items,
+    remove them with this option. Read more about
+    :ref:`restricting the items displayed to users <security-fields>`.
 
 If you already define custom queries in repository methods, you can reuse them
 inside the callable::

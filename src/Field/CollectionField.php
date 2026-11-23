@@ -39,6 +39,9 @@ final class CollectionField implements FieldInterface
             ->addCssClass('field-collection')
             ->addJsFiles(Asset::fromEasyAdminAssetPackage('field-collection.js')->onlyOnForms())
             ->setDefaultColumns('col-md-8 col-xxl-7')
+            // set here and not only in the configurator because the URL sort of the
+            // index page is validated before the configurators process the fields
+            ->setSortable(false)
             ->setCustomOption(self::OPTION_ALLOW_ADD, true)
             ->setCustomOption(self::OPTION_ALLOW_DELETE, true)
             ->setCustomOption(self::OPTION_ENTRY_IS_COMPLEX, null)

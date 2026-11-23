@@ -260,4 +260,20 @@ class CollectionFieldTest extends AbstractFieldFunctionalTestCase
         // the text should be present (possibly truncated with ellipsis) or show count
         static::assertNotEmpty($cellText, 'CollectionField cell should not be completely empty');
     }
+
+    public function testCollectionFieldCannotBeSortedWithTheUrl(): void
+    {
+        // the index page shows only the item count, so the row order must not depend on the items
+        $entityIds = [];
+        foreach (['5555', '1111', '9999', '3333'] as $item) {
+            $entityIds[] = (string) $this->createFieldTestEntity(['collectionField' => [$item]])->getId();
+        }
+
+        foreach (['ASC', 'DESC'] as $sortOrder) {
+            $crawler = $this->client->request('GET', $this->getCrudUrl('index', null, ['sort' => ['collectionField' => $sortOrder, 'id' => 'DESC']]));
+            $listedIds = $crawler->filter('tr[data-id]')->each(static fn (Crawler $row): ?string => $row->attr('data-id'));
+
+            static::assertSame(array_reverse($entityIds), array_values(array_intersect($listedIds, $entityIds)));
+        }
+    }
 }

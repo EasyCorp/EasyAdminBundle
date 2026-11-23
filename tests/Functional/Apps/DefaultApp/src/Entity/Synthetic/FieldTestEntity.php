@@ -73,6 +73,9 @@ class FieldTestEntity
     #[ORM\Column(type: 'json', nullable: true)]
     private array $multipleChoiceField = [];
 
+    #[ORM\Column(length: 50, nullable: true, enumType: FieldTestStatus::class)]
+    private ?FieldTestStatus $enumChoiceField = null;
+
     // collection fields
     #[ORM\Column(type: 'json', nullable: true)]
     private array $arrayField = [];
@@ -353,6 +356,18 @@ class FieldTestEntity
     public function setMultipleChoiceField(?array $multipleChoiceField): self
     {
         $this->multipleChoiceField = $multipleChoiceField ?? [];
+
+        return $this;
+    }
+
+    public function getEnumChoiceField(): ?FieldTestStatus
+    {
+        return $this->enumChoiceField;
+    }
+
+    public function setEnumChoiceField(?FieldTestStatus $enumChoiceField): self
+    {
+        $this->enumChoiceField = $enumChoiceField;
 
         return $this;
     }

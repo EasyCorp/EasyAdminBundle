@@ -210,6 +210,10 @@ add them explicitly::
     // values via Doctrine; it's equivalent to calling: ->setChoices(BlogPostStatus::cases())
     yield ChoiceField::new('status');
 
+This only happens when you don't call ``setChoices()``. If you pass an empty
+array to it (or a callback that returns an empty array), the field doesn't
+display or accept any enum case.
+
 If the property isn't mapped by Doctrine (or Doctrine doesn't know about its
 enum), define the enum class with the ``class`` form type option. EasyAdmin
 uses it to get all the possible values of the enum::

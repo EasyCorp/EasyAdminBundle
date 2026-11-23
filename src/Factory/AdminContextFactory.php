@@ -251,7 +251,10 @@ final readonly class AdminContextFactory
         }
 
         $searchableProperties = $crudDto->getSearchFields();
-        $query = $request->query->has(EA::QUERY) ? (string) $request->query->get(EA::QUERY) : null;
+        // association fields of other CRUD controllers use the autocomplete action of this
+        // controller, so it must keep searching even when this controller hides its search box
+        $isQueryAllowed = $crudDto->isSearchEnabled() || 'autocomplete' === $crudDto->getCurrentAction();
+        $query = $isQueryAllowed && $request->query->has(EA::QUERY) ? (string) $request->query->get(EA::QUERY) : null;
         $defaultSort = $crudDto->getDefaultSort();
         $customSort = $request->query->all(EA::SORT);
         $appliedFilters = $request->query->all(EA::FILTERS);

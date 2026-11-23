@@ -514,7 +514,8 @@ Search, Order, and Pagination Options
             ->setSearchFields(['name', 'description'])
             // use dots (e.g. 'seller.email') to search in Doctrine associations
             ->setSearchFields(['name', 'description', 'seller.email', 'seller.address.zipCode'])
-            // set it to null to disable and hide the search box
+            // set it to null to disable and hide the search box (the 'query' parameter
+            // of the index page is then ignored; autocomplete requests still use it)
             ->setSearchFields(null)
             // call this method to focus the search input automatically when loading the 'index' page
             ->setAutofocusSearch()

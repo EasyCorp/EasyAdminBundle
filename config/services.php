@@ -273,6 +273,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(AdminControllerRegistry::class)
             ->arg(0, service('cache.easyadmin'))
+            ->arg(1, service(AdminContextProvider::class))
 
         ->set(AdminRouteGenerator::class)
             ->arg(0, tagged_iterator(EasyAdminExtension::TAG_DASHBOARD_CONTROLLER))

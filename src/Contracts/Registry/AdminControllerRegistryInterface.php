@@ -50,6 +50,10 @@ interface AdminControllerRegistryInterface
     /**
      * Returns the CRUD controller FQCN that manages the given entity.
      *
+     * Inside a dashboard, the CRUD controllers available in that dashboard
+     * (see the allowedControllers and deniedControllers options of the
+     * #[AdminDashboard] attribute) take precedence over the other ones.
+     *
      * Note: If multiple CRUD controllers manage the same entity, only the
      * last one registered will be returned. Use explicit controller references
      * when multiple controllers manage the same entity.

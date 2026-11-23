@@ -92,6 +92,14 @@ allowed to access the other controllers.
     You can also define the opposite option (``deniedControllers``) to allow all
     controllers except the ones included in that list.
 
+When EasyAdmin finds the CRUD controller of an entity automatically (e.g. to
+render the embedded form of an ``AssociationField`` or the entries of a
+``CollectionField``), it prefers the CRUD controllers available in the current
+dashboard. If the dashboard has none for that entity, EasyAdmin uses a CRUD
+controller excluded from it. Pass the CRUD controller explicitly (e.g.
+``renderAsEmbeddedForm(GuestUserCrudController::class)``) when more than one
+CRUD controller manages the same entity.
+
 .. _security-menu:
 
 Restrict Access to Menu Items

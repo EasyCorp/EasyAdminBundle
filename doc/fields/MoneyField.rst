@@ -42,10 +42,11 @@ same codes used by :doc:`CurrencyField </fields/CurrencyField>`)::
     yield MoneyField::new('...')->setCurrency('INR');
 
 Every money field must define its currency with either this option or
-``setCurrencyPropertyPath()``, and the given code must be known to ICU;
-otherwise EasyAdmin throws an ``\InvalidArgumentException``. Use the
-``CurrencyField::CURRENCY_NONE`` constant (the ISO 4217 ``'XXX'`` code) for
-amounts that don't belong to any currency.
+``setCurrencyPropertyPath()``; otherwise EasyAdmin throws an
+``\InvalidArgumentException``. This method also throws that exception when
+the given code is not known to ICU. Use the ``CurrencyField::CURRENCY_NONE``
+constant (the ISO 4217 ``'XXX'`` code) for amounts that don't belong to any
+currency.
 
 .. note::
 
@@ -68,6 +69,12 @@ code. The method argument is any valid `Symfony PropertyAccess`_ expression::
     yield MoneyField::new('...')->setCurrencyPropertyPath('currency');
     yield MoneyField::new('...')->setCurrencyPropertyPath('currencyCode');
     yield MoneyField::new('...')->setCurrencyPropertyPath('currency.code');
+
+If the stored currency code is not known to ICU (for example, because some
+other part of your application saved it without validating it), EasyAdmin
+displays the amount followed by the stored code (e.g. ``12.50 ZZZ``) instead
+of a formatted amount of money. The same happens with the currency of
+``Money\Money`` objects.
 
 ``setNumDecimals``
 ~~~~~~~~~~~~~~~~~~

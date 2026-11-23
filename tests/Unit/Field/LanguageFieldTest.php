@@ -62,11 +62,12 @@ class LanguageFieldTest extends AbstractFieldTestCase
 
     public function testFieldWithInvalidLanguageCode(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-
         $field = LanguageField::new('foo');
         $field->setValue('invalid');
-        $this->configure($field);
+        $fieldDto = $this->configure($field);
+
+        self::assertSame('invalid', $fieldDto->getValue());
+        self::assertSame('Unknown "invalid" language code', $fieldDto->getFormattedValue());
     }
 
     public function testShowCode(): void

@@ -71,11 +71,12 @@ class LocaleFieldTest extends AbstractFieldTestCase
 
     public function testFieldWithInvalidLocaleCode(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-
         $field = LocaleField::new('foo');
         $field->setValue('invalid_code');
-        $this->configure($field);
+        $fieldDto = $this->configure($field);
+
+        self::assertSame('invalid_code', $fieldDto->getValue());
+        self::assertSame('Unknown "invalid_code" locale code', $fieldDto->getFormattedValue());
     }
 
     public function testShowCode(): void

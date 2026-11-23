@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaMoneyType;
 use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use Money\Currency;
 use Money\Money;
+use PHPUnit\Framework\Attributes\TestWith;
 
 class MoneyFieldTest extends AbstractFieldTestCase
 {
@@ -148,6 +149,19 @@ class MoneyFieldTest extends AbstractFieldTestCase
         self::assertSame(EaMoneyType::class, $fieldDto->getFormType());
         self::assertSame('EUR', $fieldDto->getFormTypeOption('currency'));
         self::assertTrue($fieldDto->getFormTypeOption('ea_money_object'));
+        self::assertSame(100, $fieldDto->getFormTypeOption('divisor'));
+    }
+
+    #[TestWith(['ZZZ'])]
+    #[TestWith(['X'])]
+    public function testFieldWithMoneyObjectInUnknownCurrency(string $currencyCode): void
+    {
+        $money = new Money('500', new Currency($currencyCode));
+        $field = MoneyField::new('foo')->setValue($money);
+        $fieldDto = $this->configure($field);
+
+        self::assertSame('5.00 '.$currencyCode, $fieldDto->getFormattedValue());
+        self::assertSame($currencyCode, $fieldDto->getFormTypeOption('currency'));
         self::assertSame(100, $fieldDto->getFormTypeOption('divisor'));
     }
 

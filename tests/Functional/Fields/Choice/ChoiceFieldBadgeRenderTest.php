@@ -18,12 +18,14 @@ class ChoiceFieldBadgeRenderTest extends AbstractFieldFunctionalTestCase
     /**
      * @param TranslatableChoiceMessage[] $choices
      */
-    private function renderChoiceField(array $choices, bool $isRenderedAsBadge): string
+    private function renderChoiceField(array $choices, bool $isRenderedAsBadge, bool $isSafeHtml = true): string
     {
         $field = new FieldDto();
         $field->setFormattedValue(new TranslatableChoiceMessageCollection($choices, $isRenderedAsBadge));
-        // ChoiceConfigurator marks its formatted value as safe because choice labels are defined by the developer
-        $field->setCustomOption(FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML, true);
+        // ChoiceConfigurator marks its formatted value as safe unless the field calls escapeHtml() explicitly
+        if ($isSafeHtml) {
+            $field->setCustomOption(FieldDto::OPTION_FORMATTED_VALUE_IS_SAFE_HTML, true);
+        }
 
         return trim(static::getContainer()->get('twig')->render('@EasyAdmin/crud/field/choice.html.twig', [
             'field' => $field,
@@ -62,6 +64,29 @@ class ChoiceFieldBadgeRenderTest extends AbstractFieldFunctionalTestCase
         // <twig:ea:Badge> refactor), not escaped to "&lt;b&gt;Active&lt;/b&gt;"
         self::assertStringContainsString('<b>Active</b>', $html);
         self::assertStringNotContainsString('&lt;b&gt;', $html);
+    }
+
+    public function testBadgeLabelIsEscapedWhenFormattedValueIsNotSafeHtml(): void
+    {
+        $html = $this->renderChoiceField([
+            new TranslatableChoiceMessage(t('<b>Active</b>'), 'success'),
+            new TranslatableChoiceMessage(t('<i>Draft</i>'), 'secondary'),
+        ], true, false);
+
+        self::assertSame(
+            '<span class="badge badge-success">&lt;b&gt;Active&lt;/b&gt;</span><span class="badge badge-secondary">&lt;i&gt;Draft&lt;/i&gt;</span>',
+            $html
+        );
+    }
+
+    public function testLabelIsEscapedWhenFormattedValueIsNotSafeHtml(): void
+    {
+        $html = $this->renderChoiceField([
+            new TranslatableChoiceMessage(t('<b>Active</b>'), null),
+            new TranslatableChoiceMessage(t('<i>Draft</i>'), null),
+        ], false, false);
+
+        self::assertSame('&lt;b&gt;Active&lt;/b&gt;, &lt;i&gt;Draft&lt;/i&gt;', $html);
     }
 
     public function testValuesNotCreatedByTheChoiceConfiguratorAreEscaped(): void

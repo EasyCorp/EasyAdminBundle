@@ -52,8 +52,19 @@ This is what the autocomplete field looks like when it's expanded:
 ``escapeHtml``
 ~~~~~~~~~~~~~~
 
-By default, in the list of possible values all the HTML contents are escaped.
-Use this option if your values have HTML contents and want to render them::
+By default, the HTML contents of the choice labels are escaped in the list of
+possible values of the autocomplete widget, but they are rendered as HTML in the
+``index`` and ``detail`` pages. This allows you to use HTML in the labels that
+you define in your code.
+
+If the choice labels come from data stored in the database (e.g. category names
+created by other users), call this option to escape the labels in those pages
+too::
+
+    yield ChoiceField::new('...')->escapeHtml();
+
+If your labels have HTML contents and you want to render them in the
+autocomplete widget too, pass ``false`` to this option::
 
     yield ChoiceField::new('...')->escapeHtml(false);
 

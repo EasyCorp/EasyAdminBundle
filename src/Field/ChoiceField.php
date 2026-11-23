@@ -45,7 +45,7 @@ final class ChoiceField implements FieldInterface
             ->setCustomOption(self::OPTION_RENDER_AS_BADGES, null)
             ->setCustomOption(self::OPTION_RENDER_EXPANDED, false)
             ->setCustomOption(self::OPTION_WIDGET, null)
-            ->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, true)
+            ->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, null)
             ->setCustomOption(self::OPTION_PREFERRED_CHOICES, null)
             ->setCustomOption(self::OPTION_BADGE_VARIANT, null);
     }
@@ -145,6 +145,12 @@ final class ChoiceField implements FieldInterface
         return $this;
     }
 
+    /**
+     * By default, the labels are escaped in the autocomplete widget and rendered as
+     * HTML in the index and detail pages. Call this method with true to escape them
+     * in the index and detail pages too (e.g. when labels come from stored data) or
+     * with false to render them as HTML in the autocomplete widget too.
+     */
     public function escapeHtml(bool $escape = true): self
     {
         $this->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, $escape);

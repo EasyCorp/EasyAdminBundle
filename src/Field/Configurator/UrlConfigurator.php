@@ -60,9 +60,10 @@ final class UrlConfigurator implements FieldConfiguratorInterface
         }
 
         $url = (string) $field->getValue();
-        // browsers strip leading whitespace and control bytes before parsing the scheme,
+        // browsers strip leading whitespace and control bytes and remove ASCII tab, LF and CR
+        // anywhere in the URL before parsing the scheme (so `java\tscript:` is `javascript:`),
         // so the same normalization must happen here before matching against the denylist
-        $normalizedUrl = ltrim($url, "\0..\x20");
+        $normalizedUrl = str_replace(["\t", "\n", "\r"], '', ltrim($url, "\0..\x20"));
 
         // scheme characters per RFC 3986: scheme = `ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )`
         $isUnsafe = 1 === preg_match('#^([a-z][a-z0-9+.\-]*):#i', $normalizedUrl, $matches)

@@ -3,8 +3,10 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -37,9 +39,10 @@ final readonly class BooleanConfigurator implements FieldConfiguratorInterface
         if ($isRenderedAsSwitch) {
             $crudDto = $context->getCrud();
 
-            $hasEditPermission = $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::EDIT, 'entity' => $entityDto]);
+            $canBeToggled = $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::EDIT, 'entity' => $entityDto])
+                && (null === $crudDto || $this->canSaveEditForm($crudDto, $entityDto));
 
-            if ($hasEditPermission && null !== $crudDto && null !== $entityDto->getPrimaryKeyValue()) {
+            if ($canBeToggled && null !== $crudDto && null !== $entityDto->getPrimaryKeyValue()) {
                 $toggleUrl = $this->adminUrlGenerator
                     ->setController($crudDto->getControllerFqcn())
                     ->setAction(Action::EDIT)
@@ -52,7 +55,7 @@ final readonly class BooleanConfigurator implements FieldConfiguratorInterface
                 $field->setCustomOption(BooleanField::OPTION_TOGGLE_URL, $toggleUrl);
             }
 
-            if (!$hasEditPermission && Action::INDEX === $crudDto->getCurrentAction()) {
+            if (!$canBeToggled && Action::INDEX === $crudDto->getCurrentAction()) {
                 $field->setFormTypeOptionIfNotSet('disabled', true);
             }
 
@@ -63,5 +66,26 @@ final readonly class BooleanConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOptionIfNotSet('label_attr.class', $labelClass);
             $field->setCssClass($field->getCssClass().' has-switch');
         }
+    }
+
+    /**
+     * The switch saves the entity through the 'edit' action, so it follows the same rules as
+     * AbstractCrudController::edit(). A form disabled in an overridden createEditFormBuilder()
+     * can't be detected without building it for every row; the controller rejects those toggles.
+     */
+    private function canSaveEditForm(CrudDto $crudDto, EntityDto $entityDto): bool
+    {
+        if ((bool) $crudDto->getEditFormOptions()->get('disabled')) {
+            return false;
+        }
+
+        $saveActionNames = $crudDto->getActionsConfig()->getSaveActionNames(Crud::PAGE_EDIT);
+        foreach ($saveActionNames as $actionName) {
+            if ($this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $actionName, 'entity' => $entityDto])) {
+                return true;
+            }
+        }
+
+        return [] === $saveActionNames;
     }
 }

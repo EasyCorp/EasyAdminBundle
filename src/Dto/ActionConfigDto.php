@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use Symfony\Component\ExpressionLanguage\Expression;
 
@@ -80,6 +81,27 @@ final class ActionConfigDto
     public function getAction(string $pageName, string $actionName): ActionDto|ActionGroupDto|null
     {
         return $this->actions[$pageName][$actionName] ?? null;
+    }
+
+    /**
+     * @internal
+     *
+     * @return list<string> the built-in actions that save the entity and are added to the given page (alone or inside an action group)
+     */
+    public function getSaveActionNames(string $pageName): array
+    {
+        $saveActionNames = [Action::SAVE_AND_RETURN, Action::SAVE_AND_CONTINUE, Action::SAVE_AND_ADD_ANOTHER];
+        $pageActionNames = [];
+        foreach ($this->actions[$pageName] ?? [] as $item) {
+            $pageActions = $item instanceof ActionGroupDto ? [$item->getMainAction(), ...$item->getActions()] : [$item];
+            foreach ($pageActions as $action) {
+                if (null !== $action && \in_array($action->getName(), $saveActionNames, true)) {
+                    $pageActionNames[] = $action->getName();
+                }
+            }
+        }
+
+        return array_values(array_unique($pageActionNames));
     }
 
     public function removeAction(string $pageName, string $actionName): void

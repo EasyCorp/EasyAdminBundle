@@ -251,6 +251,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                 throw new MethodNotAllowedHttpException(['PATCH']);
             }
 
+            // the switch saves the entity, so it's only allowed to users who can save the edit form
+            if (!$this->isAnySaveActionGranted($context)) {
+                throw new ForbiddenActionException($context);
+            }
+
             $fieldName = $context->getRequest()->query->get('fieldName');
             $csrfToken = $context->getRequest()->query->get('csrfToken');
 
@@ -766,8 +771,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     protected function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
     {
         $field = $entityDto->getFields()->getByProperty($propertyName);
-        if (null === $field || true === $field->getFormTypeOption('disabled')) {
-            throw new AccessDeniedException(sprintf('The field "%s" does not exist or it\'s configured as disabled, so it can\'t be modified.', $propertyName));
+        if (null === $field || BooleanField::class !== $field->getFieldFqcn() || true === $field->getFormTypeOption('disabled') || $this->isDisabledInEditForm($entityDto, $field)) {
+            throw new AccessDeniedException(sprintf('The field "%s" does not exist, it\'s not a boolean field or it\'s configured as disabled, so it can\'t be modified.', $propertyName));
         }
 
         $this->container->get(EntityUpdaterInterface::class)->updateProperty($entityDto, $propertyName, $newValue);
@@ -877,6 +882,49 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         return $fieldAssetsDto;
+    }
+
+    /**
+     * Save actions don't have their own URL (the entity is saved by the action that renders their buttons),
+     * so the permissions and the disabled state of the ones added to the edit page are checked here.
+     * When the page has none of them (e.g. they were replaced by custom actions) nothing is checked.
+     *
+     * @param AdminContext<TEntity> $context
+     */
+    private function isAnySaveActionGranted(AdminContext $context): bool
+    {
+        $saveActionNames = $context->getCrud()->getActionsConfig()->getSaveActionNames(Crud::PAGE_EDIT);
+        foreach ($saveActionNames as $actionName) {
+            if ($this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => $actionName, 'entity' => $context->getEntity(), 'entityFqcn' => $context->getEntity()->getFqcn()])) {
+                return true;
+            }
+        }
+
+        return [] === $saveActionNames;
+    }
+
+    /**
+     * The switch doesn't submit the edit form, but it can't change what that form ignores:
+     * in Symfony a field is also disabled when its form is (e.g. with Crud::setFormOptions()
+     * or in an overridden createEditFormBuilder()) and only the built form knows that.
+     *
+     * @param EntityDto<TEntity> $entityDto
+     */
+    private function isDisabledInEditForm(EntityDto $entityDto, FieldDto $field): bool
+    {
+        $context = $this->getContext();
+        $editForm = $this->createEditForm($entityDto, $context->getCrud()->getEditFormOptions(), $context);
+
+        /** @var FormInterface $formField */
+        foreach ($editForm as $formField) {
+            // compare properties instead of objects because, when a property is configured more than once, the form keeps the last field
+            if ($field->getProperty() === $formField->getConfig()->getAttribute('ea_field')?->getProperty()) {
+                return $formField->isDisabled();
+            }
+        }
+
+        // forms built without the EasyAdmin form type have no 'ea_field' attribute
+        return $editForm->isDisabled();
     }
 
     private function handleFormRequest(FormInterface $form, Request $request): void

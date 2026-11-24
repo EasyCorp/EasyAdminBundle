@@ -133,7 +133,9 @@ class FileUploadType extends AbstractType implements DataMapperInterface
     private static function getStoredFileName(File|FlysystemFile $file, string $uploadDir): string
     {
         if ($file instanceof FlysystemFile) {
-            return $file->getPathname();
+            return str_starts_with($file->getPathname(), $uploadDir)
+                ? mb_substr($file->getPathname(), mb_strlen($uploadDir))
+                : $file->getPathname();
         }
 
         return str_starts_with($file->getPathname(), $uploadDir)

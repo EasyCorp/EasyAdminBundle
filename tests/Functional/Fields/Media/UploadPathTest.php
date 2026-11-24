@@ -17,7 +17,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * The name of an uploaded file can come from values that the backend user controls
  * (the client file name, other properties of the entity). Whatever the upload
- * name pattern produces, the file must be written inside the upload dir.
+ * name pattern produces, the file must be written inside the upload dir. The stored
+ * value is relative to the upload dir, so current files must also be looked up,
+ * shown and deleted inside it (with Flysystem too, not at the root of the storage).
  */
 class UploadPathTest extends AbstractFieldFunctionalTestCase
 {
@@ -245,6 +247,103 @@ class UploadPathTest extends AbstractFieldFunctionalTestCase
         static::assertSame(['kept.txt'], $this->fieldTestEntities->find($entity->getId())->getMultipleFileField());
     }
 
+    public function testEditFormShowsTheFileInsideTheUploadDir(): void
+    {
+        $this->dumpStorageFile('file1.txt', 'File outside the upload dir');
+        $this->dumpStorageFile(FlysystemNameAsDirectoryUploadCrudController::UPLOAD_DIR.'file1.txt', 'Upload');
+        $entity = $this->createFieldTestEntity(['fileField' => 'file1.txt']);
+
+        $crawler = $this->client->request('GET', $this->getCrudUrl(Action::EDIT, $entity->getId(), controllerFqcn: FlysystemNameAsDirectoryUploadCrudController::class));
+
+        static::assertResponseIsSuccessful();
+        $card = $crawler->filter('[data-ea-fileupload-card]');
+        static::assertCount(1, $card);
+        static::assertSame('file1.txt', $card->attr('data-filename'));
+        static::assertSame('6 B', trim($card->filter('.ea-fileupload-card-size')->text()));
+    }
+
+    public function testSavingWithoutChangesKeepsTheStoredFile(): void
+    {
+        $this->dumpStorageFile(FlysystemNameAsDirectoryUploadCrudController::UPLOAD_DIR.'file1.txt', 'Upload');
+        $entity = $this->createFieldTestEntity(['fileField' => 'file1.txt']);
+
+        $this->client->submit($this->getForm(FlysystemNameAsDirectoryUploadCrudController::class, Action::EDIT, $entity->getId()));
+
+        static::assertResponseRedirects();
+        static::assertSame('file1.txt', $this->findEntityById($entity->getId())->getFileField());
+        static::assertFileExists($this->flysystemRoot.'/'.FlysystemNameAsDirectoryUploadCrudController::UPLOAD_DIR.'file1.txt');
+    }
+
+    public function testDeleteCheckboxOnlyDeletesTheFileInsideTheUploadDir(): void
+    {
+        $this->dumpStorageFile('file1.txt', 'File outside the upload dir');
+        $this->dumpStorageFile(FlysystemNameAsDirectoryUploadCrudController::UPLOAD_DIR.'file1.txt', 'Upload');
+        $entity = $this->createFieldTestEntity(['fileField' => 'file1.txt']);
+
+        $form = $this->getForm(FlysystemNameAsDirectoryUploadCrudController::class, Action::EDIT, $entity->getId());
+        $form['FieldTestEntity[fileField][delete]']->tick();
+        $this->client->submit($form);
+
+        static::assertResponseRedirects();
+        static::assertFileExists($this->flysystemRoot.'/file1.txt');
+        static::assertFileDoesNotExist($this->flysystemRoot.'/'.FlysystemNameAsDirectoryUploadCrudController::UPLOAD_DIR.'file1.txt');
+        static::assertNull($this->findEntityById($entity->getId())->getFileField());
+    }
+
+    public function testDeletedFilesOnlyDeletesTheFileInsideTheUploadDir(): void
+    {
+        $this->dumpStorageFile('file1.txt', 'File outside the upload dir');
+        $this->dumpStorageFile(FlysystemNameAsDirectoryUploadCrudController::UPLOAD_DIR.'file1.txt', 'Upload 1');
+        $this->dumpStorageFile(FlysystemNameAsDirectoryUploadCrudController::UPLOAD_DIR.'file2.txt', 'Upload 2');
+        $entity = $this->createFieldTestEntity(['multipleFileField' => ['file1.txt', 'file2.txt']]);
+
+        $form = $this->getForm(FlysystemNameAsDirectoryUploadCrudController::class, Action::EDIT, $entity->getId());
+        $form['FieldTestEntity[multipleFileField][deleted_files]'] = json_encode(['file1.txt']);
+        $this->client->submit($form);
+
+        static::assertResponseRedirects();
+        static::assertFileExists($this->flysystemRoot.'/file1.txt');
+        static::assertFileDoesNotExist($this->flysystemRoot.'/'.FlysystemNameAsDirectoryUploadCrudController::UPLOAD_DIR.'file1.txt');
+        static::assertFileExists($this->flysystemRoot.'/'.FlysystemNameAsDirectoryUploadCrudController::UPLOAD_DIR.'file2.txt');
+        static::assertSame(['file2.txt'], $this->findEntityById($entity->getId())->getMultipleFileField());
+    }
+
+    public function testReplacedFileIsDeletedInsideTheUploadDir(): void
+    {
+        $this->dumpStorageFile('file1.txt', 'File outside the upload dir');
+        $this->dumpStorageFile(FlysystemNameAsDirectoryUploadCrudController::UPLOAD_DIR.'file1.txt', 'Upload');
+        $entity = $this->createFieldTestEntity(['fileField' => 'file1.txt']);
+        $contents = 'Replacement '.bin2hex(random_bytes(8));
+        file_put_contents($this->sourceDir.'/file2.txt', $contents);
+
+        $form = $this->getForm(FlysystemNameAsDirectoryUploadCrudController::class, Action::EDIT, $entity->getId());
+        $form['FieldTestEntity[fileField][file]']->upload($this->sourceDir.'/file2.txt');
+        $this->client->submit($form);
+
+        static::assertResponseRedirects();
+        $storedPath = 'file2/file2/'.sha1($contents).'.txt';
+        static::assertSame($storedPath, $this->findEntityById($entity->getId())->getFileField());
+        static::assertFileExists($this->flysystemRoot.'/'.FlysystemNameAsDirectoryUploadCrudController::UPLOAD_DIR.$storedPath);
+        static::assertFileExists($this->flysystemRoot.'/file1.txt');
+        static::assertFileDoesNotExist($this->flysystemRoot.'/'.FlysystemNameAsDirectoryUploadCrudController::UPLOAD_DIR.'file1.txt');
+    }
+
+    public function testStoredPathIsNotResolvedOutsideTheUploadDir(): void
+    {
+        $this->dumpStorageFile('directory1/file1.txt', 'File outside the upload dir');
+        $entity = $this->createFieldTestEntity(['fileField' => 'directory1/file1.txt']);
+
+        $crawler = $this->client->request('GET', $this->getCrudUrl(Action::EDIT, $entity->getId(), controllerFqcn: FlysystemNameAsDirectoryUploadCrudController::class));
+        static::assertCount(0, $crawler->filter('[data-ea-fileupload-card]'));
+
+        $form = $crawler->filter('form[name="FieldTestEntity"]')->form();
+        $form['FieldTestEntity[fileField][delete]']->tick();
+        $this->client->submit($form);
+
+        static::assertResponseRedirects();
+        static::assertFileExists($this->flysystemRoot.'/directory1/file1.txt');
+    }
+
     /**
      * @return array{string, string} the path of the source file and the hash of its contents
      */
@@ -270,6 +369,18 @@ class UploadPathTest extends AbstractFieldFunctionalTestCase
     private function getFileInputName(string $property): string
     {
         return 'FieldTestEntity['.$property.'][file]'.('multipleFileField' === $property ? '[0]' : '');
+    }
+
+    private function dumpStorageFile(string $path, string $contents): void
+    {
+        (new Filesystem())->dumpFile($this->flysystemRoot.'/'.$path, $contents);
+    }
+
+    private function findEntityById(int $entityId): object
+    {
+        $this->entityManager->clear();
+
+        return $this->fieldTestEntities->find($entityId);
     }
 
     private function findOnlyEntity(): object

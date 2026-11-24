@@ -89,15 +89,16 @@ class StringToFileTransformer implements DataTransformerInterface
         }
 
         if (null !== $this->flysystemStorage) {
+            $path = $this->uploadDir.$value;
             try {
-                if ($this->flysystemStorage->fileExists($value)) {
+                if ($this->flysystemStorage->fileExists($path)) {
                     $size = null;
                     try {
-                        $size = $this->flysystemStorage->fileSize($value);
+                        $size = $this->flysystemStorage->fileSize($path);
                     } catch (\Throwable) {
                     }
 
-                    return new FlysystemFile($value, null, $size);
+                    return new FlysystemFile($path, null, $size);
                 }
             } catch (\Throwable) {
             }
@@ -171,7 +172,9 @@ class StringToFileTransformer implements DataTransformerInterface
         }
 
         if ($value instanceof FlysystemFile) {
-            return $value->getPathname();
+            return str_starts_with($value->getPathname(), $this->uploadDir)
+                ? mb_substr($value->getPathname(), mb_strlen($this->uploadDir))
+                : $value->getPathname();
         }
 
         if ($value instanceof File) {

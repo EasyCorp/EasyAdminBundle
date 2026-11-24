@@ -104,7 +104,7 @@ class FileUploadTypeFlysystemTest extends TypeTestCase
 
         $normData = $form->getNormData();
         $this->assertInstanceOf(FlysystemFile::class, $normData);
-        $this->assertSame('some/existing.pdf', $normData->getPathname());
+        $this->assertSame('remote/uploads/some/existing.pdf', $normData->getPathname());
     }
 
     public function testKeepOrFailFlysystemFileDoesNotExistReturnsFilename(): void

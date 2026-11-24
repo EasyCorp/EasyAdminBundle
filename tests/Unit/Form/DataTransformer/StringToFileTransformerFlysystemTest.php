@@ -4,8 +4,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Form\DataTransformer;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\DataTransformer\StringToFileTransformer;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FlysystemFile;
+use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemOperator;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -38,33 +42,33 @@ class StringToFileTransformerFlysystemTest extends TestCase
     public function testTransformStringFileExistsReturnsFlysystemFileWithSize(): void
     {
         $fs = $this->createMock(FilesystemOperator::class);
-        $fs->method('fileExists')->with('photos/cat.jpg')->willReturn(true);
-        $fs->method('fileSize')->with('photos/cat.jpg')->willReturn(1234);
+        $fs->method('fileExists')->with('uploads/photos/cat.jpg')->willReturn(true);
+        $fs->method('fileSize')->with('uploads/photos/cat.jpg')->willReturn(1234);
 
         $result = $this->createTransformer($fs)->transform('photos/cat.jpg');
 
         $this->assertInstanceOf(FlysystemFile::class, $result);
-        $this->assertSame('photos/cat.jpg', $result->getPathname());
+        $this->assertSame('uploads/photos/cat.jpg', $result->getPathname());
         $this->assertSame(1234, $result->getSize());
     }
 
     public function testTransformStringFileExistsFileSizeThrowsReturnsFlysystemFileWithNullSize(): void
     {
         $fs = $this->createMock(FilesystemOperator::class);
-        $fs->method('fileExists')->with('photos/cat.jpg')->willReturn(true);
+        $fs->method('fileExists')->with('uploads/photos/cat.jpg')->willReturn(true);
         $fs->method('fileSize')->willThrowException(new \RuntimeException('Cannot read size'));
 
         $result = $this->createTransformer($fs)->transform('photos/cat.jpg');
 
         $this->assertInstanceOf(FlysystemFile::class, $result);
-        $this->assertSame('photos/cat.jpg', $result->getPathname());
+        $this->assertSame('uploads/photos/cat.jpg', $result->getPathname());
         $this->assertNull($result->getSize());
     }
 
     public function testTransformStringFileDoesNotExistReturnsNull(): void
     {
         $fs = $this->createMock(FilesystemOperator::class);
-        $fs->method('fileExists')->with('photos/missing.jpg')->willReturn(false);
+        $fs->method('fileExists')->with('uploads/photos/missing.jpg')->willReturn(false);
 
         $this->assertNull($this->createTransformer($fs)->transform('photos/missing.jpg'));
     }
@@ -97,9 +101,9 @@ class StringToFileTransformerFlysystemTest extends TestCase
 
         $this->assertCount(2, $result);
         $this->assertInstanceOf(FlysystemFile::class, $result[0]);
-        $this->assertSame('a.jpg', $result[0]->getPathname());
+        $this->assertSame('uploads/a.jpg', $result[0]->getPathname());
         $this->assertInstanceOf(FlysystemFile::class, $result[1]);
-        $this->assertSame('b.jpg', $result[1]->getPathname());
+        $this->assertSame('uploads/b.jpg', $result[1]->getPathname());
     }
 
     // --- reverseTransform() tests ---
@@ -118,7 +122,17 @@ class StringToFileTransformerFlysystemTest extends TestCase
         $this->assertSame([], $this->createTransformer($fs, multiple: true)->reverseTransform(null));
     }
 
-    public function testReverseTransformFlysystemFileReturnsPathname(): void
+    public function testReverseTransformFlysystemFileReturnsPathRelativeToTheUploadDir(): void
+    {
+        $fs = $this->createMock(FilesystemOperator::class);
+        $file = new FlysystemFile('uploads/photos/cat.jpg');
+
+        $result = $this->createTransformer($fs)->reverseTransform($file);
+
+        $this->assertSame('photos/cat.jpg', $result);
+    }
+
+    public function testReverseTransformFlysystemFileOutsideTheUploadDirReturnsPathname(): void
     {
         $fs = $this->createMock(FilesystemOperator::class);
         $file = new FlysystemFile('photos/cat.jpg');
@@ -126,6 +140,40 @@ class StringToFileTransformerFlysystemTest extends TestCase
         $result = $this->createTransformer($fs)->reverseTransform($file);
 
         $this->assertSame('photos/cat.jpg', $result);
+    }
+
+    #[TestWith(['uploads/'])]
+    #[TestWith(['/'])]
+    public function testStoredValueIsResolvedInsideTheUploadDir(string $uploadDir): void
+    {
+        $storageDir = sys_get_temp_dir().'/ea_flysystem_'.bin2hex(random_bytes(6));
+        $storage = new Filesystem(new LocalFilesystemAdapter($storageDir));
+        $storage->write('photos/cat.jpg', 'File outside the upload dir');
+        $storage->write(ltrim($uploadDir.'photos/dog.jpg', '/'), 'Upload');
+        $transformer = new StringToFileTransformer(
+            uploadDir: $uploadDir,
+            uploadFilename: static fn (UploadedFile $f): string => $f->getClientOriginalName(),
+            uploadValidate: static fn (string $filename): string => $filename,
+            multiple: false,
+            flysystemStorage: $storage,
+        );
+
+        try {
+            $file = $transformer->transform('photos/dog.jpg');
+            $this->assertInstanceOf(FlysystemFile::class, $file);
+            $this->assertSame(6, $file->getSize());
+            $this->assertSame('photos/dog.jpg', $transformer->reverseTransform($file));
+
+            if ('/' !== $uploadDir) {
+                $this->assertNull($transformer->transform('photos/cat.jpg'));
+            }
+
+            $storage->delete($file->getPathname());
+            $this->assertFalse($storage->fileExists(ltrim($uploadDir.'photos/dog.jpg', '/')));
+            $this->assertTrue($storage->fileExists('photos/cat.jpg'));
+        } finally {
+            (new SymfonyFilesystem())->remove($storageDir);
+        }
     }
 
     public function testReverseTransformValidUploadedFileCallsCallables(): void

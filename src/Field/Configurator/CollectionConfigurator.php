@@ -297,8 +297,9 @@ final readonly class CollectionConfigurator implements FieldConfiguratorInterfac
         }
 
         try {
-            $fields = $crudController->configureFields($crudControllerPageName);
-            $this->fieldFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
+            $fields = new FieldCollection($crudController->configureFields($crudControllerPageName));
+            AssociationConfigurator::setEmbeddedCrudFormAutocompleteContext($fields, $targetCrudControllerFqcn, $crudPageName, $crudControllerPageName);
+            $this->fieldFactory->processFields($entityDto, $fields, $crudPageName);
         } finally {
             // restore the original context
             if ($originalContext instanceof AdminContext && null !== $request) {

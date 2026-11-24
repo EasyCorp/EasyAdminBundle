@@ -23,6 +23,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Router\EntityIdReader;
 use EasyCorp\Bundle\EasyAdminBundle\Security\CrudPermissionChecker;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
@@ -35,6 +36,17 @@ use function Symfony\Component\Translation\t;
  */
 final class AssociationConfigurator implements FieldConfiguratorInterface
 {
+    /**
+     * @internal the CRUD controller and pages of the embedded CRUD form that defines a field,
+     *           which the autocomplete URL must use instead of the ones of the current request
+     */
+    public const OPTION_EMBEDDED_CRUD_FORM_AUTOCOMPLETE_CONTEXT = 'embeddedCrudFormAutocompleteContext';
+    /**
+     * @internal the page name passed to configureFields() when it's not the originating page (e.g. a
+     *           custom page name of an embedded CRUD form)
+     */
+    public const AUTOCOMPLETE_CONTEXT_PAGE_NAME = 'crudControllerPageName';
+
     /**
      * The embedded CRUD forms (controller FQCN and page name) whose fields are being configured.
      *
@@ -73,6 +85,24 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $this->configureField($field, $resolvedProperty->getEntityDto(), $context, $resolvedProperty->getPropertyName(), $rootPropertyName);
         } finally {
             $field->setProperty($rootPropertyName);
+        }
+    }
+
+    /**
+     * @internal
+     */
+    public static function setEmbeddedCrudFormAutocompleteContext(FieldCollection $fields, string $crudControllerFqcn, string $crudPageName, string $crudControllerPageName): void
+    {
+        $autocompleteContext = [
+            EA::CRUD_CONTROLLER_FQCN => $crudControllerFqcn,
+            'originatingPage' => $crudPageName,
+        ];
+        if ($crudControllerPageName !== $crudPageName) {
+            $autocompleteContext[self::AUTOCOMPLETE_CONTEXT_PAGE_NAME] = $crudControllerPageName;
+        }
+
+        foreach ($fields as $fieldDto) {
+            $fieldDto->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_AUTOCOMPLETE_CONTEXT, $autocompleteContext);
         }
     }
 
@@ -195,11 +225,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                     ->set('page', 1) // The autocomplete should always start on the first page
                     ->setController($targetCrudControllerFqcn)
                     ->setAction('autocomplete')
-                    ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
-                        EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN),
-                        'propertyName' => $propertyName,
-                        'originatingPage' => $context->getCrud()->getCurrentPage(),
-                    ])
+                    ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, $this->getAutocompleteContext($field, $context, $rootPropertyName))
                     ->generateUrl();
             } catch (RouteNotFoundException $e) {
                 // this may throw a "route not found" exception if the associated entity is not
@@ -229,6 +255,33 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                 return $queryBuilder;
             });
         }
+    }
+
+    /**
+     * The autocomplete action looks for the field in the CRUD controller, page and property
+     * of this context, so they must be the ones used to define the field.
+     *
+     * @return array<string, mixed>
+     */
+    private function getAutocompleteContext(FieldDto $field, AdminContext $context, string $rootPropertyName): array
+    {
+        $embeddedCrudFormContext = $field->getCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_AUTOCOMPLETE_CONTEXT);
+        if (\is_array($embeddedCrudFormContext)) {
+            return ['propertyName' => $rootPropertyName] + $embeddedCrudFormContext;
+        }
+
+        $autocompleteContext = [
+            EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN),
+            'propertyName' => $rootPropertyName,
+            'originatingPage' => $context->getCrud()->getCurrentPage(),
+        ];
+
+        // needed when the permission of the page depends on the entity (e.g. a voter for the 'edit' page)
+        if (null !== $entityId = EntityIdReader::fromRequest($context->getRequest())) {
+            $autocompleteContext[EA::ENTITY_ID] = $entityId;
+        }
+
+        return $autocompleteContext;
     }
 
     /**
@@ -444,9 +497,10 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $this->crudFormsBeingConfigured[$crudControllerFqcn][$crudControllerPageName] = true;
 
         try {
-            $fields = $crudController->configureFields($crudControllerPageName);
+            $fields = new FieldCollection($crudController->configureFields($crudControllerPageName));
+            self::setEmbeddedCrudFormAutocompleteContext($fields, $crudControllerFqcn, $crudPageName, $crudControllerPageName);
 
-            $this->fieldFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
+            $this->fieldFactory->processFields($entityDto, $fields, $crudPageName);
         } finally {
             unset($this->crudFormsBeingConfigured[$crudControllerFqcn][$crudControllerPageName]);
         }

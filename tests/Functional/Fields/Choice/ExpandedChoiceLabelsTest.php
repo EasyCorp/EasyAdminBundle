@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Blog
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Category;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\User;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * The labels of the checkboxes and radio buttons of expanded fields whose choices
@@ -115,6 +116,11 @@ class ExpandedChoiceLabelsTest extends AbstractCrudTestCase
 
     public function testEntityChoiceLabelsAreEscapedInNestedCrudForms(): void
     {
+        // useEntryCrudForm() requires the 'prototype_options' option, added in Symfony 6.1
+        if (Kernel::MAJOR_VERSION < 6 || (6 === Kernel::MAJOR_VERSION && Kernel::MINOR_VERSION < 1)) {
+            $this->markTestSkipped('useEntryCrudForm() requires Symfony 6.1 or newer.');
+        }
+
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($this->user->getId(), null, UserWithNestedExpandedChoicesCrudController::class));
 
         $this->assertEscapedNestedChoiceLabels($crawler, 'User_blogPosts_0_');

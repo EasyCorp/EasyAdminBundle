@@ -29,6 +29,7 @@ use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\All;
+use Symfony\Component\Validator\Constraints\GroupSequence;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -77,6 +78,9 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         }
 
         $options['constraints'] = (bool) $options['multiple'] && [] !== $options['file_constraints'] ? new All($options['file_constraints']) : $options['file_constraints'];
+        // the upload restrictions (mimeTypes(), maxSize(), the default Image constraint, etc.) are
+        // in the 'Default' group, so they must also run when the form validates other groups
+        $options['validation_groups'] ??= self::getFileValidationGroups(...);
         unset($options['upload_dir'], $options['upload_new'], $options['upload_delete'], $options['upload_filename'], $options['upload_validate'], $options['download_path'], $options['allow_add'], $options['allow_delete'], $options['allow_view'], $options['allow_download'], $options['compound'], $options['file_constraints'], $options['replaced_file_behavior'], $options['flysystem_storage'], $options['flysystem_url_prefix'], $options['risky_inline_render']);
 
         $builder->add('file', FileType::class, $options);
@@ -132,6 +136,49 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $view->vars['allow_download'] = $options['allow_download'];
         $view->vars['download_path'] = $options['download_path'];
         $view->vars['risky_inline_render'] = $options['risky_inline_render'];
+    }
+
+    /**
+     * Returns the groups that the form inherits from its parents (as Symfony does when
+     * the 'validation_groups' option is not set) plus the 'Default' group.
+     *
+     * @return list<string>
+     */
+    private static function getFileValidationGroups(FormInterface $form): array
+    {
+        while (null !== $form = $form->getParent()) {
+            $groups = $form->getConfig()->getOption('validation_groups');
+            if (null === $groups) {
+                continue;
+            }
+
+            if (!\is_string($groups) && \is_callable($groups)) {
+                $groups = $groups($form);
+            }
+
+            $groups = self::flattenValidationGroups($groups);
+
+            // no groups means that validation is disabled
+            return [] === $groups ? [] : array_values(array_unique([...$groups, Constraint::DEFAULT_GROUP]));
+        }
+
+        return [Constraint::DEFAULT_GROUP];
+    }
+
+    /**
+     * A form field can't know which step of a group sequence is being validated,
+     * so all the groups of the sequence are validated at once.
+     *
+     * @return list<string>
+     */
+    private static function flattenValidationGroups(mixed $groups): array
+    {
+        $flattenedGroups = [];
+        foreach ($groups instanceof GroupSequence ? $groups->groups : (array) $groups as $group) {
+            $flattenedGroups = [...$flattenedGroups, ...(\is_string($group) ? [$group] : self::flattenValidationGroups($group))];
+        }
+
+        return $flattenedGroups;
     }
 
     private static function getStoredFileName(File|FlysystemFile $file, string $uploadDir): string

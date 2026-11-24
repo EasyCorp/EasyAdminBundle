@@ -6,6 +6,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ImageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Unit\Field\AbstractFieldTestCase;
+use PHPUnit\Framework\Attributes\TestWith;
+use Symfony\Component\Validator\Constraints\File as FileConstraint;
 
 class ImageConfiguratorTest extends AbstractFieldTestCase
 {
@@ -51,5 +53,37 @@ class ImageConfiguratorTest extends AbstractFieldTestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('setUploadDir()');
         $this->configure($field, Crud::PAGE_EDIT);
+    }
+
+    #[TestWith(['.ofx', ['ofx']])]
+    #[TestWith(['.OFX,.cfg', ['ofx', 'cfg']])]
+    public function testMimeTypesWithOnlyUnknownExtensionsRestrictTheFileExtension(string $mimeTypes, array $expectedExtensions): void
+    {
+        $field = ImageField::new('document')->setUploadDir('public/uploads/files')->mimeTypes($mimeTypes);
+
+        $dto = $this->configure($field, Crud::PAGE_EDIT);
+
+        $constraint = $this->getLastFileConstraint($dto->getFormTypeOption('file_constraints'));
+        $this->assertSame($expectedExtensions, $constraint->extensions);
+        $this->assertSame([], (array) $constraint->mimeTypes);
+    }
+
+    public function testMimeTypesWithKnownAndUnknownExtensionsRestrictTheMimeTypes(): void
+    {
+        $field = ImageField::new('document')->setUploadDir('public/uploads/files')->mimeTypes('.pdf,.ofx');
+
+        $dto = $this->configure($field, Crud::PAGE_EDIT);
+
+        $constraint = $this->getLastFileConstraint($dto->getFormTypeOption('file_constraints'));
+        $this->assertContains('application/pdf', $constraint->mimeTypes);
+        $this->assertSame([], (array) $constraint->extensions);
+    }
+
+    private function getLastFileConstraint(array $constraints): FileConstraint
+    {
+        $constraint = end($constraints);
+        $this->assertInstanceOf(FileConstraint::class, $constraint);
+
+        return $constraint;
     }
 }

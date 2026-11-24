@@ -205,6 +205,12 @@ The available placeholders for the error message are: ``{{ file }}`` (the absolu
 file path), ``{{ name }}`` (the base file name), ``{{ type }}`` (the MIME type of
 the uploaded file) and ``{{ types }}`` (the list of allowed MIME types).
 
+Symfony doesn't know the MIME types of some extensions (e.g. ``.ofx``). When
+all the values are extensions like that, EasyAdmin only checks the extension of
+the file name, not the file contents, and the ``[extension]`` placeholder of the
+file name pattern uses that extension. To check the contents too, use MIME types
+instead of those extensions.
+
 Replaced File Behavior
 ~~~~~~~~~~~~~~~~~~~~~~
 

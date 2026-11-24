@@ -4,7 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Fields\Media;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\AbstractFieldFunctionalTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Controller\Synthetic\FileUploadRestrictionsCrudController;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\Filesystem\Filesystem;
 
 class FileUploadTest extends AbstractFieldFunctionalTestCase
@@ -205,6 +207,68 @@ class FileUploadTest extends AbstractFieldFunctionalTestCase
         yield 'question mark in the name of an image' => ['imageField', 'report.svg?.png', true];
         yield 'SVG image in an image field' => ['imageField', 'report.svg', false];
         yield 'image field with an unknown type' => ['imageField', 'photo.heic', false];
+    }
+
+    #[TestWith(['fileField', ['mimeTypes' => 'application/pdf'], 'document.pdf', 'The mime type of the file is invalid'])]
+    #[TestWith(['fileField', ['mimeTypes' => '.pdf'], 'document.pdf', 'The mime type of the file is invalid'])]
+    #[TestWith(['fileField', ['maxSize' => 10], 'document.pdf', 'The file is too large'])]
+    #[TestWith(['multipleFileField', ['mimeTypes' => '.pdf'], 'document.pdf', 'The mime type of the file is invalid'])]
+    #[TestWith(['imageField', [], 'image.png', 'This file is not a valid image.'])]
+    public function testUploadRestrictionsApplyWhenValidationGroupsLeaveOutDefault(string $property, array $restrictions, string $uploadedFileName, string $expectedError): void
+    {
+        $this->assertUploadIsRejected($property, ['validationGroup' => 'custom_group'] + $restrictions, $uploadedFileName, $expectedError);
+    }
+
+    #[TestWith(['fileField', '.ofx', 'statement.html', 'The extension of the file is invalid'])]
+    #[TestWith(['fileField', '.ofx,.cfg', 'statement.html', 'The extension of the file is invalid'])]
+    #[TestWith(['multipleFileField', '.ofx', 'statement.html', 'The extension of the file is invalid'])]
+    #[TestWith(['imageField', '.ofx', 'image.png', 'The extension of the file is invalid'])]
+    public function testMimeTypesWithUnknownExtensionsRestrictTheFileExtension(string $property, string $mimeTypes, string $uploadedFileName, string $expectedError): void
+    {
+        $this->assertUploadIsRejected($property, ['mimeTypes' => $mimeTypes], $uploadedFileName, $expectedError);
+    }
+
+    #[TestWith(['fileField', 'OFXHEADER:100', 'txt'])]
+    #[TestWith(['fileField', '<!DOCTYPE html><html><body>File 1</body></html>', 'html'])]
+    #[TestWith(['multipleFileField', '<!DOCTYPE html><html><body>File 1</body></html>', 'html'])]
+    public function testMimeTypesWithUnknownExtensionsStoreFilesWithTheAllowedExtension(string $property, string $contents, string $guessedExtension): void
+    {
+        $uploadedPath = $this->uploadDir.$this->caseDirectory.'/'.$this->caseDirectory.'.ofx';
+        file_put_contents($uploadedPath, $contents);
+        $storedPath = $this->uploadDir.$this->caseDirectory.'.ofx';
+        $guessedPath = $this->uploadDir.$this->caseDirectory.'.'.$guessedExtension;
+        $this->uploadedPaths = [$storedPath, $guessedPath];
+
+        $crawler = $this->client->request('GET', $this->getCrudUrl(Action::NEW, null, ['mimeTypes' => '.ofx'], controllerFqcn: FileUploadRestrictionsCrudController::class));
+        $form = $crawler->filter('form[name="FieldTestEntity"]')->form();
+        $form['FieldTestEntity['.$property.'][file]'.('multipleFileField' === $property ? '[0]' : '')]->upload($uploadedPath);
+        $this->client->submit($form);
+
+        static::assertResponseRedirects();
+        static::assertSame(1, $this->fieldTestEntities->count([]));
+        static::assertFileExists($storedPath);
+        static::assertFileDoesNotExist($guessedPath);
+    }
+
+    private function assertUploadIsRejected(string $property, array $query, string $uploadedFileName, string $expectedError): void
+    {
+        $uploadedPath = $this->uploadDir.$this->caseDirectory.'/'.$uploadedFileName;
+        file_put_contents($uploadedPath, '<!DOCTYPE html><html><body>File 1</body></html>');
+        // the default file name pattern guesses the extension from the file contents
+        $storedPath = $this->uploadDir.pathinfo($uploadedFileName, \PATHINFO_FILENAME).'.html';
+        $this->uploadedPaths = [$storedPath];
+
+        $crawler = $this->client->request('GET', $this->getCrudUrl(Action::NEW, null, $query, controllerFqcn: FileUploadRestrictionsCrudController::class));
+        static::assertResponseIsSuccessful();
+        $form = $crawler->filter('form[name="FieldTestEntity"]')->form();
+        $isMultiple = 'multipleFileField' === $property;
+        $form['FieldTestEntity['.$property.'][file]'.($isMultiple ? '[0]' : '')]->upload($uploadedPath);
+        $this->client->submit($form);
+
+        static::assertResponseStatusCodeSame(422);
+        static::assertStringContainsString($expectedError, implode(' ', $this->client->getCrawler()->filter('.invalid-feedback')->each(static fn ($node): string => $node->text())));
+        static::assertSame(0, $this->fieldTestEntities->count([]));
+        static::assertFileDoesNotExist($storedPath);
     }
 
     public static function notDeletableFileProvider(): iterable

@@ -13,6 +13,7 @@ use League\Flysystem\FilesystemOperator;
 use League\Flysystem\UnableToGeneratePublicUrl;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Mime\MimeTypes;
@@ -142,23 +143,40 @@ final readonly class ImageConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOption('attr.accept', $mimeTypes);
 
             $processedMimeTypes = [];
+            $unknownExtensions = [];
             foreach (explode(',', $mimeTypes) as $token) {
                 $token = trim($token);
                 if (str_starts_with($token, '.')) {
-                    $processedMimeTypes = array_merge($processedMimeTypes, MimeTypes::getDefault()->getMimeTypes(ltrim($token, '.')));
+                    $extension = strtolower(ltrim($token, '.'));
+                    $extensionMimeTypes = MimeTypes::getDefault()->getMimeTypes($extension);
+                    if ([] === $extensionMimeTypes && '' !== $extension) {
+                        $unknownExtensions[] = $extension;
+                    }
+                    $processedMimeTypes = array_merge($processedMimeTypes, $extensionMimeTypes);
                 } else {
                     $processedMimeTypes[] = $token;
                 }
             }
 
+            $constraints = $field->getCustomOption(ImageField::OPTION_FILE_CONSTRAINTS) ?? [];
+            if (!\is_array($constraints)) {
+                $constraints = [$constraints];
+            }
+
             if ([] !== $processedMimeTypes) {
-                $constraints = $field->getCustomOption(ImageField::OPTION_FILE_CONSTRAINTS) ?? [];
-                if (!\is_array($constraints)) {
-                    $constraints = [$constraints];
-                }
                 $mimeTypesMessage = $field->getCustomOption(ImageField::OPTION_MIME_TYPES_MESSAGE);
                 $constraints[] = new FileConstraint(mimeTypes: $processedMimeTypes, mimeTypesMessage: $mimeTypesMessage);
                 $field->setCustomOption(ImageField::OPTION_FILE_CONSTRAINTS, $constraints);
+            } elseif ([] !== $unknownExtensions) {
+                // Symfony doesn't know the MIME types of these extensions, so the contents of the
+                // file can't be checked; checking its extension is better than accepting any file
+                $constraints[] = new FileConstraint(extensions: $unknownExtensions);
+                $field->setCustomOption(ImageField::OPTION_FILE_CONSTRAINTS, $constraints);
+
+                $fileNamePattern = $field->getFormTypeOption('upload_filename');
+                if (null !== $fileNamePattern) {
+                    $field->setFormTypeOption('upload_filename', self::keepAllowedExtensionInFileName($fileNamePattern, $unknownExtensions));
+                }
             }
         }
 
@@ -179,6 +197,33 @@ final readonly class ImageConfigurator implements FieldConfiguratorInterface
         $field->setFormTypeOption('allow_view', $field->getCustomOption(ImageField::OPTION_VIEWABLE));
         $field->setFormTypeOption('allow_download', $field->getCustomOption(ImageField::OPTION_DOWNLOADABLE));
         $field->setFormTypeOption('risky_inline_render', $field->getCustomOption(ImageField::OPTION_RISKY_INLINE_RENDER));
+    }
+
+    /**
+     * Symfony can't check the contents of files with these extensions, so the extension guessed from
+     * the contents (the '[extension]' placeholder) could store e.g. an HTML file as '.html'. Use the
+     * extension of the file name instead, which the extension constraint has already restricted.
+     *
+     * @param list<string> $allowedExtensions
+     */
+    private static function keepAllowedExtensionInFileName(string|callable $fileNamePattern, array $allowedExtensions): \Closure
+    {
+        return static function (UploadedFile $file) use ($fileNamePattern, $allowedExtensions): string {
+            $fileName = \is_string($fileNamePattern) ? $fileNamePattern : $fileNamePattern($file);
+            $clientExtension = strtolower($file->getClientOriginalExtension());
+            // files with other extensions are rejected by the extension constraint and never stored
+            if (!\in_array($clientExtension, $allowedExtensions, true)) {
+                return $fileName;
+            }
+
+            $fileName = str_replace('[extension]', $clientExtension, $fileName);
+            $fileNameExtension = strtolower(pathinfo($fileName, \PATHINFO_EXTENSION));
+            if ('' !== $fileNameExtension && !\in_array($fileNameExtension, $allowedExtensions, true)) {
+                throw new TransformationFailedException(sprintf('The extension of the name "%s" generated for the uploaded file is not one of the allowed extensions (%s).', $fileName, implode(', ', $allowedExtensions)));
+            }
+
+            return $fileName;
+        };
     }
 
     private function resolveFlysystemStorage(string $storageName): FilesystemOperator

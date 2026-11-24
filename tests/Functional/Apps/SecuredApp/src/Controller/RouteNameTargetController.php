@@ -8,7 +8,9 @@ use Symfony\Component\Routing\Attribute\Route;
 /**
  * Routes that can be generated but not reached through EasyAdmin's '?routeName='
  * dispatch with the given query parameters, used to check that those requests
- * end in a client error instead of a 500 error.
+ * end in a client error instead of a 500 error. The routes with an 'audience'
+ * argument check that the target controller gets its arguments from the matched
+ * route, not from the '?routeParams=' values.
  */
 class RouteNameTargetController
 {
@@ -16,6 +18,18 @@ class RouteNameTargetController
     public function withRequirements(int $id): Response
     {
         return new Response((string) $id);
+    }
+
+    #[Route('/admin/route-name-target-with-defaults', name: 'route_name_target_with_defaults', defaults: ['audience' => 'public'])]
+    public function withDefaults(string $audience): Response
+    {
+        return new Response($audience);
+    }
+
+    #[Route('/admin/route-name-target-with-optional-argument', name: 'route_name_target_with_optional_argument')]
+    public function withOptionalArgument(string $audience = 'public'): Response
+    {
+        return new Response($audience);
     }
 
     #[Route('/admin/route-name-target-post-only', name: 'route_name_target_post_only', methods: ['POST'])]

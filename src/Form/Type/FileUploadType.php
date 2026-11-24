@@ -22,6 +22,7 @@ use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\All;
+use Symfony\Component\Validator\Constraints\GroupSequence;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -41,6 +42,9 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $uploadValidate = $options['upload_validate'];
         $allowAdd = $options['allow_add'];
         $options['constraints'] = (bool) $options['multiple'] ? new All($options['file_constraints']) : $options['file_constraints'];
+        // the upload restrictions (the default Image constraint of ImageField, setFileConstraints(), etc.)
+        // are in the 'Default' group, so they must also run when the form validates other groups
+        $options['validation_groups'] ??= self::getFileValidationGroups(...);
         unset($options['upload_dir'], $options['upload_new'], $options['upload_delete'], $options['upload_filename'], $options['upload_validate'], $options['download_path'], $options['allow_add'], $options['allow_delete'], $options['compound'], $options['file_constraints']);
 
         $builder->add('file', FileType::class, $options);
@@ -250,5 +254,48 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         } else {
             $currentFiles = $uploadedFiles;
         }
+    }
+
+    /**
+     * Returns the groups that the form inherits from its parents (as Symfony does when
+     * the 'validation_groups' option is not set) plus the 'Default' group.
+     *
+     * @return list<string>
+     */
+    private static function getFileValidationGroups(FormInterface $form): array
+    {
+        while (null !== $form = $form->getParent()) {
+            $groups = $form->getConfig()->getOption('validation_groups');
+            if (null === $groups) {
+                continue;
+            }
+
+            if (!\is_string($groups) && \is_callable($groups)) {
+                $groups = $groups($form);
+            }
+
+            $groups = self::flattenValidationGroups($groups);
+
+            // no groups means that validation is disabled
+            return [] === $groups ? [] : array_values(array_unique([...$groups, Constraint::DEFAULT_GROUP]));
+        }
+
+        return [Constraint::DEFAULT_GROUP];
+    }
+
+    /**
+     * A form field can't know which step of a group sequence is being validated,
+     * so all the groups of the sequence are validated at once.
+     *
+     * @return list<string>
+     */
+    private static function flattenValidationGroups(mixed $groups): array
+    {
+        $flattenedGroups = [];
+        foreach ($groups instanceof GroupSequence ? $groups->groups : (array) $groups as $group) {
+            $flattenedGroups = [...$flattenedGroups, ...(\is_string($group) ? [$group] : self::flattenValidationGroups($group))];
+        }
+
+        return $flattenedGroups;
     }
 }

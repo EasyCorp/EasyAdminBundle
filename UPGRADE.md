@@ -1,6 +1,46 @@
 Upgrade between EasyAdmin 4.x versions
 ======================================
 
+EasyAdmin 4.29.18
+-----------------
+
+### Autocomplete Checks the Field and the Page of Its Context
+
+The autocomplete of `AssociationField` now checks that the user can access the page and the
+field that it was requested from:
+
+* if the callable of `setQueryBuilder()` returns a query builder for an entity other than the
+  related entity of the field, the autocomplete returns a 403 error. Modify and return the query
+  builder passed to the callable instead;
+* the autocomplete fields inside embedded CRUD forms (`renderAsEmbeddedForm()` and
+  `useEntryCrudForm()`) require access to the `new` or `edit` action of the embedded CRUD
+  controller in the current dashboard.
+
+### The Permission of Form Tabs, Columns and Fieldsets Now Applies to Their Fields
+
+A permission set with `setPermission()` on a form tab, column or fieldset (`FormField::addTab()`,
+`addColumn()`, `addFieldset()` and the deprecated `addPanel()`) now also applies to all the
+fields defined inside it, in all pages (including `index`). Before, only the tab, column or
+fieldset was hidden and its fields were displayed inside the previous one.
+
+If you used `setPermission()` on a tab, column or fieldset only to hide its title, move the
+fields that all users must see out of it.
+
+### `EntityRepository` Needs an Authorization Checker
+
+The search, the sort and the filters of the `index` page now ignore the properties of the fields
+that the user can't see. Not passing an instance of `AuthorizationCheckerInterface` as the sixth
+argument of the constructor of `EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository` is
+deprecated. This only affects you if you create that service yourself.
+
+### Parameters of `linkToRoute()` That Aren't Part of the Route
+
+When an action or menu item uses `linkToRoute()` to link to a regular Symfony route, the
+controller of that route now only gets the arguments defined by the route (its placeholders and
+defaults), like when browsing the route URL. The other parameters passed to `linkToRoute()` are
+no longer request attributes or controller arguments. Add them as placeholders of the route, or
+read them from the query string with `$request->query->all('routeParams')`.
+
 EasyAdmin 4.29.17
 -----------------
 

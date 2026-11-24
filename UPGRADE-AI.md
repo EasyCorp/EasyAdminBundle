@@ -58,7 +58,9 @@ apply.
    `edit` action of that embedded CRUD controller is disabled or denied for the
    users of the outer form, its permission depends on the entity (a voter), or
    the controller has no routes in the dashboard, the autocomplete returns a 403
-   error: grant that action to them or remove `->autocomplete()`.
+   error: grant that action to them or remove `->autocomplete()`. If that
+   CRUD controller calls `setEntityPermission()` with a voter or expression,
+   make it grant a `null` subject to the users who can use the embedded form.
 
 3. In every `configureFields()` method, find `FormField::addTab(`,
    `FormField::addColumn(` and `FormField::addFieldset(` calls followed by

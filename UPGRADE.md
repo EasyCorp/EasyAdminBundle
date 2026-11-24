@@ -15,7 +15,12 @@ page and the field that it was requested from:
   error. Modify and return the query builder passed to the callable instead;
 * the autocomplete fields inside embedded CRUD forms (`renderAsEmbeddedForm()`
   and `useEntryCrudForm()`) require access to the `new` or `edit` action of
-  the embedded CRUD controller in the current dashboard.
+  the embedded CRUD controller in the current dashboard;
+* the entity permission (`setEntityPermission()`) of the CRUD controller that
+  defines the field is checked for the `detail`, `edit` and `new` pages. When
+  there's no entity (the `new` page and the autocomplete fields of embedded
+  CRUD forms), it's checked with a `null` subject, so voters and expressions
+  used as entity permission must handle `null`.
 
 ### The Permission of Form Tabs, Columns and Fieldsets Now Applies to Their Fields
 

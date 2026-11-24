@@ -3,6 +3,75 @@ Upgrade Guide
 
 This guide is for humans. If you are an AI agent, read [UPGRADE-AI.md](UPGRADE-AI.md) instead.
 
+## EasyAdmin 5.10.4
+
+### Autocomplete Checks the Field and the Page of Its Context
+
+The autocomplete of `AssociationField` now checks that the user can access the
+page and the field that it was requested from:
+
+* if the callable of `setQueryBuilder()` returns a query builder for an entity
+  other than the related entity of the field, the autocomplete returns a 403
+  error. Modify and return the query builder passed to the callable instead;
+* the autocomplete fields inside embedded CRUD forms (`renderAsEmbeddedForm()`
+  and `useEntryCrudForm()`) require access to the `new` or `edit` action of
+  the embedded CRUD controller in the current dashboard.
+
+### The Permission of Form Tabs, Columns and Fieldsets Now Applies to Their Fields
+
+A permission set with `setPermission()` on a form tab, column or fieldset
+(`FormField::addTab()`, `addColumn()` and `addFieldset()`) now also applies to
+all the fields defined inside it, in all pages (including `index`). Before, only
+the tab, column or fieldset was hidden and its fields were displayed inside the
+previous one.
+
+If you used `setPermission()` on a tab, column or fieldset only to hide its
+title, move the fields that all users must see out of it.
+
+### `EntityRepository` Needs an Authorization Checker
+
+The search, the sort and the filters of the `index` page now ignore the
+properties of the fields that the user can't see. Not passing an instance of
+`AuthorizationCheckerInterface` as the sixth argument of the constructor of
+`EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository` is deprecated. This only
+affects you if you create that service yourself.
+
+### Parameters of `linkToRoute()` That Aren't Part of the Route
+
+When an action or menu item uses `linkToRoute()` to link to a regular Symfony
+route, the controller of that route now only gets the arguments defined by the
+route (its placeholders and defaults), like when browsing the route URL. The
+other parameters passed to `linkToRoute()` are no longer request attributes or
+controller arguments. Add them as placeholders of the route, or read them from
+the query string with `$request->query->all('routeParams')`.
+
+### The Entity ID of Admin URLs Wins Over the `id` Parameter
+
+On routes that use the `{id}` placeholder instead of `{entityId}`, the entity
+ID set with `setEntityId()` (or taken from the current `detail` or `edit` page)
+now always wins over an `id` parameter. If you used `->set('id', ...)` to point
+an admin URL to another entity, use `->setEntityId(...)` instead.
+
+### Flysystem Files Are Resolved Inside the Upload Dir
+
+With `setFlysystemStorage()`, the stored value of file and image fields is now
+always looked up, displayed and deleted inside the `setUploadDir()` directory of
+the storage, as with the local storage. If your entities store paths that already
+include the upload dir, remove that prefix from the stored values or use
+`setUploadDir('/')`. Custom callables set in the `upload_delete` form type option
+now get a `FlysystemFile` whose `getPathname()` includes the upload dir.
+
+### File and Image Fields Force the Download of More File Types
+
+File and image fields now force the download of all uploaded files except raster
+images (`.jpg`, `.png`, `.gif`, `.webp`, `.bmp`, `.ico`), PDFs, `.txt` files
+and `.mp3`, `.ogg`, `.mp4` and `.webm` files. Call `allowRiskyInlineRender()` on
+the field to keep the previous behavior if you trust the uploaded files.
+
+The URLs of the files now encode the `?` and `#` characters of the stored file
+names. If you store relative paths with a query string on purpose, store absolute
+URLs instead.
+
 ## EasyAdmin 5.10.2
 
 ### `allowedDashboards` and `deniedDashboards` Are Now Applied to CRUD Routes

@@ -85,7 +85,7 @@ replacement of each one is in `references/traps.md` and the full explanation
 in `vendor/easycorp/easyadmin-bundle/UPGRADE.md`. `linkToCrudAction()` itself
 still exists: 4.x code that uses it compiles and fails at render time until
 the target method gets `#[AdminRoute]`.
-<!-- UPGRADE.md:426-445; UPGRADE.md:537-549; UPGRADE.md:535-790 -->
+<!-- UPGRADE.md:495-514; UPGRADE.md:606-618; UPGRADE.md:604-859 -->
 
 ## Project conventions
 
@@ -126,7 +126,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - Link CRUD controllers with
   `MenuItem::linkTo(ProductCrudController::class, 'Products', 'fa fa-box')`:
   controller class first, then label, then icon. `MenuItem::linkToCrud()` was
-  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:564-580 -->
+  removed in 5.0. <!-- src/Config/MenuItem.php::linkTo; UPGRADE.md:633-649 -->
 - The other factories put the label first:
   `MenuItem::linkToRoute('Reports', 'fa fa-chart-bar', 'app_reports', ['year' => 2026])`,
   `linkToUrl('Website', 'fa fa-globe', 'https://example.com')`,
@@ -137,7 +137,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - `linkToRoute()` to a Symfony route that does not exist renders a menu that
   looks fine and fails with `RouteNotFoundException` when clicked. Link only to
   routes that exist or that you create in the same change; never guess route
-  names. <!-- src/Router/AdminUrlGenerator.php::generateUrl; src/EventListener/AdminRouterSubscriber.php::getSymfonyControllerFqcn -->
+  names. <!-- src/Router/AdminUrlGenerator.php::generateUrl; src/EventListener/AdminRouterSubscriber.php::resolveTargetRoute -->
 - `index()` belongs to the dashboard interface: do not add arguments to it.
   Inject services through the constructor. To open a CRUD page instead of a
   dashboard, redirect from it:
@@ -149,7 +149,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 <!-- rules:start -->
 - Declare `public static function getEntityFqcn(): string` (the base class
   does not) and add `/** @extends AbstractCrudController<Product> */` above
-  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:773-790 -->
+  the class, otherwise PHPStan reports a missing generic type. <!-- src/Contracts/Controller/CrudControllerInterface.php::getEntityFqcn; UPGRADE.md:842-859 -->
 - Overrides must keep the interface signatures: `createEntity(string $entityFqcn): ?object`
   (overrides may keep `: object`),
   `persistEntity(EntityManagerInterface $entityManager, object $entityInstance): void`,
@@ -194,7 +194,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - Form layout uses the static methods `FormField::addTab('Details')`,
   `FormField::addFieldset('Pricing')`, `FormField::addColumn(6)` and
   `FormField::addRow()`. `FormField::addPanel()` was removed in 5.0. The first
-  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:688-700 -->
+  argument of `addColumn()` is the column width, not a label. <!-- src/Field/FormField.php::addFieldset; src/Field/FormField.php::addColumn; UPGRADE.md:757-769 -->
 - `ChoiceField`: `setChoices(['Draft' => 'draft'])`,
   `renderAsBadges(['draft' => 'warning', 'published' => 'success'])` (types:
   success, warning, danger, info, primary, secondary, light, dark),
@@ -265,7 +265,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - Rendering methods are `renderAsLink()`, `renderAsButton()` and
   `renderAsForm()`; the `displayAs*()` names were removed in 5.0. Style them
   with `asPrimaryAction()`, `asDangerAction()` (also Success, Warning, Info)
-  or `asTextLink()`, and add `askConfirmation()` for a confirmation modal. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; UPGRADE.md:651-667 -->
+  or `asTextLink()`, and add `askConfirmation()` for a confirmation modal. <!-- src/Config/Action.php::renderAsForm; src/Config/Action.php::askConfirmation; UPGRADE.md:720-736 -->
 - `setCssClass()` drops the default `.btn-*` and `.action-<name>` classes (and
   with them the selectors used by the test helpers), `addCssClass()` keeps
   them; `displayIf()` on a global action receives no entity; removing or
@@ -294,7 +294,7 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
   `is_granted($permission, $entity)`: the index page hides the rows the user
   cannot see, and the detail, edit, new, delete and batch delete actions throw
   `InsufficientEntityPermissionException`. It does not restrict custom actions
-  or the index page itself. <!-- src/Controller/AbstractCrudController.php::detail; src/Controller/AbstractCrudController.php::edit; src/Controller/AbstractCrudController.php::new; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; doc/security.rst:264-310; tests/Functional/Security/EntityPermissionAccessTest.php; tests/Functional/Security/BatchDeleteAccessTest.php -->
+  or the index page itself. <!-- src/Controller/AbstractCrudController.php::detail; src/Controller/AbstractCrudController.php::edit; src/Controller/AbstractCrudController.php::new; src/Controller/AbstractCrudController.php::delete; src/Controller/AbstractCrudController.php::batchDelete; doc/security.rst:300-340; tests/Functional/Security/EntityPermissionAccessTest.php; tests/Functional/Security/BatchDeleteAccessTest.php -->
 - Action permissions and `disable()` are checked per action, on the button and on the URL.
   `setPermission(Action::INDEX, 'ROLE_ADMIN')` blocks index, autocomplete and filters, not detail, edit, new or delete.
   A custom action URL (`linkToCrudAction()`, or `linkToRoute()` to an admin route of the same CRUD controller)
@@ -304,9 +304,10 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 - `MenuItem::setPermission()` only hides the menu item; the linked pages stay
   reachable unless their actions are protected too. <!-- src/Config/Menu/MenuItemTrait.php::setPermission; doc/security.rst:115-118 -->
 - Field-level access: `IntegerField::new('sales')->setPermission('ROLE_ADMIN')`
-  hides the field on every page for other users. Every `setPermission()`
-  accepts a `new Expression('"ROLE_EDITOR" in role_names')` besides a role
-  string. <!-- src/Field/FieldTrait.php::setPermission; doc/security.rst:249-260; doc/security.rst:329-346 -->
+  hides the field on every page for other users. On `FormField::addTab()`,
+  `addColumn()` or `addFieldset()` it also hides the fields inside them.
+  Every `setPermission()` accepts a `new Expression('"ROLE_EDITOR" in role_names')`
+  besides a role string. <!-- src/Field/FieldTrait.php::setPermission; src/Factory/FieldFactory.php::getFieldsOfDeniedLayoutContainers; doc/security.rst:254-298; doc/security.rst:424-430; tests/Functional/Security/LayoutFieldPermissionTest.php -->
 <!-- rules:end -->
 
 ## Functional tests
@@ -331,13 +332,13 @@ The same pages are online at `https://symfony.com/bundles/EasyAdminBundle/curren
 
 <!-- rules:start -->
 - The `ea` Twig global was removed; call the `ea()` function, which returns
-  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:426-445 -->
+  `null` outside the admin. `ea_url()` returns the URL generator. <!-- src/Twig/EasyAdminTwigExtension.php::getFunctions; UPGRADE.md:495-514 -->
 - Override page templates with `Crud::overrideTemplate('crud/index', 'admin/product/index.html.twig')`
   and field templates with `->setTemplatePath()`. The `new` and `edit` pages render form fields
   through Symfony form themes (`Crud::addFormTheme()`), not through field templates. <!-- src/Config/Crud.php::overrideTemplate; src/Config/Crud.php::addFormTheme; src/Field/FieldTrait.php::setTemplatePath; doc/fields.rst:934-936 -->
 - Backend CSS lives in cascade layers (`vendor`, `ea`, `ea-overrides`), so
   unlayered custom CSS wins without `!important`. Override design tokens on
-  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:487-511; doc/design.rst:314-316; doc/design.rst:1411-1415 -->
+  `:root, .ea-dark-scheme`, not only on `:root`. <!-- UPGRADE.md:556-580; doc/design.rst:314-316; doc/design.rst:1411-1415 -->
 - Custom pages extend `@EasyAdmin/page/content.html.twig`, not `@EasyAdmin/layout.html.twig`: only the former styles the
   HTML of the `main` block (headings, lists, tables, blue links). Elsewhere, add the `ea-prose` class (`ea-not-prose` opts out).
   Don't write CSS for those elements: unlayered CSS beats these styles. <!-- templates/page/content.html.twig; doc/design.rst:731-831 -->

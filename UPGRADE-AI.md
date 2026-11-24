@@ -3,6 +3,114 @@ AI Upgrade Guide
 
 This guide is for AI agents. If you are a human, read [UPGRADE.md](UPGRADE.md) instead.
 
+## EasyAdmin 5.10.4
+
+Use this prompt to upgrade backends for the permission, route, URL and upload changes made in EasyAdmin 5.10.4.
+
+<upgrade-prompt version="5.10.4">
+
+EasyAdmin 5.10.4 makes these changes:
+
+- the autocomplete of `AssociationField` checks the page and the field that it
+  was requested from. It returns a 403 error when the callable of
+  `setQueryBuilder()` returns a query builder for another entity, and the
+  autocomplete fields inside embedded CRUD forms (`renderAsEmbeddedForm()`,
+  `useEntryCrudForm()`) need access to the `new` or `edit` action of the
+  embedded CRUD controller in the current dashboard;
+- a permission set with `setPermission()` on `FormField::addTab()`,
+  `FormField::addColumn()` or `FormField::addFieldset()` also hides, from the
+  users without it, every field declared after it until the next tab (for a
+  tab), the next column or tab (for a column) or the next fieldset, column or tab
+  (for a fieldset), in all pages including `index`;
+- the search, sort and filters of the `index` page ignore the properties of the
+  fields that the user can't see. The constructor of
+  `EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository` gets a sixth argument
+  (`AuthorizationCheckerInterface`); not passing it is deprecated;
+- the controller of a Symfony route linked with `linkToRoute()` only gets the
+  placeholders and defaults of that route as request attributes and controller
+  arguments, not the other `linkToRoute()` parameters;
+- on admin routes with an `{id}` placeholder, the entity ID set with
+  `setEntityId()` (or taken from the current `detail` or `edit` page) wins over
+  an `id` parameter;
+- with `setFlysystemStorage()`, file and image fields look up, display and delete
+  the stored value inside the `setUploadDir()` directory;
+- file and image fields force the download of all uploaded files except
+  jpg/jpeg/png/gif/webp/bmp/ico images, pdf, txt, mp3, ogg, mp4 and webm files,
+  and encode `?` and `#` in the stored file name when building the file URL.
+
+Search the project (PHP, templates) and apply what's relevant. Skip what doesn't
+apply.
+
+## Required changes
+
+1. Find `AssociationField` fields with `->setQueryBuilder(` and `->autocomplete()`.
+   If the callable returns a query builder whose root entity is not the related
+   entity of the field (e.g. `createQueryBuilder()` of the repository of another
+   entity), change it to modify and return the query builder it gets, which
+   uses the `entity` alias:
+
+   ```php
+   ->setQueryBuilder(fn (QueryBuilder $qb) => $qb->andWhere('entity.active = true'))
+   ```
+
+2. Find `AssociationField` fields with `->autocomplete()` inside CRUD controllers
+   used through `renderAsEmbeddedForm()` or `useEntryCrudForm()`. If the `new` or
+   `edit` action of that embedded CRUD controller is disabled or denied for the
+   users of the outer form, its permission depends on the entity (a voter), or
+   the controller has no routes in the dashboard, the autocomplete returns a 403
+   error: grant that action to them or remove `->autocomplete()`.
+
+3. In every `configureFields()` method, find `FormField::addTab(`,
+   `FormField::addColumn(` and `FormField::addFieldset(` calls followed by
+   `->setPermission(`. If a field declared inside that container must stay
+   visible to users without that permission, move it under another tab, column or
+   fieldset that has no permission.
+
+4. Find `new EntityRepository(` (class
+   `EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository`) and service
+   definitions of that class. Add a sixth argument: an
+   `AuthorizationCheckerInterface` instance (in service config:
+   `service(EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker::class)`).
+
+5. Find `Action::linkToRoute(`, `->linkToRoute(` and `MenuItem::linkToRoute(`
+   calls that pass route parameters. For each parameter that is not a
+   `{placeholder}` or a `defaults` key of the target route, find the controller of
+   that route. If it reads the parameter as a controller argument (`string $year`)
+   or with `$request->attributes->get('year')`, add `{year}` to the route path or
+   read it with `$request->query->all('routeParams')['year'] ?? null`.
+
+6. Find `ea_url(` in Twig templates and `AdminUrlGenerator` or
+   `AdminUrlGeneratorInterface` calls in PHP that use `->set('id', <value>)` to
+   choose the target entity. Replace them: `->set('id', <value>)` ->
+   `->setEntityId(<value>)` (in Twig: `.set('id', x)` -> `.setEntityId(x)`).
+
+7. Find `FileField` and `ImageField` fields with `->setFlysystemStorage(` and a
+   non-empty `->setUploadDir(`. If the code that writes those properties stores
+   the upload dir as part of the value, make the values relative to the upload
+   dir. In custom `upload_delete` form type options of those fields, use
+   `FlysystemFile::getPathname()` as the full storage path; don't prepend the
+   upload dir.
+
+8. Find `FileField` and `ImageField` properties that store a relative path with
+   `?` or `#` on purpose (e.g. `doc.pdf?v=2`). Replace those values with
+   absolute URLs.
+
+9. In overridden `crud/field/file` or `crud/field/image` templates that print the
+   file name from `field.formattedValue`, apply
+   `|replace({'%3F': '?', '%23': '#'})` to the printed name.
+
+## Optional changes
+
+1. Find `FileField::new(` and `ImageField::new(`. If a field must keep opening
+   files other than jpg/jpeg/png/gif/webp/bmp/ico/pdf/txt/mp3/ogg/mp4/webm in a new
+   tab and its uploads come only from trusted users, add
+   `->allowRiskyInlineRender()`.
+
+2. Remove `->setPermission(...)` calls on fields that only repeat the permission
+   of their tab, column or fieldset.
+
+</upgrade-prompt>
+
 ## EasyAdmin 5.10.2
 
 Use this prompt to upgrade backends for the route, permission and escaping changes made in EasyAdmin 5.10.2.

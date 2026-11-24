@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class EntityRepositoryTest extends TestCase
@@ -37,13 +38,16 @@ class EntityRepositoryTest extends TestCase
         // entityFactory and FormFactory are only used in specific scenarios
         $entityFactory = $this->createEntityFactoryStub();
         $formFactory = $this->createFormFactoryStub();
+        $authorizationChecker = $this->createStub(AuthorizationCheckerInterface::class);
+        $authorizationChecker->method('isGranted')->willReturn(true);
 
         $this->entityRepository = new EntityRepository(
             $this->adminContextProvider,
             $this->doctrine,
             $entityFactory,
             $formFactory,
-            $this->eventDispatcher
+            $this->eventDispatcher,
+            $authorizationChecker,
         );
     }
 

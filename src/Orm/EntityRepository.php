@@ -24,6 +24,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -39,7 +41,11 @@ final class EntityRepository implements EntityRepositoryInterface
         private readonly EntityFactory $entityFactory,
         private readonly FormFactory $formFactory,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly ?AuthorizationCheckerInterface $authorizationChecker = null,
     ) {
+        if (null === $authorizationChecker) {
+            trigger_deprecation('easycorp/easyadmin-bundle', '4.29.18', 'Not passing an instance of "%s" as the sixth argument of "%s::__construct()" is deprecated and it will be required in EasyAdmin 6.0.', AuthorizationCheckerInterface::class, self::class);
+        }
     }
 
     public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
@@ -59,7 +65,7 @@ final class EntityRepository implements EntityRepositoryInterface
             }
             $databasePlatformFqcn = null !== $databasePlatform ? $databasePlatform::class : '';
 
-            $this->addSearchClause($queryBuilder, $searchDto, $entityDto, $databasePlatformFqcn);
+            $this->addSearchClause($queryBuilder, $searchDto, $entityDto, $databasePlatformFqcn, $fields);
         }
 
         $appliedFilters = $searchDto->getAppliedFilters();
@@ -72,10 +78,10 @@ final class EntityRepository implements EntityRepositoryInterface
         return $queryBuilder;
     }
 
-    private function addSearchClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, string $databasePlatformFqcn): void
+    private function addSearchClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, string $databasePlatformFqcn, FieldCollection $fields): void
     {
         $isPostgreSql = PostgreSQLPlatform::class === $databasePlatformFqcn || is_subclass_of($databasePlatformFqcn, PostgreSQLPlatform::class);
-        $searchablePropertiesConfig = $this->getSearchablePropertiesConfig($queryBuilder, $searchDto, $entityDto);
+        $searchablePropertiesConfig = $this->getSearchablePropertiesConfig($queryBuilder, $searchDto, $entityDto, $fields);
 
         $queryTerms = $searchDto->getQueryTerms();
         $queryTermIndex = 0;
@@ -236,6 +242,10 @@ final class EntityRepository implements EntityRepositoryInterface
                 continue;
             }
 
+            if ($this->isPropertyHiddenFromCurrentUser($originalPropertyName, $fields)) {
+                continue;
+            }
+
             // if the form filter is not valid then we should not apply the filter
             if (!$filterForm->isValid()) {
                 continue;
@@ -274,7 +284,7 @@ final class EntityRepository implements EntityRepositoryInterface
      *     is_json: bool,
      * }>
      */
-    private function getSearchablePropertiesConfig(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): array
+    private function getSearchablePropertiesConfig(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): array
     {
         $searchablePropertiesConfig = [];
         $configuredSearchableProperties = $searchDto->getSearchableProperties();
@@ -282,6 +292,10 @@ final class EntityRepository implements EntityRepositoryInterface
 
         $entitiesAlreadyJoined = [];
         foreach ($searchableProperties as $searchableProperty) {
+            if ($this->isPropertyHiddenFromCurrentUser($searchableProperty, $fields)) {
+                continue;
+            }
+
             // support arbitrarily nested associations (e.g. foo.bar.baz.qux)
             $associatedProperties = explode('.', $searchableProperty);
             $numAssociatedProperties = \count($associatedProperties);
@@ -434,6 +448,43 @@ final class EntityRepository implements EntityRepositoryInterface
             return false;
         }
 
-        return true;
+        return !$this->isPropertyHiddenFromCurrentUser($sortProperty, $fields);
+    }
+
+    /**
+     * Search, sort and filter results reveal the values of the properties they use, so
+     * a property is hidden when all the fields that display it are denied to the current
+     * user. A nested property is also hidden when any association or embeddable of its
+     * path is hidden (e.g. 'author' for 'author.email').
+     */
+    private function isPropertyHiddenFromCurrentUser(string $propertyPath, FieldCollection $fields): bool
+    {
+        if (null === $this->authorizationChecker) {
+            return false;
+        }
+
+        $pathPrefix = '';
+        foreach (explode('.', $propertyPath) as $pathPart) {
+            $pathPrefix = '' === $pathPrefix ? $pathPart : $pathPrefix.'.'.$pathPart;
+
+            $hasDeniedField = false;
+            foreach ($fields as $fieldDto) {
+                if ($pathPrefix !== $fieldDto->getProperty()) {
+                    continue;
+                }
+
+                if ($this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+                    continue 2;
+                }
+
+                $hasDeniedField = true;
+            }
+
+            if ($hasDeniedField) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

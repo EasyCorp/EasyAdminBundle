@@ -284,6 +284,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, service(EntityFactory::class))
             ->arg(3, service(FormFactory::class))
             ->arg(4, service('event_dispatcher'))
+            ->arg(5, service(AuthorizationChecker::class))
 
         ->set(EntityFactory::class)
             ->arg(0, service(AuthorizationChecker::class))

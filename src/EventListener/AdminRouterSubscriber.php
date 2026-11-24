@@ -295,17 +295,21 @@ class AdminRouterSubscriber implements EventSubscriberInterface
 
         // if the request is related to a custom action, change the controller to be executed
         if (null !== $request->query->get(EA::ROUTE_NAME)) {
-            $symfonyControllerAsString = $this->getSymfonyControllerFqcn($request);
-            $symfonyControllerCallable = $this->getSymfonyControllerInstance($symfonyControllerAsString, $request->query->all(EA::ROUTE_PARAMS));
+            $targetRouteParameters = $this->getTargetRouteParameters($request);
+            $symfonyControllerAsString = $targetRouteParameters['_controller'] ?? null;
+            $targetRouteAttributes = array_diff_key($targetRouteParameters, ['_route' => true, '_controller' => true]);
+            $symfonyControllerCallable = $this->getSymfonyControllerInstance($symfonyControllerAsString, $targetRouteAttributes);
             if (false !== $symfonyControllerCallable) {
                 // this makes Symfony believe that another controller is being executed
                 // (e.g. this is needed for the autowiring of controller action arguments)
                 // VERY IMPORTANT: here the Symfony controller must be passed as a string ('App\Controller\Foo::index')
                 // Otherwise, the param converter of the controller method doesn't work
                 $event->getRequest()->attributes->set('_controller', $symfonyControllerAsString);
-                // route params must be added as route attribute; otherwise, param converters don't work
+                // route params must be added as route attribute; otherwise, param converters don't work.
+                // They are the ones matched by the router, like on a direct request, because the
+                // 'routeParams' of the query string can't decide the arguments of the target controller
                 $event->getRequest()->attributes->replace(array_merge(
-                    $request->query->all(EA::ROUTE_PARAMS),
+                    $targetRouteAttributes,
                     $event->getRequest()->attributes->all()
                 ));
 
@@ -403,12 +407,15 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         return new RedirectResponse($targetRoute['url'], Response::HTTP_TEMPORARY_REDIRECT);
     }
 
-    private function getSymfonyControllerFqcn(Request $request): ?string
+    /**
+     * @return array<string, mixed>
+     */
+    private function getTargetRouteParameters(Request $request): array
     {
         $targetRoute = $this->resolveTargetRoute($request);
         $this->assertTargetRouteAccessIsGranted($targetRoute['request']);
 
-        return $targetRoute['parameters']['_controller'] ?? null;
+        return $targetRoute['parameters'];
     }
 
     /**
@@ -423,7 +430,6 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         $newRequest = $request->duplicate();
         $newRequest->attributes->remove('_controller');
         $newRequest->attributes->set('_route', $routeName);
-        $newRequest->attributes->add($routeParams);
 
         // If the application is running behind a proxy under a permanent
         // subpath prefix (AKA sub-folder, sub-url or sub-path) using the HTTP

@@ -17,7 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
  * path-based rule protecting the target route used to be silently skipped, letting a
  * low-privilege backend user reach a more restricted route.
  *
- * SecuredApp restricts '^/admin/secure' to ROLE_ADMIN and '^/admin' to ROLE_USER.
+ * SecuredApp restricts '^/admin/secure' to ROLE_ADMIN and '^/admin' to ROLE_USER, and
+ * makes public the requests with a 'public_area' attribute (which no route sets).
  */
 class RouteNameAccessControlBypassTest extends AbstractCrudTestCase
 {
@@ -77,5 +78,44 @@ class RouteNameAccessControlBypassTest extends AbstractCrudTestCase
 
         static::assertResponseIsSuccessful();
         static::assertStringContainsString(SecureRouteController::SECRET, (string) $this->client->getResponse()->getContent());
+    }
+
+    /**
+     * The access_control rules of the target route are checked against the attributes set by
+     * the router, like on direct access, so the '?routeParams=' values can't make another
+     * rule match.
+     */
+    public function testRouteParamsDoNotChangeTheAccessControlRuleOfTheTargetRoute(): void
+    {
+        if (Kernel::VERSION_ID < 60100) {
+            $this->markTestSkipped('The "attributes" option of access_control requires Symfony 6.1 or higher.');
+        }
+
+        $this->client->request('GET', '/admin?routeName=secure_danger_zone&routeParams[public_area]=yes', [], [], ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => '1234']);
+
+        static::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        static::assertStringNotContainsString(SecureRouteController::SECRET, (string) $this->client->getResponse()->getContent());
+    }
+
+    /**
+     * The target controller gets the arguments of the matched route (placeholders and
+     * defaults), like on direct access, never the '?routeParams=' values themselves.
+     *
+     * @dataProvider provideQueriesOfRoutesWithAudienceArgument
+     */
+    public function testTargetControllerArgumentsComeFromTheMatchedRoute(string $query): void
+    {
+        $this->client->request('GET', '/admin?'.$query, [], [], ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => '1234']);
+
+        static::assertResponseIsSuccessful();
+        static::assertSame('public', $this->client->getResponse()->getContent());
+    }
+
+    public static function provideQueriesOfRoutesWithAudienceArgument(): iterable
+    {
+        yield 'route default' => ['routeName=route_name_target_with_defaults'];
+        yield 'route default, overridden in the route params' => ['routeName=route_name_target_with_defaults&routeParams[audience]=internal'];
+        yield 'optional argument' => ['routeName=route_name_target_with_optional_argument'];
+        yield 'optional argument, set in the route params' => ['routeName=route_name_target_with_optional_argument&routeParams[audience]=internal'];
     }
 }

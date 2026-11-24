@@ -2,6 +2,7 @@
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Kernel;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Security\AdminAreaVoter;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Core\User\InMemoryUser;
 
 $configuration = [
@@ -47,6 +48,11 @@ $configuration = [
     ],
 
     'access_control' => [
+        // no route sets this attribute, so this rule only matches requests whose attributes
+        // were not set by the router ('attributes' option was added in Symfony 6.1)
+        ...(Kernel::VERSION_ID >= 60100 ? [
+            ['attributes' => ['public_area' => '^yes$'], 'roles' => [AuthenticatedVoter::PUBLIC_ACCESS]],
+        ] : []),
         // with the default 'affirmative' strategy these rules grant access when any of their
         // attributes is granted; the strategy kernels of this app make them stricter
         ['path' => '^/admin/access-control/role-and-full-login', 'roles' => ['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY']],

@@ -41,7 +41,7 @@ final class SecurityVoter extends Voter
         }
 
         if (Permission::EA_EXECUTE_ACTION === $permissionName) {
-            return $this->voteOnExecuteActionPermission($this->adminContextProvider->getContext()->getCrud(), $subject['action'] ?? null, $subject['entity'] ?? null, $subject['entityFqcn'] ?? null);
+            return $this->voteOnExecuteActionPermission($subject['crud'] ?? $this->adminContextProvider->getContext()->getCrud(), $subject['action'] ?? null, $subject['entity'] ?? null, $subject['entityFqcn'] ?? null);
         }
 
         if (Permission::EA_VIEW_FIELD === $permissionName) {

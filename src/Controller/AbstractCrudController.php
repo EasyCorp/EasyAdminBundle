@@ -33,10 +33,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityDeletedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\InsufficientEntityPermissionException;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
@@ -45,6 +47,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\AssociationConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FileUploadState;
@@ -52,6 +55,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
@@ -61,6 +65,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -110,7 +115,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'doctrine' => '?'.ManagerRegistry::class,
             'event_dispatcher' => '?'.EventDispatcherInterface::class,
             ActionFactory::class => '?'.ActionFactory::class,
+            AdminContextFactory::class => '?'.AdminContextFactory::class,
             AdminContextProviderInterface::class => '?'.AdminContextProviderInterface::class,
+            AdminRouteGenerator::class => '?'.AdminRouteGenerator::class,
             AdminUrlGeneratorInterface::class => '?'.AdminUrlGeneratorInterface::class,
             ControllerFactory::class => '?'.ControllerFactory::class,
             EntityFactory::class => '?'.EntityFactory::class,
@@ -538,11 +545,26 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $crudControllerFqcn = $autocompleteContext[EA::CRUD_CONTROLLER_FQCN] ?? $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN);
-        /** @var CrudControllerInterface $controller */
-        $controller = $this->container->get(ControllerFactory::class)->getCrudControllerInstance($crudControllerFqcn, Action::INDEX, $context->getRequest());
         $originatingPage = $autocompleteContext['originatingPage'];
         $propertyName = $autocompleteContext['propertyName'];
-        $fields = new FieldCollection($controller->configureFields($originatingPage));
+        $crudControllerPageName = $autocompleteContext[AssociationConfigurator::AUTOCOMPLETE_CONTEXT_PAGE_NAME] ?? $originatingPage;
+        $originatingEntityId = $autocompleteContext[EA::ENTITY_ID] ?? null;
+        if (!\is_string($crudControllerFqcn) || !\is_string($originatingPage) || !\is_string($propertyName) || !\is_string($crudControllerPageName) || (null !== $originatingEntityId && !\is_string($originatingEntityId))) {
+            throw new BadRequestHttpException('Invalid autocomplete context: its values must be strings.');
+        }
+
+        // needed to fix the double encoding of URLs that might happen (https://github.com/EasyCorp/EasyAdminBundle/pull/6902)
+        $crudControllerFqcn = str_replace('%5C', '\\', $crudControllerFqcn);
+
+        // the autocomplete context comes from the query string, so the options of the field that it
+        // names are only applied if the user can access the page that displays that field
+        if (!$this->isAutocompleteContextGranted($context, $crudControllerFqcn, $originatingPage, $originatingEntityId)) {
+            throw new ForbiddenActionException($context);
+        }
+
+        /** @var CrudControllerInterface $controller */
+        $controller = $this->container->get(ControllerFactory::class)->getCrudControllerInstance($crudControllerFqcn, Action::INDEX, $context->getRequest());
+        $fields = new FieldCollection($controller->configureFields($crudControllerPageName));
 
         // find the first field with matching property that is displayed on the originating page;
         // this ensures we get the correct field when a controller defines more than one field for the
@@ -550,7 +572,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         /** @var FieldDto|null $field */
         $field = null;
         foreach ($fields as $fieldDto) {
-            if ($propertyName === $fieldDto->getProperty() && $fieldDto->isDisplayedOn($originatingPage)) {
+            if ($propertyName === $fieldDto->getProperty() && $fieldDto->isDisplayedOn($originatingPage) && $this->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
                 $field = $fieldDto;
                 break;
             }
@@ -561,6 +583,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         if (null !== $queryBuilderCallable) {
             $queryBuilder = $queryBuilderCallable($queryBuilder) ?? $queryBuilder;
+
+            // the callable can return a new query builder (e.g. created by a repository), but the
+            // permission checked above only allows listing the entity of this CRUD controller
+            foreach ($queryBuilder->getRootEntities() as $rootEntityFqcn) {
+                if (!is_a($rootEntityFqcn, $context->getEntity()->getFqcn(), true)) {
+                    throw new ForbiddenActionException($context);
+                }
+            }
         }
 
         $callback = $field?->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_CALLBACK)
@@ -770,5 +800,59 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         return $fieldAssetsDto;
+    }
+
+    private function isAutocompleteContextGranted(AdminContext $context, string $crudControllerFqcn, string $pageName, ?string $entityId): bool
+    {
+        $isCurrentCrudController = $crudControllerFqcn === $context->getCrud()?->getControllerFqcn();
+        $entityFqcn = $isCurrentCrudController
+            ? $context->getEntity()->getFqcn()
+            : $context->getAdminControllers()->findEntityByCrudController($crudControllerFqcn);
+        if (null === $entityFqcn) {
+            return false;
+        }
+
+        // the fields of other CRUD controllers are only displayed in their CRUD pages (the permissions use the exact page name)
+        $crudPageNames = [Crud::PAGE_INDEX, Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW];
+        if (!$isCurrentCrudController && !\in_array($pageName, $crudPageNames, true)) {
+            return false;
+        }
+
+        if (!$isCurrentCrudController && !$this->container->get(AdminRouteGenerator::class)->isCrudActionAllowedInDashboard($context->getDashboardControllerFqcn(), $crudControllerFqcn, $pageName)) {
+            return false;
+        }
+
+        // a fresh Request on purpose: the EA attributes of the current one (entity id, filters, sort)
+        // would otherwise leak into the context of the CRUD controller that defines the field
+        $request = new Request();
+        $request->setLocale($context->getRequest()->getLocale());
+        $controllerFactory = $this->container->get(ControllerFactory::class);
+        $dashboardController = $controllerFactory->getDashboardControllerInstance($context->getDashboardControllerFqcn(), $request);
+        $crudController = $controllerFactory->getCrudControllerInstance($crudControllerFqcn, Action::INDEX, $request);
+        if (null === $dashboardController || null === $crudController) {
+            return false;
+        }
+
+        $crudDto = $this->container->get(AdminContextFactory::class)->create($request, $dashboardController, $crudController, $pageName)->getCrud();
+        if (null === $crudDto) {
+            return false;
+        }
+
+        // the permission of some pages depends on the entity (e.g. a voter that decides who can edit each entity);
+        // like the pages themselves, the entity permission is checked with no entity in the 'new' page
+        $entityDto = null;
+        if (\in_array($pageName, [Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+            try {
+                $entityDto = $this->container->get(EntityFactory::class)->create($entityFqcn, Crud::PAGE_NEW === $pageName ? null : $entityId, $crudDto->getEntityPermission());
+            } catch (EntityNotFoundException) {
+                return false;
+            }
+
+            if (!$entityDto->isAccessible()) {
+                return false;
+            }
+        }
+
+        return $this->isGranted(Permission::EA_EXECUTE_ACTION, ['crud' => $crudDto, 'action' => $pageName, 'entity' => $entityDto, 'entityFqcn' => $entityFqcn]);
     }
 }

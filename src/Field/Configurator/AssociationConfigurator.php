@@ -34,6 +34,17 @@ use function Symfony\Component\Translation\t;
  */
 final class AssociationConfigurator implements FieldConfiguratorInterface
 {
+    /**
+     * @internal the CRUD controller and pages of the embedded CRUD form that defines a field,
+     *           which the autocomplete URL must use instead of the ones of the current request
+     */
+    public const OPTION_EMBEDDED_CRUD_FORM_AUTOCOMPLETE_CONTEXT = 'embeddedCrudFormAutocompleteContext';
+    /**
+     * @internal the page name passed to configureFields() when it's not the originating page (e.g. a
+     *           custom page name of an embedded CRUD form)
+     */
+    public const AUTOCOMPLETE_CONTEXT_PAGE_NAME = 'crudControllerPageName';
+
     public function __construct(
         private readonly EntityFactory $entityFactory,
         private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
@@ -55,6 +66,24 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
     public function supports(FieldDto $field, EntityDto $entityDto): bool
     {
         return AssociationField::class === $field->getFieldFqcn();
+    }
+
+    /**
+     * @internal
+     */
+    public static function setEmbeddedCrudFormAutocompleteContext(FieldCollection $fields, string $crudControllerFqcn, string $crudPageName, string $crudControllerPageName): void
+    {
+        $autocompleteContext = [
+            EA::CRUD_CONTROLLER_FQCN => $crudControllerFqcn,
+            'originatingPage' => $crudPageName,
+        ];
+        if ($crudControllerPageName !== $crudPageName) {
+            $autocompleteContext[self::AUTOCOMPLETE_CONTEXT_PAGE_NAME] = $crudControllerPageName;
+        }
+
+        foreach ($fields as $fieldDto) {
+            $fieldDto->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_AUTOCOMPLETE_CONTEXT, $autocompleteContext);
+        }
     }
 
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
@@ -178,12 +207,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                     ->set('page', 1) // The autocomplete should always start on the first page
                     ->setController($targetCrudControllerFqcn)
                     ->setAction('autocomplete')
-                    ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, [
-                        // when using pretty URLs, the data is in the request attributes instead of the autocomplete context
-                        EA::CRUD_CONTROLLER_FQCN => $context->getRequest()->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $context->getRequest()->query->get(EA::CRUD_CONTROLLER_FQCN),
-                        'propertyName' => $propertyName,
-                        'originatingPage' => $context->getCrud()->getCurrentPage(),
-                    ])
+                    ->set(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT, $this->getAutocompleteContext($field, $context, $propertyName))
                     ->generateUrl();
             } catch (RouteNotFoundException $e) {
                 // this may throw a "route not found" exception if the associated entity is not
@@ -419,15 +443,48 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $this->requestStack->getMainRequest()
         );
 
-        $fields = $crudController->configureFields($crudControllerPageName);
+        $fields = new FieldCollection($crudController->configureFields($crudControllerPageName));
+        self::setEmbeddedCrudFormAutocompleteContext($fields, $crudControllerFqcn, $crudPageName, $crudControllerPageName);
 
         if (null === $this->fieldFactory) {
-            $this->entityFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
+            $this->entityFactory->processFields($entityDto, $fields, $crudPageName);
         } else {
-            $this->fieldFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
+            $this->fieldFactory->processFields($entityDto, $fields, $crudPageName);
         }
 
         return $entityDto;
+    }
+
+    /**
+     * The autocomplete action looks for the field in the CRUD controller, page and property
+     * of this context, so they must be the ones used to define the field.
+     *
+     * @return array<string, mixed>
+     */
+    private function getAutocompleteContext(FieldDto $field, AdminContext $context, string $propertyName): array
+    {
+        $embeddedCrudFormContext = $field->getCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_AUTOCOMPLETE_CONTEXT);
+        if (\is_array($embeddedCrudFormContext)) {
+            return ['propertyName' => $propertyName] + $embeddedCrudFormContext;
+        }
+
+        $request = $context->getRequest();
+        $currentPage = $context->getCrud()->getCurrentPage();
+        $autocompleteContext = [
+            // when using pretty URLs, the data is in the request attributes instead of the autocomplete context
+            EA::CRUD_CONTROLLER_FQCN => $request->attributes->get(EA::CRUD_CONTROLLER_FQCN) ?? $request->query->get(EA::CRUD_CONTROLLER_FQCN),
+            'propertyName' => $propertyName,
+            'originatingPage' => $currentPage,
+        ];
+
+        // needed when the permission of the page depends on the entity (e.g. a voter for the 'edit' page);
+        // the 'new' page has no entity, even if the query string contains an ID
+        $entityId = $request->attributes->get(EA::ENTITY_ID) ?? $request->query->get(EA::ENTITY_ID);
+        if (Crud::PAGE_NEW !== $currentPage && \is_scalar($entityId)) {
+            $autocompleteContext[EA::ENTITY_ID] = (string) $entityId;
+        }
+
+        return $autocompleteContext;
     }
 
     private function configurePreferredChoices(FieldDto $field): void

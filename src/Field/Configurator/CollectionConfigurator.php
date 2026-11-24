@@ -299,12 +299,13 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         }
 
         try {
-            $fields = $crudController->configureFields($crudControllerPageName);
+            $fields = new FieldCollection($crudController->configureFields($crudControllerPageName));
+            AssociationConfigurator::setEmbeddedCrudFormAutocompleteContext($fields, $targetCrudControllerFqcn, $crudPageName, $crudControllerPageName);
 
             if (null === $this->fieldFactory) {
-                $this->entityFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
+                $this->entityFactory->processFields($entityDto, $fields, $crudPageName);
             } else {
-                $this->fieldFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
+                $this->fieldFactory->processFields($entityDto, $fields, $crudPageName);
             }
         } finally {
             // restore the original context

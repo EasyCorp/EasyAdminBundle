@@ -67,6 +67,20 @@ class FileUploadTypeTest extends TypeTestCase
         $this->assertCount($expectedIsValid ? 0 : 1, $form->get('document')->getErrors(true));
     }
 
+    public function testUploadFilenameNamedLikeAPhpFunctionIsNotCalled(): void
+    {
+        $form = $this->factory->create(FileUploadType::class, null, [
+            'upload_dir' => $this->uploadDir,
+            'upload_filename' => 'basename',
+        ]);
+
+        $filePath = $this->projectDir.'/report.txt';
+        file_put_contents($filePath, 'some contents');
+        $uploadFilename = $form->getConfig()->getOption('upload_filename');
+
+        $this->assertSame('basename', $uploadFilename(new UploadedFile($filePath, 'report.txt', null, null, true)));
+    }
+
     public static function provideParentValidationGroups(): iterable
     {
         yield 'no groups' => [null, [], false];

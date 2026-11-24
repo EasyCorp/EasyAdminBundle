@@ -45,6 +45,30 @@ defaults), like when browsing the route URL. The other parameters passed to `lin
 no longer request attributes or controller arguments. Add them as placeholders of the route, or
 read them from the query string with `$request->query->all('routeParams')`.
 
+### Strings Are No Longer Called as PHP Functions
+
+Some options accept a string or a callable. A string that matched the name of a PHP function
+(e.g. a page title like `'Time'` or `'Trim'`) was called as that function. Now strings are
+never called in these options:
+
+* `Crud::setPageTitle()`: the string is always the title;
+* `Action::linkToUrl()`: the string is always the URL;
+* `CollectionField::setEntryToStringMethod()`: the string is always the name of a method of
+  the entry;
+* `ImageField::setUploadedFileNamePattern()` and the `upload_filename` option of
+  `FileUploadType`: the string is always the pattern.
+
+If you passed a callable as a string (`'my_function'` or `'App\Util\Titles::build'`), use a
+closure or the first-class callable syntax:
+
+```php
+// before
+$crud->setPageTitle(Crud::PAGE_DETAIL, 'App\Util\Titles::build');
+
+// after
+$crud->setPageTitle(Crud::PAGE_DETAIL, Titles::build(...));
+```
+
 EasyAdmin 4.29.17
 -----------------
 

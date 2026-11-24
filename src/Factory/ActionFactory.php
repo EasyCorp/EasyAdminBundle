@@ -387,7 +387,8 @@ final class ActionFactory
         $entityInstance = $entityDto?->getInstance();
 
         if (null !== $url = $actionDto->getUrl()) {
-            if (\is_callable($url)) {
+            // strings are always literal URLs, even if they match the name of a PHP function (e.g. 'reset')
+            if (!\is_string($url) && \is_callable($url)) {
                 return null !== $entityDto ? $url($entityInstance) : $url();
             }
 

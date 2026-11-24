@@ -42,6 +42,26 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
         $this->assertStringNotContainsString("\0", $result, 'The string representation of a value must not contain the null character (which can happen when the original value is an anonymous class object)');
     }
 
+    public function testRepresentAsStringCallsTheMethodNamedLikeAPhpFunction(): void
+    {
+        $reflectedClass = new \ReflectionClass(EasyAdminTwigExtension::class);
+        $twigExtensionInstance = $reflectedClass->newInstanceWithoutConstructor();
+
+        $value = new class implements \Stringable {
+            public function strrev(): string
+            {
+                return 'result of the method';
+            }
+
+            public function __toString(): string
+            {
+                return 'abc';
+            }
+        };
+
+        $this->assertSame('result of the method', $twigExtensionInstance->representAsString($value, 'strrev'));
+    }
+
     public function testRepresentAsStringException(): void
     {
         $this->expectException(\RuntimeException::class);

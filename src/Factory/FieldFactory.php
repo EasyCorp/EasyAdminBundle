@@ -80,7 +80,9 @@ final class FieldFactory
     public function processFields(EntityDto $entityDto, FieldCollection $fields, string $currentPage): void
     {
         $this->replaceGenericFieldsWithSpecificFields($fields, $entityDto);
-        $this->removeFieldsOfDeniedLayoutContainers($fields);
+        foreach (self::getFieldsOfDeniedLayoutContainers($fields, $this->authorizationChecker) as $deniedFieldDto) {
+            $fields->unset($deniedFieldDto);
+        }
 
         $context = $this->adminContextProvider->getContext();
 
@@ -138,19 +140,26 @@ final class FieldFactory
     }
 
     /**
-     * Removes the tabs, columns and fieldsets that the user can't see, together with all the fields
-     * defined inside them. Otherwise, those fields would be moved into the previous container (or shown
-     * in the 'index' page, which has no layout) and the user would see and edit them anyway.
+     * Returns the tabs, columns and fieldsets that the user can't see, together with all the fields
+     * defined inside them. They must be removed from all pages: otherwise, those fields would be moved
+     * into the previous container (or shown in the 'index' page, which has no layout) and the user would
+     * see and edit them anyway. The search, sort and filters of the 'index' page also use this method,
+     * which is why it works with the unprocessed fields and doesn't depend on the current page.
+     *
+     * @internal
+     *
+     * @return array<string, FieldDto> the fields indexed by their unique ID
      */
-    private function removeFieldsOfDeniedLayoutContainers(FieldCollection $fields): void
+    public static function getFieldsOfDeniedLayoutContainers(FieldCollection $fields, AuthorizationCheckerInterface $authorizationChecker): array
     {
+        $deniedFields = [];
         $deniedContainerLevel = null;
         foreach ($fields as $fieldDto) {
-            $containerLevel = $this->getLayoutContainerLevel($fieldDto);
+            $containerLevel = self::getLayoutContainerLevel($fieldDto);
 
             // a container ends where the next container of the same or a higher level starts
             if (null !== $deniedContainerLevel && (null === $containerLevel || $containerLevel > $deniedContainerLevel)) {
-                $fields->unset($fieldDto);
+                $deniedFields[$fieldDto->getUniqueId()] = $fieldDto;
 
                 continue;
             }
@@ -159,17 +168,19 @@ final class FieldFactory
 
             // this ignores isDisplayedOn() on purpose: containers are never displayed on 'index',
             // but the fields defined inside them must also be removed from that page
-            if (null !== $containerLevel && false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+            if (null !== $containerLevel && false === $authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
                 $deniedContainerLevel = $containerLevel;
-                $fields->unset($fieldDto);
+                $deniedFields[$fieldDto->getUniqueId()] = $fieldDto;
             }
         }
+
+        return $deniedFields;
     }
 
     /**
      * Tabs can contain columns and fieldsets, and columns can contain fieldsets.
      */
-    private function getLayoutContainerLevel(FieldDto $fieldDto): ?int
+    private static function getLayoutContainerLevel(FieldDto $fieldDto): ?int
     {
         return match (true) {
             $fieldDto->isFormTab() => 1,

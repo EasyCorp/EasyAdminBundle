@@ -21,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ResolvedPropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntitySearchEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
@@ -574,13 +575,16 @@ final readonly class EntityRepository implements EntityRepositoryInterface, Nest
      * Search, sort and filter results reveal the values of the properties they use, so
      * a property is hidden when all the fields that display it are denied to the current
      * user. A nested property is also hidden when any association or embeddable of its
-     * path is hidden (e.g. 'author' for 'author.email').
+     * path is hidden (e.g. 'author' for 'author.email'). The fields defined inside a tab,
+     * column or fieldset denied to the user are hidden too, as in all the backend pages.
      */
     private function isPropertyHiddenFromCurrentUser(string $propertyPath, FieldCollection $fields): bool
     {
         if (null === $this->authorizationChecker) {
             return false;
         }
+
+        $fieldsOfDeniedLayoutContainers = FieldFactory::getFieldsOfDeniedLayoutContainers($fields, $this->authorizationChecker);
 
         $pathPrefix = '';
         foreach (explode('.', $propertyPath) as $pathPart) {
@@ -592,7 +596,7 @@ final readonly class EntityRepository implements EntityRepositoryInterface, Nest
                     continue;
                 }
 
-                if ($this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+                if (!isset($fieldsOfDeniedLayoutContainers[$fieldDto->getUniqueId()]) && $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
                     continue 2;
                 }
 

@@ -81,8 +81,8 @@ class FieldPermissionQueryTest extends AbstractCrudTestCase
     #[DataProvider('provideDefaultSearchQueries')]
     public function testIndexSearchInAllProperties(string $username, string $query, array $expectedNames): void
     {
-        CategoryFactory::createOne(['name' => 'Category 1', 'description' => 'Description 1', 'priority' => 4242]);
-        CategoryFactory::createOne(['name' => 'Category 2', 'description' => 'Description 2', 'priority' => 1]);
+        CategoryFactory::createOne(['name' => 'Category 1', 'slug' => 'first-category', 'description' => 'Description 1', 'priority' => 4242]);
+        CategoryFactory::createOne(['name' => 'Category 2', 'slug' => 'second-category', 'description' => 'Description 2', 'priority' => 1]);
 
         $crawler = $this->requestAs($username, $this->generateIndexUrl($query, controllerFqcn: FieldPermissionCategoryCrudController::class));
 

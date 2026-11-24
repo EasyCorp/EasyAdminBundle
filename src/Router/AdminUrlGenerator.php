@@ -241,11 +241,11 @@ final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
 
         // if the target route identifies the current entity with the "{id}" alias (instead of the
         // canonical "{entityId}" placeholder), generate the URL using "id" so the value fills the
-        // route placeholder instead of leaking into the query string. An explicit "id" parameter (if
-        // any) is preserved, but the canonical "entityId" is always dropped on these routes.
+        // route placeholder instead of leaking into the query string. The canonical "entityId" always
+        // wins over an "id" parameter, which can come from the query string of the current request
         $adminRoutes = $this->cache->getItem(CacheKey::ROUTE_NAME_TO_ATTRIBUTES)->get() ?? [];
         if ('id' === ($adminRoutes[$routeName]['entityIdParamName'] ?? null) && \array_key_exists(EA::ENTITY_ID, $canonicalRouteParameters)) {
-            $canonicalRouteParameters['id'] ??= $canonicalRouteParameters[EA::ENTITY_ID];
+            $canonicalRouteParameters['id'] = $canonicalRouteParameters[EA::ENTITY_ID];
             unset($canonicalRouteParameters[EA::ENTITY_ID]);
         }
 

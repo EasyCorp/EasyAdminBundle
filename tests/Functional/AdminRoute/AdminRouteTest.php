@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\AllowedDashboardsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\DashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\IdAliasDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\MultipleRouteCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\RouteOptionsCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\AdminRouteApp\Controller\SecondDashboardController;
@@ -986,6 +987,17 @@ class AdminRouteTest extends WebTestCase
             ->generateUrl();
         $this->assertStringEndsWith('/admin/multiple-route/789/edit', $url);
         $this->assertStringNotContainsString('entityId', $url);
+
+        // on an "{id}" route, the entity ID wins over an "id" parameter (e.g. one that comes from
+        // the query string of the current request)
+        $url = $urlGenerator
+            ->setDashboard(IdAliasDashboardController::class)
+            ->setController(MultipleRouteCrudController::class)
+            ->setAction('edit')
+            ->set('id', 999)
+            ->setEntityId(123)
+            ->generateUrl();
+        $this->assertStringEndsWith('/id-alias-admin/multiple-route/123/edit', $url);
     }
 
     public function testEntityIdAliasResolvesTheEntity(): void

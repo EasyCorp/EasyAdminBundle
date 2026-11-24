@@ -266,7 +266,8 @@ final readonly class ActionFactory
 
         if (Action::DELETE === $actionDto->getName()) {
             $actionDto->addHtmlAttributes([
-                'formaction' => $this->adminUrlGenerator->setController($adminContext->getCrud()->getControllerFqcn())->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->generateUrl(),
+                // keep only the state of the listing, which the redirect after deleting uses
+                'formaction' => $this->adminUrlGenerator->unsetAllExcept(EA::FILTERS, EA::PAGE, EA::QUERY, EA::SORT)->setController($adminContext->getCrud()->getControllerFqcn())->setAction(Action::DELETE)->setEntityId($entityDto->getPrimaryKeyValue())->generateUrl(),
             ]);
         }
 

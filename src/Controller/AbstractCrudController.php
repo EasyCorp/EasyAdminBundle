@@ -60,6 +60,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\FieldProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminRouteGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Security\CrudPermissionChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -120,6 +121,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             AdminRouteGeneratorInterface::class => '?'.AdminRouteGenerator::class,
             AdminUrlGeneratorInterface::class => '?'.AdminUrlGeneratorInterface::class,
             ControllerFactory::class => '?'.ControllerFactory::class,
+            CrudPermissionChecker::class => '?'.CrudPermissionChecker::class,
             CrudPermissionCheckerInterface::class => '?'.CrudPermissionCheckerInterface::class,
             EntityFactory::class => '?'.EntityFactory::class,
             EntityRepositoryInterface::class => '?'.EntityRepositoryInterface::class,
@@ -985,9 +987,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return false;
         }
 
-        // the permission of some pages depends on the entity (e.g. a voter that decides who can edit each entity)
+        // the permission of some pages depends on the entity (e.g. a voter that decides who can edit each entity);
+        // like the page itself, 'new' ignores any entity id
         $entityDto = null;
-        if (null !== $entityId) {
+        if (null !== $entityId && Crud::PAGE_NEW !== $pageName) {
             $entityFqcn = $context->getAdminControllers()->findEntityByCrudController($crudControllerFqcn);
             if (null === $entityFqcn) {
                 return false;
@@ -996,6 +999,16 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             try {
                 $entityDto = $this->container->get(EntityFactory::class)->create($entityFqcn, $entityId);
             } catch (EntityNotFoundException) {
+                return false;
+            }
+        }
+
+        // these pages check the entity permission even without an entity (with a NULL subject), as
+        // CrudPermissionCheckerInterface::isGranted() only checks it when an entity is given
+        if (\in_array($pageName, [Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW], true)) {
+            $crudPermissionChecker = $this->container->get(CrudPermissionChecker::class);
+            $entityPermission = $crudPermissionChecker->getEntityPermission($context, $crudControllerFqcn);
+            if (null !== $entityPermission && !$crudPermissionChecker->isEntityPermissionGranted($entityPermission, $entityDto?->getInstance())) {
                 return false;
             }
         }

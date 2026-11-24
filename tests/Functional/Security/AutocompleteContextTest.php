@@ -10,10 +10,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\Cat
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Factory\UserFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\AutocompleteContext\BlogPostsCollectionUserCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\AutocompleteContext\EmbeddedAuthorBlogPostCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\AutocompleteContext\EntityPermissionFormBlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\AutocompleteContext\NestedFavoriteCategoryBlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\AutocompleteContext\RepositoryQueryBuilderBlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\AutocompleteContext\RestrictedFormBlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\AutocompleteContext\RestrictedTabBlogPostCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\AutocompleteContext\VoterEntityPermissionFormBlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\ProtectedUserCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\RestrictedDashboard\GuestDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\RestrictedDashboard\GuestUserCrudController;
@@ -81,7 +83,7 @@ class AutocompleteContextTest extends AbstractCrudTestCase
     #[DataProvider('provideForbiddenAutocompleteContexts')]
     public function testForbiddenAutocompleteContext(string $username, string $dashboardFqcn, string $targetCrudControllerFqcn, array $autocompleteContext): void
     {
-        if ('edit' === $autocompleteContext['originatingPage'] && isset($autocompleteContext[EA::ENTITY_ID])) {
+        if (isset($autocompleteContext[EA::ENTITY_ID])) {
             $autocompleteContext[EA::ENTITY_ID] = (string) $this->publishedBlogPost->getId();
         }
         CategoryFactory::createOne(['name' => 'Category 1']);
@@ -115,6 +117,37 @@ class AutocompleteContextTest extends AbstractCrudTestCase
             'originatingPage' => 'edit',
         ]];
 
+        yield 'new page denied by the entity permission' => ['user', SecuredDashboardController::class, ProtectedUserCrudController::class, [
+            EA::CRUD_CONTROLLER_FQCN => EntityPermissionFormBlogPostCrudController::class,
+            'propertyName' => 'author',
+            'originatingPage' => 'new',
+        ]];
+
+        yield 'new page denied by the entity permission, with an entity' => ['user', SecuredDashboardController::class, ProtectedUserCrudController::class, [
+            EA::CRUD_CONTROLLER_FQCN => EntityPermissionFormBlogPostCrudController::class,
+            'propertyName' => 'author',
+            'originatingPage' => 'new',
+            EA::ENTITY_ID => 'replaced by the id of the published blog post',
+        ]];
+
+        yield 'edit page denied by the entity permission, without an entity' => ['user', SecuredDashboardController::class, ProtectedUserCrudController::class, [
+            EA::CRUD_CONTROLLER_FQCN => EntityPermissionFormBlogPostCrudController::class,
+            'propertyName' => 'author',
+            'originatingPage' => 'edit',
+        ]];
+
+        yield 'detail page denied by the entity permission, without an entity' => ['user', SecuredDashboardController::class, ProtectedUserCrudController::class, [
+            EA::CRUD_CONTROLLER_FQCN => EntityPermissionFormBlogPostCrudController::class,
+            'propertyName' => 'author',
+            'originatingPage' => 'detail',
+        ]];
+
+        yield 'page name in another case' => ['user', SecuredDashboardController::class, ProtectedUserCrudController::class, [
+            EA::CRUD_CONTROLLER_FQCN => RestrictedFormBlogPostCrudController::class,
+            'propertyName' => 'author',
+            'originatingPage' => 'NEW',
+        ]];
+
         yield 'CRUD controller that is not available in the current dashboard' => ['admin', GuestDashboardController::class, GuestUserCrudController::class, [
             EA::CRUD_CONTROLLER_FQCN => RestrictedFormBlogPostCrudController::class,
             'propertyName' => 'author',
@@ -126,6 +159,29 @@ class AutocompleteContextTest extends AbstractCrudTestCase
             'propertyName' => 'categories',
             'originatingPage' => 'new',
         ]];
+    }
+
+    public function testWidgetOfPageProtectedByTheEntityPermission(): void
+    {
+        $crawler = $this->request('admin', $this->generateNewFormUrl(controllerFqcn: EntityPermissionFormBlogPostCrudController::class));
+        static::assertSame([self::USER_LABEL_WITH_EMAIL], $this->requestAutocompleteResults('admin', $this->getAutocompleteUrl($crawler, 'BlogPost[author][autocomplete]')));
+
+        $crawler = $this->request('admin', $this->generateEditFormUrl($this->publishedBlogPost->getId(), controllerFqcn: EntityPermissionFormBlogPostCrudController::class));
+        static::assertSame([self::USER_LABEL_WITH_EMAIL], $this->requestAutocompleteResults('admin', $this->getAutocompleteUrl($crawler, 'BlogPost[author][autocomplete]')));
+    }
+
+    public function testNewPageIgnoresTheGivenEntity(): void
+    {
+        $url = $this->getCrudUrl('autocomplete', null, ['autocompleteContext' => [
+            EA::CRUD_CONTROLLER_FQCN => VoterEntityPermissionFormBlogPostCrudController::class,
+            'propertyName' => 'author',
+            'originatingPage' => 'new',
+            EA::ENTITY_ID => (string) $this->unpublishedBlogPost->getId(),
+        ]], SecuredDashboardController::class, ProtectedUserCrudController::class);
+        $this->request('user', $url);
+
+        static::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        static::assertStringNotContainsString('user1@example.com', (string) $this->client->getResponse()->getContent());
     }
 
     public function testFieldThatTheUserCannotSeeIsIgnored(): void

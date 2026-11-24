@@ -78,6 +78,7 @@ final class FieldFactory
     public function processFields(EntityDto $entityDto, FieldCollection $fields, ?string $currentPage = null): void
     {
         $this->replaceGenericFieldsWithSpecificFields($fields, $entityDto);
+        $this->removeFieldsOfDeniedLayoutContainers($fields);
 
         $context = $this->adminContextProvider->getContext();
 
@@ -149,6 +150,48 @@ final class FieldFactory
             $this->processFields($entityDto, clone $fields, $currentPage);
             $entityDtos->set($entityDto);
         }
+    }
+
+    /**
+     * Removes the tabs, columns and fieldsets that the user can't see, together with all the fields
+     * defined inside them. Otherwise, those fields would be moved into the previous container (or shown
+     * in the 'index' page, which has no layout) and the user would see and edit them anyway.
+     */
+    private function removeFieldsOfDeniedLayoutContainers(FieldCollection $fields): void
+    {
+        $deniedContainerLevel = null;
+        foreach ($fields as $fieldDto) {
+            $containerLevel = $this->getLayoutContainerLevel($fieldDto);
+
+            // a container ends where the next container of the same or a higher level starts
+            if (null !== $deniedContainerLevel && (null === $containerLevel || $containerLevel > $deniedContainerLevel)) {
+                $fields->unset($fieldDto);
+
+                continue;
+            }
+
+            $deniedContainerLevel = null;
+
+            // this ignores isDisplayedOn() on purpose: containers are never displayed on 'index',
+            // but the fields defined inside them must also be removed from that page
+            if (null !== $containerLevel && false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+                $deniedContainerLevel = $containerLevel;
+                $fields->unset($fieldDto);
+            }
+        }
+    }
+
+    /**
+     * Tabs can contain columns and fieldsets, and columns can contain fieldsets.
+     */
+    private function getLayoutContainerLevel(FieldDto $fieldDto): ?int
+    {
+        return match (true) {
+            $fieldDto->isFormTab() => 1,
+            $fieldDto->isFormColumn() => 2,
+            $fieldDto->isFormFieldset() => 3,
+            default => null,
+        };
     }
 
     private function replaceGenericFieldsWithSpecificFields(FieldCollection $fields, EntityDto $entityDto): void

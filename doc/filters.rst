@@ -241,6 +241,11 @@ and the browser's native date/time picker::
 This filter has no additional options. The comparison operators include:
 equals, not equals, after, after or on, before, before or on, and between.
 
+If you set the :ref:`timezone CRUD option <crud-date-time-number-format-options>`,
+the values typed in this filter for ``datetime`` properties are interpreted
+in that timezone. Values of ``date`` and ``time`` properties are never
+converted.
+
 EntityFilter
 ~~~~~~~~~~~~
 

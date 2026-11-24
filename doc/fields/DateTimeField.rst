@@ -103,6 +103,10 @@ the valid `PHP timezone IDs`_)::
 
     yield DateTimeField::new('...')->setTimezone('Asia/Manila');
 
+This timezone is also used in the form field and in the filter of this
+property, so the dates typed by users are interpreted in the same timezone
+in which they are displayed.
+
 .. _`DateTimeType`: https://symfony.com/doc/current/reference/forms/types/datetime.html
 .. _`ICU Datetime Pattern`: https://unicode-org.github.io/icu/userguide/format_parse/datetime/
 .. _`PHP timezone IDs`: https://www.php.net/manual/en/timezones.php

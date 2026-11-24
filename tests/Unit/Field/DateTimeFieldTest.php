@@ -57,6 +57,7 @@ class DateTimeFieldTest extends AbstractFieldTestCase
         $fieldDto = $this->configure($field);
 
         $this->assertSame('Europe/Madrid', $fieldDto->getCustomOption(DateTimeField::OPTION_TIMEZONE));
+        $this->assertSame('Europe/Madrid', $fieldDto->getFormTypeOption('view_timezone'));
     }
 
     public function testFieldWithWrongFormat(): void

@@ -475,6 +475,22 @@ Other notable changes of the new design:
 
 ## EasyAdmin 5.8.0
 
+### The Timezone Is Also Applied to Forms and Filters
+
+The timezone set with `Crud::setTimezone()` or `DateTimeField::setTimezone()` was
+only used to display dates in the `index` and `detail` pages. Form fields and
+`DateTimeFilter` used the default PHP timezone, so a date displayed as 13:00 was
+edited, saved or searched as a different time.
+
+This was a bug. The timezone is now also used in the form fields and filters of
+`datetime` values (`date` and `time` values are never converted). If you need a
+different timezone in a form field, set the `view_timezone` option explicitly:
+
+```php
+yield DateTimeField::new('createdAt')
+    ->setFormTypeOption('view_timezone', 'UTC');
+```
+
 ### `createEntity()` Can Return `null`
 
 The return type of `CrudControllerInterface::createEntity()` and

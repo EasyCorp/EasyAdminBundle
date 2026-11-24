@@ -271,6 +271,27 @@ the ``setPermission()`` method::
         ];
     }
 
+The ``setPermission()`` method also works in
+:ref:`form tabs, columns and fieldsets <field-layout>`. In that case, the
+permission also applies to all the fields defined inside them, so you don't
+have to repeat it in each field::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            // ...
+
+            // users must have this permission/role to see this tab and its fields
+            FormField::addTab('Sales')->setPermission('ROLE_FINANCE'),
+            IntegerField::new('sales'),
+            NumberField::new('commission'),
+        ];
+    }
+
 The search, the sort and the filters of the ``index`` page (and the search of
 the autocomplete feature of association fields) ignore the properties of the
 fields that the user isn't allowed to see. Otherwise, the results could reveal

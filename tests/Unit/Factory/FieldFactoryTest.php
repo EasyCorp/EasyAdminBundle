@@ -174,6 +174,87 @@ class FieldFactoryTest extends KernelTestCase
         yield [BlogPost::class, 'categories', Field\AssociationField::class];
     }
 
+    /**
+     * @param array<FieldInterface> $fields
+     * @param array<string>         $expectedProperties
+     */
+    #[DataProvider('fieldsInsideDeniedLayoutContainers')]
+    public function testRemovesFieldsInsideDeniedLayoutContainers(string $pageName, array $fields, array $expectedProperties): void
+    {
+        $authorizationChecker = $this->createStub(AuthorizationCheckerInterface::class);
+        $authorizationChecker->method('isGranted')->willReturnCallback(
+            static fn (mixed $attribute, mixed $fieldDto): bool => 'ROLE_ADMIN' !== $fieldDto->getPermission()
+        );
+        $fieldFactory = new FieldFactory(
+            $this->createStub(AdminContextProviderInterface::class),
+            $authorizationChecker,
+            [],
+            new FormLayoutFactory(new IdentityTranslator()),
+        );
+        $fieldCollection = new FieldCollection($fields);
+
+        $fieldFactory->processFields($this->categoryDto, $fieldCollection, $pageName);
+
+        $properties = [];
+        foreach ($fieldCollection as $fieldDto) {
+            if (!$fieldDto->isFormLayoutField()) {
+                $properties[] = $fieldDto->getProperty();
+            }
+        }
+        $this->assertSame($expectedProperties, $properties);
+    }
+
+    public static function fieldsInsideDeniedLayoutContainers(): \Generator
+    {
+        foreach ([Crud::PAGE_INDEX, Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW] as $pageName) {
+            yield 'tabs on '.$pageName => [$pageName, [
+                Field\FormField::addTab('Tab 1')->setPermission('ROLE_ADMIN'),
+                Field\TextField::new('field1'),
+                Field\FormField::addTab('Tab 2'),
+                Field\TextField::new('field2'),
+                Field\FormField::addTab('Tab 3')->setPermission('ROLE_ADMIN'),
+                Field\TextField::new('field3'),
+                Field\FormField::addColumn(),
+                Field\FormField::addFieldset(),
+                Field\TextField::new('field4'),
+                Field\FormField::addTab('Tab 4'),
+                Field\TextField::new('field5'),
+            ], ['field2', 'field5']];
+
+            yield 'columns on '.$pageName => [$pageName, [
+                Field\FormField::addTab('Tab 1'),
+                Field\FormField::addColumn(),
+                Field\TextField::new('field1'),
+                Field\FormField::addColumn()->setPermission('ROLE_ADMIN'),
+                Field\TextField::new('field2'),
+                Field\FormField::addFieldset(),
+                Field\TextField::new('field3'),
+                Field\FormField::addColumn(),
+                Field\TextField::new('field4'),
+                Field\FormField::addColumn()->setPermission('ROLE_ADMIN'),
+                Field\TextField::new('field5'),
+                Field\FormField::addTab('Tab 2'),
+                Field\TextField::new('field6'),
+            ], ['field1', 'field4', 'field6']];
+
+            yield 'fieldsets on '.$pageName => [$pageName, [
+                Field\FormField::addColumn(),
+                Field\FormField::addFieldset(),
+                Field\TextField::new('field1'),
+                Field\FormField::addFieldset()->setPermission('ROLE_ADMIN'),
+                Field\TextField::new('field2'),
+                Field\FormField::addRow(),
+                Field\TextField::new('field3'),
+                Field\FormField::addFieldset(),
+                Field\TextField::new('field4'),
+                Field\FormField::addFieldset()->setPermission('ROLE_ADMIN'),
+                Field\TextField::new('field5'),
+                Field\FormField::addColumn(),
+                Field\TextField::new('field6'),
+            ], ['field1', 'field4', 'field6']];
+        }
+    }
+
     #[DataProvider('utcDateTimeTypes')]
     public function testUtcDateTimeTypesAreTurnedIntoDateTimeFields(string $doctrineType): void
     {

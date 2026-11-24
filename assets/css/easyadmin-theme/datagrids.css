@@ -268,8 +268,10 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions {
 .datagrid .ea-lightbox-thumbnail img {
     background: var(--white);
     border-radius: var(--border-radius);
-    max-block-size: var(--ea-datagrid-thumbnail-size);
-    max-inline-size: calc(var(--ea-datagrid-thumbnail-size) * 2);
+    /* --ea-image-field-height is set on the element by ImageField::setHeight() and
+       it's not reduced with small spacings because the developer chose that size */
+    max-block-size: var(--ea-image-field-height, var(--ea-datagrid-thumbnail-size));
+    max-inline-size: calc(var(--ea-image-field-height, var(--ea-datagrid-thumbnail-size)) * 2);
 }
 .datagrid tr:hover .ea-lightbox-thumbnail img {
     outline: var(--border-width) solid var(--border-color);

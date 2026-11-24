@@ -3,6 +3,22 @@ Upgrade Guide
 
 This guide is for humans. If you are an AI agent, read [UPGRADE-AI.md](UPGRADE-AI.md) instead.
 
+## EasyAdmin 5.11.0
+
+### The Default Size of `AvatarField` on the `index` Page Is Now 28px
+
+The avatars of `AvatarField` are now 28px tall and wide on the `index` page
+(before, 24px). They still fit in the rows of the tables without making them taller.
+When the avatar is a Gravatar email, the URL also asks for a 28px image (`s=28`).
+
+If you want to keep the previous size, set the height of the fields that don't set
+one (`lg` keeps the 48px default of the `detail` page):
+
+```php
+// $pageName is the argument of configureFields()
+yield AvatarField::new('avatar')->setHeight(Crud::PAGE_INDEX === $pageName ? 'md' : 'lg');
+```
+
 ## EasyAdmin 5.10.5
 
 ### Route Requirements and Defaults of a Class Are No Longer Replaced by the Ones of Its Actions

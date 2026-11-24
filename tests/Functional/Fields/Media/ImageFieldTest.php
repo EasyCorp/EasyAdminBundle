@@ -28,6 +28,36 @@ class ImageFieldTest extends AbstractFieldFunctionalTestCase
         }
     }
 
+    public function testImageFieldHasNoHeightByDefault(): void
+    {
+        $entity = $this->createFieldTestEntity([
+            'imageField' => 'test-image.jpg',
+        ]);
+
+        $crawler = $this->client->request('GET', $this->generateIndexUrlSortedByIdDesc());
+
+        $thumbnail = $crawler->filter(sprintf('tr[data-id="%d"] td[data-column="imageField"] .ea-lightbox-thumbnail', $entity->getId()));
+        static::assertCount(1, $thumbnail);
+        static::assertNull($thumbnail->attr('style'));
+    }
+
+    public function testImageFieldWithHeight(): void
+    {
+        $entity = $this->createFieldTestEntity([
+            'imageField' => 'test-image.jpg',
+        ]);
+
+        $crawler = $this->client->request('GET', $this->getCrudUrl('index', null, ['sort' => ['id' => 'DESC'], 'imageHeight' => 80]));
+
+        $thumbnail = $crawler->filter(sprintf('tr[data-id="%d"] td[data-column="imageField"] .ea-lightbox-thumbnail', $entity->getId()));
+        static::assertCount(1, $thumbnail);
+        static::assertSame('--ea-image-field-height: 80px', $thumbnail->attr('style'));
+
+        $crawler = $this->client->request('GET', $this->getCrudUrl('detail', $entity->getId(), ['imageHeight' => 80]));
+
+        static::assertSame('--ea-image-field-height: 80px', $crawler->filter('.field-image .ea-lightbox-thumbnail')->attr('style'));
+    }
+
     public function testImageFieldDisplaysOnDetail(): void
     {
         $entity = $this->createFieldTestEntity([

@@ -199,6 +199,23 @@ The available placeholders for the error message are: ``{{ file }}`` (the absolu
 file path), ``{{ name }}`` (the base file name), ``{{ type }}`` (the MIME type of
 the uploaded file) and ``{{ types }}`` (the list of allowed MIME types).
 
+``setHeight``
+~~~~~~~~~~~~~
+
+By default, images are at most 50px tall (36px with the ``xs`` and ``sm``
+spacings of the theme) on the ``index`` page and at most 300px tall on the
+``detail`` page. Use this option to set a different maximum height, in pixels::
+
+    yield ImageField::new('...')->setHeight(80);
+
+    // inside configureFields() you have access to the current page name
+    // use it to set different values per page
+    yield ImageField::new('...')->setHeight(Crud::PAGE_INDEX === $pageName ? 80 : 500);
+
+Images are never made bigger than their original size, and their width is
+limited to twice this height. This size doesn't change with the spacing of the
+theme.
+
 Replaced File Behavior
 ~~~~~~~~~~~~~~~~~~~~~~
 

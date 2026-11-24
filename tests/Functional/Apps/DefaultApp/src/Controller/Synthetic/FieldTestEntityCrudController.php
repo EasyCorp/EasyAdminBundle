@@ -120,6 +120,10 @@ class FieldTestEntityCrudController extends AbstractCrudController
                 $field->allowRiskyInlineRender();
             }
 
+            if ($field instanceof ImageField && $this->getContext()?->getRequest()->query->has('imageHeight')) {
+                $field->setHeight($this->getContext()->getRequest()->query->getInt('imageHeight'));
+            }
+
             yield $field
                 ->setBasePath('uploads/')
                 ->setUploadDir('public/uploads/')

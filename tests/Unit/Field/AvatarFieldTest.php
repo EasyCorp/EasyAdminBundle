@@ -24,8 +24,8 @@ class AvatarFieldTest extends AbstractFieldTestCase
         $fieldDto = $this->configure($field);
 
         self::assertFalse($fieldDto->getCustomOption(AvatarField::OPTION_IS_GRAVATAR_EMAIL));
-        // default height is set by the configurator (24 on index, 48 on detail)
-        self::assertSame(24, $fieldDto->getCustomOption(AvatarField::OPTION_HEIGHT));
+        // default height is set by the configurator (28 on index, 48 on detail)
+        self::assertSame(28, $fieldDto->getCustomOption(AvatarField::OPTION_HEIGHT));
         self::assertSame(TextType::class, $fieldDto->getFormType());
         self::assertStringContainsString('field-avatar', $fieldDto->getCssClass());
     }
@@ -35,8 +35,8 @@ class AvatarFieldTest extends AbstractFieldTestCase
         $field = AvatarField::new('avatar');
         $fieldDto = $this->configure($field, Crud::PAGE_INDEX);
 
-        // on index page, default height is 24
-        self::assertSame(24, $fieldDto->getCustomOption(AvatarField::OPTION_HEIGHT));
+        // on index page, default height is 28
+        self::assertSame(28, $fieldDto->getCustomOption(AvatarField::OPTION_HEIGHT));
     }
 
     public function testDefaultHeightOnDetailPage(): void

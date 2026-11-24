@@ -2,11 +2,12 @@
 /* ------------------------------------------------------------------------- */
 .ea-detail .field-image .ea-lightbox-thumbnail {
     display: block;
-    max-inline-size: 400px;
+    /* 400px by default; twice the height set with ImageField::setHeight() otherwise */
+    max-inline-size: calc(var(--ea-image-field-height, 200px) * 2);
 }
 .ea-detail .field-image img {
     border-radius: var(--border-radius);
-    max-block-size: 300px;
+    max-block-size: var(--ea-image-field-height, 300px);
 }
 .ea-detail .field-image img:hover {
     outline: var(--border-width) solid var(--datalist-border-color);

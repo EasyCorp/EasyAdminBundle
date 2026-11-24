@@ -1163,6 +1163,7 @@ const OPTION_DOWNLOADABLE = 'downloadable'
 const OPTION_FILE_CONSTRAINTS = 'fileConstraints'
 const OPTION_FLYSYSTEM_STORAGE = 'flysystemStorage'
 const OPTION_FLYSYSTEM_URL_PREFIX = 'flysystemUrlPrefix'
+const OPTION_HEIGHT = 'height'
 const OPTION_MAX_SIZE = 'maxSize'
 const OPTION_MAX_SIZE_MESSAGE = 'maxSizeMessage'
 const OPTION_MIME_TYPES = 'mimeTypes'
@@ -1188,6 +1189,7 @@ setBasePath(string $path): self
 setFileConstraints(Constraint|array $constraints): self
 setFlysystemStorage(string $storageName): self
 setFlysystemUrlPrefix(string $urlPrefix): self
+setHeight(int $heightInPixels): self
 setUploadDir(string $uploadDirPath): self
 setUploadedFileNamePattern(Closure|string $patternOrCallable): self
 ```

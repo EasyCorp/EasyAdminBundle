@@ -8,10 +8,11 @@
 {% endif %}
 
 {% set allow_risky_inline_render = field.customOptions.get('riskyInlineRender')|default(false) %}
+{% set height = field.customOptions.get('height') %}
 {% for image in images %}
     {% set html_id = 'ea-lightbox-' ~ field.uniqueId ~ '-' ~ loop.index %}
     {# the image configurator encodes these characters to build the URL; they are decoded to get the file name #}
-    <a href="{{ asset(image) }}" {% if not allow_risky_inline_render and image|ea_force_download %}download="{{ image|split('/')|last|replace({'%3F': '?', '%23': '#'}) }}"{% else %}target="_blank"{% endif %} rel="noopener" class="ea-lightbox-thumbnail" data-ea-lightbox-content-selector="#{{ html_id }}">
+    <a href="{{ asset(image) }}" {% if not allow_risky_inline_render and image|ea_force_download %}download="{{ image|split('/')|last|replace({'%3F': '?', '%23': '#'}) }}"{% else %}target="_blank"{% endif %} rel="noopener" class="ea-lightbox-thumbnail" {% if height is not null %}style="--ea-image-field-height: {{ height }}px"{% endif %} data-ea-lightbox-content-selector="#{{ html_id }}">
         <img src="{{ asset(image) }}" class="img-fluid">
     </a>
 

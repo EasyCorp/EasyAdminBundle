@@ -26,6 +26,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -50,7 +52,12 @@ final readonly class EntityRepository implements EntityRepositoryInterface, Nest
         private EntityFactoryInterface $entityFactory,
         private FormFactory $formFactory,
         private EventDispatcherInterface $eventDispatcher,
+        private ?AuthorizationCheckerInterface $authorizationChecker = null,
     ) {
+        if (null === $authorizationChecker) {
+            @trigger_deprecation('easycorp/easyadmin-bundle', '5.10.4', 'Not passing an instance of "%s" as the sixth argument of "%s::__construct()" is deprecated and it will be required in EasyAdmin 6.0.', AuthorizationCheckerInterface::class, self::class);
+        }
+
         /** @var \WeakMap<QueryBuilder, array<string, string>> $joinedAssociations */
         $joinedAssociations = new \WeakMap();
         $this->joinedAssociations = $joinedAssociations;
@@ -73,7 +80,7 @@ final readonly class EntityRepository implements EntityRepositoryInterface, Nest
             }
             $databasePlatformFqcn = null !== $databasePlatform ? $databasePlatform::class : '';
 
-            $this->addSearchClause($queryBuilder, $searchDto, $entityDto, $databasePlatformFqcn);
+            $this->addSearchClause($queryBuilder, $searchDto, $entityDto, $databasePlatformFqcn, $fields);
         }
 
         $appliedFilters = $searchDto->getAppliedFilters();
@@ -86,10 +93,10 @@ final readonly class EntityRepository implements EntityRepositoryInterface, Nest
         return $queryBuilder;
     }
 
-    private function addSearchClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, string $databasePlatformFqcn): void
+    private function addSearchClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, string $databasePlatformFqcn, FieldCollection $fields): void
     {
         $isPostgreSql = PostgreSQLPlatform::class === $databasePlatformFqcn || is_subclass_of($databasePlatformFqcn, PostgreSQLPlatform::class);
-        $searchablePropertiesConfig = $this->getSearchablePropertiesConfig($queryBuilder, $searchDto, $entityDto);
+        $searchablePropertiesConfig = $this->getSearchablePropertiesConfig($queryBuilder, $searchDto, $entityDto, $fields);
 
         $queryTerms = $searchDto->getQueryTerms();
         $queryTermIndex = 0;
@@ -300,6 +307,10 @@ final readonly class EntityRepository implements EntityRepositoryInterface, Nest
                 continue;
             }
 
+            if ($this->isPropertyHiddenFromCurrentUser($originalPropertyName, $fields)) {
+                continue;
+            }
+
             // if the form filter is not valid then we should not apply the filter
             if (!$filterForm->isValid()) {
                 continue;
@@ -350,13 +361,17 @@ final readonly class EntityRepository implements EntityRepositoryInterface, Nest
      *     is_json: bool,
      * }>
      */
-    private function getSearchablePropertiesConfig(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): array
+    private function getSearchablePropertiesConfig(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): array
     {
         $searchablePropertiesConfig = [];
         $configuredSearchableProperties = $searchDto->getSearchableProperties();
         $searchableProperties = (null === $configuredSearchableProperties || 0 === \count($configuredSearchableProperties)) ? $entityDto->getClassMetadata()->getFieldNames() : $configuredSearchableProperties;
 
         foreach ($searchableProperties as $searchableProperty) {
+            if ($this->isPropertyHiddenFromCurrentUser($searchableProperty, $fields)) {
+                continue;
+            }
+
             try {
                 $resolvedProperty = $this->resolveNestedAssociations($queryBuilder, $entityDto, $searchableProperty);
             } catch (\InvalidArgumentException) {
@@ -552,6 +567,43 @@ final readonly class EntityRepository implements EntityRepositoryInterface, Nest
             return false;
         }
 
-        return true;
+        return !$this->isPropertyHiddenFromCurrentUser($sortProperty, $fields);
+    }
+
+    /**
+     * Search, sort and filter results reveal the values of the properties they use, so
+     * a property is hidden when all the fields that display it are denied to the current
+     * user. A nested property is also hidden when any association or embeddable of its
+     * path is hidden (e.g. 'author' for 'author.email').
+     */
+    private function isPropertyHiddenFromCurrentUser(string $propertyPath, FieldCollection $fields): bool
+    {
+        if (null === $this->authorizationChecker) {
+            return false;
+        }
+
+        $pathPrefix = '';
+        foreach (explode('.', $propertyPath) as $pathPart) {
+            $pathPrefix = '' === $pathPrefix ? $pathPart : $pathPrefix.'.'.$pathPart;
+
+            $hasDeniedField = false;
+            foreach ($fields as $fieldDto) {
+                if ($pathPrefix !== $fieldDto->getProperty()) {
+                    continue;
+                }
+
+                if ($this->authorizationChecker->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+                    continue 2;
+                }
+
+                $hasDeniedField = true;
+            }
+
+            if ($hasDeniedField) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

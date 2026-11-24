@@ -582,7 +582,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new ForbiddenActionException($context);
         }
 
-        $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), new FieldCollection([]), new FilterCollection());
+        // the index fields are needed so that the search skips the properties that the user can't see
+        $queryBuilder = $this->createIndexQueryBuilder($context->getSearch(), $context->getEntity(), new FieldCollection($this->configureFields(Crud::PAGE_INDEX)), new FilterCollection());
 
         $autocompleteContext = $context->getRequest()->query->all(AssociationField::PARAM_AUTOCOMPLETE_CONTEXT);
 

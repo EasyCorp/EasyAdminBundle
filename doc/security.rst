@@ -271,6 +271,11 @@ the ``setPermission()`` method::
         ];
     }
 
+The search, the sort and the filters of the ``index`` page (and the search of
+the autocomplete feature of association fields) ignore the properties of the
+fields that the user isn't allowed to see. Otherwise, the results could reveal
+the values of those properties.
+
 You can also restrict which items users can see in the ``index`` and ``detail``
 pages thanks to the ``setEntityPermission()`` method of the
 :doc:`CRUD controller configuration </crud>`. This value is passed as the first

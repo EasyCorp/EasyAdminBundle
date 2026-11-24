@@ -616,6 +616,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $fields = new FieldCollection($controller->configureFields($crudControllerPageName));
+        $fieldsOfDeniedLayoutContainers = FieldFactory::getFieldsOfDeniedLayoutContainers($fields, $this->container->get('security.authorization_checker'));
 
         // find the first field with matching property that is displayed on the originating page;
         // this ensures we get the correct field when a controller defines more than one field for the
@@ -623,7 +624,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         /** @var FieldDto|null $field */
         $field = null;
         foreach ($fields as $fieldDto) {
-            if ($propertyName === $fieldDto->getProperty() && $fieldDto->isDisplayedOn($originatingPage) && $this->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
+            if ($propertyName === $fieldDto->getProperty() && $fieldDto->isDisplayedOn($originatingPage)
+                && !isset($fieldsOfDeniedLayoutContainers[$fieldDto->getUniqueId()]) && $this->isGranted(Permission::EA_VIEW_FIELD, $fieldDto)) {
                 $field = $fieldDto;
                 break;
             }

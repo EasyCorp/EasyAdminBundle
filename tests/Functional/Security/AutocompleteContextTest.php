@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\AutocompleteContext\NestedFavoriteCategoryBlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\AutocompleteContext\RepositoryQueryBuilderBlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\AutocompleteContext\RestrictedFormBlogPostCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\AutocompleteContext\RestrictedTabBlogPostCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\ProtectedUserCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\RestrictedDashboard\GuestDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\SecuredApp\Controller\RestrictedDashboard\GuestUserCrudController;
@@ -140,6 +141,28 @@ class AutocompleteContextTest extends AbstractCrudTestCase
 
         static::assertSame([self::USER_LABEL], $this->requestAutocompleteResults('user', $url));
         static::assertSame([self::USER_LABEL_WITH_EMAIL], $this->requestAutocompleteResults('admin', $url));
+    }
+
+    public function testFieldInsideATabThatTheUserCannotSeeIsIgnored(): void
+    {
+        $url = $this->getCrudUrl('autocomplete', null, ['autocompleteContext' => [
+            EA::CRUD_CONTROLLER_FQCN => RestrictedTabBlogPostCrudController::class,
+            'propertyName' => 'publisher',
+            'originatingPage' => 'edit',
+            EA::ENTITY_ID => (string) $this->unpublishedBlogPost->getId(),
+        ]], SecuredDashboardController::class, ProtectedUserCrudController::class);
+
+        static::assertSame([self::USER_LABEL], $this->requestAutocompleteResults('user', $url));
+        static::assertSame([self::USER_LABEL_WITH_EMAIL], $this->requestAutocompleteResults('admin', $url));
+
+        $authorUrl = $this->getCrudUrl('autocomplete', null, ['autocompleteContext' => [
+            EA::CRUD_CONTROLLER_FQCN => RestrictedTabBlogPostCrudController::class,
+            'propertyName' => 'author',
+            'originatingPage' => 'edit',
+            EA::ENTITY_ID => (string) $this->unpublishedBlogPost->getId(),
+        ]], SecuredDashboardController::class, ProtectedUserCrudController::class);
+
+        static::assertSame([self::USER_LABEL_WITH_EMAIL], $this->requestAutocompleteResults('user', $authorUrl));
     }
 
     public function testWidgetOfQueryBuilderOfTheTargetEntityKeepsWorking(): void

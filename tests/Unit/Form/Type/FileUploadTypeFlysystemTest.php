@@ -107,6 +107,26 @@ class FileUploadTypeFlysystemTest extends TypeTestCase
         $this->assertSame('remote/uploads/some/existing.pdf', $normData->getPathname());
     }
 
+    public function testUrlPrefixEncodesTheCharactersThatEndTheUrlPath(): void
+    {
+        $fs = $this->createMock(FilesystemOperator::class);
+        $fs->method('fileExists')->willReturn(true);
+        $fs->method('fileSize')->willReturn(1234);
+
+        $form = $this->factory->create(FileUploadType::class, null, [
+            'upload_dir' => 'remote/uploads',
+            'flysystem_storage' => $fs,
+            'flysystem_url_prefix' => '/storage/',
+            'multiple' => true,
+        ]);
+        $form->setData(['remote/uploads/report.svg?.txt', 'remote/uploads/report.svg#.txt']);
+
+        $view = $form->createView();
+
+        $this->assertSame(['remote/uploads/report.svg?.txt', 'remote/uploads/report.svg#.txt'], $view->vars['currentFileNames']);
+        $this->assertSame(['/storage/remote/uploads/report.svg%3F.txt', '/storage/remote/uploads/report.svg%23.txt'], $view->vars['currentFileUrls']);
+    }
+
     public function testKeepOrFailFlysystemFileDoesNotExistReturnsFilename(): void
     {
         $fs = $this->createMock(FilesystemOperator::class);

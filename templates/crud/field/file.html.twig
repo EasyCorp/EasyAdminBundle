@@ -9,6 +9,8 @@
 
 {% set allow_risky_inline_render = field.customOptions.get('riskyInlineRender')|default(false) %}
 {% for file in files %}
-    <a href="{{ asset(file) }}" {% if not allow_risky_inline_render and file|ea_force_download %}download="{{ file|split('/')|last }}" rel="noopener"{% endif %}><twig:ea:Icon name="filetypes:{{ file|split('/')|last|ea_filetype_icon }}" /> {{ file|split('/')|last }}</a>
+    {# the file configurator encodes these characters to build the URL; they are decoded to display the file name #}
+    {% set file_name = file|split('/')|last|replace({'%3F': '?', '%23': '#'}) %}
+    <a href="{{ asset(file) }}" {% if not allow_risky_inline_render and file|ea_force_download %}download="{{ file_name }}" rel="noopener"{% endif %}><twig:ea:Icon name="filetypes:{{ file_name|ea_filetype_icon }}" /> {{ file_name }}</a>
     {% if not loop.last %}<br>{% endif %}
 {% endfor %}

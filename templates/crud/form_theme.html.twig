@@ -339,7 +339,7 @@
 {% block vich_file_widget %}
     <div class="ea-vich-file">
         {% if download_uri|default('') is not empty %}
-            <a class="ea-vich-file-name" href="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}" {% if download_uri|split('/')|last|ea_force_download %}download rel="noopener"{% endif %}>
+            <a class="ea-vich-file-name" href="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}" {% if download_uri|ea_force_download %}download rel="noopener"{% endif %}>
                 <twig:ea:Icon name="internal:file-lines" />
                 {%- if download_label|default(false) -%}
                     {{ translation_domain is same as(false) ? download_label : download_label|trans({}, translation_domain) }}
@@ -387,7 +387,7 @@
             {% else %}
                 {% set _lightbox_id = 'ea-lightbox-' ~ id %}
 
-                <a href="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}" {% if download_uri|split('/')|last|ea_force_download %}download{% else %}target="_blank"{% endif %} rel="noopener" class="ea-lightbox-thumbnail" data-ea-lightbox-content-selector="#{{ _lightbox_id }}">
+                <a href="{{ asset_helper is same as(true) ? asset(download_uri) : download_uri }}" {% if download_uri|ea_force_download %}download{% else %}target="_blank"{% endif %} rel="noopener" class="ea-lightbox-thumbnail" data-ea-lightbox-content-selector="#{{ _lightbox_id }}">
                     <img src="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri }}">
                 </a>
 
@@ -704,7 +704,7 @@
                 {% set isVectorImage = filetypeIcon == 'vector' and (fileName|lower ends with '.svg' or fileName|lower ends with '.svgz') %}
                 {% set fileUrl = currentFileUrls[i]|default(null) %}
                 {% if fileUrl is null and download_path %}
-                    {% set fileUrl = asset(download_path ~ currentFileNames[i]) %}
+                    {% set fileUrl = asset(download_path ~ currentFileNames[i]|replace({'?': '%3F', '#': '%23'})) %}
                 {% endif %}
 
                 <div class="ea-fileupload-card" data-ea-fileupload-card data-filename="{{ currentFileNames[i] }}">
@@ -724,7 +724,7 @@
                     </div>
 
                     <div class="ea-fileupload-card-actions">
-                        {% if allow_view and fileUrl and (risky_inline_render|default(false) or not (fileName|ea_force_download)) %}
+                        {% if allow_view and fileUrl and (risky_inline_render|default(false) or not (fileUrl|ea_force_download)) %}
                             <a href="{{ fileUrl }}" target="_blank" rel="noopener" class="ea-fileupload-action-btn ea-fileupload-action-view" title="{{ 'action.detail'|trans({}, 'EasyAdminBundle') }}">
                                 <twig:ea:Icon name="internal:detail" />
                             </a>

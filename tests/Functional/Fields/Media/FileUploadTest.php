@@ -147,6 +147,66 @@ class FileUploadTest extends AbstractFieldFunctionalTestCase
         static::assertFileExists($this->uploadDir.$oldPath);
     }
 
+    /**
+     * A link without the "download" attribute must request the stored file, and
+     * only stored files whose type browsers can't run scripts from may be opened
+     * inline: any other file (e.g. ".rdf" or ".mk", which web servers send with
+     * an XML type or without a Content-Type) is downloaded.
+     */
+    #[DataProvider('inlineLinkProvider')]
+    public function testLinksOpenInlineOnlyTheStoredFileOfASafeType(string $property, string $fileName, bool $opensInline, array $query = []): void
+    {
+        if ('\\' === \DIRECTORY_SEPARATOR && (str_contains($fileName, '?') || str_ends_with($fileName, '.'))) {
+            $this->markTestSkipped('Windows does not allow this file name.');
+        }
+
+        $multiple = \in_array($property, ['multipleFileField', 'multipleImageField'], true);
+        $storedPath = $this->caseDirectory.'/'.$fileName;
+        file_put_contents($this->uploadDir.$this->caseDirectory.'/report.svg', '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>');
+        file_put_contents($this->uploadDir.$storedPath, 'contents');
+        $entityId = $this->createFieldTestEntity([
+            $property => $multiple ? [$storedPath] : $storedPath,
+            'slugField' => $this->caseDirectory,
+        ])->getId();
+
+        foreach ([Action::INDEX, Action::DETAIL, Action::EDIT] as $action) {
+            $crawler = $this->client->request('GET', $this->getCrudUrl($action, Action::INDEX === $action ? null : $entityId, $query));
+            static::assertResponseIsSuccessful();
+
+            $inlineLinks = [];
+            foreach ($crawler->filter(sprintf('a[href*="/uploads/%s/"]', $this->caseDirectory)) as $link) {
+                if ($link->hasAttribute('download')) {
+                    continue;
+                }
+
+                $href = $link->getAttribute('href');
+                static::assertSame('/uploads/'.$storedPath, rawurldecode(parse_url($href, \PHP_URL_PATH)), sprintf('The inline link "%s" of the %s page requests another file.', $href, $action));
+                $inlineLinks[] = $href;
+            }
+
+            static::assertSame($opensInline, [] !== $inlineLinks, sprintf('The %s page links "%s" inline: %s.', $action, $fileName, json_encode($inlineLinks)));
+        }
+    }
+
+    public static function inlineLinkProvider(): iterable
+    {
+        yield 'text file' => ['fileField', 'notes.txt', true];
+        yield 'PDF document' => ['fileField', 'document.pdf', true];
+        yield 'question mark in the name' => ['fileField', 'report.svg?.txt', true];
+        yield 'hash in the name' => ['fileField', 'report.svg#.txt', true];
+        yield 'question mark in the name of a multiple field' => ['multipleFileField', 'report.svg?.txt', true];
+        yield 'SVG image' => ['fileField', 'report.svg', false];
+        yield 'served with an XML type' => ['fileField', 'resource-map.rdf', false];
+        yield 'unknown to web servers' => ['fileField', 'build-notes.mk', false];
+        yield 'no extension' => ['fileField', 'README', false];
+        yield 'empty extension' => ['fileField', 'report.html.', false];
+        yield 'risky inline render' => ['fileField', 'build-notes.mk', true, ['allowRiskyInlineRender' => true]];
+        yield 'raster image' => ['imageField', 'photo.png', true];
+        yield 'question mark in the name of an image' => ['imageField', 'report.svg?.png', true];
+        yield 'SVG image in an image field' => ['imageField', 'report.svg', false];
+        yield 'image field with an unknown type' => ['imageField', 'photo.heic', false];
+    }
+
     public static function notDeletableFileProvider(): iterable
     {
         $replacedFileBehaviors = [

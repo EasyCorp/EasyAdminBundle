@@ -245,10 +245,10 @@ renders it inline and runs its scripts in the session of the user who opens it
 (a stored `XSS`_ attack).
 
 To prevent this, EasyAdmin **forces a download** (instead of opening the file
-inline) for uploaded images whose type the browser would render and could execute
-scripts from, such as ``.svg``. Raster images (``.png``, ``.jpg``, ``.gif``,
-``.webp``, etc.) are unaffected. You can change this default behavior with the
-following option.
+inline) for all uploaded images except those of well-known raster types
+(``.png``, ``.jpg``, ``.gif``, ``.webp``, ``.bmp`` and ``.ico``), so
+images such as ``.svg`` or ``.avif`` are downloaded. You can change this
+default behavior with the following option.
 
 ``allowRiskyInlineRender``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

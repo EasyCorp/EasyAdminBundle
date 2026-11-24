@@ -194,15 +194,33 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
         yield ['transform.xsl', true];
         yield ['transform.xslt', true];
 
+        // files that web servers send with XML types, or without a Content-Type, which browsers can render as documents
+        yield ['resource-map.rdf', true];
+        yield ['feed.atom', true];
+        yield ['build-notes.mk', true];
+        yield ['photo.heic', true];
+
         // the check is case-insensitive
         yield ['DOCUMENT.HTML', true];
         yield ['IMAGE.SVG', true];
+        yield ['PHOTO.JPG', false];
 
         // the check uses the (last) extension, regardless of the path
         yield ['uploads/files/payload.html', true];
         yield ['uploads/images/avatar.png', false];
         yield ['archive.tar.svg', true];
-        yield ['archive.svg.zip', false];
+        yield ['archive.svg.zip', true];
+        yield ['image.svg.png', false];
+
+        // the check uses the path of the URL that the browser requests
+        yield ['uploads/report.svg?.txt', true];
+        yield ['uploads/report.svg#.txt', true];
+        yield ['uploads/report.svg%3F.txt', false];
+        yield ['uploads/evil%2Esvg?x.png', true];
+        yield ['uploads/photo.png?v=2', false];
+        yield ['uploads/photo.png#preview', false];
+        yield ['https://cdn.example.com/files/page.html?token=abc', true];
+        yield ['https://cdn.example.com/files/report.pdf?token=abc.html', false];
 
         // safe types keep opening inline
         yield ['document.pdf', false];
@@ -211,12 +229,18 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
         yield ['photo.png', false];
         yield ['photo.gif', false];
         yield ['photo.webp', false];
-        yield ['report.docx', false];
         yield ['notes.txt', false];
+        yield ['song.mp3', false];
+        yield ['movie.mp4', false];
 
-        // files without an extension are not forced to download
-        yield ['README', false];
-        yield ['', false];
+        // files that browsers don't open inline are downloaded too
+        yield ['report.docx', true];
+        yield ['archive.zip', true];
+
+        // files without an extension are sent without a Content-Type, so browsers could sniff them as HTML
+        yield ['README', true];
+        yield ['report.html.', true];
+        yield ['', true];
     }
 
     public static function provideValuesForFileSize(): iterable

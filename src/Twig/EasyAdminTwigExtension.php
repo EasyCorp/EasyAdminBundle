@@ -131,26 +131,31 @@ class EasyAdminTwigExtension extends AbstractExtension
     }
 
     /**
-     * Returns true for uploaded files that browsers render inline and that can
-     * execute embedded scripts (e.g. HTML or SVG documents). EasyAdmin forces a
-     * download for these types instead of linking to them inline, to prevent a
-     * stored XSS when uploads are served from the same origin as the backend.
+     * Returns false only for the uploaded files of well-known types that browsers
+     * can't run scripts from (e.g. raster images, PDF or plain text). EasyAdmin
+     * forces a download for all the other files (e.g. HTML or SVG documents)
+     * instead of linking to them inline, to prevent a stored XSS when uploads are
+     * served from the same origin as the backend.
+     *
+     * The argument can be a file name, a path or the URL of the link.
      */
     public function forceFileDownload(string $filename): bool
     {
-        // checking the extension (and not the real MIME type) is enough and correct here:
-        // browsers and web servers decide whether to render a file inline based on the
-        // Content-Type derived from its extension, not from its actual contents. So the
-        // stored extension is exactly what determines the risk. Besides, the real MIME
-        // type was already resolved from the contents at upload time (via guessExtension())
-        // and reading the file again at render time would be costly and impossible for
-        // remote storage (e.g. Flysystem URLs).
-        $extension = strtolower(pathinfo($filename, \PATHINFO_EXTENSION));
+        // the extension is read from the URL path that the browser requests (without
+        // the query string and the fragment, and percent-decoded like web servers do),
+        // because that's the file whose Content-Type decides how the browser opens it
+        $urlPath = rawurldecode(preg_split('/[?#]/', $filename, 2)[0]);
+        $extension = strtolower(pathinfo($urlPath, \PATHINFO_EXTENSION));
 
-        return \in_array($extension, [
-            'htm', 'html', 'xhtml', 'xht', 'shtml', 'shtm', 'mhtml', 'mht',
-            'svg', 'svgz',
-            'xml', 'xsl', 'xslt',
+        // this lists the safe extensions and not the risky ones because the risky ones
+        // can't be listed: web servers send many extensions with XML types that browsers
+        // render as documents (e.g. ".rdf"), and they send no Content-Type for unknown
+        // extensions or files without extension, so browsers sniff them and can render
+        // them as HTML. Only include extensions that all common web servers know
+        return !\in_array($extension, [
+            'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'ico',
+            'pdf', 'txt',
+            'mp3', 'ogg', 'mp4', 'webm',
         ], true);
     }
 

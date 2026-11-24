@@ -24,6 +24,10 @@ use function Symfony\Component\String\u;
  */
 final readonly class FileConfigurator implements FieldConfiguratorInterface
 {
+    // stored names can contain these characters, which would end the path of the
+    // URL and make the link request a different file than the one that was stored
+    private const URL_SPECIAL_CHARS = ['?' => '%3F', '#' => '%23'];
+
     public function __construct(
         private string $projectDir,
         private ?ContainerInterface $flysystemLocator = null,
@@ -225,6 +229,7 @@ final readonly class FileConfigurator implements FieldConfiguratorInterface
 
         // remove project path from filepath
         $filePath = str_replace($this->projectDir.\DIRECTORY_SEPARATOR.'public'.\DIRECTORY_SEPARATOR, '', $filePath);
+        $filePath = strtr($filePath, self::URL_SPECIAL_CHARS);
 
         return isset($basePath)
             ? rtrim($basePath, '/').'/'.ltrim($filePath, '/')
@@ -258,7 +263,7 @@ final readonly class FileConfigurator implements FieldConfiguratorInterface
         }
 
         if (null !== $urlPrefix) {
-            return rtrim($urlPrefix, '/').'/'.ltrim($filePath, '/');
+            return rtrim($urlPrefix, '/').'/'.ltrim(strtr($filePath, self::URL_SPECIAL_CHARS), '/');
         }
 
         try {

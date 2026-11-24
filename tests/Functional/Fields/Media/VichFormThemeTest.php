@@ -14,15 +14,18 @@ use Twig\Environment;
  * VichUploaderBundle is not installed in the test apps, so its widgets are
  * rendered directly with the variables that its form types pass to them.
  *
- * Links to uploaded files the browser would render inline and could execute
- * scripts from (e.g. ".svg") must force a download instead of opening the file.
+ * Links to uploaded files force a download instead of opening the file, except
+ * for the files of well-known types that browsers can't run scripts from.
  */
 class VichFormThemeTest extends KernelTestCase
 {
     #[TestWith(['/uploads/payload.svg', true])]
     #[TestWith(['/uploads/payload.SVG', true])]
     #[TestWith(['/uploads/photo.png', false])]
-    #[TestWith(['/download/42', false])]
+    #[TestWith(['/uploads/photo.png?v=2', false])]
+    #[TestWith(['/uploads/payload.svg?.png', true])]
+    #[TestWith(['/uploads/resource-map.rdf', true])]
+    #[TestWith(['/download/42', true])]
     public function testImageWidgetThumbnailLink(string $downloadUri, bool $forcesDownload): void
     {
         $crawler = $this->renderVichBlock('vich_image_widget', [
@@ -40,6 +43,9 @@ class VichFormThemeTest extends KernelTestCase
 
     #[TestWith(['/uploads/payload.svg', true])]
     #[TestWith(['/uploads/report.pdf', false])]
+    #[TestWith(['/uploads/payload.svg#.pdf', true])]
+    #[TestWith(['/uploads/build-notes.mk', true])]
+    #[TestWith(['/download/42', true])]
     public function testFileWidgetLink(string $downloadUri, bool $forcesDownload): void
     {
         $crawler = $this->renderVichBlock('vich_file_widget', ['download_uri' => $downloadUri]);

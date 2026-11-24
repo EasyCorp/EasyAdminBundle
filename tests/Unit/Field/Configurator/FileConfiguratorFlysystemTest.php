@@ -105,6 +105,23 @@ class FileConfiguratorFlysystemTest extends AbstractFieldTestCase
         $this->assertSame('https://cdn.example.com/photos/cat.jpg', $dto->getFormattedValue());
     }
 
+    public function testUrlPrefixEncodesTheCharactersThatEndTheUrlPath(): void
+    {
+        $field = FileField::new('photos')
+            ->setFlysystemStorage('default.storage')
+            ->setFlysystemUrlPrefix('https://cdn.example.com')
+            ->setUploadDir('photos/');
+        $field->getAsDto()->setValue(['photos/report.svg?.txt', 'photos/report.svg#.txt', 'photos/my report.pdf']);
+
+        $dto = $this->configure($field);
+
+        $this->assertSame([
+            'https://cdn.example.com/photos/report.svg%3F.txt',
+            'https://cdn.example.com/photos/report.svg%23.txt',
+            'https://cdn.example.com/photos/my report.pdf',
+        ], $dto->getFormattedValue());
+    }
+
     public function testUrlDerivedFromFlysystemPublicUrlWhenPrefixMissing(): void
     {
         $this->filesystem->expects($this->once())

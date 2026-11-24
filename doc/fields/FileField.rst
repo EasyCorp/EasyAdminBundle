@@ -251,10 +251,13 @@ same origin as the backend, that script executes in the session of the user who
 opens it (a stored `XSS`_ attack).
 
 To prevent this, EasyAdmin **forces a download** (instead of opening the file
-inline) for uploaded files whose type the browser would render and could
-execute scripts from, such as ``.html``, ``.svg``, ``.xhtml`` and ``.xml``.
-Safe types (images, PDFs, office documents, etc.) keep opening inline as usual.
-You can change this default behavior with the following option.
+inline) for all uploaded files except those of well-known types that browsers
+can't execute scripts from: raster images (``.png``, ``.jpg``, ``.gif``,
+``.webp``, etc.), PDFs, plain text files and common audio and video files.
+Files with other types (``.html``, ``.svg``, ``.xml``, etc.), with an
+unknown extension or without an extension are always downloaded, because web
+servers can send them with a type that browsers render as a document. You can
+change this default behavior with the following option.
 
 ``allowRiskyInlineRender``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

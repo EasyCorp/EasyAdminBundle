@@ -35,6 +35,10 @@ use Symfony\Component\Validator\Constraints\All;
  */
 class FileUploadType extends AbstractType implements DataMapperInterface
 {
+    // stored names can contain these characters, which would end the path of the
+    // URL and make the link request a different file than the one that was stored
+    private const URL_SPECIAL_CHARS = ['?' => '%3F', '#' => '%23'];
+
     public function __construct(
         private readonly string $projectDir,
         private readonly Filesystem $filesystem,
@@ -146,7 +150,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
     private function resolveFlysystemFileUrl(?FilesystemOperator $filesystem, ?string $urlPrefix, string $fileName): ?string
     {
         if (null !== $urlPrefix) {
-            return rtrim($urlPrefix, '/').'/'.ltrim($fileName, '/');
+            return rtrim($urlPrefix, '/').'/'.ltrim(strtr($fileName, self::URL_SPECIAL_CHARS), '/');
         }
 
         if (null === $filesystem) {

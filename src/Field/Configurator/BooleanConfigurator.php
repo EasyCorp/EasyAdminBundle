@@ -40,7 +40,10 @@ final class BooleanConfigurator implements FieldConfiguratorInterface
             $hasEditPermission = $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::EDIT, 'entity' => $entityDto]);
 
             if ($hasEditPermission && null !== $crudDto && null !== $entityDto->getPrimaryKeyValue()) {
+                // the toggle URL doesn't need anything from the query string of the current page,
+                // and inheriting it would let a crafted link change the request sent by the switch
                 $toggleUrl = $this->adminUrlGenerator
+                    ->unsetAll()
                     ->setController($crudDto->getControllerFqcn())
                     ->setAction(Action::EDIT)
                     ->setEntityId($entityDto->getPrimaryKeyValue())

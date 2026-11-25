@@ -67,6 +67,9 @@ final class EntityFactory
      */
     public function processActions(EntityDto $entityDto, ActionConfigDto $actionConfigDto): void
     {
+        if (!$entityDto->isAccessible()) {
+            return;
+        }
         $this->actionFactory->processEntityActions($entityDto, $actionConfigDto);
     }
 

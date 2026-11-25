@@ -3,6 +3,32 @@ Upgrade Guide
 
 This guide is for humans. If you are an AI agent, read [UPGRADE-AI.md](UPGRADE-AI.md) instead.
 
+## EasyAdmin 5.10.5
+
+### Route Requirements and Defaults of a Class Are No Longer Replaced by the Ones of Its Actions
+
+When both the `#[AdminRoute]` attribute of a controller class and the one of an
+action defined `requirements`, `defaults` or `options`, the values of the action
+replaced the ones of the class entirely. The route still contained the placeholders
+of the class path, but without the requirements and defaults that the class defined
+for them. Now they're merged key by key, like the `#[Route]` attribute of Symfony
+does, and the values of the action win for the keys defined in both.
+
+If an action relied on this to remove a requirement or a default of its class,
+redefine that key in the attribute of the action:
+
+```php
+#[AdminRoute(path: '/report/{kind}', name: 'report', options: ['requirements' => ['kind' => 'a|b']])]
+class ReportController
+{
+    // before: '{kind}' accepted any value in this route
+    #[AdminRoute(path: '/{id}', name: 'show', options: ['requirements' => ['id' => '\d+']])]
+
+    // after, to keep accepting any value
+    #[AdminRoute(path: '/{id}', name: 'show', options: ['requirements' => ['id' => '\d+', 'kind' => '[^/]+']])]
+}
+```
+
 ## EasyAdmin 5.10.4
 
 ### Autocomplete Checks the Field and the Page of Its Context

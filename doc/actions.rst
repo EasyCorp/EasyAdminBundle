@@ -1167,6 +1167,9 @@ following this logic:
   common case of using ``/admin`` and ``admin`` in your dashboard, those values are taken.
 * If there's an ``#[AdminRoute]`` attribute at the class level, treat it as a
   prefix of the final route, just like Symfony's ``#[Route]`` attribute works.
+  The ``options`` of the action override the ones of the class with the same
+  name, except ``requirements``, ``defaults`` and ``options``, which are merged
+  (the values of the action win for the keys defined in both).
 * Use the route path and name of the ``#[AdminRoute]`` attribute of each action
   as the final segment in the generated route.
 

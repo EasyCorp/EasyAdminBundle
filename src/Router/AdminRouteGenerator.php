@@ -250,7 +250,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                         EA::CRUD_ACTION => $actionRouteConfig['actionName'],
                     ];
 
-                    $routeOptions = array_merge($crudControllerRouteConfig['routeOptions'], $actionRouteConfig['routeOptions'] ?? []);
+                    $routeOptions = $this->mergeRouteOptions($crudControllerRouteConfig['routeOptions'], $actionRouteConfig['routeOptions'] ?? []);
 
                     $adminRoute = $this->createCrudRoute($adminRoutePath, $routeOptions, $actionRouteConfig['methods'], $defaults);
                     $this->applyDashboardRouteRestrictions($adminRoute, $dashboardRoutes[$dashboardFqcn]);
@@ -398,11 +398,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                             throw new \RuntimeException(sprintf('The #[AdminRoute] attribute applied to the "%s" method of the "%s" controller would create an admin route called "%s", which already exists. You must change the "routeName" argument to generate a different route name.', $method->name, $controllerFqcn, $adminRouteName));
                         }
 
-                        // merge route options: method options override class options
-                        $mergedRouteOptions = array_merge(
-                            $classAdminRoute->options ?? [],
-                            $methodAdminRoute->options
-                        );
+                        $mergedRouteOptions = $this->mergeRouteOptions($classAdminRoute->options ?? [], $methodAdminRoute->options);
 
                         // create a new AdminRoute with merged configuration
                         $mergedAdminRoute = new AdminRoute(
@@ -547,6 +543,30 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
         }
 
         return $route;
+    }
+
+    /**
+     * The options of the action override the ones of the class, except the requirements, defaults
+     * and options, which are maps: they are merged key by key (like the #[Route] attribute of Symfony
+     * does) because the route path also contains the placeholders of the class path, so replacing
+     * them entirely would drop the requirements and defaults that the class defines for them.
+     *
+     * @param array<string, mixed> $classRouteOptions
+     * @param array<string, mixed> $actionRouteOptions
+     *
+     * @return array<string, mixed>
+     */
+    private function mergeRouteOptions(array $classRouteOptions, array $actionRouteOptions): array
+    {
+        $mergedRouteOptions = array_merge($classRouteOptions, $actionRouteOptions);
+
+        foreach (['requirements', 'defaults', 'options'] as $optionName) {
+            if (\is_array($classRouteOptions[$optionName] ?? null) && \is_array($actionRouteOptions[$optionName] ?? null)) {
+                $mergedRouteOptions[$optionName] = array_replace($classRouteOptions[$optionName], $actionRouteOptions[$optionName]);
+            }
+        }
+
+        return $mergedRouteOptions;
     }
 
     /**

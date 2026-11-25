@@ -3,6 +3,50 @@ AI Upgrade Guide
 
 This guide is for AI agents. If you are a human, read [UPGRADE.md](UPGRADE.md) instead.
 
+## EasyAdmin 5.10.5
+
+Use this prompt to upgrade backends for the route change made in EasyAdmin 5.10.5.
+
+<upgrade-prompt version="5.10.5">
+
+EasyAdmin 5.10.5 makes this change:
+
+- when both the `#[AdminRoute]` attribute of a controller class and the one of an
+  action define the `requirements`, `defaults` or `options` key in their `options`
+  argument, it merges them key by key and the values of the action win for the keys
+  defined in both. Before, the array of the action replaced the array of the class
+  entirely.
+
+Search the project (PHP) and apply what's relevant. Skip what doesn't apply.
+
+## Required changes
+
+1. Find the classes with an `#[AdminRoute(` attribute whose `options:` argument
+   defines `requirements`, `defaults` or `options`, and that have methods with an
+   `#[AdminRoute(` attribute whose `options:` argument defines the same key. The
+   routes of those methods now also get the class values of that key. If a method
+   needs a route without one of them, redefine that key in the attribute of the
+   method:
+
+   ```php
+   #[AdminRoute(path: '/report/{kind}', name: 'report', options: ['requirements' => ['kind' => 'a|b']])]
+   class ReportController
+   {
+       // before: '{kind}' accepted any value in this route
+       #[AdminRoute(path: '/{id}', name: 'show', options: ['requirements' => ['id' => '\d+']])]
+
+       // after, to keep accepting any value
+       #[AdminRoute(path: '/{id}', name: 'show', options: ['requirements' => ['id' => '\d+', 'kind' => '[^/]+']])]
+   }
+   ```
+
+## Optional changes
+
+1. Remove the class requirements and defaults that methods repeat in their own
+   `#[AdminRoute(` attribute only to keep them: they are inherited now.
+
+</upgrade-prompt>
+
 ## EasyAdmin 5.10.4
 
 Use this prompt to upgrade backends for the permission, route, URL and upload changes made in EasyAdmin 5.10.4.

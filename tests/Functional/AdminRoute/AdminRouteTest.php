@@ -51,6 +51,35 @@ class AdminRouteTest extends WebTestCase
         $this->assertResponseStatusCodeSame(404);
     }
 
+    public function testClassAndActionRequirementsAndDefaultsAreMerged(): void
+    {
+        $client = static::createClient();
+        $routes = $client->getContainer()->get('router')->getRouteCollection();
+
+        // the action adds its requirements and defaults to the ones of the class
+        $showRoute = $routes->get('admin_merged_options_show');
+        $this->assertNotNull($showRoute);
+        $this->assertSame('/admin/merged-options/{kind}/{id}', $showRoute->getPath());
+        $this->assertSame(['kind' => 'a|b', 'id' => '\d+'], $showRoute->getRequirements());
+        $this->assertSame('reports', $showRoute->getDefault('section'));
+
+        // for a key defined in both, the action wins
+        $this->assertSame('2', $showRoute->getDefault('page'));
+
+        $redefinedRoute = $routes->get('admin_merged_options_redefined');
+        $this->assertNotNull($redefinedRoute);
+        $this->assertSame(['kind' => 'c'], $redefinedRoute->getRequirements());
+        $this->assertSame('1', $redefinedRoute->getDefault('page'));
+
+        $client->request('GET', '/admin/merged-options/a/12');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Merged Options: a 12', $client->getResponse()->getContent());
+
+        // the requirement of the placeholder of the class path is still applied
+        $client->request('GET', '/admin/merged-options/other/12');
+        $this->assertResponseStatusCodeSame(404);
+    }
+
     public function testInvokableControllerRoute(): void
     {
         $client = static::createClient();
@@ -660,6 +689,10 @@ class AdminRouteTest extends WebTestCase
         $this->assertSame(['GET'], $exportRoute->getMethods());
         $this->assertSame('csv|xlsx', $exportRoute->getRequirement('format'));
         $this->assertSame('request.headers.get("X-Internal") == "1"', $exportRoute->getCondition());
+
+        // except the defaults (and requirements), which are merged with the class-level ones
+        $this->assertSame('emea', $exportRoute->getDefault('region'));
+        $this->assertSame('sales', $exportRoute->getDefault('department'));
 
         // CRUD controllers that don't define route options are not restricted
         $route = $routes->get('admin_built_in_action_list');

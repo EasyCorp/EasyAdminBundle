@@ -34,6 +34,7 @@ class RouteOptionsCrudController extends AbstractCrudController
         'host' => 'reports.example.com',
         'methods' => ['GET'],
         'requirements' => ['format' => 'csv|xlsx'],
+        'defaults' => ['region' => 'emea'],
         'condition' => 'request.headers.get("X-Internal") == "1"',
     ])]
     public function overriddenOptions(string $format): Response

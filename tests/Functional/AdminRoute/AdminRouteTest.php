@@ -32,6 +32,24 @@ class AdminRouteTest extends WebTestCase
         self::ensureKernelShutdown();
     }
 
+    public function testStringableRouteRequirement(): void
+    {
+        $client = static::createClient();
+        $router = $client->getContainer()->get('router');
+
+        // like in the #[Route] attribute of Symfony, a requirement can be a Stringable object
+        $route = $router->getRouteCollection()->get('admin_stringable_requirement');
+        $this->assertNotNull($route);
+        $this->assertSame('csv|xlsx', $route->getRequirement('format'));
+
+        $client->request('GET', '/admin/stringable-requirement/csv');
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('Format: csv', $client->getResponse()->getContent());
+
+        $client->request('GET', '/admin/stringable-requirement/pdf');
+        $this->assertResponseStatusCodeSame(404);
+    }
+
     public function testInvokableControllerRoute(): void
     {
         $client = static::createClient();

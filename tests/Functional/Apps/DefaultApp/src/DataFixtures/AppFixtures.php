@@ -29,6 +29,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synt
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Synthetic\UrlSortSecurityTestEntity;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Website;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Enum\BlogPostStateEnum;
 
 class AppFixtures extends Fixture
 {
@@ -60,7 +61,8 @@ class AppFixtures extends Fixture
                 ->setCreatedAt(new \DateTimeImmutable('2020-11-'.($i + 1).' 09:00:00'))
                 ->setPublishedAt(new \DateTimeImmutable('2020-11-'.($i + 1).' 11:00:00'))
                 ->addCategory($this->getReference('category'.($i % 10), Category::class))
-                ->setAuthor($this->getReference('user'.($i % 5), User::class));
+                ->setAuthor($this->getReference('user'.($i % 5), User::class))
+                ->setState(BlogPostStateEnum::cases()[$i % \count(BlogPostStateEnum::cases())]);
 
             if ($i < 10) {
                 $blogPost->setPublisher(

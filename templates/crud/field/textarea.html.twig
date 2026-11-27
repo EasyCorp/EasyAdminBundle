@@ -5,12 +5,14 @@
 {# the value is only printed as HTML when the code that formatted it marked it as safe #}
 {% set is_safe_html = field.customOptions.get('formattedValueIsSafeHtml') is same as(true) %}
 {% set render_as_html = field.customOptions.get('renderAsHtml') %}
+{# formatValue() can turn into text a value that can't be converted to a string (e.g. an object) #}
+{% set has_title = field.value is ea_is_stringable %}
 {% if ea().crud.currentAction == 'detail' %}
-    <span title="{{ field.value }}">
+    <span{% if has_title %} title="{{ field.value }}"{% endif %}>
         {% if not is_safe_html %}{{ field.formattedValue|nl2br }}{% elseif render_as_html %}{{ field.formattedValue|raw }}{% else %}{{ field.formattedValue|raw|nl2br }}{% endif %}
     </span>
 {% else %}
-    <span title="{{ field.value }}">
+    <span{% if has_title %} title="{{ field.value }}"{% endif %}>
         {% if is_safe_html %}{{ field.formattedValue|raw }}{% else %}{{ field.formattedValue }}{% endif %}
     </span>
 {% endif %}

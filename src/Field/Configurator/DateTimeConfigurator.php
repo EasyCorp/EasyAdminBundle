@@ -90,6 +90,12 @@ final readonly class DateTimeConfigurator implements FieldConfiguratorInterface
 
         $field->setFormattedValue($formattedValue);
 
+        // only datetime values: a calendar day (DateField) or a wall clock time (TimeField)
+        // has no timezone and would change its value when converted to another one
+        if (DateTimeField::class === $field->getFieldFqcn() && null !== $timezone) {
+            $field->setFormTypeOptionIfNotSet('view_timezone', $timezone);
+        }
+
         // check if the property is immutable, but only if it's a real Doctrine entity property
         if (!isset($entityDto->getClassMetadata()->fieldMappings[$field->getProperty()])) {
             return;

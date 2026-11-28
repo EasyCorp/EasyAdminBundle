@@ -473,6 +473,11 @@ Date, Time and Number Formatting Options
             // unlike the two methods above, both arguments also accept the 'none' format
             ->setDateTimeFormat('...', '...')
 
+            // the timezone used to display dates (any valid PHP timezone ID);
+            // the form fields and filters of datetime values use it too, so
+            // the dates typed by users are interpreted in the same timezone
+            // in which they are displayed (date-only and time-only values
+            // are never converted)
             ->setTimezone('...')
 
             // this option renders numeric values with a sprintf()

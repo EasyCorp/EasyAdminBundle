@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\NestedAssociationResolverInter
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
@@ -66,6 +67,19 @@ final class DateTimeConfigurator implements FilterConfiguratorInterface
         // don't use Types::DATETIME_UTC_IMMUTABLE because it was added in Doctrine DBAL 4.5
         if (\in_array($fieldType, [Types::DATETIME_IMMUTABLE, Types::DATETIMETZ_IMMUTABLE, 'datetime_utc_immutable'], true)) {
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.input', 'datetime_immutable');
+        }
+
+        // date and time columns are left alone: a calendar day or a wall clock time
+        // has no timezone and would change its value when converted to another one
+        if (!\in_array($fieldType, [Types::DATETIME_MUTABLE, Types::DATETIME_IMMUTABLE, Types::DATETIMETZ_MUTABLE, Types::DATETIMETZ_IMMUTABLE], true)) {
+            return;
+        }
+
+        // the timezone of the field that displays this property goes first, so the
+        // values typed in the filter match the values displayed in the column
+        $timezone = $fieldDto?->getCustomOption(DateTimeField::OPTION_TIMEZONE) ?? $context->getCrud()?->getTimezone();
+        if (null !== $timezone) {
+            $filterDto->setFormTypeOptionIfNotSet('value_type_options.view_timezone', $timezone);
         }
     }
 }

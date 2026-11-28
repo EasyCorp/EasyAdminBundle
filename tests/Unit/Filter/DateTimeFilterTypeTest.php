@@ -27,6 +27,15 @@ class DateTimeFilterTypeTest extends TypeTestCase
         }
     }
 
+    public function testCustomValueTypeOptionsKeepTheSingleTextWidget(): void
+    {
+        $form = $this->factory->create(DateTimeFilterType::class, null, [
+            'value_type_options' => ['view_timezone' => 'America/New_York'],
+        ]);
+
+        $this->assertSame(['view_timezone' => 'America/New_York', 'widget' => 'single_text'], $form->getConfig()->getOption('value_type_options'));
+    }
+
     /**
      * @param array<string, mixed> $options
      * @param array<string, mixed> $dataToSubmit

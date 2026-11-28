@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -85,6 +86,9 @@ class DateTimeFilterType extends AbstractType
                 'widget' => 'single_text',
             ],
         ]);
+        // passing any value type option (e.g. 'view_timezone') replaces the whole default
+        // array, so the widget is added back to keep parsing the values typed in the filter
+        $resolver->setNormalizer('value_type_options', static fn (Options $options, array $value): array => $value + ['widget' => 'single_text']);
     }
 
     public function getBlockPrefix(): string

@@ -147,6 +147,29 @@ class TextTemplateEscapingTest extends AbstractCrudTestCase
         }
     }
 
+    public function testFormatValueRendersValuesThatCannotBeConvertedToString(): void
+    {
+        $blogPost = BlogPostFactory::createOne([
+            'title' => 'Title 1',
+            'author' => UserFactory::new(['address' => (new Address())->setCity('City 1')]),
+        ]);
+
+        foreach ([$this->generateIndexUrl(controllerFqcn: TextFieldsCrudController::class), $this->generateDetailUrl($blogPost->getId(), controllerFqcn: TextFieldsCrudController::class)] as $url) {
+            $crawler = $this->client->request('GET', $url);
+
+            static::assertResponseIsSuccessful();
+            $formattedValues = $crawler->filter('.content-body span')->reduce(
+                static fn (Crawler $span): bool => \in_array(trim($span->text()), ['City: City 1', 'Textarea city: City 1'], true)
+            );
+            static::assertCount(2, $formattedValues, 'Field with the "text" and "textarea" templates');
+            // the value is an object that can't be printed in the "title" attribute
+            static::assertNull($formattedValues->eq(0)->attr('title'));
+            static::assertNull($formattedValues->eq(1)->attr('title'));
+            // the values that can be converted to a string keep their "title" attribute
+            static::assertGreaterThan(0, $crawler->filter('.content-body span[title="Title 1"]')->count());
+        }
+    }
+
     private function assertTextFieldContents(Crawler $title, Crawler $slug): void
     {
         static::assertSame('Title 1 <b>bold</b> & more', trim($title->text()));

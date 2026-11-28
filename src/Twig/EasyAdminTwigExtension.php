@@ -46,6 +46,10 @@ class EasyAdminTwigExtension extends AbstractExtension
             // a deprecation ("Method TranslatableMessage::__toString() is deprecated"); this test
             // checks the same without casting the value to a string
             new TwigTest('ea_is_not_empty', static fn (mixed $value): bool => false !== $value && null !== $value && '' !== $value),
+            // any field can use the templates that print the raw value of the field (e.g. in a
+            // 'title' attribute) and that value can be an object when it's formatted
+            // with formatValue(); this test tells if printing the value is safe
+            new TwigTest('ea_is_stringable', static fn (mixed $value): bool => null === $value || \is_scalar($value) || $value instanceof \Stringable),
         ];
     }
 

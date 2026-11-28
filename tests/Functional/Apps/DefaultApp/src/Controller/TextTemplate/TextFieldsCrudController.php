@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\Address;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\DefaultApp\Entity\BlogPost;
 
 /**
@@ -34,6 +35,10 @@ class TextFieldsCrudController extends AbstractCrudController
             ChoiceField::new('author.address.city')
                 ->setChoices(['City 1' => 'city1'])
                 ->formatValue(static fn (?string $value): string => $value ?? '<mark>No city</mark>'),
+            Field::new('author.address')->formatValue(static fn (Address $value): string => sprintf('City: %s', $value->getCity())),
+            Field::new('author.address', 'Address as textarea')
+                ->setTemplateName('crud/field/textarea')
+                ->formatValue(static fn (Address $value): string => sprintf('Textarea city: %s', $value->getCity())),
         ];
     }
 }

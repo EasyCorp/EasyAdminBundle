@@ -114,6 +114,29 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
         $this->assertSame($expected, $isNotEmpty($value));
     }
 
+    public function testIsStringable(): void
+    {
+        $isStringable = $this->getTwigTestCallable('ea_is_stringable');
+        $stringable = new class implements \Stringable {
+            public function __toString(): string
+            {
+                return 'foo';
+            }
+        };
+
+        $this->assertTrue($isStringable(null));
+        $this->assertTrue($isStringable(''));
+        $this->assertTrue($isStringable('foo'));
+        $this->assertTrue($isStringable(3));
+        $this->assertTrue($isStringable(3.14));
+        $this->assertTrue($isStringable(false));
+        $this->assertTrue($isStringable($stringable));
+        $this->assertFalse($isStringable([]));
+        $this->assertFalse($isStringable(['foo']));
+        $this->assertFalse($isStringable(new \stdClass()));
+        $this->assertFalse($isStringable(new \DateTimeImmutable()));
+    }
+
     public function testUid(): void
     {
         $uid = $this->getTwigFunctionCallable('ea_uid');

@@ -34,8 +34,9 @@ Verdicts:
 For every `fatal`, `wrong` and `old_version` verdict, cite the file and line
 in the repository that proves it (for example
 `src/Config/Actions.php:114` for a permission set on the wrong class, or
-`templates/components/Button.html.twig:32` for a form that carries no CSRF
-token). A verdict without a citation is not accepted.
+`templates/crud/includes/_action_confirmation_modal.html.twig:4` for the ID
+of the CSRF token that the delete action validates). A verdict without a
+citation is not accepted.
 
 Be exhaustive: list every claim, including the ones that are `ok`, so that
 the coverage of the review is visible. Finish with a summary that counts the

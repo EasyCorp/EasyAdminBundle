@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Functional\Apps\CustomizationApp\Entity\BlogPost;
 
@@ -26,6 +27,6 @@ class NumberFormatTestCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         yield NumberField::new('rating');
-        yield NumberField::new('views');
+        yield IntegerField::new('views');
     }
 }

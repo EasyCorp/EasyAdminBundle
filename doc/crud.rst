@@ -214,7 +214,9 @@ will be ``admin_product_latest`` and the path will be ``/admin/product/latest-pr
 The ``options`` defined in the ``#[AdminRoute]`` attribute of the CRUD controller
 class (e.g. ``host``, ``schemes`` or ``condition``) are applied to the routes of
 all its actions. The ``options`` defined in the ``#[AdminRoute]`` attribute of an
-action override the class-level options with the same name::
+action override the class-level options with the same name, except ``requirements``,
+``defaults`` and ``options``, which are merged with the class-level ones (the
+values of the action win for the keys defined in both)::
 
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;

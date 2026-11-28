@@ -21,7 +21,7 @@ class AdminRoute
 
         /**
          * @var array{
-         *     requirements?: array<string, string>,
+         *     requirements?: array<string, string|\Stringable>,
          *     options?: array<string, mixed>,
          *     defaults?: array<string, mixed>,
          *     host?: string,

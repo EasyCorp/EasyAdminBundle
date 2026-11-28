@@ -34,6 +34,7 @@ final class ImageField implements FieldInterface
     public const OPTION_FLYSYSTEM_STORAGE = 'flysystemStorage';
     public const OPTION_FLYSYSTEM_URL_PREFIX = 'flysystemUrlPrefix';
     public const OPTION_RISKY_INLINE_RENDER = 'riskyInlineRender';
+    public const OPTION_HEIGHT = 'height';
 
     public static function new(string $propertyName, TranslatableInterface|string|bool|null $label = null): self
     {
@@ -60,7 +61,8 @@ final class ImageField implements FieldInterface
             ->setCustomOption(self::OPTION_MAX_SIZE_MESSAGE, null)
             ->setCustomOption(self::OPTION_FLYSYSTEM_STORAGE, null)
             ->setCustomOption(self::OPTION_FLYSYSTEM_URL_PREFIX, null)
-            ->setCustomOption(self::OPTION_RISKY_INLINE_RENDER, false);
+            ->setCustomOption(self::OPTION_RISKY_INLINE_RENDER, false)
+            ->setCustomOption(self::OPTION_HEIGHT, null);
     }
 
     /**
@@ -246,6 +248,22 @@ final class ImageField implements FieldInterface
     public function isDeletable(bool $isDeletable = true): self
     {
         $this->setCustomOption(self::OPTION_DELETABLE, $isDeletable);
+
+        return $this;
+    }
+
+    /**
+     * Sets the maximum height (in pixels) of the images displayed in the index and
+     * detail pages. Images are never enlarged and their width is limited to twice
+     * this height. By default, the size depends on the page and the spacing of the theme.
+     */
+    public function setHeight(int $heightInPixels): self
+    {
+        if ($heightInPixels < 1) {
+            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be 1 or higher (%d given).', __METHOD__, $heightInPixels));
+        }
+
+        $this->setCustomOption(self::OPTION_HEIGHT, $heightInPixels);
 
         return $this;
     }

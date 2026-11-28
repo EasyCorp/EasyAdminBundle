@@ -409,4 +409,25 @@ class ImageFieldTest extends AbstractFieldTestCase
 
         self::assertFalse($fieldDto->getCustomOption(ImageField::OPTION_RISKY_INLINE_RENDER));
     }
+
+    public function testHeightIsNotSetByDefault(): void
+    {
+        $fieldDto = $this->configure(ImageField::new('image'));
+
+        self::assertNull($fieldDto->getCustomOption(ImageField::OPTION_HEIGHT));
+    }
+
+    public function testSetHeight(): void
+    {
+        $fieldDto = $this->configure(ImageField::new('image')->setHeight(80));
+
+        self::assertSame(80, $fieldDto->getCustomOption(ImageField::OPTION_HEIGHT));
+    }
+
+    public function testSetHeightThrowsExceptionForZeroOrNegative(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        ImageField::new('image')->setHeight(0);
+    }
 }

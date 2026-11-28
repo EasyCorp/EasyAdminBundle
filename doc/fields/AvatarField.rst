@@ -46,7 +46,7 @@ predefined `default Gravatar images`_ or use your own custom image by passing it
 
 Avatar images are rendered as squares, so there is only one option to set the
 ``height``, which will be the same as its ``width``. By default, avatar images
-are ``24px`` tall on the ``index`` page and ``48px`` tall on the ``detail`` page.
+are ``28px`` tall on the ``index`` page and ``48px`` tall on the ``detail`` page.
 Use this option to customize this value::
 
     // if you pass an integer, it's considered the height in pixels
